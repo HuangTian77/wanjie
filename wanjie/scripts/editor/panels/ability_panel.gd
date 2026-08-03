@@ -72,7 +72,7 @@ func _set_skill_detail_visible(vis: bool) -> void:
 func _on_add_skill_pressed() -> void:
 	if ability_data == null:
 		return
-	ability_data.add_skill("skill_%d" % ability_data.skills.size(), "新技能")
+	ability_data.add_skill("skill_%d" % ability_data.skills.size(), "新技能", "active", "magic", "none", "")
 	_refresh_skills()
 
 func _on_remove_skill_pressed() -> void:
