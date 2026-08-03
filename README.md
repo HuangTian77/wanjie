@@ -3,6 +3,8 @@
 > **定位**：支持玩家自定义世界剧本的沙盒式游戏体验平台（游戏编辑器 + 游玩器一体化）
 > **引擎**：Godot 4.7.1（gl_compatibility） | **语言**：GDScript | **仓库**：Git + Git LFS
 
+[![CI](https://github.com/HuangTian77/wanjie/actions/workflows/ci.yml/badge.svg)](https://github.com/HuangTian77/wanjie/actions/workflows/ci.yml)
+
 玩家既是"造物主"（创造世界剧本），也是"旅者"（体验世界剧本）。类似 Roblox 的定位，但聚焦于**规则与叙事**——零基础用户也能创建并运行复杂游戏/剧本作品。
 
 ## ✨ 核心特性
