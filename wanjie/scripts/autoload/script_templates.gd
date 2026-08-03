@@ -19,6 +19,8 @@ static func get_template_defs() -> Array[Dictionary]:
 			"description": "竞技场挑战：丰富技能组合、敌人轮换、段位晋升任务。"},
 		{"id": "explore_puzzle", "name": "探索解谜", "icon": "🗺️", "tags": ["探索", "解谜", "遗迹"],
 			"description": "遗迹探索与谜题分支：区域解锁、线索收集、隐藏结局。"},
+		{"id": "dragonflame_worldview", "name": "龙焰纪元·世界观蓝图", "icon": "🐉", "tags": ["奇幻", "世界观", "蓝图模板"],
+			"description": "以《龙焰纪元》世界观为示范：四大王国/龙脉/时代/核心规则全部以蓝图节点表达, 展示子页蓝图化编辑方式。"},
 	]
 
 ## 应用模板到剧本（返回是否成功）
@@ -39,6 +41,8 @@ static func apply_template(ws: WorldScriptData, template_id: String) -> bool:
 			_apply_combat_arena(ws)
 		"explore_puzzle":
 			_apply_explore_puzzle(ws)
+		"dragonflame_worldview":
+			_apply_dragonflame_worldview(ws)
 		_:
 			return false
 	return true
@@ -395,3 +399,69 @@ static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 	var unlock := _add_node(g, key, "story_unlock_lore", {"lore_id": "ruins_history"}, Vector2(700, 160))
 	_add_node(g, unlock, "quest_update_objective", {"quest_id": "q_riddle", "objective_idx": 0, "progress": 1}, Vector2(900, 160))
 	GraphStore.set_graph(ws, "sys:global", g)
+
+## === 龙焰纪元·世界观蓝图模板（示范: 世界观以蓝图节点表达） ===
+
+static func _apply_dragonflame_worldview(ws: WorldScriptData) -> void:
+	_set_meta(ws, "龙焰纪元·世界观蓝图", ["奇幻", "世界观", "蓝图模板"], 20.0)
+	# 世界观数据（表单层可读）
+	var wv := ws.worldview
+	wv.background_story = "艾泽兰大陆, 龙焰纪元 DF 347 年。龙族消失 244 年后的白银和平即将破裂, 四大王国暗流涌动。"
+	wv.add_era("创世与诸神", -3000, -2000)
+	wv.add_era("龙族黄金纪元", -2000, 0)
+	wv.add_era("寂灭之夜", 0, 1)
+	wv.add_era("诸王战争", 1, 103)
+	wv.add_era("白银和平", 103, 347)
+	wv.add_rule("world", "龙脉", "所有魔力源于龙脉, 龙脉紊乱会导致魔法失效")
+	wv.add_rule("world", "神祇", "诸神受不干预契约束缚, 不得直接干涉凡间")
+	wv.add_rule("world", "龙血", "龙裔的龙血可通过极端情绪/龙脉接触觉醒")
+	wv.add_faction("ironcrown", "铁冠王朝", "human", 70)
+	wv.add_faction("sunflare", "炎阳帝国", "human", 65)
+	wv.add_faction("silvermoon", "银月王国", "elf", 55)
+	wv.add_faction("deepcouncil", "地底议会", "dwarf", 60)
+	# 势力关系
+	wv.faction_relationships = [
+		{"from_id": "ironcrown", "to_id": "sunflare", "type": "cold_war", "intensity": -0.6},
+		{"from_id": "ironcrown", "to_id": "deepcouncil", "type": "alliance", "intensity": 0.7},
+		{"from_id": "ironcrown", "to_id": "silvermoon", "type": "friendship", "intensity": 0.4},
+		{"from_id": "silvermoon", "to_id": "deepcouncil", "type": "distrust", "intensity": -0.3},
+		{"from_id": "sunflare", "to_id": "silvermoon", "type": "conflict", "intensity": -0.8},
+	]
+	wv.geography = {"regions": [
+		{"id": "ironcrown_lands", "name": "铁冠王朝（中北部平原）", "description": "大陆粮仓与贸易中心"},
+		{"id": "sunflare_desert", "name": "炎阳帝国（东南沙漠）", "description": "绿洲城邦与角斗场"},
+		{"id": "silvermoon_forest", "name": "银月王国（西部森林）", "description": "世界树瑟兰迪尔所在"},
+		{"id": "deepcouncil_under", "name": "地底议会（地下世界）", "description": "铁炉堡与五大氏族"},
+		{"id": "dragon_valley", "name": "龙之谷（中立险地）", "description": "龙族遗迹与金色裂缝"},
+	]}
+	# 世界观蓝图图（节点表达设定, 运行时可执行初始化）
+	var g := _new_graph()
+	var n0: String = g["nodes"].keys()[0]
+	var prev: String = n0
+	var pos_y := 140.0
+	# 1. 世界设定变量
+	prev = _add_node(g, prev, "world_set_var", {"var_name": "world_name", "_in1": "艾泽兰"}, Vector2(320, pos_y))
+	prev = _add_node(g, prev, "world_set_var", {"var_name": "era", "_in1": "龙焰纪元DF347"}, Vector2(520, pos_y))
+	prev = _add_node(g, prev, "world_set_var", {"var_name": "dragon_era", "_in1": "白银和平（脆弱均衡）"}, Vector2(720, pos_y))
+	pos_y += 120.0
+	# 2. 四大王国势力初始化
+	prev = _add_node(g, prev, "world_faction_power", {"faction_id": "ironcrown", "delta": 0}, Vector2(320, pos_y))
+	prev = _add_node(g, prev, "world_faction_power", {"faction_id": "sunflare", "delta": 0}, Vector2(520, pos_y))
+	prev = _add_node(g, prev, "world_faction_power", {"faction_id": "silvermoon", "delta": 0}, Vector2(720, pos_y))
+	prev = _add_node(g, prev, "world_faction_power", {"faction_id": "deepcouncil", "delta": 0}, Vector2(920, pos_y))
+	pos_y += 120.0
+	# 3. 王国间关系（六条）
+	prev = _add_node(g, prev, "world_faction_relation", {"faction_a": "ironcrown", "faction_b": "sunflare", "delta": -60.0}, Vector2(320, pos_y))
+	prev = _add_node(g, prev, "world_faction_relation", {"faction_a": "ironcrown", "faction_b": "deepcouncil", "delta": 40.0}, Vector2(520, pos_y))
+	prev = _add_node(g, prev, "world_faction_relation", {"faction_a": "ironcrown", "faction_b": "silvermoon", "delta": 25.0}, Vector2(720, pos_y))
+	prev = _add_node(g, prev, "world_faction_relation", {"faction_a": "silvermoon", "faction_b": "deepcouncil", "delta": -15.0}, Vector2(920, pos_y))
+	prev = _add_node(g, prev, "world_faction_relation", {"faction_a": "sunflare", "faction_b": "silvermoon", "delta": -50.0}, Vector2(1120, pos_y))
+	pos_y += 120.0
+	# 4. 设定说明（注释节点, 展示世界观文本）
+	prev = _add_node(g, prev, "flow_comment", {"text": "核心规则: ①神祇不干预 ②龙脉为魔力之源 ③龙血可觉醒 ④自由意志 ⑤后果不可撤销 ⑥力量有代价"}, Vector2(320, pos_y))
+	prev = _add_node(g, prev, "flow_comment", {"text": "七条太古龙脉: 赤金(火)/冰蓝(冰)/雷金(雷)/翠绿(生命)/光金(秩序)/暗影(诡术)/时金(时间)"}, Vector2(620, pos_y))
+	prev = _add_node(g, prev, "flow_comment", {"text": "龙裔: 隐藏血脉的种族, 龙血四阶段觉醒(潜伏/显现/觉醒/龙化)"}, Vector2(920, pos_y))
+	pos_y += 120.0
+	# 5. 收尾
+	_add_node(g, prev, "print", {"text": "世界观初始化完成"}, Vector2(320, pos_y))
+	GraphStore.set_graph(ws, "sys:worldview", g)

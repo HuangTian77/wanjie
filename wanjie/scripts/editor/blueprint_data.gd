@@ -62,13 +62,20 @@ static func make_graph() -> Dictionary:
 # === 节点注册表 ===
 
 ## 根据类型创建预定义节点
+## 节点 id 唯一计数器
+static var _id_counter: int = 0
+
+static func _unique_id(node_type: String) -> String:
+	_id_counter += 1
+	return "bp_%s_%d_%d" % [node_type, Time.get_ticks_msec(), _id_counter]
+
 static func create_node(node_type: String, pos: Vector2, id_override: String = "") -> Dictionary:
 	# 先尝试注册表驱动创建(新节点体系)
 	var reg_node: Dictionary = BlueprintNodeRegistry.create_node(node_type, pos, id_override)
 	if not reg_node.is_empty():
 		return reg_node
 	# 回退: 原有基础节点
-	var nid: String = id_override if id_override != "" else "bp_%s_%d" % [node_type, Time.get_ticks_msec()]
+	var nid: String = id_override if id_override != "" else _unique_id(node_type)
 	var node: Dictionary = {
 		"id": nid,
 		"node_type": node_type,

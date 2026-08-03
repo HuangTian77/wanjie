@@ -368,6 +368,36 @@ func _on_module_tree_selected() -> void:
 	var title: String = item.get_text(0).strip_edges()
 	_open_editor_for_path(path, title, meta)
 
+## === 子系统子分支 -> 蓝图优先路由 ===
+## 子分支（非概览页）打开即蓝图界面（锁定 sys:* 图, 可切回表单）
+const SUBSYSTEM_LEAVES := {
+	"worldview_bg": ["visual_worldview", "worldview_blueprint"],
+	"worldview_eras": ["visual_worldview", "worldview_blueprint"],
+	"worldview_timeline": ["visual_worldview", "worldview_blueprint"],
+	"worldview_rules": ["visual_worldview", "worldview_blueprint"],
+	"worldview_factions": ["visual_worldview", "worldview_blueprint"],
+	"worldview_rels": ["visual_worldview", "worldview_blueprint"],
+	"worldview_geo": ["visual_worldview", "worldview_blueprint"],
+	"worldview_lore": ["visual_worldview", "worldview_blueprint"],
+	"economy_curr": ["visual_economy", "economy_blueprint"],
+	"economy_res": ["visual_economy", "economy_blueprint"],
+	"economy_mkt": ["visual_economy", "economy_blueprint"],
+	"economy_trade": ["visual_economy", "economy_blueprint"],
+	"economy_prod": ["visual_economy", "economy_blueprint"],
+	"ability_skills": ["visual_ability", "ability_blueprint"],
+	"ability_growth": ["visual_ability", "ability_blueprint"],
+	"ability_fx": ["visual_ability", "ability_blueprint"],
+	"ability_combat": ["visual_ability", "ability_blueprint"],
+	"ability_elem": ["visual_ability", "ability_blueprint"],
+	"quest_list": ["visual_quest", "quest_blueprint"],
+	"quest_chains": ["visual_quest", "quest_blueprint"],
+	"combat_enemies": ["visual_combat", "combat_blueprint"],
+	"combat_npcs": ["visual_combat", "combat_blueprint"],
+	"combat_battles": ["visual_combat", "combat_blueprint"],
+	"map_region": ["visual_map", "map_blueprint"],
+	"map_location": ["visual_map", "map_blueprint"],
+}
+
 ## 编辑器切换核心方法
 func _switch_editor(key: String, title: String, panel: Control) -> void:
 	if panel == null:
@@ -399,6 +429,16 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 	# 如果编辑器已缓存，直接激活
 	if _editors.has(editor_key):
 		_switch_editor(editor_key, title, _editors[editor_key])
+		return
+
+	# 子系统子分支（非概览页）: 蓝图优先（锁定子系统图, 可切回表单）
+	if SUBSYSTEM_LEAVES.has(node_type):
+		var leaf_info: Array = SUBSYSTEM_LEAVES[node_type]
+		panel = _create_system_blueprint(leaf_info[1], {"form_module": leaf_info[0], "form_sub": node_type})
+		editor_key = "blueprint_system"
+		if panel == null:
+			return
+		_switch_editor(editor_key, title, panel)
 		return
 
 	# 根据路径创建对应编辑器
@@ -552,8 +592,8 @@ func _create_blueprint_workspace() -> Control:
 	return _mod_blueprint_workspace.create("blueprint_workspace", {})
 
 ## === 子系统蓝图编辑器（各子系统模块下的 🎨 蓝图分支） ===
-func _create_system_blueprint(sub_type: String) -> Control:
-	return _mod_system_blueprint.create(sub_type, {})
+func _create_system_blueprint(sub_type: String, meta: Dictionary = {}) -> Control:
+	return _mod_system_blueprint.create(sub_type, meta)
 
 ## === AI创作助手 ===
 func _create_ai_assistant() -> Control:

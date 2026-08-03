@@ -19,7 +19,7 @@ func _exec_global_graph(ws: WorldScriptData) -> Dictionary:
 func _initialize() -> void:
 	var ScriptTemplatesClass = load("res://scripts/autoload/script_templates.gd")
 	var defs: Array = ScriptTemplatesClass.get_template_defs()
-	assert(defs.size() == 6, "应有 6 个游戏类型模板, 实际 %d" % defs.size())
+	assert(defs.size() >= 7, "应至少 7 个游戏类型模板（6 类 + 龙焰纪元世界观蓝图）, 实际 %d" % defs.size())
 	print("PASS 6 template defs")
 
 	var template_ids := ["rpg_adventure", "visual_novel", "simulation_tycoon", "turn_strategy", "combat_arena", "explore_puzzle"]

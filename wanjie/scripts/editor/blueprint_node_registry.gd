@@ -82,12 +82,19 @@ static func search_nodes(keyword: String) -> Array[String]:
 	return result
 
 ## 注册表驱动创建节点(生成与BlueprintData.create_node兼容的结构)
+## 节点 id 唯一计数器（避免同毫秒同类型节点 id 冲突）
+static var _id_counter: int = 0
+
+static func _unique_id(node_type: String) -> String:
+	_id_counter += 1
+	return "bp_%s_%d_%d" % [node_type, Time.get_ticks_msec(), _id_counter]
+
 static func create_node(node_type: String, pos: Vector2, id_override: String = "") -> Dictionary:
 	ensure_init()
 	var def: Dictionary = _registry.get(node_type, {})
 	if def.is_empty():
 		return {}
-	var nid: String = id_override if id_override != "" else "bp_%s_%d" % [node_type, Time.get_ticks_msec()]
+	var nid: String = id_override if id_override != "" else _unique_id(node_type)
 	var inputs: Array = []
 	for p in def.get("inputs", []):
 		inputs.append(_make_pin(p["name"], p["type"], false, p.get("default", null)))
