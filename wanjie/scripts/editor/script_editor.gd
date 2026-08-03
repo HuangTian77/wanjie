@@ -105,7 +105,8 @@ var _mod_system_blueprint: RefCounted
 ## 构建编辑器深色基础主题（供未显式 override 的控件继承, 隔离全局浅色渗入）
 func _build_editor_theme() -> Theme:
 	var t := Theme.new()
-	t.default_font_size = 13
+	# 字号与全局 main_theme 对齐（15）, 避免编辑器内控件字号跳变
+	t.default_font_size = 15
 	t.set_color("font_color", "Label", IDEThemeClass.C_TEXT)
 	t.set_color("font_color", "Button", IDEThemeClass.C_TEXT)
 	t.set_color("font_hover_color", "Button", IDEThemeClass.C_TEXT)
