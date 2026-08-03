@@ -1,7 +1,7 @@
 # ===== 万界诗篇 根目录 .gitignore =====
 
 # === 大型二进制（不入库） ===
-Godot_v4.7.1-stable_win64.exe
+# Godot_v4.7.1-stable_win64.exe 已按用户要求入库
 ollama.zip
 
 # === 工具/配置目录 ===
