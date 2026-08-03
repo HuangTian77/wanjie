@@ -18,6 +18,8 @@ var _canvas: Control = null
 var _detail: VBoxContainer = null
 ## 模块根控件（find_child 用）
 var _root_ui: Control = null
+## 锁定图 key（非空时隐藏图管理 UI, 固定编辑该子系统蓝图图; 由 visual_system_blueprint 设置）
+var _locked_key: String = ""
 
 ## 创建统一蓝图编辑器
 func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
@@ -45,16 +47,25 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	var tb_hbox := HBoxContainer.new()
 	tb_hbox.add_theme_constant_override("separation", 6)
 	toolbar.add_child(tb_hbox)
-	# 图列表
-	_graph_list = OptionButton.new()
-	_graph_list.custom_minimum_size.x = 220
-	_graph_list.add_theme_font_size_override("font_size", 12)
-	_graph_list.item_selected.connect(_on_graph_selected)
-	tb_hbox.add_child(_graph_list)
-	_ui().add_toolbar_btn(tb_hbox, "＋ 新建图", _on_new_graph_pressed)
-	_ui().add_toolbar_btn(tb_hbox, "✎ 重命名", _on_rename_graph_pressed)
-	_ui().add_toolbar_btn(tb_hbox, "🗑 删除", _on_delete_graph_pressed)
-	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
+	# 图管理区（锁定模式隐藏列表/新建/重命名/删除, 显示当前子系统图提示）
+	if not _locked_key.is_empty():
+		var lock_lbl := Label.new()
+		lock_lbl.text = "🔷 %s" % _locked_key
+		lock_lbl.add_theme_font_size_override("font_size", 12)
+		lock_lbl.add_theme_color_override("font_color", Color(0.278431, 0.549020, 0.749020, 1))
+		lock_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tb_hbox.add_child(lock_lbl)
+		_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
+	else:
+		_graph_list = OptionButton.new()
+		_graph_list.custom_minimum_size.x = 220
+		_graph_list.add_theme_font_size_override("font_size", 12)
+		_graph_list.item_selected.connect(_on_graph_selected)
+		tb_hbox.add_child(_graph_list)
+		_ui().add_toolbar_btn(tb_hbox, "＋ 新建图", _on_new_graph_pressed)
+		_ui().add_toolbar_btn(tb_hbox, "✎ 重命名", _on_rename_graph_pressed)
+		_ui().add_toolbar_btn(tb_hbox, "🗑 删除", _on_delete_graph_pressed)
+		_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	# 快捷节点
 	_ui().add_toolbar_btn(tb_hbox, "+Start", func(): _bp_mod._add_blueprint_node("start"))
 	_ui().add_toolbar_btn(tb_hbox, "+Branch", func(): _bp_mod._add_blueprint_node("branch"))
@@ -99,12 +110,14 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	var list_box := VBoxContainer.new()
 	list_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list_scroll.add_child(list_box)
-	_graph_list.item_selected.connect(func(_i: int):
-		var key := _graph_list.get_item_text(_i)
-		if key != _current_key:
-			_current_key = key
-			_on_graph_switched()
-	)
+	# 锁定模式无图列表（左列显示子系统说明）
+	if _locked_key.is_empty():
+		_graph_list.item_selected.connect(func(_i: int):
+			var key := _graph_list.get_item_text(_i)
+			if key != _current_key:
+				_current_key = key
+				_on_graph_switched()
+		)
 	# 中央画布
 	var canvas_panel := PanelContainer.new()
 	canvas_panel.custom_minimum_size.x = 420
@@ -212,6 +225,16 @@ func _sync_to_code_editor() -> void:
 
 func _refresh_graph_list() -> void:
 	var ws := _ws()
+	# 锁定模式: 固定编辑子系统图（不存在则自动创建含 start 的默认图）
+	if not _locked_key.is_empty():
+		_current_key = _locked_key
+		if ws != null and not GraphStore.has_graph(ws, _locked_key):
+			GraphStore.set_graph(ws, _locked_key, _new_default_graph())
+		_on_graph_switched()
+		return
+	if _graph_list == null:
+		_on_graph_switched()
+		return
 	_graph_list.clear()
 	var keys: Array[String] = []
 	if ws != null:

@@ -88,6 +88,7 @@ const VisualTestRunnerClass = preload("res://scripts/editor/visual/visual_test_r
 const VisualEventClass = preload("res://scripts/editor/visual/visual_event.gd")
 const VisualAIAssistantClass = preload("res://scripts/editor/visual/visual_ai_assistant.gd")
 const VisualBlueprintWorkspaceClass = preload("res://scripts/editor/visual/visual_blueprint_workspace.gd")
+const VisualSystemBlueprintClass = preload("res://scripts/editor/visual/visual_system_blueprint.gd")
 ## Visual module instances
 var _mod_economy: RefCounted
 var _mod_ability: RefCounted
@@ -99,6 +100,7 @@ var _mod_test_runner: RefCounted
 var _mod_event: RefCounted
 var _mod_ai_assistant: RefCounted
 var _mod_blueprint_workspace: RefCounted
+var _mod_system_blueprint: RefCounted
 
 ## 构建编辑器深色基础主题（供未显式 override 的控件继承, 隔离全局浅色渗入）
 func _build_editor_theme() -> Theme:
@@ -137,6 +139,7 @@ func _ready() -> void:
 	_mod_event = VisualEventClass.new(self)
 	_mod_ai_assistant = VisualAIAssistantClass.new(self)
 	_mod_blueprint_workspace = VisualBlueprintWorkspaceClass.new(self)
+	_mod_system_blueprint = VisualSystemBlueprintClass.new(self)
 	current_script_id = SceneManager.current_script_id
 	_setup_menus()
 	_setup_auto_save()
@@ -233,6 +236,7 @@ func _build_module_tree() -> void:
 	_add_leaf(wv_item, "势力关系 (%d)" % wv.faction_relationships.size(), "worldview/relationships", "worldview_rels")
 	_add_leaf(wv_item, "地理区域 (%d)" % wv.geography.get("regions", []).size(), "worldview/geography", "worldview_geo")
 	_add_leaf(wv_item, "知识条目 (%d)" % wv.lore_entries.size(), "worldview/lore", "worldview_lore")
+	_add_leaf(wv_item, "🎨 蓝图", "worldview/blueprint", "blueprint_system")
 
 	# 事件系统
 	var es := current_script.event_system
@@ -254,6 +258,7 @@ func _build_module_tree() -> void:
 		re_item.set_metadata(0, {"path": "event/random/%s" % re.get("id", ""), "type": "random_detail", "event_id": re.get("id", "")})
 		re_item.set_custom_color(0, Color(0.9, 0.7, 0.45, 0.9))
 	_add_leaf(ev_item, "事件链 (%d)" % es.event_chains.size(), "event/chains", "event_chains")
+	_add_leaf(ev_item, "🎨 蓝图", "event/blueprint", "blueprint_system")
 
 	# 经济系统
 	var ec := current_script.economy_system
@@ -266,6 +271,7 @@ func _build_module_tree() -> void:
 	_add_leaf(ec_item, "市场 (%d)" % ec.markets.size(), "economy/markets", "economy_mkt")
 	_add_leaf(ec_item, "交易规则", "economy/trade_rules", "economy_trade")
 	_add_leaf(ec_item, "产出规则 (%d)" % ec.production_rules.size(), "economy/production", "economy_prod")
+	_add_leaf(ec_item, "🎨 蓝图", "economy/blueprint", "blueprint_system")
 
 	# 能力系统
 	var ab := current_script.ability_system
@@ -283,6 +289,7 @@ func _build_module_tree() -> void:
 	_add_leaf(ab_item, "状态效果 (%d)" % ab.status_effects.size(), "ability/effects", "ability_fx")
 	_add_leaf(ab_item, "战斗机制", "ability/combat", "ability_combat")
 	_add_leaf(ab_item, "元素相克表", "ability/elements", "ability_elem")
+	_add_leaf(ab_item, "🎨 蓝图", "ability/blueprint", "blueprint_system")
 
 	# 任务系统
 	var qs := current_script.quest_system
@@ -297,6 +304,7 @@ func _build_module_tree() -> void:
 		q_item.set_metadata(0, {"path": "quest/detail/%s" % q.get("id", ""), "type": "quest_detail", "quest_id": q.get("id", "")})
 		q_item.set_custom_color(0, Color(0.9, 0.8, 0.45, 0.9))
 	_add_leaf(quest_item, "任务链 (%d)" % qs.quest_chains.size(), "quest/chains", "quest_chains")
+	_add_leaf(quest_item, "🎨 蓝图", "quest/blueprint", "blueprint_system")
 
 	# 战斗系统
 	var cs := current_script.combat_system
@@ -307,6 +315,7 @@ func _build_module_tree() -> void:
 	_add_leaf(combat_item, "敌人模板 (%d)" % cs.enemy_templates.size(), "combat/enemies", "combat_enemies")
 	_add_leaf(combat_item, "NPC池 (%d)" % cs.npc_pool.size(), "combat/npcs", "combat_npcs")
 	_add_leaf(combat_item, "战斗配置 (%d)" % cs.battle_configs.size(), "combat/battles", "combat_battles")
+	_add_leaf(combat_item, "🎨 蓝图", "combat/blueprint", "blueprint_system")
 
 	# 地图编辑器
 	var map_item := module_tree.create_item(root)
@@ -321,6 +330,7 @@ func _build_module_tree() -> void:
 		r_item.set_metadata(0, {"path": "map/region/%s" % r.get("id", ""), "type": "map_region", "region_id": r.get("id", "")})
 		r_item.set_custom_color(0, Color(0.6, 0.85, 0.65, 0.9))
 	_add_leaf(map_item, "地点关联", "map/locations", "map_location")
+	_add_leaf(map_item, "🎨 蓝图", "map/blueprint", "blueprint_system")
 
 	# 测试运行器
 	var test_item := module_tree.create_item(root)
@@ -424,6 +434,11 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 		"blueprint_workspace":
 			panel = _create_blueprint_workspace()
 			editor_key = "blueprint"
+		"blueprint_system":
+			# 子系统蓝图: 从 path（如 worldview/blueprint）推导 sub_type
+			var sys_sub: String = path.get_base_dir() + "_blueprint"
+			panel = _create_system_blueprint(sys_sub)
+			editor_key = "blueprint_system"
 		"ai_assistant":
 			panel = _create_ai_assistant()
 			editor_key = "ai"
@@ -436,6 +451,9 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 
 ## 获取路径对应的编辑器key
 func _get_editor_key(path: String) -> String:
+	# 子系统蓝图分支独立缓存（避免与对应表单共用编辑器缓存）
+	if path.ends_with("/blueprint"):
+		return "blueprint_system"
 	if path == "metadata":
 		return "metadata"
 	elif path.begins_with("worldview/"):
@@ -532,6 +550,10 @@ func _create_test_runner() -> Control:
 ## === 统一蓝图工作区（UE 风格） ===
 func _create_blueprint_workspace() -> Control:
 	return _mod_blueprint_workspace.create("blueprint_workspace", {})
+
+## === 子系统蓝图编辑器（各子系统模块下的 🎨 蓝图分支） ===
+func _create_system_blueprint(sub_type: String) -> Control:
+	return _mod_system_blueprint.create(sub_type, {})
 
 ## === AI创作助手 ===
 func _create_ai_assistant() -> Control:
