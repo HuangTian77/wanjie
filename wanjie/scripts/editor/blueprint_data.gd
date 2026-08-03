@@ -268,8 +268,8 @@ static func get_exec_predecessor(graph: Dictionary, node_id: String) -> String:
 
 ## 计算节点的动态高度（基于引脚数量）
 static func calc_node_height(node: Dictionary) -> float:
-	var input_count: int = node["inputs"].size()
-	var output_count: int = node["outputs"].size()
+	var input_count: int = node.get("inputs", []).size()
+	var output_count: int = node.get("outputs", []).size()
 	var max_pins: int = maxi(input_count, output_count)
 	if node["node_type"] == "comment":
 		return float(node["properties"].get("size", Vector2(300, 200)).y)
@@ -278,7 +278,7 @@ static func calc_node_height(node: Dictionary) -> float:
 
 ## 获取节点指定引脚的世界坐标位置
 static func get_pin_world_pos(node: Dictionary, is_output: bool, port_index: int) -> Vector2:
-	var node_pos: Vector2 = node["pos"]
+	var node_pos: Vector2 = node.get("pos", Vector2.ZERO)
 	var _node_height: float = calc_node_height(node)
 	var pin_y: float = node_pos.y + 24.0 + 10.0 + port_index * 20.0
 	if is_output:

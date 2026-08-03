@@ -48,7 +48,7 @@ static func draw_grid(canvas: Control, offset: Vector2, zoom: float) -> void:
 
 ## 绘制通用蓝图节点(事件列表视图用)
 static func draw_bp_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float) -> void:
-	var pos: Vector2 = world_to_screen(node["pos"], offset, zoom)
+	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
 	var sz := BP_NODE_SIZE * zoom
 	var node_color: Color = node.get("color", Color(0.3, 0.3, 0.4, 1.0))
 	# 节点背景
@@ -78,7 +78,7 @@ static func draw_bp_node(canvas: Control, node: Dictionary, selected: bool, offs
 
 ## 绘制引脚(事件列表视图用)
 static func draw_bp_pins(canvas: Control, node: Dictionary, offset: Vector2, zoom: float) -> void:
-	var pos: Vector2 = world_to_screen(node["pos"], offset, zoom)
+	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
 	var sz := BP_NODE_SIZE * zoom
 	var pin_y: float = pos.y + sz.y / 2.0
 	# 输入引脚(左侧)
@@ -110,7 +110,7 @@ static func cubic_bezier(p0: Vector2, p1: Vector2, p2: Vector2, p3: Vector2, t: 
 
 ## 获取引脚世界坐标(事件列表视图简化版)
 static func get_pin_world_pos(node: Dictionary, is_output: bool, _port_index: int = 0) -> Vector2:
-	var pos: Vector2 = node["pos"]
+	var pos: Vector2 = node.get("pos", Vector2.ZERO)
 	if is_output:
 		return pos + Vector2(BP_NODE_SIZE.x, BP_NODE_SIZE.y / 2.0)
 	else:
@@ -124,7 +124,7 @@ static func hit_test_node(screen_pos: Vector2, graph: Dictionary, offset: Vector
 	for i in range(node_ids.size() - 1, -1, -1):
 		var nid: String = node_ids[i]
 		var node: Dictionary = graph["nodes"][nid]
-		var node_rect := Rect2(node["pos"], BP_NODE_SIZE)
+		var node_rect := Rect2(node.get("pos", Vector2.ZERO), BP_NODE_SIZE)
 		if node_rect.has_point(world_pos):
 			return nid
 	return ""
@@ -147,7 +147,7 @@ static func hit_test_pins(screen_pos: Vector2, graph: Dictionary, offset: Vector
 
 ## 绘制单个蓝图节点（带类型引脚, 蓝图视图）
 static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float) -> void:
-	var pos: Vector2 = world_to_screen(node["pos"], offset, zoom)
+	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
 	var node_height: float = BlueprintData.calc_node_height(node) * zoom
 	var node_width: float = 180.0 * zoom
 	var sz := Vector2(node_width, node_height)
@@ -194,11 +194,12 @@ static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vecto
 	var pin_spacing: float = 20.0 * zoom
 	var r: float = BP_PIN_RADIUS * zoom
 	# 输入引脚(左侧)
-	for i in node["inputs"].size():
-		var pin: Dictionary = node["inputs"][i]
+	var inputs: Array = node.get("inputs", [])
+	for i in inputs.size():
+		var pin: Dictionary = inputs[i]
 		var py: float = pin_start_y + i * pin_spacing
 		var pin_pos := Vector2(screen_pos.x, py)
-		var dt: int = pin["data_type"]
+		var dt: int = pin.get("data_type", 0)
 		var col: Color = BlueprintData.PIN_COLORS.get(dt, Color(0.5, 0.5, 0.5))
 		if dt == BlueprintData.PinDataType.EXEC:
 			# 执行引脚: 三角形
@@ -211,13 +212,14 @@ static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vecto
 		else:
 			canvas.draw_circle(pin_pos, r, col)
 		# 引脚名称
-		canvas.draw_string(ThemeDB.fallback_font, pin_pos + Vector2(r + 3, 4) * zoom, pin["name"], HORIZONTAL_ALIGNMENT_LEFT, int(60 * zoom), int(9 * zoom), Color(0.6, 0.65, 0.7))
+		canvas.draw_string(ThemeDB.fallback_font, pin_pos + Vector2(r + 3, 4) * zoom, pin.get("name", ""), HORIZONTAL_ALIGNMENT_LEFT, int(60 * zoom), int(9 * zoom), Color(0.6, 0.65, 0.7))
 	# 输出引脚(右侧)
-	for i in node["outputs"].size():
-		var pin: Dictionary = node["outputs"][i]
+	var outputs: Array = node.get("outputs", [])
+	for i in outputs.size():
+		var pin: Dictionary = outputs[i]
 		var py: float = pin_start_y + i * pin_spacing
 		var pin_pos := Vector2(screen_pos.x + node_width, py)
-		var dt: int = pin["data_type"]
+		var dt: int = pin.get("data_type", 0)
 		var col: Color = BlueprintData.PIN_COLORS.get(dt, Color(0.5, 0.5, 0.5))
 		if dt == BlueprintData.PinDataType.EXEC:
 			# 执行引脚: 三角形
@@ -265,15 +267,17 @@ static func draw_exec_connection(canvas: Control, from_pos: Vector2, to_pos: Vec
 static func hit_test_bp_pins(screen_pos: Vector2, graph: Dictionary, offset: Vector2, zoom: float) -> Variant:
 	var world_pos := screen_to_world(screen_pos, offset, zoom)
 	var threshold := (BP_PIN_RADIUS + 5.0) / zoom
-	for nid in graph["nodes"]:
+	for nid in graph.get("nodes", {}):
 		var node: Dictionary = graph["nodes"][nid]
 		# 输出引脚
-		for i in node["outputs"].size():
+		var outputs: Array = node.get("outputs", [])
+		for i in outputs.size():
 			var pin_pos: Vector2 = BlueprintData.get_pin_world_pos(node, true, i)
 			if world_pos.distance_to(pin_pos) < threshold:
 				return [nid, i, true]
 		# 输入引脚
-		for i in node["inputs"].size():
+		var inputs: Array = node.get("inputs", [])
+		for i in inputs.size():
 			var pin_pos: Vector2 = BlueprintData.get_pin_world_pos(node, false, i)
 			if world_pos.distance_to(pin_pos) < threshold:
 				return [nid, i, false]
@@ -287,7 +291,7 @@ static func hit_test_bp_node(screen_pos: Vector2, graph: Dictionary, offset: Vec
 		var nid: String = node_ids[i]
 		var node: Dictionary = graph["nodes"][nid]
 		var node_height: float = BlueprintData.calc_node_height(node)
-		var node_rect := Rect2(node["pos"], Vector2(180.0, node_height))
+		var node_rect := Rect2(node.get("pos", Vector2.ZERO), Vector2(180.0, node_height))
 		if node_rect.has_point(world_pos):
 			return nid
 	return ""

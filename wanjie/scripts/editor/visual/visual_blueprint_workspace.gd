@@ -161,12 +161,16 @@ func _current_script() -> WorldScriptData:
 ## 当前图（按 key 从 GraphStore 取, 无则创建空图）
 func _workspace_get_graph() -> Dictionary:
 	var ws := _ws()
-	if ws == null:
-		return {}
+	if ws == null or _current_key == "":
+		# 无剧本/无图时返回空图结构（避免调用方对空字典写入崩溃）
+		return BlueprintData.make_graph()
 	var graph: Dictionary = GraphStore.get_graph(ws, _current_key)
 	if graph.is_empty():
 		graph = BlueprintData.make_graph()
 		GraphStore.set_graph(ws, _current_key, graph)
+	elif _bp_mod != null:
+		# 加载持久化图: 结构修复（缺键补默认, 防旧/损坏数据崩溃）
+		_bp_mod._repair_graph_structure(graph)
 	return graph
 
 ## 保存当前图到 GraphStore

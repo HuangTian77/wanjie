@@ -124,10 +124,14 @@ func save_script(script_data: WorldScriptData, dirty_keys: Array = []) -> bool:
 		var res: Resource = script_data.get(key)
 		if res == null:
 			continue
+		var res_dict: Dictionary = _resource_to_dict(res)
+		# 蓝图图 JSON 安全化: Vector2/Color → 可序列化格式（避免 JSON 输出 null 导致加载后崩溃）
+		if key == "event_system" and res_dict.has("blueprint_graphs") and res_dict["blueprint_graphs"] is Dictionary:
+			res_dict["blueprint_graphs"] = _graphs_to_json_safe(res_dict["blueprint_graphs"])
 		var fname: String = SUBSYSTEM_FILES[key]
 		var final_path := dir_path + "/data/" + fname
 		var tmp_path := final_path + ".tmp"
-		if not _write_json_file(tmp_path, _resource_to_dict(res)):
+		if not _write_json_file(tmp_path, res_dict):
 			push_warning("ScriptDataManager: 无法写入 %s" % tmp_path)
 			_cleanup_tmp_files(tmp_files)
 			return false
@@ -202,6 +206,12 @@ func _load_script_dir(dir_path: String) -> WorldScriptData:
 	# 子系统: 优先 data/ 拆分文件, 缺失时回退 script.json 内联数据(旧格式)
 	for key in SUBSYSTEM_FILES:
 		_load_subsystem_file(dir_path, key, d, ws.get(key))
+	# 蓝图图数据还原: pos/color 从 JSON 安全格式还原 + 结构修复（缺键补默认）
+	if ws.event_system and ws.event_system.blueprint_graphs is Dictionary:
+		var graphs: Dictionary = ws.event_system.blueprint_graphs
+		for gkey in graphs:
+			if graphs[gkey] is Dictionary:
+				graphs[gkey] = _graph_from_json(graphs[gkey])
 	return ws
 
 ## 加载单个子系统: 优先 data/ 拆分文件, 回退 script.json 内联(旧格式)
@@ -565,6 +575,60 @@ func _resource_to_dict(res: Resource) -> Dictionary:
 		if prop.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
 			d[prop.name] = res.get(prop.name)
 	return d
+
+## 蓝图图 JSON 安全化: 递归转换 Vector2/Color → 可序列化格式（JSON 不原生支持二者, 直接 stringify 会输出 null）
+func _graphs_to_json_safe(graphs: Dictionary) -> Dictionary:
+	var safe := {}
+	for gkey in graphs:
+		var graph: Variant = graphs[gkey]
+		if graph is Dictionary:
+			safe[gkey] = _graph_to_json_safe(graph as Dictionary)
+		else:
+			safe[gkey] = graph
+	return safe
+
+func _graph_to_json_safe(graph: Dictionary) -> Dictionary:
+	var safe := {}
+	for key in graph:
+		safe[key] = graph[key]
+	if safe.has("nodes") and safe["nodes"] is Dictionary:
+		var nodes := {}
+		for nid in safe["nodes"]:
+			var node: Dictionary = (safe["nodes"][nid] as Dictionary).duplicate(true)
+			if node.has("pos") and node["pos"] is Vector2:
+				var p: Vector2 = node["pos"] as Vector2
+				node["pos"] = [p.x, p.y]
+			if node.has("color") and node["color"] is Color:
+				node["color"] = (node["color"] as Color).to_html()
+			nodes[nid] = node
+		safe["nodes"] = nodes
+	return safe
+
+## 蓝图图 JSON 还原: [x,y]/html 色串 → Vector2/Color, 缺键或 null 补默认（防旧/损坏数据崩溃）
+func _graph_from_json(graph: Dictionary) -> Dictionary:
+	for nid in graph.get("nodes", {}):
+		var node: Dictionary = graph["nodes"][nid] as Dictionary
+		if not node.has("pos") or node["pos"] == null:
+			node["pos"] = Vector2(100, 100)
+		elif node["pos"] is Array:
+			var arr: Array = node["pos"] as Array
+			if arr.size() >= 2:
+				node["pos"] = Vector2(float(arr[0]), float(arr[1]))
+			else:
+				node["pos"] = Vector2(100, 100)
+		if not node.has("color") or node["color"] == null:
+			node["color"] = Color(0.35, 0.6, 1.0)
+		elif node["color"] is String:
+			var cs: String = node["color"] as String
+			if cs.is_valid_html_color():
+				node["color"] = Color.html(cs)
+			else:
+				node["color"] = Color(0.35, 0.6, 1.0)
+		if not node.has("inputs") or node["inputs"] == null:
+			node["inputs"] = []
+		if not node.has("outputs") or node["outputs"] == null:
+			node["outputs"] = []
+	return graph
 
 ## 泛型资源反序列化: 从字典还原属性值 (与 _resource_to_dict 互逆)
 func _dict_to_resource(d: Dictionary, res: Resource) -> void:

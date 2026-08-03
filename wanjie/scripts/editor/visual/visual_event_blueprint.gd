@@ -80,6 +80,7 @@ func _get_or_create_event_graph(event_id: String) -> Dictionary:
 	if _host._current_script() and _host._current_script().event_system:
 		var persisted: Dictionary = _host._current_script().event_system.blueprint_graphs.get(event_id, {})
 		if not persisted.is_empty():
+			_repair_graph_structure(persisted)
 			_host._event_blueprint_graphs[event_id] = persisted
 			return persisted
 	# 创建新Graph，带一个默认的 Start 节点
@@ -107,7 +108,7 @@ func _save_active_graph() -> void:
 ## 蓝图撤销: 保存当前状态到undo栈
 func _bp_push_undo() -> void:
 	var graph := _get_active_graph()
-	var snapshot: Dictionary = JSON.parse_string(JSON.stringify(graph))
+	var snapshot: Dictionary = graph.duplicate(true)  # 深拷贝保留 Vector2/Color（JSON 会丢失）
 	_bp_undo_stack.append(snapshot)
 	if _bp_undo_stack.size() > BP_MAX_UNDO:
 		_bp_undo_stack.pop_front()
@@ -119,7 +120,7 @@ func _bp_undo() -> void:
 		return
 	# 保存当前状态到redo
 	var graph := _get_active_graph()
-	var current_snapshot: Dictionary = JSON.parse_string(JSON.stringify(graph))
+	var current_snapshot: Dictionary = graph.duplicate(true)  # 深拷贝保留 Vector2/Color
 	_bp_redo_stack.append(current_snapshot)
 	# 恢复上一个状态
 	var prev: Dictionary = _bp_undo_stack.pop_back()
@@ -140,7 +141,7 @@ func _bp_redo() -> void:
 		return
 	# 保存当前状态到undo
 	var graph := _get_active_graph()
-	var current_snapshot: Dictionary = JSON.parse_string(JSON.stringify(graph))
+	var current_snapshot: Dictionary = graph.duplicate(true)  # 深拷贝保留 Vector2/Color
 	_bp_undo_stack.append(current_snapshot)
 	# 恢复redo状态
 	var next: Dictionary = _bp_redo_stack.pop_back()
@@ -164,11 +165,11 @@ func _bp_copy() -> void:
 	var clip_connections: Array[Dictionary] = []
 	for nid in _bp_selected_ids:
 		if graph["nodes"].has(nid):
-			clip_nodes.append(JSON.parse_string(JSON.stringify(graph["nodes"][nid])))
+			clip_nodes.append((graph["nodes"][nid] as Dictionary).duplicate(true))
 	# 复制选中节点之间的连线
-	for conn in graph["connections"]:
+	for conn in graph.get("connections", []):
 		if _bp_selected_ids.has(conn["from_node"]) and _bp_selected_ids.has(conn["to_node"]):
-			clip_connections.append(JSON.parse_string(JSON.stringify(conn)))
+			clip_connections.append((conn as Dictionary).duplicate(true))
 	_bp_clipboard = {"nodes": clip_nodes, "connections": clip_connections}
 	_log_output("[复制] %d 个节点" % clip_nodes.size())
 
@@ -185,7 +186,7 @@ func _bp_paste() -> void:
 	for clip_node in _bp_clipboard.get("nodes", []):
 		var new_id: String = "bp_%s_%d" % [clip_node["node_type"], Time.get_ticks_msec() + randi() % 10000]
 		id_map[clip_node["id"]] = new_id
-		var new_node: Dictionary = JSON.parse_string(JSON.stringify(clip_node))
+		var new_node: Dictionary = (clip_node as Dictionary).duplicate(true)
 		new_node["id"] = new_id
 		# 偏移避免重叠
 		new_node["pos"] = new_node["pos"] + Vector2(40, 40)
@@ -342,7 +343,7 @@ func _draw_minimap() -> void:
 	var mm_scale := minf(scale_x, scale_y) * 0.9
 	var mm_offset := (BP_MINIMAP_SIZE - content_size * mm_scale) / 2.0 - min_pos * mm_scale + Vector2(50 * mm_scale, 50 * mm_scale)
 	# 绘制连线
-	for conn in graph["connections"]:
+	for conn in graph.get("connections", []):
 		if graph["nodes"].has(conn["from_node"]) and graph["nodes"].has(conn["to_node"]):
 			var from_pos: Vector2 = graph["nodes"][conn["from_node"]]["pos"] * mm_scale + mm_offset
 			var to_pos: Vector2 = graph["nodes"][conn["to_node"]]["pos"] * mm_scale + mm_offset
@@ -449,12 +450,36 @@ func _compile_blueprint() -> void:
 	_host._mark_dirty()
 	_log_output("[蓝图] 编译成功, 生成 %d 行代码" % code.split("\n").size())
 
+## 修复图结构: 节点缺 pos/color/inputs/outputs 或为 null 时补默认值（防旧/损坏数据导致崩溃）
+func _repair_graph_structure(graph: Dictionary) -> Dictionary:
+	for nid in graph.get("nodes", {}):
+		var node: Dictionary = graph["nodes"][nid] as Dictionary
+		if not node.has("pos") or node["pos"] == null:
+			node["pos"] = Vector2(100, 100)
+		if not node.has("color") or node["color"] == null:
+			node["color"] = Color(0.35, 0.6, 1.0)
+		if not node.has("inputs") or node["inputs"] == null:
+			node["inputs"] = []
+		if not node.has("outputs") or node["outputs"] == null:
+			node["outputs"] = []
+	return graph
+
+## 取引脚数据类型（节点/引脚缺失时返回 0, 防撤销/切图后拖拽释放崩溃）
+func _pin_data_type(graph: Dictionary, node_id: String, port: int, is_output: bool) -> int:
+	if not graph.get("nodes", {}).has(node_id):
+		return 0
+	var node: Dictionary = graph["nodes"][node_id]
+	var pins: Array = node.get("outputs", []) if is_output else node.get("inputs", [])
+	if port < 0 or port >= pins.size():
+		return 0
+	return int((pins[port] as Dictionary).get("data_type", 0))
+
 ## 绘制蓝图脚本图
 func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 	# 1. 网格背景
 	VisualBlueprintDraw.draw_grid(canvas, _bp_offset, _bp_zoom)
 	# 2. 连线
-	for conn in graph["connections"]:
+	for conn in graph.get("connections", []):
 		if not graph["nodes"].has(conn["from_node"]) or not graph["nodes"].has(conn["to_node"]):
 			continue
 		var from_node: Dictionary = graph["nodes"][conn["from_node"]]
@@ -571,14 +596,14 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 					if _bp_pin_drag_is_output and not target_is_output:
 						if BlueprintData.validate_connection(graph, _bp_pin_drag_from_id, _bp_pin_drag_from_port, target_id, target_port):
 							_bp_push_undo()
-							var is_exec: bool = graph["nodes"][_bp_pin_drag_from_id]["outputs"][_bp_pin_drag_from_port]["data_type"] == BlueprintData.PinDataType.EXEC
+							var is_exec: bool = _pin_data_type(graph, _bp_pin_drag_from_id, _bp_pin_drag_from_port, true) == BlueprintData.PinDataType.EXEC
 							BlueprintData.add_connection(graph, _bp_pin_drag_from_id, _bp_pin_drag_from_port, target_id, target_port, is_exec)
 							_save_active_graph()
 							_host._sync_to_code_editor()
 					elif not _bp_pin_drag_is_output and target_is_output:
 						if BlueprintData.validate_connection(graph, target_id, target_port, _bp_pin_drag_from_id, _bp_pin_drag_from_port):
 							_bp_push_undo()
-							var is_exec: bool = graph["nodes"][target_id]["outputs"][target_port]["data_type"] == BlueprintData.PinDataType.EXEC
+							var is_exec: bool = _pin_data_type(graph, target_id, target_port, true) == BlueprintData.PinDataType.EXEC
 							BlueprintData.add_connection(graph, target_id, target_port, _bp_pin_drag_from_id, _bp_pin_drag_from_port, is_exec)
 							_save_active_graph()
 							_host._sync_to_code_editor()
@@ -591,10 +616,12 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 					_bp_ctx_drag_is_output = _bp_pin_drag_is_output
 					if graph["nodes"].has(_bp_pin_drag_from_id):
 						var from_node: Dictionary = graph["nodes"][_bp_pin_drag_from_id]
-						if _bp_pin_drag_is_output and from_node["outputs"].size() > _bp_pin_drag_from_port:
+						if _bp_pin_drag_is_output and from_node.get("outputs", []).size() > _bp_pin_drag_from_port:
 							_bp_ctx_drag_data_type = from_node["outputs"][_bp_pin_drag_from_port]["data_type"]
-						elif not _bp_pin_drag_is_output and from_node["inputs"].size() > _bp_pin_drag_from_port:
-							_bp_ctx_drag_data_type = from_node["inputs"][_bp_pin_drag_from_port]["data_type"]
+						elif not _bp_pin_drag_is_output:
+							var _fp_ins: Array = from_node.get("inputs", [])
+							if _bp_pin_drag_from_port < _fp_ins.size():
+								_bp_ctx_drag_data_type = _fp_ins[_bp_pin_drag_from_port].get("data_type", BlueprintData.PinDataType.ANY)
 					_show_bp_context_menu(canvas, event.position)
 				_bp_pin_dragging = false
 				canvas.queue_redraw()
@@ -751,7 +778,7 @@ func _create_node_at_position(node_type: String) -> void:
 
 ## 查找节点上兼容指定数据类型的端口
 func _find_compatible_port(node: Dictionary, data_type: int, is_output: bool) -> int:
-	var pins: Array = node["outputs"] if is_output else node["inputs"]
+	var pins: Array = node.get("outputs", []) if is_output else node.get("inputs", [])
 	for i in pins.size():
 		var pin: Dictionary = pins[i]
 		if is_output:
@@ -822,7 +849,7 @@ func _find_nearest_input_port(graph: Dictionary, world_pos: Vector2, data_type: 
 	var best_dist := INF
 	for nid in graph["nodes"]:
 		var node: Dictionary = graph["nodes"][nid]
-		for i in node["inputs"].size():
+		for i in node.get("inputs", []).size():
 			var pin: Dictionary = node["inputs"][i]
 			if BlueprintData._pin_types_compatible(data_type, pin["data_type"]):
 				var pin_pos: Vector2 = BlueprintData.get_pin_world_pos(node, false, i)
