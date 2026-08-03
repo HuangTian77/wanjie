@@ -1,0 +1,24 @@
+# 万界诗篇编辑器配置
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# GDScript 遵循 Godot 官方规范: 制表符缩进
+[*.gd]
+indent_style = tab
+indent_size = 4
+
+# 脚本 / 文档
+[*.{py,md,json,yml,yaml}]
+indent_style = space
+indent_size = 4
+
+# PowerShell 脚本（Windows 惯例 CRLF）
+[*.ps1]
+end_of_line = crlf
+indent_style = space
+indent_size = 4
