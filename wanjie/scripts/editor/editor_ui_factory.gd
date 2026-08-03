@@ -335,7 +335,7 @@ func field_label(field: String) -> String:
 
 ## === 复合编辑器 ===
 
-func add_list_editor(parent: Control, data_array: Array, fields: Array[String], on_add: Callable) -> void:
+func add_list_editor(parent: Control, data_array: Array, fields: Array, on_add: Callable) -> void:
 	var container := VBoxContainer.new()
 	container.add_theme_constant_override("separation", 2)
 	parent.add_child(container)

@@ -999,7 +999,7 @@ func _add_button(parent: Control, text: String, on_press: Callable) -> void:
 func _field_label(field: String) -> String:
 	return _ui.field_label(field)
 
-func _add_list_editor(parent: Control, data_array: Array, fields: Array[String], on_add: Callable) -> void:
+func _add_list_editor(parent: Control, data_array: Array, fields: Array, on_add: Callable) -> void:
 	_ui.add_list_editor(parent, data_array, fields, on_add)
 
 func _add_dict_editor(parent: Control, data: Dictionary, keys: Array) -> void:
