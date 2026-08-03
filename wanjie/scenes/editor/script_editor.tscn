@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/editor/script_editor.gd" id="1_editor"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menubar"]
-bg_color = Color(0.12, 0.13, 0.16, 1)
+bg_color = Color(0.129412, 0.149020, 0.180392, 1)
 border_width_bottom = 1
 border_color = Color(0.2, 0.22, 0.28, 0.6)
 content_margin_left = 8.0
@@ -12,7 +12,7 @@ content_margin_right = 8.0
 content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
-bg_color = Color(0.12, 0.13, 0.16, 1)
+bg_color = Color(0.129412, 0.149020, 0.180392, 1)
 border_width_bottom = 1
 border_color = Color(0.18, 0.3, 0.5, 0.35)
 content_margin_left = 12.0
@@ -21,7 +21,7 @@ content_margin_right = 12.0
 content_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_leftpanel"]
-bg_color = Color(0.10, 0.11, 0.14, 1)
+bg_color = Color(0.090196, 0.105882, 0.129412, 1)
 border_width_right = 1
 border_color = Color(0.18, 0.2, 0.26, 0.5)
 content_margin_left = 2.0
@@ -30,14 +30,14 @@ content_margin_right = 2.0
 content_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_content"]
-bg_color = Color(0.10, 0.11, 0.14, 1)
+bg_color = Color(0.090196, 0.105882, 0.129412, 1)
 content_margin_left = 8.0
 content_margin_top = 4.0
 content_margin_right = 8.0
 content_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottompanel"]
-bg_color = Color(0.09, 0.10, 0.13, 1)
+bg_color = Color(0.070588, 0.082353, 0.101961, 1)
 border_width_top = 1
 border_color = Color(0.18, 0.28, 0.45, 0.25)
 content_margin_left = 8.0
@@ -61,7 +61,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.10, 0.11, 0.14, 1)
+color = Color(0.090196, 0.105882, 0.129412, 1)
 
 [node name="MainVBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -84,7 +84,7 @@ theme_override_constants/separation = 2
 [node name="FileMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/font_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_font_sizes/font_size = 12
 text = "文件"
 flat = true
@@ -92,7 +92,7 @@ flat = true
 [node name="EditMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/font_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_font_sizes/font_size = 12
 text = "编辑"
 flat = true
@@ -100,7 +100,7 @@ flat = true
 [node name="ViewMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/font_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_font_sizes/font_size = 12
 text = "视图"
 flat = true
@@ -108,7 +108,7 @@ flat = true
 [node name="RunMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/font_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_font_sizes/font_size = 12
 text = "运行"
 flat = true
@@ -116,7 +116,7 @@ flat = true
 [node name="HelpMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/font_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_font_sizes/font_size = 12
 text = "帮助"
 flat = true
@@ -446,7 +446,7 @@ theme_override_constants/separation = 4
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/title_button_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/title_button_color = Color(0.803922, 0.811765, 0.823529, 1)
 theme_override_colors/guide_color = Color(0.3, 0.32, 0.38, 0.3)
 theme_override_font_sizes/title_button_font_size = 12
 hide_root = true

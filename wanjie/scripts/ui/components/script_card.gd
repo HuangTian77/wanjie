@@ -53,9 +53,10 @@ func _ready() -> void:
 	delete_btn.pressed.connect(func(): delete_requested.emit(script_id, script_name))
 
 func _on_mouse_entered() -> void:
+	# 容器内 position 会被布局覆盖, 改用 scale 微放大
 	var tween := ThemeManager.create_anim(self)
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(self, "position:y", position.y - 4, 0.15)
+	tween.tween_property(self, "scale", Vector2(1.02, 1.02), 0.15)
 	var style := get_theme_stylebox("panel") as StyleBoxFlat
 	if style:
 		var hover_style := style.duplicate()
@@ -67,7 +68,7 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	var tween := ThemeManager.create_anim(self)
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(self, "position:y", position.y + 4, 0.15)
+	tween.tween_property(self, "scale", Vector2.ONE, 0.15)
 	var style := get_theme_stylebox("panel") as StyleBoxFlat
 	if style:
 		var normal_style := style.duplicate()
@@ -78,4 +79,8 @@ func _on_mouse_exited() -> void:
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# 点击落在操作按钮上时忽略（避免编辑/删除误触发打开剧本）
+		if edit_btn.get_global_rect().has_point(event.global_position) \
+			or delete_btn.get_global_rect().has_point(event.global_position):
+			return
 		clicked.emit(script_id)

@@ -24,12 +24,12 @@ func _ready() -> void:
 func _on_mouse_entered() -> void:
 	var tween := ThemeManager.create_anim(self)
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(self, "position:y", position.y - 3, 0.12)
+	tween.tween_property(self, "scale", Vector2(1.02, 1.02), 0.12)
 
 func _on_mouse_exited() -> void:
 	var tween := ThemeManager.create_anim(self)
 	tween.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(self, "position:y", position.y + 3, 0.12)
+	tween.tween_property(self, "scale", Vector2.ONE, 0.12)
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

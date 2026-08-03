@@ -42,6 +42,11 @@ var script_cards: Array[Control] = []
 var _delete_callback: Callable = Callable()
 ## 轮播文字切换动画引用
 var _carousel_tween: Tween = null
+## 轮播指示器样式缓存（避免每次切换重复创建 StyleBox）
+var _dot_active_style: StyleBoxFlat = null
+var _dot_inactive_style: StyleBoxFlat = null
+## 搜索防抖计时器（200ms, 避免每次按键全量遍历剧本）
+var _search_timer: Timer = null
 
 ## 响应式：卡片最小宽度
 const CARD_MIN_WIDTH := 240
@@ -55,6 +60,12 @@ func _ready() -> void:
 	_connect_signals()
 	_setup_dialogs()
 	_update_grid_columns()
+	# 搜索防抖计时器
+	_search_timer = Timer.new()
+	_search_timer.one_shot = true
+	_search_timer.wait_time = 0.2
+	_search_timer.timeout.connect(_refresh_script_grid)
+	add_child(_search_timer)
 	# 监听窗口大小变化
 	get_tree().root.size_changed.connect(_on_window_resized)
 
@@ -125,15 +136,17 @@ func _update_carousel() -> void:
 	carousel_label.modulate.a = 0.0
 	_carousel_tween = ThemeManager.create_anim(carousel_label)
 	_carousel_tween.tween_property(carousel_label, "modulate:a", 1.0, 0.35)
-	# 更新指示器
+	# 更新指示器（预创建样式, 避免每次切换重复 duplicate）
+	if _dot_active_style == null:
+		_dot_active_style = StyleBoxFlat.new()
+		_dot_active_style.bg_color = ThemeManager.C_ACCENT
+		_dot_active_style.set_corner_radius_all(4)
+		_dot_inactive_style = StyleBoxFlat.new()
+		_dot_inactive_style.bg_color = Color(0.769, 0.588, 0.353, 0.3)
+		_dot_inactive_style.set_corner_radius_all(4)
 	for i in carousel_indicator.get_child_count():
 		var dot: Panel = carousel_indicator.get_child(i)
-		var style: StyleBoxFlat = dot.get_theme_stylebox("panel").duplicate()
-		if i == carousel_index:
-			style.bg_color = ThemeManager.C_ACCENT
-		else:
-			style.bg_color = Color(0.769, 0.588, 0.353, 0.3)
-		dot.add_theme_stylebox_override("panel", style)
+		dot.add_theme_stylebox_override("panel", _dot_active_style if i == carousel_index else _dot_inactive_style)
 
 func _on_carousel_timer_timeout() -> void:
 	if featured_scripts.is_empty():
@@ -184,7 +197,9 @@ func _on_tab_changed(tab_index: int) -> void:
 		tab_buttons[i].button_pressed = (i == tab_index)
 
 func _on_search_text_changed(_new_text: String) -> void:
-	_refresh_script_grid()
+	# 防抖: 停止并重启计时器, 停止输入 200ms 后才刷新
+	_search_timer.stop()
+	_search_timer.start()
 
 ## === 剧本网格（组件化） ===
 func _refresh_script_grid() -> void:

@@ -27,6 +27,8 @@ extends Resource
 @export var achievements: Array[String] = []
 ## 设置：AI功能是否开启
 @export var ai_enabled: bool = true
+## 设置：AI NPC 对话是否开启（酒馆）
+@export var ai_npc_enabled: bool = true
 ## 设置：难度模式 (adaptive/fixed_easy/fixed_normal/fixed_hard)
 @export var difficulty_mode: String = "adaptive"
 ## 设置：动效是否开启
@@ -51,6 +53,7 @@ func to_dict() -> Dictionary:
 		"created_script_ids": created_script_ids,
 		"achievements": achievements,
 		"ai_enabled": ai_enabled,
+		"ai_npc_enabled": ai_npc_enabled,
 		"difficulty_mode": difficulty_mode,
 		"animations_enabled": animations_enabled,
 		"font_size_preset": font_size_preset,
@@ -72,6 +75,7 @@ static func from_dict(d: Dictionary) -> UserData:
 	u.created_script_ids = _to_string_array(d.get("created_script_ids", []))
 	u.achievements = _to_string_array(d.get("achievements", []))
 	u.ai_enabled = bool(d.get("ai_enabled", u.ai_enabled))
+	u.ai_npc_enabled = bool(d.get("ai_npc_enabled", u.ai_npc_enabled))
 	u.difficulty_mode = str(d.get("difficulty_mode", u.difficulty_mode))
 	u.animations_enabled = bool(d.get("animations_enabled", u.animations_enabled))
 	u.font_size_preset = str(d.get("font_size_preset", u.font_size_preset))

@@ -69,6 +69,7 @@ var _tab_editor_map: Dictionary = {}  # tab_name -> editor_key
 
 ## 面板场景预加载
 const ScriptCodeEditorClass = preload("res://scripts/editor/script_code_editor.gd")
+const IDEThemeClass = preload("res://scripts/editor/ide/ide_theme.gd")
 const ScriptCodeGenClass = preload("res://scripts/editor/script_codegen.gd")
 const MudEditorClass = preload("res://scripts/editor/mud_editor.gd")
 ## 结构化条件/动作编译器(用preload避免依赖全局类缓存)
@@ -99,7 +100,32 @@ var _mod_event: RefCounted
 var _mod_ai_assistant: RefCounted
 var _mod_blueprint_workspace: RefCounted
 
+## 构建编辑器深色基础主题（供未显式 override 的控件继承, 隔离全局浅色渗入）
+func _build_editor_theme() -> Theme:
+	var t := Theme.new()
+	t.default_font_size = 13
+	t.set_color("font_color", "Label", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "Button", IDEThemeClass.C_TEXT)
+	t.set_color("font_hover_color", "Button", IDEThemeClass.C_TEXT)
+	t.set_color("font_pressed_color", "Button", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "LineEdit", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "OptionButton", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "CheckBox", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "TabContainer", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "Tree", IDEThemeClass.C_TEXT)
+	t.set_color("font_selected_color", "Tree", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "ItemList", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "RichTextLabel", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "ProgressBar", IDEThemeClass.C_TEXT)
+	# 弹窗/菜单（MenuButton 弹出菜单文字, 避免深棕文字配深灰背景不可读）
+	t.set_color("font_color", "PopupMenu", IDEThemeClass.C_TEXT)
+	t.set_color("font_hover_color", "PopupMenu", IDEThemeClass.C_TEXT)
+	t.set_color("font_color", "MenuButton", IDEThemeClass.C_TEXT)
+	return t
+
 func _ready() -> void:
+	# 编辑器深色主题: 隔离全局浅色主题渗入（未 override 的 Label/Button 继承深色基础）
+	theme = _build_editor_theme()
 	_ui = UIFactoryClass.new(self)
 	_mod_economy = VisualEconomyClass.new(self)
 	_mod_ability = VisualAbilityClass.new(self)

@@ -63,7 +63,7 @@ func _load_settings() -> void:
 	_apply_volume("SFX", sfx_val)
 	# AI
 	ai_toggle.button_pressed = ud.ai_enabled
-	ai_npc_toggle.button_pressed = true
+	ai_npc_toggle.button_pressed = ud.ai_npc_enabled
 
 ## 更新音量百分比标签
 func _update_volume_labels() -> void:
@@ -106,6 +106,7 @@ func _on_save_pressed() -> void:
 	ud.font_size_preset = font_map[font_size_option.selected]
 	ud.animations_enabled = anim_toggle.button_pressed
 	ud.ai_enabled = ai_toggle.button_pressed
+	ud.ai_npc_enabled = ai_npc_toggle.button_pressed
 	# 全屏切换
 	if fullscreen_toggle.button_pressed:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)

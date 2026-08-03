@@ -10,20 +10,21 @@ var _host: Object
 func _init(host: Object) -> void:
 	_host = host
 
-## === 配色常量 ===
-const C_BG_CARD := Color(0.19, 0.2, 0.25, 1)
-const C_BG_ROW := Color(0.22, 0.23, 0.28, 1)
-const C_BG_ROW_ALT := Color(0.2, 0.21, 0.26, 1)
-const C_ACCENT := Color(0.35, 0.6, 1.0, 1)
-const C_ACCENT_DIM := Color(0.25, 0.45, 0.75, 0.5)
-const C_SECTION_TITLE := Color(0.95, 0.85, 0.55, 1)
-const C_LABEL := Color(0.65, 0.7, 0.8, 1)
-const C_TEXT := Color(0.88, 0.88, 0.92, 1)
-const C_INFO := Color(0.6, 0.65, 0.75, 1)
-const C_GREEN := Color(0.55, 0.85, 0.55, 1)
-const C_BORDER := Color(0.3, 0.33, 0.4, 0.6)
-const C_DANGER := Color(1.0, 0.45, 0.45, 1)
-const C_EMPTY_HINT := Color(0.5, 0.55, 0.65, 0.7)
+## 配色常量（统一引用 IDETheme, 与 IDE 编辑器深色主题一致）
+const IDETheme = preload("res://scripts/editor/ide/ide_theme.gd")
+const C_BG_CARD := IDETheme.C_BG_BASE
+const C_BG_ROW := IDETheme.C_BG_HIGHLIGHT
+const C_BG_ROW_ALT := IDETheme.C_BG_TAB
+const C_ACCENT := IDETheme.C_ACCENT
+const C_ACCENT_DIM := IDETheme.C_ACCENT_DIM
+const C_SECTION_TITLE := IDETheme.C_YELLOW
+const C_LABEL := IDETheme.C_TEXT_DIM
+const C_TEXT := IDETheme.C_TEXT
+const C_INFO := IDETheme.C_TEXT_DIM
+const C_GREEN := IDETheme.C_GREEN
+const C_BORDER := IDETheme.C_SEPARATOR
+const C_DANGER := IDETheme.C_RED
+const C_EMPTY_HINT := IDETheme.C_TEXT_DISABLED
 
 ## === 字段友好标签映射 ===
 const FIELD_LABELS := {

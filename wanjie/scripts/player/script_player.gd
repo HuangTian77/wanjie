@@ -247,14 +247,14 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	if not method.is_empty():
 		btn.pressed.connect(Callable(self, method))
 	choice_container.add_child(btn)
-	# 进入动画
+	# 进入动画（容器内 position 会被布局覆盖, 改用 scale + alpha）
 	if ThemeManager.animations_enabled:
 		btn.modulate.a = 0.0
-		btn.position.y += 10
+		btn.scale = Vector2(0.96, 0.96)
 		var tween := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		tween.set_parallel(true)
 		tween.tween_property(btn, "modulate:a", 1.0, 0.2)
-		tween.tween_property(btn, "position:y", btn.position.y - 10, 0.2)
+		tween.tween_property(btn, "scale", Vector2.ONE, 0.2)
 
 ## 添加历史记录
 func _add_history(text: String) -> void:
@@ -266,9 +266,14 @@ func _update_ui() -> void:
 		var ps: Dictionary = SaveManager.current_save.player_state
 		player_name_label.text = ps.get("name", "旅者")
 		player_level_label.text = "Lv.%d" % ps.get("level", 1)
-		# HP 进度条
+		# HP 进度条（优先真实战斗状态, 回退事件数推算）
 		var max_hp: int = ps.get("max_hp", 100)
-		var current_hp: int = max_hp - (event_engine.triggered_events.size() * 5 if event_engine else 0)
+		var current_hp: int = max_hp
+		if combat_engine != null and combat_engine.get("player_combat_stats") != null and not (combat_engine.player_combat_stats as Dictionary).is_empty():
+			current_hp = int(combat_engine.player_combat_stats.get("hp", max_hp))
+			max_hp = int(combat_engine.player_combat_stats.get("max_hp", max_hp))
+		else:
+			current_hp = max_hp - (event_engine.triggered_events.size() * 5 if event_engine else 0)
 		current_hp = clampi(current_hp, 0, max_hp)
 		hp_bar.max_value = max_hp
 		hp_bar.value = current_hp

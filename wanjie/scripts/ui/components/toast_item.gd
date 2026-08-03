@@ -29,27 +29,37 @@ const COLORS := {
 	"error": Color(0.8, 0.3, 0.3, 0.95),
 }
 
+## 样式缓存（按类型, 避免每次弹出重复创建 StyleBox）
+static var _style_cache: Dictionary = {}
+
+func _get_cached_styles(toast_type: String) -> Dictionary:
+	if _style_cache.has(toast_type):
+		return _style_cache[toast_type]
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = COLORS.get(toast_type, COLORS["info"])
+	panel_style.set_corner_radius_all(8)
+	panel_style.set_content_margin_all(12)
+	panel_style.shadow_color = Color(0, 0, 0, 0.15)
+	panel_style.shadow_size = 4
+	var fill_style := StyleBoxFlat.new()
+	fill_style.bg_color = Color(1, 1, 1, 0.3)
+	fill_style.set_corner_radius_all(2)
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = Color(1, 1, 1, 0.1)
+	bg_style.set_corner_radius_all(2)
+	var cached := {"panel": panel_style, "fill": fill_style, "bg": bg_style}
+	_style_cache[toast_type] = cached
+	return cached
+
 func setup(text: String, toast_type: String = "info", duration: float = 2.5) -> void:
 	_duration = duration
 	text_label.text = text
 	icon_label.text = ICONS.get(toast_type, "ℹ")
-	# 设置背景色
-	var style := StyleBoxFlat.new()
-	style.bg_color = COLORS.get(toast_type, COLORS["info"])
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(12)
-	style.shadow_color = Color(0, 0, 0, 0.15)
-	style.shadow_size = 4
-	add_theme_stylebox_override("panel", style)
-	# 进度条颜色
-	var fill_style := StyleBoxFlat.new()
-	fill_style.bg_color = Color(1, 1, 1, 0.3)
-	fill_style.set_corner_radius_all(2)
-	progress_bar.add_theme_stylebox_override("fill", fill_style)
-	var bg_style := StyleBoxFlat.new()
-	bg_style.bg_color = Color(1, 1, 1, 0.1)
-	bg_style.set_corner_radius_all(2)
-	progress_bar.add_theme_stylebox_override("background", bg_style)
+	# 从缓存取样式（避免重复创建）
+	var styles: Dictionary = _get_cached_styles(toast_type)
+	add_theme_stylebox_override("panel", styles["panel"])
+	progress_bar.add_theme_stylebox_override("fill", styles["fill"])
+	progress_bar.add_theme_stylebox_override("background", styles["bg"])
 
 func _ready() -> void:
 	progress_bar.max_value = _duration

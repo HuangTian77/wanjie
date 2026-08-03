@@ -48,7 +48,7 @@ func _build_ui() -> void:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(520, 560)
 	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = Color(0.14, 0.15, 0.19, 1.0)
+	panel_style.bg_color = ThemeManager.C_BG_SECONDARY
 	panel_style.border_color = ThemeManager.C_ACCENT
 	panel_style.set_border_width_all(2)
 	panel_style.set_corner_radius_all(12)
@@ -274,7 +274,7 @@ func _refresh_tags_display() -> void:
 		tag_btn.tooltip_text = "点击删除标签"
 		tag_btn.add_theme_font_size_override("font_size", 12)
 		var tag_style := StyleBoxFlat.new()
-		tag_style.bg_color = Color(0.3, 0.35, 0.45, 1.0)
+		tag_style.bg_color = ThemeManager.C_ACCENT * Color(1, 1, 1, 0.18)
 		tag_style.set_corner_radius_all(4)
 		tag_style.set_content_margin_all(4)
 		tag_btn.add_theme_stylebox_override("normal", tag_style)
