@@ -1,0 +1,17 @@
+# 统一文本文件行尾（LF）, 避免跨平台 CRLF 差异
+* text=auto
+*.gd text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.gd.uid text eol=lf
+*.ps1 text eol=crlf
+Godot_v4.7.1-stable_win64.exe filter=lfs diff=lfs merge=lfs -text
+ME/**/*.exe filter=lfs diff=lfs merge=lfs -text
+ME/**/*.dll filter=lfs diff=lfs merge=lfs -text
+ME/**/*.dat filter=lfs diff=lfs merge=lfs -text
+ME/**/*.spk filter=lfs diff=lfs merge=lfs -text
+ME/**/*.pkg filter=lfs diff=lfs merge=lfs -text
+ME/**/*.ico filter=lfs diff=lfs merge=lfs -text
+ME/userdb.dat filter=lfs diff=lfs merge=lfs -text

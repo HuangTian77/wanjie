@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>剧情编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        span.info {
+            font-weight: bold;
+            color:cornflowerblue;
+        }
+
+        input:empty {
+            color: gray;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editstory.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <div style="width:100%%;height:100%%;">
+        <p>剧情ID：<span #t_story_id .info></span> &nbsp;&nbsp; 剧情名称：<span #t_story_name .info></span></p>
+        <p>剧情类型：<select #t_select_type size=1 style="width:60px;">
+                <option value=0>配置</option>
+                <option value=1>脚本</option>
+            </select>
+        </p>
+        <div #t_config_container style="display:none;width:100%%;height:100%%;">
+                字体大小：<input #t_font_size type="number" value="30" size="6" step="1" />
+                &nbsp;&nbsp; 字体行高：<input #t_line_height type="number" value="35" size="6" step="1" />
+                &nbsp;&nbsp; 间隔时间：<input #t_duration type="number" value="1" size="4" step="1" /> 秒
+            <p>
+                文字背景透明度：<input #t_ta_bg_opacity type="number" value="80" size="4" step="1" max="100" />%
+            </p>
+            <p>
+                <button #t_auto_close type="checkbox">自动关闭</button>
+                <span .comment>勾上表示在剧情结束后，自动关闭剧情控件</span>
+            </p>
+            <p>
+                <button #t_striped_color_checkbox onclick="onStripedCheckbox();" type="checkbox">偶数行文字色（条纹效果）</button>
+                <button #t_striped_color onclick="clickStripedColor();" disabled stripedColor="">
+                    <div style="background-color:white;width:15px;height:15px;border:1px solid black;"></div>
+                </button>
+                <span .comment>偶数行的文字颜色为条纹显示效果，奇数行的文字颜色受主题色彩控制</span>
+            </p>
+            <p>
+                背景图片地址：<input #t_image_url type="text" style="width:100%%;height:100%%" novalue="支持网络图片地址，配置模式仅支持一张默认的图片，需复杂配置请使用脚本模式" />
+            </p>
+            <p>剧情数据：<span .comment>一行一个剧情间隔，配置模式下暂时不支持复杂配置。需要制定每行的数据请使用脚本模式</span></p>
+            <widget #t_config type="scintilla" style="width:100%%;height:100%%" />
+        </div>
+        <div #t_script_container style="display:none;width:100%%;height:100%%;">
+            <button onclick="scriptGrammarCheck()" style="margin-bottom:5px;">语法检查</button>
+            <widget #t_script type="scintilla" />
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

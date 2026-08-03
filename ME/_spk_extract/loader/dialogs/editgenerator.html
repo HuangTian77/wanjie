@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>资源生产配置编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            border: 1px solid silver;
+            margin: 5px 0 0 0;
+            padding: 0;
+            height: 100%%;
+            width: 100%%;
+            overflow: auto;
+        }
+
+        ul.token {
+          background-color: #ddeeff;  
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        p:nth-child(1) {
+            margin-top: 0;
+        }
+        
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editgenerator.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <div .board>
+        <table .detail-info>
+            <tr>
+                <td>名称：</td>
+                <td #t_name></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td #t_note></td>
+            </tr>
+        </table>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div #t_panel_config selected panel="panel-config">数据配置</div>
+                <div #t_panel_condition_open panel="panel-condition-open">开启条件</div>
+                <div #t_panel_trigger_open panel="panel-trigger-open">开启触发</div>
+                <div #t_panel_condition_get panel="panel-condition-get">领取条件</div>
+                <div #t_panel_trigger_get panel="panel-trigger-get">领取触发</div>
+            </div>
+
+            <!-- 条件配置 -->
+            <div .panel name="panel-condition-open">
+                <p>
+                    类型选择：<select tkey='type-select' size=1>
+                        <option value=0 selected>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </p>
+                <div tkey='container-config' .board style="display:none;">
+                    <button onclick="clickAddCondition(this:find_nearest_parent('div'):F('ul'));">增加条件</button>
+                    <select tkey='ops' size=1>
+                        <option value=0>全部满足（与）</option>
+                        <option value=1>满足一个（或）</option>
+                    </select>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div'):F('ul').html=''">清空</button>
+                    <ul></ul>
+                </div>
+                <div tkey='container-script' .board style="display:none;">
+                    <button onclick="clickGrammarCheck(this:find_nearest_parent('div[tkey]'):F('widget[tkey=script]'));">语法校验</button>
+                    <widget tkey='script' type="scintilla" style="margin-top:5px;"></widget>
+                </div>
+            </div>
+
+            <!-- 条件配置 -->
+            <div .panel name="panel-condition-get">
+                <p>
+                    类型选择：<select tkey='type-select' size=1>
+                        <option value=0 selected>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </p>
+                <div tkey='container-config' .board style="display:none;">
+                    <button onclick="clickAddCondition(this:find_nearest_parent('div'):F('ul'));">增加条件</button>
+                    <select tkey='ops' size=1>
+                        <option value=0>全部满足（与）</option>
+                        <option value=1>满足一个（或）</option>
+                    </select>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div'):F('ul').html=''">清空</button>
+                    <ul></ul>
+                </div>
+                <div tkey='container-script' .board style="display:none;">
+                    <button onclick="clickGrammarCheck(this:find_nearest_parent('div[tkey]'):F('widget[tkey=script]'));">语法校验</button>
+                    <widget tkey='script' type="scintilla" style="margin-top:5px;"></widget>
+                </div>
+            </div>
+
+            <!-- 开启触发 -->
+            <div .panel name="panel-trigger-open">
+                <p>
+                    类型选择：<select tkey='type-select' size=1>
+                        <option value=0 selected>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </p>
+                <div tkey='container-config' .board style="display:none;">
+                    <button onclick="clickAddResult(this:find_nearest_parent('div'):F('ul'));">增加触发</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div'):F('ul').html=''">清空</button>
+                    <ul .reorder></ul>
+                </div>
+                <div tkey='container-script' .board style="display:none;">
+                    <button onclick="clickGrammarCheck(this:find_nearest_parent('div[tkey]'):F('widget[tkey=script]'));">语法校验</button>
+                    <widget tkey='script' type="scintilla" style="margin-top:5px;"></widget>
+                </div>
+            </div>
+
+            <!-- 领取触发 -->
+            <div .panel name="panel-trigger-get">
+                <p>
+                    类型选择：<select tkey='type-select' size=1>
+                        <option value=0 selected>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </p>
+                <div tkey='container-config' .board style="display:none;">
+                    <button onclick="clickAddResult(this:find_nearest_parent('div'):F('ul'));">增加触发</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div'):F('ul').html=''">清空</button>
+                    <ul .reorder></ul>
+                </div>
+                <div tkey='container-script' .board style="display:none;">
+                    <button onclick="clickGrammarCheck(this:find_nearest_parent('div[tkey]'):F('widget[tkey=script]'));">语法校验</button>
+                    <widget tkey='script' type="scintilla" style="margin-top:5px;"></widget>
+                </div>
+            </div>
+
+            <!-- 数据配置 -->
+            <div .panel name="panel-config">
+                <p>
+                    生产描述：<textarea #t_desc rows=3 style="width:100%%;" />
+                    </p>
+                <p>
+                    生产类型：<select #t_type_select>
+                        <option value=1>采集</option>
+                        <option value=2>制造</option>
+                    </select>&nbsp;
+                    <span pkey='collector'><button #t_auto_start type=checkbox title="资源生产自游戏开始后开始计时">自动开始</button></span>
+                </p>
+                <!-- <p>
+                    运行类型：
+                    <button #t_auto_start type=checkbox title="资源生产自游戏开始后开始计时">自动开始</button>&nbsp;
+                    <button #t_auto_end type=checkbox v=2 title="资源领取后自动关闭生产，需要手动触发">完成后自动关闭</button>
+                </p> -->
+                <!-- <p>
+                    内容类型：<select tkey="type-select" size=1>
+                        <option value=1 selected>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </p> -->
+                <!-- <div tkey="container-config" .board style="display:none;"> -->
+                <div tkey="container-config" .board>
+                    <p>
+                        生产内容：<select tkey="type" size=1 onChange="this.next:fillData(this.value);">
+                            <option value=2>物品</option>
+                            <option value=1>属性</option>
+                        </select>
+                        ：<select tkey='subtype' .user-property size=1 style="width: 200px;"></select>
+                        数量：<input tkey="count" type=number size=10 value=1 min=1 step=1 />
+                    </p>
+                    <!-- <p>
+                        生产数量：<input tkey="min" type=number size=10 value=1 min=1 step=1 />～<input tkey="max" type=number
+                            size=10 value=1 min=1 step=1 /> 个
+                    </p> -->
+                    <p>
+                        生产时间：<input tkey="time" type=number size=10 value=1 min=1 step=1 /> 分钟
+                    </p>
+                    <p pkey='collector'>
+                        单次领取：<input tkey="gain" type=number size=10 value=1 min=1 step=1 /> 个
+                    </p>
+                    <p pkey='collector'>
+                        最大容量：<input tkey="volume" type=number size=10 value=1 min=1 step=1 /> 个
+                    </p>
+                </div>
+                <div tkey="container-script" .board style="display: none;">
+                    <div style="margin-bottom:5px;">
+                        <button onclick="clickGrammarCheck(this:find_nearest_parent('div[tkey]'):F('widget[tkey=script]'));">语法校验</button>
+                        <span .full-width></span>
+                        <button>模板数据</button>
+                    </div>
+                    <widget tkey='script' type="scintilla"></widget>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

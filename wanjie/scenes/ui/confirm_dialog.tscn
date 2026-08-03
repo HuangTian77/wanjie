@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3 uid="uid://confirm_dialog_001"]
+
+[ext_resource type="Script" path="res://scripts/ui/confirm_dialog.gd" id="1_confirm"]
+
+[node name="ConfirmDialog" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_confirm")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.4)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -90.0
+offset_right = 180.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="DialogTitle" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "确认"
+horizontal_alignment = 1
+
+[node name="DialogMessage" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "确定要执行此操作吗？"
+autowrap_mode = 2
+custom_minimum_size.y = 40
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="CancelBtn" type="Button" parent="Panel/VBox/ButtonHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+text = "取消"
+
+[node name="ConfirmBtn" type="Button" parent="Panel/VBox/ButtonHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+text = "确认"
+
+[connection signal="pressed" from="Panel/VBox/ButtonHBox/CancelBtn" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Panel/VBox/ButtonHBox/ConfirmBtn" to="." method="_on_confirm_pressed"]

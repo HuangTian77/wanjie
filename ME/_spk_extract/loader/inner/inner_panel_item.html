@@ -1,0 +1,89 @@
+<div .panel name="panel-item">
+    <div .tabs #t_tabs_item style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_item_list selected panel="panel-item-list">物品表</div>
+            <div #t_panel_item_type panel="panel-item-type">分类表</div>
+        </div>
+
+        <!-- 物品列表 -->
+        <div .panel name="panel-item-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_item type="tablectrl" head="item" data-name="item"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_item onClick="addItem();">新增物品</button>
+                        <button #t_btn_copy_item disabled onClick="copyItem();">复制物品</button>
+                        <button #t_btn_edit_item disabled onClick="editItem();">编辑详情</button>
+                        <button #t_btn_data_export_item onClick="exportCSVData('item', 'item');">数据导出</button>
+                        <button #t_btn_data_import_item onClick="importCSVData('item', 'item');">数据导入</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_item disabled onClick="updateItem();">更新物品</button>
+                        <button #t_btn_del_item disabled onClick="deleteItem();">删除物品</button>
+                        <table .detail>
+                            <tr>
+                                <td>物品ID：</td>
+                                <td><span #t_item_id></span></td>
+                            </tr>
+                            <tr>
+                                <td>分类：</td>
+                                <td><select #t_item_type_select size=1 style="width:100px;"></select><span .comment>分类需要先在类型表分页中添加</span></td>
+                            </tr>
+                            <tr>
+                                <td>特性：</td>
+                                <td>
+                                    <button name='equip' type=checkbox title="默认物品带有「装上」和「卸下」的特性（按钮），并且会激活「装备属性」栏数据">可装备</button>
+                                    &nbsp;<button name='consume' type=checkbox title="默认带有「使用」特性（按钮），可以在游戏点击后触发消耗效果（进触发链），需要配置物品的消耗效果">可消耗</button>
+                                    &nbsp;<button name='destory' type=checkbox title="默认带有「丢弃」特性（按钮），可以在游戏中随时销毁">可销毁</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>物品名称：</td>
+                                <td><input #t_item_name type="text" size=20 /></td>
+                            </tr>
+                            <tr>
+                                <td>描述：</td>
+                                <td><textarea #t_item_desc rows=5 style="width:100%%;" /></td>
+                            </tr>
+                            <tr>
+                                <td>备注：</td><td><textarea #t_item_note rows=2 style="width:100%%;" /></td>
+                            </tr>
+                        </table>
+                    </ul>
+                </div> 
+            </frameset>
+        </div>
+
+        <!-- 物品界面分类表 -->
+        <div .panel name="panel-item-type">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_item_type type="tablectrl" head="item_type" data-name="item_type"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_item_type  onClick="addItemType();">新增分类</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_item_type disabled onClick="updateItemType();">更新数据</button>
+                        <button #t_btn_del_item_type disabled onClick="deleteItemType();">删除分类</button>
+                        <table .detail>
+                            <tr><td>ID：</td><td><span #t_item_main_id></span></td></tr>
+                            <tr><td>分类ID：</td><td><input #t_item_type_id type="number" size=10 step=1/><span .comment>请填入一个不重复的分类ID</span></td></tr>
+                            <tr><td>分类名称：</td><td><input #t_item_type_name type="text" size=20 /></td></tr>
+                            <tr>
+                                <td>可见：</td>
+                                <td><input #t_item_type_visible type="checkbox" checked disabled /> <span .comment>如果不打勾表示当前分类标签客户端个人物品标签下不显示</span></td>
+                            </tr>
+                            <tr><td>分类特性：</td><td>
+                                <div><button onclick="applyFeature();" title="点击后会把物品表中此分类下的特性强制刷新成当前分类的配置">强制刷新物品特性</button></div>
+                                <button name='equip' type=checkbox title="默认物品带有「装上」和「卸下」的特性（按钮），并且会激活「装备属性」栏数据">可装备</button>
+                                &nbsp;<button name='consume' type=checkbox title="默认带有「使用」特性（按钮），可以在游戏点击后触发消耗效果（进触发链），需要配置物品的消耗效果">可消耗</button>
+                                &nbsp;<button name='destory' type=checkbox title="默认带有「丢弃」特性（按钮），可以在游戏中随时销毁">可销毁</button>
+                                <span .comment>这里的分类特性勾选以后，物品中的分类会默认继承特性属性（可修改）</span>
+                            </td></tr>
+                            <tr><td>显示优先级：</td><td><input #t_item_type_priority type=number size=10 value=100 /><span .comment>默认100，数值越小排序显示的优先级越高</span></td></tr>
+                            <tr><td>描述：</td><td><textarea #t_item_type_desc rows=10 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+    </div>
+</div>

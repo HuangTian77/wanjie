@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>场景对象编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul.object {
+            width: 200px;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-right: 5px;
+            margin-left: 0;
+            margin-bottom: 10px;
+            padding-left:0;
+            overflow: auto;
+        }
+
+        .object li {
+            display: block;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .config {
+            border: 1px solid silver;
+            width: 100%%;
+            height: 100%%;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        span.tag {
+            font-size: 12px;
+            background-color: orange;
+            color: whitesmoke;
+            padding: 4px;
+        }
+
+        span.scene-info {
+            font-weight: bold;
+            color: cornflowerblue;
+        }
+
+        li.scene-object {
+            behavior: clickable;
+        }
+
+        li.scene-object:current {
+            background-color:#3399ff;
+            color: white;
+        }
+
+        /*
+        li.scene-object:hover {
+        	background-color: skyblue;
+        }
+        */
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 条件触发的 ui 公共脚本-->
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editseneobject.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">输出测试</button> -->
+    <div>
+        <div>场景名称：<span #t_scene_name .scene-info></span></div>
+        <p>场景ID：<span #t_scene_id .scene-info></span></p>
+    </div>
+    <div style="height:100%%;overflow:hidden;">
+        <div style="flow:horizontal;height:100%%;">
+            <ul #t_objects .object>
+            </ul>
+            <div .config>
+                <div style="width:100%%;height:100%%;">
+                    <p>触发类型：<select #t_trigger size=1>
+                            <option value=0>无</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select>
+                        &nbsp;<span #t_trigger_button style="display: none;">
+                            <button onClick="clickAddConditon();">增加条件</button>
+                            &nbsp;<span .tag>暂时只支持控制对象是否显示</span>
+                        </span>
+                    </p>
+                    <div #t_cond_container style="display:none;width:100%%;height:100%%;">
+                        <ul #t_cond .cond style="margin-right:0;margin-top:0px;">
+                        </ul>
+                    </div>
+                    <div #t_script_container style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" #t_script style="margin-bottom:10px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="save();">保存</button>
+        <button onClick="yes();">保存关闭</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

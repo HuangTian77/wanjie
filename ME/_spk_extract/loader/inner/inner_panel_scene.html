@@ -1,0 +1,147 @@
+<div .panel name="panel-scene">
+    <div style="margin: 3px 0;">
+        当前地图：<select #t_curr_map_select style="width:200px;" size=1></select>&nbsp;&nbsp;&nbsp;&nbsp;地图宽：<span #t_curr_map_width>空</span>&nbsp;&nbsp;地图高：<span #t_curr_map_height>空</span>
+    </div>
+    <div .tabs #t_tabs_scene style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_map_list selected panel="panel-map-list">地图</div>
+            <div #t_panel_scene_list panel="panel-scene-list">场景节点</div>
+            <div #t_panel_scene_path panel="panel-path-list">路径</div>
+            <div #t_panel_object_list panel="panel-object-list">场景对象</div>
+            <div #t_panel_object_interact panel="panel-object-interact">对象互动</div>
+        </div>
+
+        <!-- 地图节点 -->
+        <div .panel name="panel-map-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_map type="tablectrl" head="map" data-name="map"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_map onClick="addMap();">新增地图</button>
+                        <span .full-width></span>
+                        <button #t_btn_up_map disabled onClick="updateMap();">更新数据</button>
+                        <button #t_btn_del_map disabled onClick="deleteMap();">删除数据</button>
+                        <table .detail>
+                            <tr>
+                                <td>ID：</td>
+                                <td><span #t_map_id></span> </td>
+                            </tr>
+                            <tr>
+                                <td>名称：</td>
+                                <td><input #t_map_name type="text" size=20 /> </td>
+                            </tr>
+                            <tr>
+                                <td>尺寸：</td>
+                                <td><input #t_map_width type=number step=1 min=10 max=50 value=10 /> ×
+                                    <input #t_map_height type=number step=1 min=10 max=50 value=10 /></td>
+                            </tr>
+                            <tr>
+                                <td>描述：</td>
+                                <td><textarea #t_map_desc rows=5 style="width:100%%;" /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_map_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        <!-- 地图节点 -->
+        <div .panel name="panel-scene-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_scene type="tablectrl" head="scene" data-name="scene"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_edit_scene disabled onClick="editScene();">互动编辑</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_scene disabled onClick="updateScene();">更新数据</button>
+                        <button #t_btn_del_scene disabled onClick="delScene();">删除数据</button>
+                        <table .detail>
+                            <tr><td>场景ID：</td><td><span #t_scene_id></span> </td></tr>
+                            <tr><td>场景名称：</td><td><input #t_sc_name type="text" size=20 /> </td></tr>
+                            <tr><td>进入触发：</td><td><span #t_sc_e_type></span> </td></tr>
+                            <tr><td>离开触发：</td><td><span #t_sc_l_type></span> </td></tr>
+                            <tr><td>描述：</td><td><textarea #t_sc_desc rows=5 style="width:100%%;" /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_sc_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        <!-- 路径 -->
+        <div .panel name="panel-path-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_linkpath type="tablectrl" head="linkpath" data-name="linkpath"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_edit_path disabled onClick="editTriggerPath();">互动编辑</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_path disabled onClick="updatePath();">更新数据</button>
+                        <button #t_btn_del_path disabled onClick="deletePath();">删除路径</button>
+                        <table .detail>
+                            <tr><td>路径ID：</td><td><span #t_path_id></span> </td></tr>
+                            <tr><td>通过触发：</td><td><span #t_path_pass_trigger_type></span> </td></tr>
+                            <tr><td>可开合：</td><td><select #t_path_editable disabled>
+                                    <option value=0>否</option>
+                                    <option value=1>是</option>
+                                </select><span .comment>这里选择是表示可以在条件互动条件编辑中把这条路径选出来，方便控制开合状态</span> </td></tr>
+                            <tr><td>状态：</td><td><select #t_path_status disabled>
+                                    <option value=0>正常</option>
+                                    <option value=1>隐藏</option>
+                                </select><span .comment>路径的开合状态，如果为否则表示玩家看到的路径是不通的</span></td></tr>
+                            <tr><td>出口方向：</td><td><span #t_path_direction></span> </td></tr>
+                            <tr><td>出口：</td><td><span #t_path_start></span> </td></tr>
+                            <tr><td>入口：</td><td><span #t_path_end></span> </td></tr>
+                            <tr><td>备注：</td><td><textarea #t_path_note row=5 style="width:100%%" /> </td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        <!-- 对象列表 -->
+        <div .panel name="panel-object-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_object type="tablectrl" head="object" data-name="object"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_export_data_obj onClick="exportCSVData('object', '场景对象');">导出数据</button>
+                        <button #t_btn_import_data_obj onClick="importCSVData('object', '场景对象');">导入数据</button>
+                        <button #t_btn_add2scene disabled onClick="addObject2Scene();">增加到场景</button>
+                        <span .full-width></span>
+                        <button #t_btn_upobj disabled onClick="updateObject();">更新信息</button>
+                        <button #t_btn_delobj disabled onClick="deleteObject();">删除对象</button>
+                        <table .detail>
+                            <tr><td>对象ID：</td><td><span #t_obj_id></span> </td></tr>
+                            <tr><td>对象名称：</td><td><input #t_obj_name type="text" size=20 /> </td></tr>
+                            <tr><td>描述：</td><td><textarea #t_obj_desc rows=5 style="width:100%%;" /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_obj_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        <!-- 对象互动 -->
+        <div .panel name="panel-object-interact">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_interact type="tablectrl" head="talk" data-name="module_talk"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_detailtalk  disabled onClick="detailTalk();">互动编辑</button>
+                        <button #t_btn_export_data_talk onClick="exportTalkCSVData();">导出数据</button>
+                        <button #t_btn_import_data_talk onClick="exportTalkCSVData();">导入数据</button>
+                        <span .full-width></span>
+                        <button #t_btn_uptalk  disabled onClick="updateTalk();">更新信息</button>
+                        <button #t_btn_deltalk  disabled onClick="deleteTalk();">删除信息</button>
+                        <table .detail>
+                            <tr><td>互动ID：</td><td><span #t_talk_id></span> </td></tr>
+                            <tr><td>互动名称：</td><td><input #t_talk_name type="text" size=20 /> </td></tr>
+                            <tr><td>互动名称：</td><td #t_talk_objname></td></tr>
+                            <tr><td>触发类型：</td><td><span #t_talk_trigger_type></span> </td></tr>
+                            <tr><td>显示控制：</td><td><span #t_talk_visible_trigger_type></span><span .comment>这里的触发条件影响当前互动的可见性，条件为真时当前可见，如果无触发类型，默认可见</span></td></tr>
+                            <tr><td>内容名称：</td><td><textarea #t_talk_content rows=5 style="width:100%%;" /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_talk_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+    </div>
+</div>

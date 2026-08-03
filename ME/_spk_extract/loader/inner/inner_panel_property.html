@@ -1,0 +1,92 @@
+<div .panel name="panel-property">
+    <div .tabs #t_tabs_property style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_property selected panel="panel-property-list">属性表</div>
+            <div #t_panel_property_type panel="panel-property-type">分类表</div>
+        </div>
+        <div .panel name="panel-property-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_property type="tablectrl" head="property" data-name="property"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_prop onClick="addProperty();">新增属性</button>
+                        <button #t_btn_edit_prop disabled onClick="editProperty();">高级编辑</button>
+                        <button #t_btn_export_data_prop onClick="exportPropCSVData();">导出数据</button>
+                        <button #t_btn_import_data_prop onClick="importPropCSVData();">导入数据</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_prop disabled onClick="updateProperty();">更新属性</button>
+                        <button #t_btn_del_prop disabled onClick="deleteProperty();">删除属性</button>
+                        <table .detail>
+                            <tr>
+                                <td>属性ID：</td>
+                                <td><span #t_prop_id></span> </td>
+                            </tr>
+                            <tr>
+                                <td>分类：</td>
+                                <td><select #t_prop_type_select size=1 style="width:100px;"></select><span .comment>分类需要先在类型表分页中添加</span></td>
+                            </tr>
+                            <tr>
+                                <td>属性名称：</td>
+                                <td><input #t_prop_name type="text" size=20 /> </td>
+                            </tr>
+                            <!-- <tr>
+                                <td>客户端可见：</td>
+                                <td><select #t_prop_visible size=1>
+                                        <option value=0>不可见</option>
+                                        <option value=1 selected >可见</option>
+                                    </select><span .comment>这里可以配置一些客户端不可见的隐藏属性，类似于跟随着角色的一些变量</span></td>
+                            </tr> -->
+                            <tr>
+                                <td>排序权重：</td>
+                                <td><input #t_prop_priority type="number" size=20 step=1 value=100 /> <span .comment>数字越小，排序越靠前，默认100</span></td>
+                            </tr>
+                            <tr>
+                                <td>描述：</td>
+                                <td><textarea #t_prop_desc rows=4 style="width:100%%;" /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_prop_note rows=5 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+                <!-- 界面保存下数据 不显示-->
+                <div style='display:none'>
+                    <span #t_master_flag></span>
+                    <span #t_link_prop></span>
+                </div>
+            </frameset>
+        </div>
+
+        <div .panel name="panel-property-type">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_property_type type="tablectrl" head="property_type" data-name="property_type"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_prop_type onClick="addPropertyType();">新增分类</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_prop_type disabled onClick="updatePropertyType();">更新数据</button>
+                        <button #t_btn_del_prop_type disabled onClick="deletePropertyType();">删除分类</button>
+                        <table .detail>
+                            <tr><td>ID：</td><td><span #t_prop_type_id></span></td></tr>
+                            <tr><td>分类名称：</td><td><input #t_prop_type_name type="text" size=20 /></td></tr>
+                            <tr><td>显示优先级：</td><td><input #t_prop_type_priority type=number size=10 value=100 step=1 /><span .comment>默认100，数值越小排序显示的优先级越高</span></td></tr>
+                            <!-- <tr>
+                                <td>可见：</td>
+                                <td>
+                                    <div><button #t_btn_apply_property_visible disabled onclick="applyPropertyTypeVisible();" title="点击后会把物品表中此分类下的特性强制刷新成当前分类的配置">强制刷新属性特性</button></div>
+                                    <div #t_prop_type_visible_config>
+                                        <button name='visible' type=radio v=1 checked onclick="clickOnPropertyTypeVisible();" >可见</button>
+                                        &nbsp;<button name='invisible' type=radio v=0 onclick="clickOnPropertyTypeVisible();" >不可见</button>
+                                    </div>
+                                </td>
+                            </tr> -->
+                            <tr>
+                                <td>可见：</td>
+                                <td><input #t_prop_type_visible type="checkbox" checked disabled /> <span .comment>如果不打勾表示当前分类标签客户端隐藏</span></td>
+                            </tr>
+                            <tr><td>描述：</td><td><textarea #t_prop_type_desc rows=10 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+    </div>
+</div>

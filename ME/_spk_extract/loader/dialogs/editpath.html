@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>路径互动编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src="../css/tab.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul.cond {
+            margin: 0;
+            margin-top: 5px;
+        }
+
+        ol.comment {
+            font-size: 11px;
+            color: gray;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 条件触发的 ui 公共脚本-->
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editpath.lua"></script>
+</head>
+
+<body>
+    <!-- <button onClick="clickTest()">测试输出</button> -->
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_passcond selected panel="panel-passcond">通过选项</div>
+            <div #t_panel_opencond panel="panel-opencond">开关选项</div>
+        </div>
+        <!-- 通过条件 -->
+        <div .panel name="panel-passcond">
+            <div style="width:100%%;height:100%%;">
+                <div>
+                    路径通过类型触发：<select tkey=trigger-type #t_trigger_pass size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </div>
+                <div tkey=container-common #t_common_container>
+                    <p>触发失败提示：<input #t_fail_desc style="width:100%%;" /></p>
+                </div>
+                <div tkey=container-config #t_cond_pass_container style="display:none;width:100%%;height:100%%;">
+                    <button onClick="clickAddCondition();">增加条件</button>
+                    <select tkey=ops size=1>
+                        <option value=0>全部满足（与）</option>
+                        <option value=1>满足一个（或）</option>
+                    </select>
+                    <ul #t_cond_pass .cond> </ul>
+                </div>
+                <div tkey=container-script #t_script_pass_container style="display:none;width:100%%;height:100%%;">
+                    <widget type="scintilla" #t_script_pass />
+                </div>
+                <ol .comment>
+                    <li>路径通过指的是路径可见，但是点击到下一个地图节点会判断这里的条件，如果条件通过则表示此路可以走，如果条件不满足，则弹出『触发失败提示』信息。</li>
+                    <li>如果触发条件为无，则表示此路径默认可以通过，没有条件限制。</li>
+                </ol>
+            </div>
+        </div>
+        <!-- 开关条件 -->
+        <div .panel name="panel-opencond">
+            <div style="width:100%%;height:100%%;">
+                <div>
+                    路径开启类型触发：<select tkey=trigger-type #t_trigger_open size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                </div>
+                <div style="width:100%%;height:100%%;margin-top:10px;">
+                    <div tkey=container-config #t_cond_open_container style="display:none;width:100%%;height:100%%;">
+                        <button onClick="clickAddCondition();">增加条件</button>
+                        <select tkey=ops size=1>
+                            <option value=0>全部满足（与）</option>
+                            <option value=1>满足一个（或）</option>
+                        </select>
+                        <ul #t_cond_open .cond> </ul>
+                    </div>
+                    <div tkey=container-script #t_script_open_container style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" #t_script_open />
+                    </div>
+                    <ol .comment>
+                        <li>路径开启指的是路径是否可见受到条件影响，如果条件为真，则路径可见，否则路径不可见</li>
+                        <li>如果触发条件为无，则表示此路径默认显示</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

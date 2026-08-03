@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>场景互动编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul.object {
+            width: 200px;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-right: 5px;
+            margin-left: 0;
+            margin-bottom: 0px;
+            padding-left:0;
+            overflow: auto;
+        }
+
+        .object li {
+            display: block;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .config {
+            border: 1px solid silver;
+            width: 100%%;
+            height: 100%%;
+            margin-top: 10px;
+            // margin-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        span.tag {
+            font-size: 12px;
+            background-color: orange;
+            color: whitesmoke;
+            padding: 4px;
+        }
+
+        li.scene-object {
+            behavior: clickable;
+        }
+
+        li.scene-object:checked {
+            background-color:#3399ff;
+            color: white;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editscene.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>场景名称：</td>
+            <td #t_scene_name></td>
+        </tr>
+        <tr>
+            <td>场景ID：</td>
+            <td #t_scene_id></td>
+        </tr>
+    </table>
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_object selected panel="panel-object">对象编辑</div>
+            <div #t_panel_trigger_enter panel="panel-trigger-enter">进入触发</div>
+            <div #t_panel_trigger_leave panel="panel-trigger-leave">离开触发</div>
+        </div>
+
+        <!-- 对象编辑 -->
+        <div .panel name="panel-object">
+            <div style="height:100%%;overflow:hidden;">
+                <div style="flow:horizontal;height:100%%;">
+                    <ul #t_objects .object>
+                    </ul>
+                    <div .config>
+                        <div style="width:100%%;height:100%%;">
+                            <p>触发类型：<select tkey=trigger #t_trigger size=1>
+                                    <option value=0>无</option>
+                                    <option value=1>配置</option>
+                                    <option value=2>脚本</option>
+                                </select>
+                                &nbsp;<span tkey=container-config-button #t_trigger_button style="display: none;">
+                                </span>
+                            </p>
+                            <div tkey=container-config #t_cond_container style="display:none;width:100%%;height:100%%;">
+                                <div style='margin-bottom:3px;'>
+                                    <button onclick="clickAddCondition(this:find_nearest_parent('div').next);">增加条件</button>
+                                    <select #t_ops tkey='ops' size=1>
+                                        <option value=0>全部满足（与）</option>
+                                        <option value=1>满足一个（或）</option>
+                                    </select>
+                                    &nbsp;<span .tag>暂时只支持控制对象是否显示</span>
+                                    <span .full-width></span>
+                                    <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                                </div>
+                                <ul #t_cond .cond></ul>
+                            </div>
+                            <div tkey=container-script #t_script_container style="display:none;width:100%%;height:100%%;">
+                                <widget type="scintilla" #t_script style="margin-bottom:10px;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 进入触发标签 -->
+        <div .panel name="panel-trigger-enter">
+            <div .tabs style="min-height: 120px;">
+                <div .strip style="width:100%%;">
+                    <div selected panel="panel-cond">触发条件</div>
+                    <div panel="panel-success">成功触发</div>
+                    <div panel="panel-fail">失败触发</div>
+                </div>
+                <div .panel name='panel-cond'>
+                    <p>条件类型：<select tkey=trigger size=1>
+                            <option selected value=0>无条件</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddCondition(this:find_nearest_parent('div').next);">增加条件</button>
+                            <select tkey=cond size=1>
+                                <option selected value=0>全部满足（与）</option>
+                                <option value=1>满足一个（或）</option>
+                            </select>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+                <div .panel name='panel-success'>
+                    <p>触发类型：<select tkey=trigger size=1>
+                            <option selected value=0>无触发</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond .reorder></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+                <div .panel name='panel-fail'>
+                    <p>触发类型：<select tkey=trigger size=1>
+                            <option selected value=0>无触发</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond .reorder></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 离开触发标签 -->
+        <div .panel name="panel-trigger-leave">
+            <div .tabs style="min-height: 120px;">
+                <div .strip style="width:100%%;">
+                    <div selected panel="panel-cond">触发条件</div>
+                    <div panel="panel-success">成功触发</div>
+                    <div panel="panel-fail">失败触发</div>
+                </div>
+                <div .panel name='panel-cond'>
+                    <p>条件类型：<select tkey=trigger size=1>
+                            <option selected value=0>无条件</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddCondition(this:find_nearest_parent('div').next);">增加条件</button>
+                            <select tkey=cond size=1>
+                                <option selected value=0>全部满足（与）</option>
+                                <option value=1>满足一个（或）</option>
+                            </select>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+                <div .panel name='panel-success'>
+                    <p>触发类型：<select tkey=trigger size=1>
+                            <option selected value=0>无触发</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond .move></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+                <div .panel name='panel-fail'>
+                    <p>触发类型：<select tkey=trigger size=1>
+                            <option selected value=0>无触发</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select></p>
+                    <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                        <div style="margin-bottom:3px;">
+                            <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                            <span .full-width></span>
+                            <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                        </div>
+                        <ul .cond .move></ul>
+                    </div>
+                    <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                        <widget type="scintilla" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

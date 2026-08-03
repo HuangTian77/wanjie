@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>敌人属性编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            width: 100%%;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-top: 5px;
+            margin-bottom: 0px;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        ul.skill {
+            accept-drop: selector(li.skill);
+        }
+
+        li {
+            list-style: none;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        li.skill {
+            draggable: only-move;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        .container-left {
+            width: 55%%;
+            height: 100%%;
+            margin-right: 10px;
+        }
+
+        .container-right {
+            width: 45%%;
+            height: 100%%;
+        }
+
+        widget {
+            width:100%%;
+            height:100%%;
+            margin-top: 5px;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editenemy.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>敌人名称：</td>
+            <td #t_name></td>
+        </tr>
+        <tr>
+            <td>敌人ID：</td>
+            <td #t_id></td>
+        </tr>
+        <tr>
+            <td>敌人描述：</td>
+            <td #t_desc></td>
+        </tr>
+    </table>
+    <div .board>
+        属性数据类型：<button type=radio v=0 checked onclick="clickType()">数据配置</button> <button type=radio v=1 onclick="clickType()">脚本</button>
+        <div #t_script_container .board style="display: none;">
+            <div style="margin-bottom:3px;">
+                <button onclick="clickCheckGrammar(t_script.value)">语法检查</button><span .full-width></span><button>脚本模板</button>
+            </div>
+            <widget #t_script type=scintilla />
+        </div>
+        <div #t_config_container .board style="display: block;">
+            <div style="width:100%%;height:200px;padding-top:5px;padding-bottom:5px;">
+                模板选择<span .comment>可以到敌人模板页面增加模板</span>
+                <widget #t_template .enemy-template type="select" style="flow:h-flow;"></widget>
+            </div>
+            <div .board style="flow:horizontal;">
+                <div .container-left>
+                    <button onclick="clickAddProperty();">增加属性</button>
+                    <ul #t_property>
+                    </ul>
+                </div>
+                <div .container-right>
+                    <button onclick="clickAddSkill();">增加技能</button>
+                    <span .comment>拖动可调换顺序</span>
+                    <ul #t_skill .skill>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

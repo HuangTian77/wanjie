@@ -1,0 +1,317 @@
+[gd_scene format=3 uid="uid://dchtn5uiw7okj"]
+
+[ext_resource type="Script" uid="uid://b7l3ym0764d1w" path="res://scripts/ui/main_hub.gd" id="1_main"]
+[ext_resource type="Theme" uid="uid://pr4myvsdmqg3" path="res://resources/themes/main_theme.tres" id="2_theme"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_logo"]
+font_size = 24
+font_color = Color(0.29, 0.216, 0.157, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_currency_label"]
+font_size = 13
+font_color = Color(0.545, 0.396, 0.282, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_carousel"]
+bg_color = Color(0.35, 0.28, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.769, 0.588, 0.353, 0.2)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="LabelSettings" id="LabelSettings_carousel"]
+font_size = 15
+font_color = Color(0.96, 0.925, 0.843, 1)
+shadow_color = Color(0.1, 0.09, 0.08, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot_active"]
+bg_color = Color(0.769, 0.588, 0.353, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dot_inactive"]
+bg_color = Color(0.769, 0.588, 0.353, 0.3)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_section_title"]
+font_color = Color(0.29, 0.216, 0.157, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_empty"]
+font_size = 14
+font_color = Color(0.42, 0.373, 0.322, 0.5)
+
+[node name="MainHub" type="Control" unique_id=72656907]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_main")
+
+[node name="Background" type="ColorRect" parent="." unique_id=936386688]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.961, 0.925, 0.843, 1)
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=1643335643]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin" unique_id=197894444]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TopBar" type="HBoxContainer" parent="MainMargin/VBox" unique_id=1001924330]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Logo" type="Label" parent="MainMargin/VBox/TopBar" unique_id=675246050]
+layout_mode = 2
+text = "万界诗篇"
+label_settings = SubResource("LabelSettings_logo")
+
+[node name="Spacer" type="Control" parent="MainMargin/VBox/TopBar" unique_id=910999840]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InspirationIcon" type="Label" parent="MainMargin/VBox/TopBar" unique_id=720935430]
+layout_mode = 2
+text = "灵感"
+label_settings = SubResource("LabelSettings_currency_label")
+
+[node name="InspirationLabel" type="Label" parent="MainMargin/VBox/TopBar" unique_id=1565500321]
+unique_name_in_owner = true
+layout_mode = 2
+text = "10/10"
+
+[node name="ShimoIcon" type="Label" parent="MainMargin/VBox/TopBar" unique_id=193749267]
+layout_mode = 2
+text = "诗墨"
+label_settings = SubResource("LabelSettings_currency_label")
+
+[node name="ShimoLabel" type="Label" parent="MainMargin/VBox/TopBar" unique_id=832264688]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1250"
+
+[node name="JieshiIcon" type="Label" parent="MainMargin/VBox/TopBar" unique_id=392712771]
+layout_mode = 2
+text = "界石"
+label_settings = SubResource("LabelSettings_currency_label")
+
+[node name="JieshiLabel" type="Label" parent="MainMargin/VBox/TopBar" unique_id=1477070495]
+unique_name_in_owner = true
+layout_mode = 2
+text = "50"
+
+[node name="EnergyIcon" type="Label" parent="MainMargin/VBox/TopBar" unique_id=1702013590]
+layout_mode = 2
+text = "精力"
+label_settings = SubResource("LabelSettings_currency_label")
+
+[node name="EnergyLabel" type="Label" parent="MainMargin/VBox/TopBar" unique_id=461280274]
+unique_name_in_owner = true
+layout_mode = 2
+text = "5/5"
+
+[node name="SettingsBtn" type="Button" parent="MainMargin/VBox/TopBar" unique_id=2132942098]
+custom_minimum_size = Vector2(60, 36)
+layout_mode = 2
+text = "设置"
+
+[node name="CarouselContainer" type="Control" parent="MainMargin/VBox" unique_id=1135565842]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="CarouselPanel" type="PanelContainer" parent="MainMargin/VBox/CarouselContainer" unique_id=930412256]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_carousel")
+
+[node name="CarouselLabel" type="Label" parent="MainMargin/VBox/CarouselContainer" unique_id=1951941848]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 12.0
+offset_right = -50.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "推荐剧本加载中..."
+label_settings = SubResource("LabelSettings_carousel")
+autowrap_mode = 2
+
+[node name="CarouselPrev" type="Button" parent="MainMargin/VBox/CarouselContainer" unique_id=1359955266]
+layout_mode = 1
+offset_left = 8.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 70.0
+grow_horizontal = 0
+text = "◀"
+
+[node name="CarouselNext" type="Button" parent="MainMargin/VBox/CarouselContainer" unique_id=2079859439]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = 30.0
+offset_right = -8.0
+offset_bottom = 70.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "▶"
+
+[node name="CarouselIndicator" type="HBoxContainer" parent="MainMargin/VBox/CarouselContainer" unique_id=1090518180]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -20.0
+offset_right = 40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="Dot0" type="Panel" parent="MainMargin/VBox/CarouselContainer/CarouselIndicator" unique_id=123143818]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dot_active")
+
+[node name="Dot1" type="Panel" parent="MainMargin/VBox/CarouselContainer/CarouselIndicator" unique_id=1193003129]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dot_inactive")
+
+[node name="Dot2" type="Panel" parent="MainMargin/VBox/CarouselContainer/CarouselIndicator" unique_id=300106503]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dot_inactive")
+
+[node name="Dot3" type="Panel" parent="MainMargin/VBox/CarouselContainer/CarouselIndicator" unique_id=1230993074]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dot_inactive")
+
+[node name="CarouselTimer" type="Timer" parent="MainMargin/VBox/CarouselContainer" unique_id=738814979]
+unique_name_in_owner = true
+wait_time = 5.0
+
+[node name="TabContainer" type="HBoxContainer" parent="MainMargin/VBox" unique_id=1905767281]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SearchInput" type="LineEdit" parent="MainMargin/VBox" unique_id=1959023852]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+placeholder_text = "搜索剧本名称、标签、作者..."
+
+[node name="ScriptGridScroll" type="ScrollContainer" parent="MainMargin/VBox" unique_id=1627615060]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+horizontal_scroll_mode = 0
+
+[node name="ScriptGrid" type="GridContainer" parent="MainMargin/VBox/ScriptGridScroll" unique_id=205756512]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 4
+
+[node name="RecentSection" type="VBoxContainer" parent="MainMargin/VBox" unique_id=1206782097]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RecentTitle" type="Label" parent="MainMargin/VBox/RecentSection" unique_id=878094669]
+layout_mode = 2
+text = "最近体验"
+label_settings = SubResource("LabelSettings_section_title")
+
+[node name="RecentScroll" type="ScrollContainer" parent="MainMargin/VBox/RecentSection" unique_id=1381574741]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="RecentContainer" type="HBoxContainer" parent="MainMargin/VBox/RecentSection/RecentScroll" unique_id=475228494]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="NoRecentLabel" type="Label" parent="MainMargin/VBox/RecentSection" unique_id=1188390746]
+unique_name_in_owner = true
+layout_mode = 2
+text = "还没有体验过任何剧本，去下方选择一个开始吧！"
+label_settings = SubResource("LabelSettings_empty")
+horizontal_alignment = 1
+
+[node name="BottomBar" type="HBoxContainer" parent="MainMargin/VBox" unique_id=1166328129]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CreateBtn" type="Button" parent="MainMargin/VBox/BottomBar" unique_id=1192922044]
+custom_minimum_size = Vector2(180, 42)
+layout_mode = 2
+text = "+ 创建新剧本"
+
+[node name="ImportBtn" type="Button" parent="MainMargin/VBox/BottomBar" unique_id=256362256]
+custom_minimum_size = Vector2(140, 42)
+layout_mode = 2
+text = "+ 导入剧本"
+
+[connection signal="pressed" from="MainMargin/VBox/TopBar/SettingsBtn" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MainMargin/VBox/CarouselContainer/CarouselPrev" to="." method="_on_carousel_prev_pressed"]
+[connection signal="pressed" from="MainMargin/VBox/CarouselContainer/CarouselNext" to="." method="_on_carousel_next_pressed"]
+[connection signal="timeout" from="MainMargin/VBox/CarouselContainer/CarouselTimer" to="." method="_on_carousel_timer_timeout"]
+[connection signal="text_changed" from="MainMargin/VBox/SearchInput" to="." method="_on_search_text_changed"]
+[connection signal="pressed" from="MainMargin/VBox/BottomBar/CreateBtn" to="." method="_on_create_script_pressed"]
+[connection signal="pressed" from="MainMargin/VBox/BottomBar/ImportBtn" to="." method="_on_import_script_pressed"]

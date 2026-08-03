@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>脚本插件详情编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        body {
+            padding: 5px;
+        }
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            border: 1px solid silver;
+            margin: 2px 0 2px 0;
+            padding: 0 5px 0 0;
+            overflow: auto;
+        }
+
+        li {
+            list-style: none;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        span.full-width {
+            display: inline-block;
+            width: 100%%;
+        }
+
+        /* 给 div 用的*/
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        div {
+            margin: 3px 0;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editScriptPluggin.lua"></script>
+</head>
+
+<body>
+    <div>
+        插件名称：<input #t_name size=40 />
+    </div>
+    <div .board>
+        <div>
+            <button onclick="clickCheckGrammar(t_script.value);">语法检查</button><span .full-width></span><button onclick="import()">导入</button>
+        </div>
+        <widget #t_script type=scintilla />
+    </div>
+    <div .bottom_button>
+        <button onclick="yes()">保存</button>
+        <button onclick="no()">取消</button>
+    </div>
+</body>
+
+</html>

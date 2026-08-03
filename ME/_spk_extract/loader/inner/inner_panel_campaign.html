@@ -1,0 +1,76 @@
+<div .panel name="panel-campaign">
+    <div .tabs #t_tabs_campaign style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_campaign_list selected panel="panel-campaign-list">战役列表</div>
+            <div #t_panel_campaign_enemy selected panel="panel-campaign-enemy">敌人对象</div>
+            <div #t_panel_campaign_enemy_template selected panel="panel-campaign-enemy-template">敌人模板</div>
+        </div>
+
+        <!-- 战役列表 -->
+        <div .panel name="panel-campaign-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_campaign type="tablectrl" head="campaign" data-name="campaign"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_campaign onClick="addCampaign();">新增战役</button>
+                        <button #t_btn_copy_campaign disabled onClick="copyCampaign();">复制战役</button>
+                        <button #t_btn_detail_campaign disabled onClick="detailCampaign();">战役编辑</button>
+                        <button #t_btn_export_data_campaign onClick="exportCSVData('campaign', 'campaign');">导出数据</button>
+                        <button #t_btn_import_data_campaige onClick="importCSVData('campaign', 'campaign');">导入数据</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_campaign disabled onClick="updateCampaign();">更新信息</button>
+                        <button #t_btn_del_campaign disabled onClick="deleteCampaign();">删除战役</button>
+                        <li>战役ID：<span #t_campaign_id></span> </li>
+                        <li>战役名称：<input #t_campaign_name type="text" size=20 /> </li>
+                        <li>战役描述：<textarea #t_campaign_desc rows=5 style="width:100%%;" /></li>
+                        <li>战役备注：<textarea #t_campaign_note rows=3 style="width:100%%;" /></li>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+
+        <!-- 敌人属性 -->
+        <div .panel name="panel-campaign-enemy">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_enemy type="tablectrl" head="enemy" data-name="enemy"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_enemy onClick="addEnemy();">新增敌人</button>
+                        <button #t_btn_copy_enemy disabled onClick="copyEnemy();">复制敌人</button>
+                        <button #t_btn_detail_enemy disabled onClick="detailEnemy();">详情编辑</button>
+                        <button #t_btn_export_data_enemy onClick="exportCSVData('enemy', 'enemy');">导出数据</button>
+                        <button #t_btn_import_data_enemy onClick="importCSVData('enemy', 'enemy');">导入数据</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_enemy disabled onClick="updateEnemy();">更新信息</button>
+                        <button #t_btn_del_enemy disabled onClick="deleteEnemy();">删除对象</button>
+                        <li>敌人ID：<span #t_enemy_id></span> </li>
+                        <li>敌人名称：<input #t_enemy_name type="text" size=20 /> </li>
+                        <li>敌人描述：<textarea #t_enemy_desc rows=5 style="width:100%%;" /></li>
+                        <li>敌人备注：<textarea #t_enemy_note rows=3 style="width:100%%;" /></li>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+
+        <!-- 敌人模板 -->
+        <div .panel name="panel-campaign-enemy-template">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_enemy_template type="tablectrl" head="enemy_template" data-name="enemy_template"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_enemy_template onClick="addEnemyTemplate();">新增模板</button>
+                        <button #t_btn_copy_enemy_template disabled onClick="copyEnemyTemplate();">复制模板</button>
+                        <button #t_btn_detail_enemy_template disabled onClick="detailEnemyTemplate();">详情编辑</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_enemy_template disabled onClick="updateEnemyTemplate();">更新信息</button>
+                        <button #t_btn_del_enemy_template disabled onClick="deleteEnemyTemplate();">删除对象</button>
+                        <li>模板ID：<span #t_enemy_template_id></span> </li>
+                        <li>模板名称：<input #t_enemy_template_name type="text" size=20 /> </li>
+                        <li>模板备注：<textarea #t_enemy_template_note rows=3 style="width:100%%;" /></li>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/components/recent_card.gd" id="1_script"]
+
+[node name="RecentCard" type="PanelContainer"]
+custom_minimum_size = Vector2(180, 100)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RecentName" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "剧本名称"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.29, 0.216, 0.157, 1)
+
+[node name="RecentProgress" type="ProgressBar" parent="VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+max_value = 1.0
+value = 0.0
+show_percentage = false
+
+[node name="RecentProgressText" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "进度 0%"
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.6)

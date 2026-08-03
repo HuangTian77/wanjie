@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>新建场景节点</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        body {
+            padding: 10px;
+        }
+
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        .board {
+            width:100%%;
+            height: 100%%;
+        }
+
+        textarea {
+            color: black;
+            word-wrap:break-word;
+            white-space: pre-wrap;
+            width: 100%%;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="addNewMapNode.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">测试</button> -->
+    <div .board >
+        <div>
+            地点名称：<input #t_name style="width:100%%;" />
+        </div>
+        <div style="height:100%%;margin-top:5px;">
+            地点描述：<textarea #t_desc rows=5 /></span>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">新建</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>测试</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        @import url(../css/std-menu.css);
+
+        .menu {
+            -prototype: MENU;
+        }
+
+        menu.office,
+        menu.office menu
+        {
+            background: url(../images/menu/menu-back-office.png) expand;
+            background-position: 0 0 0 24;
+            text-align:left;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="t1.lua"></script>
+
+    <script type="text/lua">
+        MENU = {}
+        function MENU:onClick() 
+            p(self.attributes.name)
+        end
+    </script>
+
+</head>
+
+<body>
+    <button type="menu">Button with menu (custom back)
+        <menu class="office">
+            <li title="hello!">First item</li>
+            <li>Second item</li>
+            <li>Third item
+                <menu>
+                    <li name='a' .menu>First sub-item</li>
+                    <li>Second sub-item</li>
+                </menu>
+            </li>
+            <li>Fourth item</li>
+        </menu>
+    </button>
+
+    <button onclick="popup()">popup</button>
+    <popup>
+        <menu #t_popup class="office">
+            <li title="hello!">First item</li>
+            <li>Second item</li>
+            <li>Third item
+                <menu>
+                    <li name='a' .menu>First sub-item</li>
+                    <li>Second sub-item</li>
+                </menu>
+            </li>
+            <li>Fourth item</li>
+        </menu>
+    </popup>
+
+</body>
+
+</html>

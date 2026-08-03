@@ -1,0 +1,20 @@
+<div .panel name="panel-custom-data">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_custom_data type="tablectrl" head="custom_data" data-name="custom_data"></widget>
+        <div .action .content>
+            键名是脚本中取值用的 key，建议使用英文，并且不允许重复。名称和备注不会导出，只在编辑器中方便查看辨别。
+            <ul .interact>
+                <button #t_btn_add_custom_data onClick="addCustomData();">新增数据</button>
+                <button #t_btn_copy_custom_data disabled onClick="copyCustomData();">复制数据</button>
+                <button #t_btn_detail_custom_data disabled onClick="detailCustomData();">数据编辑</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_custom_data disabled onClick="updateCustomData();">更新信息</button>
+                <button #t_btn_del_custom_data disabled onClick="deleteCustomData();">删除数据</button>
+                <li style='display: none;'>ID：<span #t_custom_data_id></span> </li>
+                <li>键名：<input #t_custom_data_kname type="text" size=20 novalue='不允许空数据，不允许重复'/> </li>
+                <li>名称：<input #t_custom_data_name type="text" size=20 /> </li>
+                <li>备注：<textarea #t_custom_data_note rows=3 style="width:100%%;" /></li>
+            </ul>
+        </div>
+    </frameset>
+</div>

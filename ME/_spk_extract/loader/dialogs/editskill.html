@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>技能详情编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        ul {
+            padding: 0 5px;
+            margin: 5px 0 0 0;
+            border: 1px solid silver;
+            width: 100%%;
+            height: 100%%;
+            overflow: auto;
+        }
+
+        li {
+            list-style: none;
+            margin: 5px 0;
+            width: 100%%;
+            overflow-x: hidden;
+        }
+
+        .popup {
+            flow:h-flow;
+            overflow-y: auto;
+        }
+
+        .popup div {
+            display: block;
+            behavior: check;
+            min-width: 50px;
+            margin: 2px;
+            border: 1px solid silver;
+            text-align: center;
+            padding: 3px 10px;
+            white-space: nowrap;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 插槽操作库 -->
+    <script type="text/lua" src="bp://slot_ui.lua"></script>
+    <!-- 触发条件操作库 -->
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editskill.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <div .board>
+        <table .detail-info>
+            <tr>
+                <td>技能名称：</td>
+                <td #t_name></td>
+            </tr>
+            <tr>
+                <td>技能ID：</td>
+                <td #t_id></td>
+            </tr>
+            <tr>
+                <td>技能描述：</td>
+                <td #t_desc></td>
+            </tr>
+            <tr>
+                <td>技能备注：</td>
+                <td #t_note></td>
+            </tr>
+        </table>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div #t_panel_formula selected panel="panel-formula">公式</div>
+                <div #t_panel_equip panel="panel-equip">装配</div>
+                <div #t_panel_consume panel="panel-consume">消耗</div>
+                <div #t_panel_slot panel="panel-slot">槽位</div>
+            </div>
+            <!-- 公式编辑页面 -->
+            <div .panel name="panel-formula">
+                公式类型：<select #t_formula_type_select size=1>
+                    <option selected value=0>脚本</option>
+                </select>
+                <div .board style="padding-top:5px;">
+                    <button onclick="clickScriptVerify();" title="校验当前公式代码区的语法">脚本校验</button>
+                    <button onclick="clickLookConfigData();" title="查看配置的数据数据">查看配置数据</button>
+                    <span style="display:inline-block;width:100%%;"></span>
+                    <button onclick="clickAddScriptTemplate();" title="使用样例代码直接替换当前脚本内容">样例代码填充</button>
+                    <widget #t_formula type="scintilla" .board style="margin-top:5px;" />
+                </div>
+            </div>
+            <!-- 装配 -->
+            <div .panel name="panel-equip">
+                装配条件类型：<select #t_equip_type_select tkey=config-select size=1>
+                    <option selected value=0>无</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select>
+                <div #t_equip_script_container .board tkey="script-container" style="display:none;padding-top:5px;">
+                    <button onclick="clickScriptVerify();" title="校验当前公式代码区的语法">脚本校验</button>
+                    <widget #t_equip_script type="scintilla" .board style="margin-top:5px;" />
+                </div>
+                <div #t_equip_cond_container .board tkey="config-container" style="display:none;padding-top:5px;">
+                    <button onclick="clickAddCondition();">增加条件</button>
+                    <select #t_equip_cond_ops tkey='ops' size=1>
+                        <option value=0>全部满足（与）</option>
+                        <option value=1>满足一个（或）</option>
+                    </select>
+                    <ul #t_equip_cond tkey='equip'></ul>
+                </div>
+            </div>
+            <!-- 消耗 -->
+            <div .panel name="panel-consume">
+                消耗设置类型：<select #t_consume_type_select tkey=config-select size=1>
+                    <option selected value=0>无</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select>
+                <div #t_consume_script_container .board tkey="script-container" style="display:none;padding-top:5px;">
+                    <button onclick="clickScriptVerify();" title="校验当前公式代码区的语法">脚本校验</button>
+                    <widget #t_consume_script type="scintilla" .board style="margin-top:5px;" />
+                </div>
+                <div #t_consume_cond_container .board tkey="config-container" style="display:none;padding-top:5px;">
+                    <button onclick="clickAddCondition();">增加消耗</button>
+                    <ul #t_consume_config tkey='consume'></ul>
+                    <div .comment>
+                        如果触发结果为负数，则技能本身受到限制（消耗的属性或者物品必须高于消耗值），如果不满足则不能触发。如果有多条，则必须全部满足才可以。如果是正值，则表示使用后会增加的值，本身不做限制。
+                    </div>
+                </div>
+            </div>
+            <!-- 槽位占用页面 -->
+            <div .panel name="panel-slot">
+                <div style="width:100%%;height:200px;padding-top:5px;padding-bottom:5px;">
+                    模板选择<span .comment>可以到插槽模板页面增加模板</span>
+                    <widget #t_slot_template .slot-template .board type="select" style="flow:h-flow;"></widget>
+                </div>
+                <div .board>
+                    <button onclick="clickAddSlotConfig()">增加槽位占用配置</button>
+                    <span .comment>插槽的部位数据请去插槽标签内添加</span>
+                    <ul #t_slot> </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+
+    <popup #t_popup style="width:600px;height:400px;border: 1px solid silver;background-color:whitesmoke;">
+        <div style="margin: 5px;">
+            数据分类：
+            <select tkey="popup-type" size=1>
+                <option value=2>物品</option>
+                <option value=1>属性</option>
+                <option value=7>技能</option>
+                <option value=12>传送</option>
+                <option value=3>交互</option>
+                <option value=4>剧情</option>
+                <option value=5>奖励</option>
+                <option value=6>战役</option>
+                <option value=8>概率</option>
+                <option value=9>交易</option>
+                <option value=10>生产</option>
+                <option value=11>充值</option>
+            </select>
+        </div>
+        <widget tkey="popup-content" .board .popup></widget>
+    </popup>
+</body>
+
+</html>

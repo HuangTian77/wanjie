@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta charset="UTF-8">
+
+  <title>测试客户端</title>
+  <!-- css配置优先级：从上往下，优先级越高 -->
+  <!-- 全局配置  -->
+  <style src="bundle://res/master.css" />
+  <!-- 基本css  -->
+  <style src='./css/common.css' />
+  <!-- 当前页面CSS配置 -->
+  <style>
+    widget[type="iebrowser"] {
+        width: 414;
+        height: 736;
+        border: 1px solid red;
+    }
+    
+  </style>
+  
+  <!-- 公共脚本 -->
+  <script type="text/lua" src="./common/utils.lua"></script>
+  <script type="text/lua" src="./common/view.lua"></script>
+  
+  <!-- 当前页面脚本 -->
+  <script type="text/lua" src="runclient.lua"></script>
+  
+ </head>
+ <body>
+    测试url:<input #t_url style="width:100%%" />
+    <widget #t_client type="iebrowser"></widget>
+ </body>
+</html>
+

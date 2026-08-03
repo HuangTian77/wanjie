@@ -1,0 +1,27 @@
+<div .panel name="panel-story">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_story type="tablectrl" head="story" data-name="story"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_story onClick="addStory();">新增剧情</button>
+                <button #t_btn_edit_story disabled onClick="editStory();">剧情编辑</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_story disabled onClick="updateStory();">更新数据</button>
+                <button #t_btn_del_story disabled onClick="deleteStory();">删除剧情</button>
+                <table .detail>
+                    <tr>
+                        <td>剧情ID：</td><td #t_story_id></td>
+                    </tr>
+                    <tr>
+                        <td>剧情名称：</td><td><input #t_story_name type="text" size=20 /> </td>
+                    </tr>
+                    <tr>
+                        <td>类型：</td><td #t_story_type></td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td><td><textarea #t_story_note rows=5 style="width:100%%;" /></td></tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

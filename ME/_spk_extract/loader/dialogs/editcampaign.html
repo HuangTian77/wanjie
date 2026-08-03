@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>战役编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            width: 100%%;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-top: 5px;
+            margin-bottom: 0px;
+            padding: 0;
+            overflow-y: auto;
+        }
+
+        li {
+            list-style: none;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .info {
+            color: royalblue;
+            font-weight: bold;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editcampaign.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>战役名称：</td>
+            <td #t_name></td>
+        </tr>
+        <tr>
+            <td>战役ID：</td>
+            <td #t_id></td>
+        </tr>
+        <tr>
+            <td>战役描述：</td>
+            <td #t_desc></td>
+        </tr>
+    </table>
+    <div .board>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div selected panel="panel-enemy">敌方配置</div>
+                <div panel="panel-trigger">触发设置</div>
+            </div>
+
+            <!-- 敌方配置 -->
+            <div .panel name="panel-enemy">
+                <button onclick="clickAddEnemy();">增加敌人</button>
+                <ul #t_enemies>
+                </ul>
+            </div>
+
+            <div .panel name="panel-trigger">
+                <div .tabs #t_tabs_trigger style="min-height: 120px;">
+                    <div .strip style="width:100%%;">
+                        <div selected panel="panel-win">战役胜利</div>
+                        <div panel="panel-lose">战役失败</div>
+                    </div>
+
+                    <!-- 胜利触发 -->
+                    <div .panel name="panel-win">
+                        <p>胜利提示：<input tkey='input-desc' type=text size=20 style="width:100%%;" novalue="战斗胜利后的提示文字" /></p>
+                        <p>触发类型：<select tkey='control' size=1>
+                                <option value=0>无</option>
+                                <option value=1>配置</option>
+                                <option value=2>脚本</option>
+                            </select>
+                            &nbsp;<span tkey='cond-top-container' style="display: none;">
+                                <button onClick="addWinTrigger();">增加触发</button>
+                            </span>
+                        </p>
+                        <div tkey='cond-container' .board style="display:none;">
+                            <ul tkey='cond' .reorder>
+                            </ul>
+                        </div>
+                        <div tkey='script-container' .board style="display:none;">
+                            <widget tkey='script' type="scintilla" />
+                        </div>
+                    </div>
+
+                    <!-- 失败触发 -->
+                    <div .panel name="panel-lose">
+                        <p>失败提示：<input tkey='input-desc' type=text size=20 style="width:100%%;" novalue="战斗失败后的提示文字" /></p>
+                        <p>触发类型：<select tkey='control' size=1>
+                                <option value=0>无</option>
+                                <option value=1>配置</option>
+                                <option value=2>脚本</option>
+                            </select>
+                            &nbsp;<span tkey='cond-top-container' style="display: none;">
+                                <button onClick="addLoseTrigger();">增加触发</button>
+                            </span>
+                        </p>
+                        <div tkey='cond-container' .board style="display:none;">
+                            <ul tkey='cond' .reorder>
+                            </ul>
+                        </div>
+                        <div tkey='script-container' .board style="display:none;">
+                            <widget tkey='script' type="scintilla" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

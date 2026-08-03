@@ -1,0 +1,41 @@
+<div .panel name="panel-random-trigger">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_random type="tablectrl" head="random" data-name="random"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_random onClick="addRandom();">新增概率</button>
+                <button #t_btn_copy_random disabled onClick="copyRandom();">复制概率</button>
+                <button #t_btn_detail_random disabled onClick="detailRandom();">详情编辑</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_random disabled onClick="updateRandom();">更新信息</button>
+                <button #t_btn_del_random disabled onClick="deleteRandom();">删除信息</button>
+                <table .detail>
+                    <tr>
+                        <td>ID：</td>
+                        <td #t_random_id></td>
+                    </tr>
+                    <tr>
+                        <td>名称：</td>
+                        <td><input #t_random_name type="text" size=20 /> </td>
+                    </tr>
+                    <tr>
+                        <td>条件类型：</td>
+                        <td #t_condition_type></td>
+                    </tr>
+                    <tr>
+                        <td>满足触发：</td>
+                        <td #t_success_type></td>
+                    </tr>
+                    <tr>
+                        <td>失败触发：</td>
+                        <td #t_fail_type></td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td>
+                        <td><textarea #t_random_note rows=2 style="width:100%%;" /></td>
+                    </tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

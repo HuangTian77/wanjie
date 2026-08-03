@@ -1,0 +1,49 @@
+/* 定义公共控件、元素样式 */
+/* 列表控件 */
+widget[type="tablectrl"] {
+	-row-height: 30;
+	border: 1px solid silver;
+	border-top: 0px;
+}
+
+/* 列表查询控件默认规则 */
+.querytable {
+	-ctrl-lua-script: "bp://querytable.lua";
+}
+
+select {
+	-ctrl-lua-script: "bp://select.lua";
+}
+
+.user-property {
+	-prototype: "bp://user-property.lua";
+}
+
+.enemy {
+	-prototype: "bp://enemy.lua";
+}
+
+.enemy-template {
+	-prototype: "bp://enemy-template.lua";
+}
+
+.slot-data {
+	-prototype: "bp://slot.lua";
+}
+
+.slot-template {
+	-prototype: "bp://slot-template.lua";
+}
+
+.skill-data {
+	-prototype: "bp://skill.lua";
+}
+
+input[type="text"],input[type="number"],input[type="decimal"] 
+{
+	-ctrl-lua-script: "bp://focussel.lua"; 	
+}
+
+.qrcode {
+	-ctrl-lua-script: "bp://showqrcode.lua";
+}

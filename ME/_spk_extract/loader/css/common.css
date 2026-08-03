@@ -1,0 +1,113 @@
+widget[type="tablectrl"] {
+    width: 100%%;
+    height: 100%%;
+}
+
+widget[type="scintilla"] {
+    width: 100%%;
+    height: 100%%;
+    border: 1px solid silver;
+    -lexer-name: lua;
+    -theme: "editplus";
+    -prototype: "editor";
+    -show-line-number: 3;
+    padding: 0;
+    margin: 0;
+}
+
+.comment {
+    font-size: 11px;
+    margin-left: 10px;
+    color: gray;
+}
+
+li.cond {
+    list-style: none;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+ul.cond {
+    border: 1px solid silver;
+    margin: 0;
+    padding: 0;
+    height: 100%%;
+    width: 100%%;
+    overflow: auto;
+}
+
+/* 横向全部填充 */
+span.full-width {
+    display: inline-block;
+    width: 100%%;
+}
+
+
+/* 默认没有内容显示的提示颜色 */
+input:empty {
+    color: gray;
+}
+
+widget[type="select"] option {
+    min-width: 100px;
+    border: 1px solid silver;
+    text-align: center;
+    margin: 5 15;
+}
+
+/* 对话框顶部详细信息的表格格式，第一列自动适配长度，并且文字右对齐，第二格撑满剩余宽度 */
+table.detail-info {
+    width: 100%%;
+}
+
+.detail-info td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.detail-info td:nth-child(1) {
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: text-top;
+}
+
+.detail-info td:nth-child(2) {
+    width: 100%%;
+    color: royalblue;
+    font-weight: bold;
+    /* 这里开启能解决数据量太多导致主要操作区域失效的问题，但是比较影响界面效果，先不开启
+    max-height: 100px;
+    overflow-y: auto;
+    */
+}
+
+/* 主界面上的详细数据展现表格区， 第一列左对齐，第二列撑满宽度 */
+table.detail {
+    width: 100%%;
+}
+
+table.detail td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+table.detail td:nth-child(1) {
+    white-space: nowrap;
+    vertical-align: text-top;
+}
+
+table.detail td:nth-child(2) {
+    width: 100%%;
+}
+
+/* 可拖动的 ul 和 li */
+ul.reorder {
+    accept-drop: selector(li);
+}
+
+.reorder li {
+    draggable: only-move;
+}

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>互动编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <style src="../css/tab.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        ul {
+            border: 1px solid silver;
+            margin: 5px 0 0 0;
+            padding: 0;
+            overflow: auto;
+            width: 100%%;
+            height: 100%%;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 条件触发的 ui 公共脚本-->
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="edittalk.lua"></script>
+
+</head>
+
+<body>
+    <!-- <button onClick='clickTest();'>测试</button> -->
+    <div>
+        <table .detail-info>
+            <tr>
+                <td>互动名称：</td>
+                <td #t_name></td>
+            </tr>
+            <tr>
+                <td>互动对象：</td>
+                <td #t_object_name></td>
+            </tr>
+            <tr>
+                <td>互动ID：</td>
+                <td #t_id></td>
+            </tr>
+        </table>
+    </div>
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_interact selected panel="panel-interact">互动控制</div>
+            <div #t_panel_visible panel="panel-visible">显示控制</div>
+        </div>
+
+        <!-- 触发控制页面 -->
+        <div .panel name="panel-interact">
+            <div .tabs #t_tabs_interact style="min-height: 120px;">
+                <div .strip style="width:100%%;">
+                    <div #t_panel_condition selected panel="panel-condition">条件</div>
+                    <div #t_panel_success panel="panel-success">成功</div>
+                    <div #t_panel_fail panel="panel-fail">失败</div>
+                </div>
+                <!-- 互动条件 -->
+                <div .panel .panel-sub name="panel-condition">
+                    <p>
+                        条件类型：<select tkey='control' size=1>
+                            <option value=0>无</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select>
+                    </p>
+                    <div #t_condition tkey='container-config' .board style="display:none;">
+                        <button onClick="clickAddCondition()">增加条件</button>
+                        <select tkey=ops size=1>
+                            <option value=0>全部满足（与）</option>
+                            <option value=1>满足一个（或）</option>
+                        </select>
+                        <ul tkey='config'>
+                        </ul>
+                        <div .comment>触发条件每一条都满足才认为是成功触发，暂时不支持或的关系。无论条件还是结构，都支持多条，但是请不要填写相同类型的条目（比如同一个物品），会去重执行。</div>
+                    </div>
+                    <div tkey='container-script' .board style="display:none;">
+                        <widget tkey='script' type="scintilla" />
+                    </div>
+                </div>
+
+                <!-- 成功触发 -->
+                <div .panel .panel-sub name="panel-success">
+                    <p>
+                        触发类型：<select tkey='control' size=1>
+                            <option value=0>无</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select>
+                        &nbsp;执行次数：<input #t_count type=number title='条件执行成功n次后便不再触发，小于等于0或者不填为永久触发' step=1 size=4
+                            value=0 />
+                    </p>
+                    <div #t_condition tkey='container-config' .board style="display:none;">
+                        <button onClick="clickAddResult()">增加触发</button>
+                        <ul tkey='config' .reorder>
+                        </ul>
+                    </div>
+                    <div tkey='container-script' .board style="display:none;">
+                        <widget tkey='script' type="scintilla" />
+                    </div>
+                </div>
+                <!-- 失败触发 -->
+                <div .panel .panel-sub name="panel-fail">
+                    <p>
+                        触发类型：<select tkey='control' size=1>
+                            <option value=0>无</option>
+                            <option value=1>配置</option>
+                            <option value=2>脚本</option>
+                        </select>
+                        &nbsp;失败文本：<input #t_fail_text type=text style="width:100%%" novalue='触发条件不满足时的文字提示' />
+                    </p>
+                    <div #t_condition tkey='container-config' .board style="display:none;">
+                        <button onClick="clickAddResult()">增加触发</button>
+                        <ul tkey='config' .reorder>
+                        </ul>
+                    </div>
+                    <div tkey='container-script' .board style="display:none;">
+                        <widget tkey='script' type="scintilla" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 互动显示控制页面 -->
+        <div .panel .panel-sub name="panel-visible">
+            <div style="margin-bottom:15px;">
+                条件类型：<select #t_visible_trigger_type tkey='control' size=1>
+                    <option value=0>无</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select>
+            </div>
+            <div #t_visible_condition tkey='container-config' .board style="display:none;">
+                <button onClick="clickAddCondition()">增加条件</button>
+                <select tkey=ops size=1>
+                    <option value=0>全部满足（与）</option>
+                    <option value=1>满足一个（或）</option>
+                </select>
+                <ul #t_visible_cond tkey='config'>
+                </ul>
+                <div .comment>
+                    如果不增加条件，则当前的互动默认可见，如果添加了条件，则这里的条件必须同时满足才会显示当前互动
+                </div>
+            </div>
+            <div #t_visible_script tkey='container-script' .board style="display:none;">
+                <widget tkey='script' type="scintilla" #t_visible_script_ta />
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

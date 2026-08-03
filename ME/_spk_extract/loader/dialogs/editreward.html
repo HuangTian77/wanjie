@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>奖励内容编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            width: 100%%;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-top: 5px;
+            margin-bottom: 0px;
+            padding: 0;
+            overflow: auto;
+        }
+
+        li {
+            display: block;
+            // margin: 20px -10px 20px 20px;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            // behavior: clickable;
+        }
+
+        /*
+        li:current {
+            background-color:#3399ff;
+            color: white;
+        }
+        */
+
+        div.board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- <script type="text/lua" src="bp://trigger_ui.lua"></script> -->
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editreward.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>名称：</td>
+            <td><span #t_name></span></td>
+        </tr>
+        <tr>
+            <td>ID：</td>
+            <td><span #t_id></span></td>
+        </tr>
+        <tr>
+            <td>备注：</td>
+            <td><span #t_note></span></td>
+        </tr>
+    </table>
+    <p>奖励类型：<select #t_select_type size=1>
+            <option value=1>概率随机</option>
+            <option value=2>权重分配</option>
+        </select></p>
+    <div .board>
+        <div .board #t_container_1 style="display:none;">
+            <button onclick="clickAddReward();">增加奖励</button>
+            <ul #t_result_1>
+            </ul>
+            <div .comment>『概率随机』中的每一个奖励的概率是独立计算的，可能一次全都有，可能一次一个也没有</div>
+        </div>
+        <div .board #t_container_2 style="display:none;">
+            <button onclick="clickAddReward();">增加奖励</button>
+            &nbsp;&nbsp; 执行次数：<input #t_count type="number" min=1 size=4 step=1 value=1 />
+            &nbsp;&nbsp; <button #t_duplicate onclick="" type="checkbox" alt="如果多次执行是否可以出现相同的奖励">可重复</button>
+            <ul #t_result_2>
+            </ul>
+            <div .comment>『权重分配』中的每一个奖励的的权重是获得此奖励的概率数值，每次只可能在所有奖励中得到一个，但是可以配置『执行次数』来增加获取的个数。而『可重复』表示多次执行得到的奖励是否允许相同。请注意这里的逻辑陷。</div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

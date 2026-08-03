@@ -1,0 +1,65 @@
+/* inner */
+div.alternation-interact-object {
+    width: 200px;
+    height: 100%%;
+}
+
+.alternation-interact-object ul {
+    width: 100%%;
+    height: 100%%;
+    border: 1px solid silver;
+    margin-top: 5px;
+    margin-left: 0;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    padding-left: 0;
+    overflow: auto;
+    accept-drop: selector(li.alternation-object);
+}
+
+.alternation-interact-object li {
+    display: block;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+ul.alternation-object {
+    margin-bottom: 0;
+    margin-top: 2px;
+}
+
+.alternation-config {
+    width: 100%%;
+    height: 100%%;
+    margin-bottom: 0px;
+    padding-left: 5px;
+    padding-top: 22px;
+}
+
+ul.alternation-cond {
+    padding: 0;
+    margin: 0;
+    border: 1px solid silver;
+    overflow: auto;
+    width: 100%%;
+    height: 100%%;
+}
+
+.alternation-script {
+    margin: 0;
+}
+
+li.alternation-object {
+    behavior: clickable;
+    draggable: only-move;
+}
+
+li.alternation-object:checked {
+    background-color:#3399ff;
+    color: white;
+}
+
+.alternation-module {
+    -ctrl-lua-script: "bp://alternation.lua";
+}

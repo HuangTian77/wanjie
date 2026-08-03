@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>概率模块编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            width: 100%%;
+            height: 100%%;
+            border: 1px solid silver;
+            margin-top: 5px;
+            margin-bottom: 0px;
+            padding: 0;
+            overflow: auto;
+            accept-drop: selector(li)
+        }
+
+        li {
+            list-style: none;
+            // margin: 20px -10px 20px 20px;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            // behavior: clickable;
+            overflow: hidden;
+            white-space: nowrap;
+            draggable: only-move;
+        }
+
+        /*
+        li:current {
+            background-color:#3399ff;
+            color: white;
+        }
+        */
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        .popup {
+            flow:h-flow;
+            overflow-y: auto;
+        }
+
+        .popup div {
+            display: block;
+            behavior: check;
+            min-width: 50px;
+            margin: 2px;
+            border: 1px solid silver;
+            text-align: center;
+            padding: 3px 10px;
+            white-space: nowrap;
+        }
+
+        .popup div:checked {
+            background-color: rgb(51, 125, 194);
+            border-radius: 5px;
+            border: 1px solid black;
+            color: white;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editrandom.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>名称：</td>
+            <td><span #t_name></span></td>
+        </tr>
+        <tr>
+            <td>ID：</td>
+            <td><span #t_id></span></td>
+        </tr>
+        <tr>
+            <td>备注：</td>
+            <td><span #t_note></span></td>
+        </tr>
+    </table>
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_cond selected panel="panel-cond">模块条件</div>
+            <div #t_panel_success panel="panel-success">条件满足触发</div>
+            <div #t_panel_fail panel="panel-fail">条件不满足触发</div>
+        </div>
+        <!-- 条件 -->
+        <div .panel name="panel-cond">
+            <p>条件类型：<select tkey="type_select" size=1>
+                    <option value=0>无</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select>
+            </p>
+            <div .board tkey="container-config" style="display: none;">
+                <button onclick="clickAddCondition();">增加条件</button>
+                <select tkey='ops' size=1>
+                    <option value=0>全部满足（与）</option>
+                    <option value=1>满足一个（或）</option>
+                </select>
+                <ul tkey="config"></ul>
+            </div>
+            <div .board tkey="container-script" style="display: none;">
+                <button onclick="clickGrammarCheck();">语法检查</button>
+                <span style="display:inline-block;width:100%%;"></span>
+                <button onclick="clickAddTemplate();">模板</button>
+                <widget tkey="script" type='scintilla' style="margin-top:5px;"></widget>
+            </div>
+        </div>
+
+        <!-- 条件满足 -->
+        <div .panel .panel-trigger name="panel-success">
+            <p>模块触发类型：<select tkey="type_select" size=1>
+                    <option value=2>权重分配</option>
+                    <option value=1>概率随机</option>
+                    <!-- <option value=2>脚本逻辑</option> -->
+                </select>
+            </p>
+            <div .board>
+                <div .board tkey="container-weight" style="display:none;">
+                    <button onclick="clickAddTrigger();">增加触发</button>
+                    <button onclick="clickBatchAddTrigger();">批量增加</button>
+                    <span style="display:inline-block; width:100%%;"></span>
+                    &nbsp;&nbsp; 执行次数：<input tkey="count_input" type="number" min=1 size=4 step=1 value=1 />
+                    &nbsp;&nbsp; <button tkey="duplicate_checkbox" type="checkbox" alt="如果多次执行是否可以出现相同的">可重复</button>
+                    <button onclick="clearTriggerResult(this:find_nearest_parent('div'):F('ul'))">清空</button>
+                    <ul tkey="ul_weight">
+                    </ul>
+                </div>
+                <div .board tkey="container-random" style="display:none;">
+                    <button onclick="clickAddTrigger();">增加触发</button>
+                    <button onclick="clickBatchAddTrigger();">批量增加</button>
+                    <span style="display:inline-block; width:100%%;"></span>
+                    <button onclick="clearTriggerResult(this:find_nearest_parent('div'):F('ul'))">清空</button>
+                    <ul tkey="ul_random">
+                    </ul>
+                </div>
+                <div .board tkey="container-script" style="display:none;">
+                    <button onclick="clickGrammarCheck();">语法检查</button>
+                    <span style="display:inline-block;width:100%%;"></span>
+                    <button onclick="clickAddTemplate();">模板</button>
+                    <widget tkey="script" type='scintilla' style="margin-top:5px;"></widget>
+                </div>
+            </div>
+        </div>
+
+        <!-- 条件不满足 -->
+        <div .panel .panel-trigger name="panel-fail">
+            <p>模块触发类型：<select tkey="type_select" size=1>
+                    <option value=2>权重分配</option>
+                    <option value=1>概率随机</option>
+                    <!-- <option value=2>脚本逻辑</option> -->
+                </select>
+            </p>
+            <div .board>
+                <div .board tkey="container-weight" style="display:none;">
+                    <button onclick="clickAddTrigger();">增加触发</button>
+                    <button onclick="clickBatchAddTrigger();">批量增加</button>
+                    <span style="display:inline-block; width:100%%;"></span>
+                    &nbsp;&nbsp; 执行次数：<input tkey="count_input" type="number" min=1 size=4 step=1 value=1 />
+                    &nbsp;&nbsp; <button tkey="duplicate_checkbox" type="checkbox" alt="如果多次执行是否可以出现相同的">可重复</button>
+                    <button onclick="clearTriggerResult(this:find_nearest_parent('div'):F('ul'))">清空</button>
+                    <ul tkey="ul_weight" #t_result_0>
+                    </ul>
+                </div>
+                <div .board tkey="container-random" style="display:none;">
+                    <button onclick="clickAddTrigger();">增加触发</button>
+                    <button onclick="clickBatchAddTrigger();">批量增加</button>
+                    <span style="display:inline-block; width:100%%;"></span>
+                    <button onclick="clearTriggerResult(this:find_nearest_parent('div'):F('ul'))">清空</button>
+                    <ul tkey="ul_random" #t_result_1>
+                    </ul>
+                </div>
+                <div .board tkey="container-script" style="display:none;">
+                    <button onclick="clickGrammarCheck();">语法检查</button>
+                    <span style="display:inline-block;width:100%%;"></span>
+                    <button onclick="clickAddTemplate();">模板</button>
+                    <widget tkey="script" type='scintilla' style="margin-top:5px;"></widget>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+
+    <!-- 批量数据选择的弹出对话框 -->
+    <popup #t_popup style="width:600px;height:400px;border: 1px solid silver;background-color:whitesmoke;">
+        <div style="margin: 5px;">
+            批量分类：
+            <select tkey="popup-type" size=1>
+                <option value=2>物品</option>
+                <option value=1>属性</option>
+                <option value=7>技能</option>
+                <option value=12>传送</option>
+                <option value=3>交互</option>
+                <option value=4>剧情</option>
+                <option value=5>奖励</option>
+                <option value=6>战役</option>
+                <option value=8>概率</option>
+                <option value=9>交易</option>
+                <option value=10>生产</option>
+                <option value=11>充值</option>
+            </select>
+            <span style="display: inline-block;width:100%%;"></span>
+            <button onclick="clickPopupSelectAll(this:find_nearest_parent('popup'):F('widget'));">全选</button>
+            <button onclick="clickPopupUnselectAll(this:find_nearest_parent('popup'):F('widget'));">清空</button>
+        </div>
+        <widget tkey="popup-content" .board .popup></widget>
+        <div style="margin: 10px;">
+            <span style="width:50%%; display:inline-block;"></span><button onclick="clickPopupConfirm();" style="padding: 5px;min-width:100px;">确定添加到界面</button>
+        </div>
+    </popup>
+</body>
+
+</html>

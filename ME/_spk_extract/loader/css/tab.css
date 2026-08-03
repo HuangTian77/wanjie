@@ -1,0 +1,142 @@
+.tabs {
+    font: system;
+    behavior: tabs;
+    height: *;
+    width: *;
+    overflow: hidden;
+}
+
+.tabs>.strip
+/* the tab strip */
+
+{
+    flow: horizontal;
+    width: *;
+    padding: 4px 10px 0 10px;
+    background-color: window window threedface threedface;
+    border-bottom: 1px solid threedshadow;
+    white-space: nowrap;
+}
+
+.tabs>.strip>[panel]
+/* the tab having panel attribute, passive by default */
+
+{
+    padding: 3px 8px;
+    height: *;
+    /* span the whole row */
+    max-width: auto;
+    /* not wider than max-intrinsic  */
+    background-color: window;
+    border-radius: 6px 6px 0 0;
+    border-style: solid;
+    border-color: threedshadow;
+    border-width: 1px 1px 0 1px;
+    margin: 0 -1px;
+    cursor: pointer;
+}
+
+.tabs>.strip>[panel]:nth-child(1) {
+    background-color: bisque;
+}
+
+.tabs>.strip>[panel]:nth-child(2) {
+    background-color: lavender;
+}
+
+.tabs>.strip>[panel]:nth-child(3) {
+    background-color: lemonchiffon;
+}
+
+.tabs>.strip>[panel]:nth-child(4) {
+    background-color: mistyrose;
+}
+
+.tabs>.strip>[panel]:nth-child(5) {
+    background-color: cornsilk;
+}
+
+.tabs>.strip>[panel]:nth-child(6) {
+    background-color: thistle;
+}
+
+.tabs>.strip>[panel]:nth-child(7) {
+    background-color: plum;
+}
+
+.tabs>.strip>[panel]:nth-child(8) {
+    background-color: rgb(197, 238, 231);
+}
+
+.tabs>.strip>[panel]:nth-child(9) {
+    background-color: rgb(227, 243, 183);
+}
+
+.tabs>.strip>[panel]:nth-child(10) {
+    background-color: khaki;
+}
+
+.tabs>.strip>[panel]:nth-child(11) {
+    background-color: #C7E7FF;
+}
+
+.tabs>.strip>[panel]:nth-child(12) {
+    background-color: #C7D3FF;
+}
+
+.tabs>.strip>[panel]:nth-child(13) {
+    background-color: #D8C7FF;
+}
+
+.tabs>.strip>[panel]:nth-child(14) {
+    background-color: #FFC7C7;
+}
+
+
+.tabs>.strip>[panel]:hover
+/* passive tab */
+
+{
+    //border-top-color: orange;
+    color: blueviolet;
+}
+
+.tabs>.strip>[panel]:current
+/*active tab*/
+
+{
+    margin: -2px -2px -1px -2px;
+    padding: 4px 10px 5px 10px;
+    background-color-bottom-right: window;
+    background-color-bottom-left: window;
+    position: relative;
+}
+
+.tabs>.strip>[panel]:current:hover
+/*active tab*/
+
+{
+    //color:red;
+}
+
+.tabs:tab-focus>.strip>[panel]:current>*
+/* outline active tab content if we've gotten focus by tab*/
+
+{
+    outline: 1px dotted invert;
+}
+
+.tabs>[name] {
+    display: none;
+}
+
+.tabs>[name]:expanded // current panel
+{
+    padding: 4px;
+    padding-top: 10px;
+    display: block;
+    width: *;
+    height: *;
+    border: 1px solid threedshadow;
+    border-top-style: none;
+}

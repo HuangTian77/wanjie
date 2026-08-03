@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>运行数据详情</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src="../css/common.css" />
+    <!-- 标签页 -->
+    <style src="../css/tab.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="showGameOnlineData.lua"></script>
+
+</head>
+
+<body>
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_gamedata selected panel="panel-gamedata">运营数据</div>
+            <div #t_panel_payment panel="panel-payment">付费</div>
+        </div>
+        <!-- 游戏运营数据：新增、活跃、留存 -->
+        <div .panel name="panel-gamedata">
+            <div style="margin-bottom: 3px;"><button #t_btn_1 onclick="clickRefreshData(1)">刷新数据</button><span .full-width></span>刷新时间：<span tkey="refresh-time"></span></div>
+            <widget #t_qu_gamedata type="tablectrl" head="onlineGameInfo"></widget>
+        </div>
+        <!-- 付费 -->
+        <div .panel name="panel-payment">
+            <div style="margin-bottom: 3px;"><button #t_btn_2 onclick="clickRefreshData(2)">刷新数据</button><span .full-width></span>刷新时间：<span tkey="refresh-time"></span></div>
+            <widget #t_qu_payment type="tablectrl" head="onlinePayment"></widget>
+        </div>
+    </div>
+</body>
+
+</html>

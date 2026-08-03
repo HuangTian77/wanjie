@@ -1,0 +1,26 @@
+<div .panel name="panel-logic">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_logic type="tablectrl" head="logic" data-name="logic"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_logic onClick="addLogic();">新增逻辑</button>
+                <button #t_btn_copy_logic disabled onClick="copyLogic();">复制逻辑</button>
+                <button #t_btn_edit_logic disabled onClick="editLogic();">逻辑编辑</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_logic disabled onClick="updateLogic();">更新数据</button>
+                <button #t_btn_del_logic disabled onClick="deleteLogic();">删除逻辑</button>
+                <table .detail>
+                    <tr>
+                        <td>ID：</td><td #t_logic_id></td>
+                    </tr>
+                    <tr>
+                        <td>名称：</td><td><input #t_logic_name type="text" size=20 /> </td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td><td><textarea #t_logic_note rows=5 style="width:100%%;" /></td>
+                    </tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

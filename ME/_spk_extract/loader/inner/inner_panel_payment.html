@@ -1,0 +1,31 @@
+<div .panel name="panel-payment">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_payment type="tablectrl" head="payment" data-name="payment"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_payment onClick="addPayment();">新增充值</button>
+                <button #t_btn_edit_payment disabled onClick="editPayment();">充值编辑</button>
+                <span .full-width></span>
+                <button #t_btn_up_payment disabled onClick="updatePayment();">更新数据</button>
+                <button #t_btn_del_payment disabled onClick="deletePayment();">删除充值</button>
+                <table .detail>
+                    <tr>
+                        <td>ID：</td><td #t_payment_id></td>
+                    </tr>
+                    <tr>
+                        <td>名称：</td><td><input #t_payment_name type="text" size=20 /> </td>
+                    </tr>
+                    <tr>
+                        <td>价格：</td><td><input #t_payment_price type=decimal size=20 min=1 step=1 /> </td>
+                    </tr>
+                    <tr>
+                        <td>描述：</td><td><textarea #t_payment_desc rows="5" style="width:100%%" /> </td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td><td><textarea #t_payment_note rows=5 style="width:100%%;" /></td>
+                    </tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

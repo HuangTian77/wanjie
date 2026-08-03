@@ -1,0 +1,22 @@
+<div .panel name="panel-alternation">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_alternation type="tablectrl" head="alternation" data-name="alternation"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_alternation onClick="addAlternation();">新增交互</button>
+                <button #t_btn_detail_alternation disabled onClick="detailAlternation();">交互编辑</button>
+                <button #t_btn_export_data_alternation onClick="exportCSVData('alternation', 'alternation');">导出数据</button>
+                <button #t_btn_import_data_alternation onClick="importCSVData('alternation', 'alternation');">导入数据</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_alternation disabled onClick="updateAlternation();">更新信息</button>
+                <button #t_btn_del_alternation disabled onClick="deleteAlternation();">删除信息</button>
+                <table .detail>
+                    <tr><td>交互ID：</td><td><span #t_alternation_id></span> </td></tr>
+                    <tr><td>标题：</td><td><input #t_alternation_name type="text" size=20 /> </td></tr>
+                    <tr><td>内容：</td><td><textarea #t_alternation_desc rows=3 style="width:100%%;"/> </td></tr>
+                    <tr><td>备注：</td><td><textarea #t_alternation_note rows=2 style="width:100%%;" /></td></tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

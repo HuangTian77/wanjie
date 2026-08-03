@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>逻辑详情编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        widget[type='scintilla'] {
+            margin-top: 3px;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editlogic.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <table .detail-info>
+        <tr>
+            <td>ID：</td>
+            <td #t_id></td>
+        </tr>
+        <tr>
+            <td>名称：</td>
+            <td #t_name></td>
+        </tr>
+        <tr>
+            <td>备注：</td>
+            <td #t_note></td>
+        </tr>
+    </table>
+    <div .tabs #t_tabs style="min-height: 120px;">
+        <!-- 进入触发标签 -->
+        <div .strip style="width:100%%;">
+            <div selected panel="panel-cond">触发条件</div>
+            <div panel="panel-success">成功触发</div>
+            <div panel="panel-fail">失败触发</div>
+        </div>
+        <div .panel name='panel-cond'>
+            <p>条件类型：<select tkey=trigger size=1>
+                    <option selected value=0>无条件</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select></p>
+            <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                <div style="margin-bottom:3px;">
+                    <button onclick="clickAddCondition(this:find_nearest_parent('div').next);">增加条件</button>
+                    <select tkey=ops size=1>
+                        <option selected value=0>全部满足（与）</option>
+                        <option value=1>满足一个（或）</option>
+                    </select>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                </div>
+                <ul .cond></ul>
+            </div>
+            <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                <button onclick="clickCheckGrammar(this:find_nearest_parent('div'):F('widget').value)">语法校验</button>
+                <widget type="scintilla" />
+            </div>
+        </div>
+        <div .panel name='panel-success'>
+            <p>触发类型：<select tkey=trigger size=1>
+                    <option selected value=0>无触发</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select></p>
+            <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                <div style="margin-bottom:3px;">
+                    <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                </div>
+                <ul .cond .reorder></ul>
+            </div>
+            <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                <button onclick="clickCheckGrammar(this:find_nearest_parent('div'):F('widget').value)">语法校验</button>
+                <widget type="scintilla" />
+            </div>
+        </div>
+        <div .panel name='panel-fail'>
+            <p>触发类型：<select tkey=trigger size=1>
+                    <option selected value=0>无触发</option>
+                    <option value=1>配置</option>
+                    <option value=2>脚本</option>
+                </select></p>
+            <div tkey=container-config style="display:none;width:100%%;height:100%%;">
+                <div style="margin-bottom:3px;">
+                    <button onclick="clickAddTrigger(this:find_nearest_parent('div').next);">增加触发</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div').next.html=''">清空</button>
+                </div>
+                <ul .cond .reorder></ul>
+            </div>
+            <div tkey=container-script style="display:none;width:100%%;height:100%%;">
+                <button onclick="clickCheckGrammar(this:find_nearest_parent('div'):F('widget').value)">语法校验</button>
+                <widget type="scintilla" />
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

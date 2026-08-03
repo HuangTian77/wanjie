@@ -1,0 +1,119 @@
+<div .alternation-interact-object>
+    <button onclick="this:find_nearest_parent('.alternation-module'):clickAlternationAddInteract(this);">增加互动</button>
+    <span .comment>上下拖动可排序</span>
+    <ul #t_alternation .alternation-object>
+    </ul>
+</div>
+<div .alternation-config>
+    <div style="width:100%%;">
+        <p style="margin-top:5px;margin-bottom:9px;">
+            互动描述：<input #t_object_desc disabled type="text" style="width:100%%;" />
+        </p>
+        <p style="margin-top:5px;margin-bottom:9px;">
+            失败描述：<input #t_object_fail_desc disabled type="text" style="width:100%%;" />
+        </p>
+        <p style="margin-top:5px;margin-bottom:9px;">
+            互动备注：<input #t_object_note disabled type="text" style="width:100%%;" />
+        </p>
+    </div>
+    <div .tabs #t_tabs_alternation style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div selected panel="panel-alternation-visible">显示选项</div>
+            <div panel="panel-alternation-trigger-cond">触发条件</div>
+            <div panel="panel-alternation-trigger-success">成功触发</div>
+            <div panel="panel-alternation-trigger-failed">失败触发</div>
+        </div>
+        <!-- 显示条件 -->
+        <div .panel .alternation-panel name="panel-alternation-visible">
+            <div style="width:100%%;height:100%%;">
+                <p>控制类型：<select tkey='control' disabled size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                    &nbsp;<span tkey='cond-top-container' style="display: none;">
+                        <button onClick="this:find_nearest_parent('.alternation-module'):clickAlternationAddCond(this);">增加条件</button>
+                        <select tkey='cond-rule' size=1>
+                            <option value=0>全部满足（与）</option>
+                            <option value=1>满足一个（或）</option>
+                        </select>
+                    </span>
+                </p>
+                <div tkey='cond-container' style="display:none;width:100%%;height:100%%;overflow: auto;">
+                    <ul tkey='cond' .alternation-cond>
+                    </ul>
+                </div>
+                <div tkey='script-container' style="display:none;width:100%%;height:100%%;">
+                    <widget tkey='script' type="scintilla" .alternation-script />
+                </div>
+            </div>
+        </div>
+        <!-- 触发条件 -->
+        <div .panel .alternation-panel name="panel-alternation-trigger-cond">
+            <div style="width:100%%;height:100%%;">
+                <p>控制类型：<select tkey='control' disabled size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                    &nbsp;<span tkey='cond-top-container' style="display: none;">
+                        <button onClick="this:find_nearest_parent('.alternation-module'):clickAlternationAddCond(this);">增加条件</button>
+                        <select tkey='cond-rule' size=1>
+                            <option value=0>全部满足（与）</option>
+                            <option value=1>满足一个（或）</option>
+                        </select>
+                    </span>
+                </p>
+                <div tkey='cond-container' style="display:none;width:100%%;height:100%%;overflow: auto;">
+                    <ul tkey='cond' .alternation-cond>
+                    </ul>
+                </div>
+                <div tkey='script-container' style="display:none;width:100%%;height:100%%;">
+                    <widget tkey='script' type="scintilla" .alternation-script />
+                </div>
+            </div>
+        </div>
+        <!-- 成功触发 -->
+        <div .panel name="panel-alternation-trigger-success">
+            <div style="width:100%%;height:100%%;">
+                <p>控制类型：<select tkey='control' disabled size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                    &nbsp;<span tkey='cond-top-container' style="display: none;">
+                        <button onClick="this:find_nearest_parent('.alternation-module'):clickAlternationAddSuccResult(this);">增加结果</button>
+                    </span>
+                </p>
+                <div tkey='cond-container' style="display:none;width:100%%;height:100%%;overflow: auto;">
+                    <ul tkey='cond' .alternation-cond .reorder>
+                    </ul>
+                </div>
+                <div tkey='script-container' style="display:none;width:100%%;height:100%%;">
+                    <widget tkey='script' type="scintilla" .alternation-script />
+                </div>
+            </div>
+        </div>
+        <!-- 失败触发 -->
+        <div .panel .alternation-panel name="panel-alternation-trigger-failed">
+            <div style="width:100%%;height:100%%;">
+                <p>控制类型：<select tkey='control' disabled size=1>
+                        <option value=0>无</option>
+                        <option value=1>配置</option>
+                        <option value=2>脚本</option>
+                    </select>
+                    &nbsp;<span tkey='cond-top-container' style="display: none;">
+                        <button onClick="this:find_nearest_parent('.alternation-module'):clickAlternationAddFailResult(this);">增加结果</button>
+                    </span>
+                </p>
+                <div tkey='cond-container' style="display:none;width:100%%;height:100%%;overflow: auto;">
+                    <ul tkey='cond' .alternation-cond .reorder>
+                    </ul>
+                </div>
+                <div tkey='script-container' style="display:none;width:100%%;height:100%%;">
+                    <widget tkey='script' type="scintilla" .alternation-script />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

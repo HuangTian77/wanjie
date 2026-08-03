@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>线上游戏配置</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src="../css/common.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        .detail-info td:nth-child(1) {
+            vertical-align: middle;
+        }
+
+        .detail-info td:nth-child(2) {
+            color: black;
+        }
+
+        .qrcode {
+            width: 187px;
+            height: 187px;
+            /* border:1px solid blue; */
+            margin:0 auto;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editGameInfo.lua"></script>
+
+</head>
+
+<body>
+    <div .board style="overflow: auto">
+        <table .detail-info>
+            <tr>
+                <td>游戏ID：</td>
+                <td #t_id></td>
+            </tr>
+            <tr>
+                <td>游戏名称：</td>
+                <td><input #t_name type=text style="width:100%%;" /></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: text-top">游戏描述：</td>
+                <td><textarea #t_desc rows=5 style="width:100%%;" /></td>
+            </tr>
+            <tr>
+                <td>图标文件：</td>
+                <td>
+                    <button onclick="uploadIconFile();">上传</button>
+                    <input #t_image_url type=url style="width:100%%;" />
+                    <button onclick="t_icon.attributes.src=t_image_url.value">查看图标</button>
+                </td>
+            </tr>
+            <tr>
+                <td>游戏数据：</td>
+                <td>
+                    <button onclick="uploadDataFile();">上传</button>
+                    <input #t_data_url type=url style="width:100%%;" />
+                    <button onclick="downloadDataFile();">下载</button>
+                </td>
+            </tr>
+            <tr>
+                <td>客户端类型：</td>
+                <td><select #t_client_type>
+                    <option value='0' selected>MUD默认</option>
+                    <option value='1'>答题类</option>
+                </select></td>
+            </tr>
+            <tr tkey="debug">
+                <td>服务器地址：</td>
+                <td><input #t_addr type=text style="width:100%%;" /></td>
+            </tr>
+            <tr tkey="debug">
+                <td>浏览器地址：</td>
+                <td><input #t_broswer_addr type=text style="width:100%%;" /></td>
+            </tr>
+            <tr tkey="debug">
+                <td>微信地址：</td>
+                <td><input #t_wx_addr type=text style="width:100%%;" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="flow:horizontal;vertical-align: bottom;">
+                        <div style="width:1px;height:auto;">
+                            <img #t_icon width=160 height=160 src="" style="display: block;" />
+                            <span style="margin:3px auto;display: inline-block;">游戏图标</span>
+                        </div>
+                        <div style="width:1px;height:auto;">
+                            <div #t_qr .qrcode></div>
+                            <span style="margin:3px auto;display: inline-block;">微信扫一扫</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div .bottom_button>
+        <button onclick="save()">保存</button>
+        <button onclick="cancel()">取消</button>
+        先保存后再点发布
+        <span .full-width></span>
+        <button onclick="publish()">发布</button>
+    </div>
+</body>
+
+</html>

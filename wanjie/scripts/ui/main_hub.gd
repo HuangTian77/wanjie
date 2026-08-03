@@ -1,0 +1,328 @@
+## 万界大厅主界面控制器
+## 对应GDD §7.1.1 主界面设计
+extends Control
+
+## UI节点引用
+@onready var top_bar: HBoxContainer = %TopBar
+@onready var shimo_label: Label = %ShimoLabel
+@onready var jieshi_label: Label = %JieshiLabel
+@onready var inspiration_label: Label = %InspirationLabel
+@onready var carousel_container: Control = %CarouselContainer
+@onready var carousel_timer: Timer = %CarouselTimer
+@onready var carousel_label: Label = %CarouselLabel
+@onready var carousel_indicator: HBoxContainer = %CarouselIndicator
+@onready var tab_container: HBoxContainer = %TabContainer
+@onready var script_grid: GridContainer = %ScriptGrid
+@onready var recent_container: HBoxContainer = %RecentContainer
+@onready var no_recent_label: Label = %NoRecentLabel
+@onready var search_input: LineEdit = %SearchInput
+
+## 组件场景
+const SCRIPT_CARD_SCENE := preload("res://scenes/components/script_card.tscn")
+const RECENT_CARD_SCENE := preload("res://scenes/components/recent_card.tscn")
+const EMPTY_STATE_SCENE := preload("res://scenes/components/empty_state.tscn")
+
+## 对话框场景
+const CONFIRM_DIALOG_SCENE := preload("res://scenes/ui/confirm_dialog.tscn")
+const ScriptSetupDialogClass = preload("res://scripts/ui/script_setup_dialog.gd")
+
+## 对话框（动态创建）
+var confirm_dialog: Control = null
+var setup_dialog: Control = null
+
+## 标签页按钮引用
+var tab_buttons: Array[Button] = []
+## 轮播当前索引
+var carousel_index: int = 0
+## 轮播数据
+var featured_scripts: Array[WorldScriptData] = []
+## 当前标签页的剧本卡片
+var script_cards: Array[Control] = []
+## 删除确认回调
+var _delete_callback: Callable = Callable()
+## 轮播文字切换动画引用
+var _carousel_tween: Tween = null
+
+## 响应式：卡片最小宽度
+const CARD_MIN_WIDTH := 240
+
+func _ready() -> void:
+	_setup_top_bar()
+	_setup_carousel()
+	_setup_tabs()
+	_setup_recent_scripts()
+	_refresh_script_grid()
+	_connect_signals()
+	_setup_dialogs()
+	_update_grid_columns()
+	# 监听窗口大小变化
+	get_tree().root.size_changed.connect(_on_window_resized)
+
+
+func _input(event: InputEvent) -> void:
+	# F1: 打开创建剧本（无测试副作用）
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F1:
+		_on_create_script_pressed()
+	# Esc: 取消搜索模式
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if GameManager.current_tab == 4:
+			search_input.text = ""
+			_on_tab_pressed(0)
+
+## 连接信号
+func _connect_signals() -> void:
+	GameManager.tab_changed.connect(_on_tab_changed)
+	GameManager.scripts_changed.connect(_on_scripts_changed)
+
+## 动态创建对话框
+func _setup_dialogs() -> void:
+	confirm_dialog = CONFIRM_DIALOG_SCENE.instantiate()
+	add_child(confirm_dialog)
+	confirm_dialog.confirmed.connect(_on_confirm_dialog_confirmed)
+	setup_dialog = ScriptSetupDialogClass.new()
+	add_child(setup_dialog)
+	setup_dialog.setup_completed.connect(_on_script_setup_completed)
+
+## === 响应式网格列数 ===
+func _on_window_resized() -> void:
+	_update_grid_columns()
+
+func _update_grid_columns() -> void:
+	var available_width := size.x - 48  # 减去左右 margin
+	var columns := clampi(int(available_width / CARD_MIN_WIDTH), 2, 5)
+	script_grid.columns = columns
+
+## === 顶栏设置 ===
+func _setup_top_bar() -> void:
+	_refresh_resource_labels()
+	# 资源恢复/变化时实时刷新顶栏
+	GameManager.resources_recovered.connect(_refresh_resource_labels)
+	GameManager.resources_changed.connect(_refresh_resource_labels)
+
+func _refresh_resource_labels() -> void:
+	shimo_label.text = str(GameManager.user_data.shimo)
+	jieshi_label.text = str(GameManager.user_data.jieshi)
+	inspiration_label.text = GameManager.user_data.get_inspiration_display()
+	if has_node("%EnergyLabel"):
+		var energy_label: Label = %EnergyLabel
+		energy_label.text = GameManager.user_data.get_creation_energy_display()
+
+## === 轮播设置 ===
+func _setup_carousel() -> void:
+	featured_scripts = GameManager.get_featured_scripts()
+	_update_carousel()
+	carousel_timer.start(5.0)
+
+func _update_carousel() -> void:
+	if featured_scripts.is_empty():
+		carousel_label.text = "暂无推荐剧本"
+		return
+	var script_data := featured_scripts[carousel_index]
+	carousel_label.text = "%s — %s\n%s" % [script_data.name, script_data.author, script_data.description]
+	# 切换文字淡入动效（尊重全局动效开关）
+	if _carousel_tween:
+		_carousel_tween.kill()
+	carousel_label.modulate.a = 0.0
+	_carousel_tween = ThemeManager.create_anim(carousel_label)
+	_carousel_tween.tween_property(carousel_label, "modulate:a", 1.0, 0.35)
+	# 更新指示器
+	for i in carousel_indicator.get_child_count():
+		var dot: Panel = carousel_indicator.get_child(i)
+		var style: StyleBoxFlat = dot.get_theme_stylebox("panel").duplicate()
+		if i == carousel_index:
+			style.bg_color = ThemeManager.C_ACCENT
+		else:
+			style.bg_color = Color(0.769, 0.588, 0.353, 0.3)
+		dot.add_theme_stylebox_override("panel", style)
+
+func _on_carousel_timer_timeout() -> void:
+	if featured_scripts.is_empty():
+		return
+	carousel_index = (carousel_index + 1) % featured_scripts.size()
+	_update_carousel()
+
+func _on_carousel_prev_pressed() -> void:
+	if featured_scripts.is_empty():
+		return
+	carousel_index = (carousel_index - 1 + featured_scripts.size()) % featured_scripts.size()
+	_update_carousel()
+	carousel_timer.start(5.0)
+
+func _on_carousel_next_pressed() -> void:
+	if featured_scripts.is_empty():
+		return
+	carousel_index = (carousel_index + 1) % featured_scripts.size()
+	_update_carousel()
+	carousel_timer.start(5.0)
+
+## === 标签页设置 ===
+func _setup_tabs() -> void:
+	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "搜索"]
+	for i in tab_names.size():
+		var btn := Button.new()
+		btn.text = tab_names[i]
+		btn.toggle_mode = true
+		btn.button_pressed = (i == 0)
+		btn.add_theme_font_size_override("font_size", 14)
+		btn.pressed.connect(_on_tab_pressed.bind(i))
+		tab_container.add_child(btn)
+		tab_buttons.append(btn)
+	search_input.visible = false
+	search_input.placeholder_text = "搜索剧本名称、标签、作者..."
+
+func _on_tab_pressed(tab_index: int) -> void:
+	search_input.visible = (tab_index == 4)
+	GameManager.set_current_tab(tab_index)
+	_refresh_script_grid()
+	# 切到搜索标签时自动聚焦搜索框
+	if tab_index == 4:
+		search_input.grab_focus()
+		search_input.select_all()
+
+func _on_tab_changed(tab_index: int) -> void:
+	for i in tab_buttons.size():
+		tab_buttons[i].button_pressed = (i == tab_index)
+
+func _on_search_text_changed(_new_text: String) -> void:
+	_refresh_script_grid()
+
+## === 剧本网格（组件化） ===
+func _refresh_script_grid() -> void:
+	for card in script_cards:
+		card.queue_free()
+	script_cards.clear()
+	
+	var scripts_list: Array[WorldScriptData]
+	if GameManager.current_tab == 4:
+		scripts_list = _search_scripts(search_input.text)
+	else:
+		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
+	
+	if scripts_list.is_empty():
+		_show_empty_state()
+		return
+	
+	for script_data in scripts_list:
+		var card: ScriptCard = SCRIPT_CARD_SCENE.instantiate()
+		script_grid.add_child(card)
+		card.setup(script_data)
+		card.clicked.connect(_on_card_clicked)
+		card.edit_requested.connect(_on_edit_script_pressed)
+		card.delete_requested.connect(_on_delete_script_pressed)
+		script_cards.append(card)
+
+func _search_scripts(query: String) -> Array[WorldScriptData]:
+	if query.is_empty():
+		var all: Array[WorldScriptData] = []
+		for s in GameManager.scripts.values():
+			all.append(s)
+		return all
+	var result: Array[WorldScriptData] = []
+	var q := query.to_lower()
+	for s in GameManager.scripts.values():
+		if q in s.name.to_lower() or q in s.description.to_lower() or s.tags.any(func(t): return q in t.to_lower()):
+			result.append(s)
+	return result
+
+func _show_empty_state() -> void:
+	var empty: EmptyState = EMPTY_STATE_SCENE.instantiate()
+	script_grid.add_child(empty)
+	empty.setup("这里还没有剧本", "📜", "创建新剧本", true)
+	empty.action_pressed.connect(_on_create_script_pressed)
+	script_cards.append(empty)
+
+func _on_card_clicked(script_id: String) -> void:
+	SceneManager.enter_script(script_id)
+
+## === 最近体验（组件化） ===
+func _setup_recent_scripts() -> void:
+	var recent := GameManager.get_recent_scripts()
+	if recent.is_empty():
+		no_recent_label.visible = true
+		return
+	no_recent_label.visible = false
+	for script_data in recent:
+		var card: RecentCard = RECENT_CARD_SCENE.instantiate()
+		recent_container.add_child(card)
+		card.setup(script_data)
+		card.clicked.connect(_on_card_clicked)
+
+## === 底部操作栏 ===
+func _on_create_script_pressed() -> void:
+	if not GameManager.user_data.consume_creation_energy():
+		ToastManager.warning("精力不足，无法创建剧本！请等待恢复或稍后再试")
+		return
+	GameManager.save_user_data()
+	setup_dialog.show_dialog()
+
+## 剧本设置对话框确认回调
+func _on_script_setup_completed(config: Dictionary) -> void:
+	var script_name: String = config.get("name", "未命名剧本")
+	var template_id: String = config.get("template_id", "")
+	var editor_mode: String = config.get("editor_mode", "visual")
+	var run_type: String = config.get("run_type", "local")
+	var tags: Array = config.get("tags", [])
+	# 构建 metadata
+	var meta := {
+		"editor_mode": editor_mode,
+		"run_type": run_type,
+	}
+	if run_type == "online":
+		meta["online"] = true
+	elif run_type == "server":
+		meta["server_based"] = true
+	# 创建剧本
+	var ws := ScriptDataManager.create_script(script_name, GameManager.user_data.player_name, template_id, meta)
+	if ws == null:
+		ToastManager.error("剧本创建失败")
+		return
+	# 设置标签
+	if not tags.is_empty():
+		ws.tags = Array(tags, TYPE_STRING, "", null)
+		ScriptDataManager.update_script(ws)
+	ToastManager.success("剧本「%s」创建成功！" % script_name)
+	# 进入编辑器
+	SceneManager.open_script_editor(ws.id)
+
+func _on_import_script_pressed() -> void:
+	var file_dialog := FileDialog.new()
+	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	file_dialog.filters = PackedStringArray(["*.json ; JSON文件"])
+	file_dialog.title = "导入剧本"
+	add_child(file_dialog)
+	file_dialog.file_selected.connect(func(path: String):
+		var ws := ScriptDataManager.import_script(path)
+		if ws != null:
+			ToastManager.success("导入成功: %s" % ws.name)
+		else:
+			ToastManager.error("导入失败，请检查文件格式")
+		file_dialog.queue_free()
+	)
+	file_dialog.canceled.connect(func(): file_dialog.queue_free())
+	file_dialog.popup_centered(Vector2i(600, 400))
+
+func _on_settings_pressed() -> void:
+	SceneManager.open_settings()
+
+## 编辑剧本
+func _on_edit_script_pressed(script_id: String) -> void:
+	SceneManager.open_script_editor(script_id)
+
+## 删除剧本
+func _on_delete_script_pressed(script_id: String, script_name: String) -> void:
+	_delete_callback = func():
+		ScriptDataManager.delete_script(script_id)
+		ToastManager.success("已删除剧本: %s" % script_name)
+	confirm_dialog.show_dialog("确认删除", "确定要删除剧本 \"%s\" 吗？\n此操作不可撤销。" % script_name)
+
+## === 确认对话框 ===
+func _on_confirm_dialog_confirmed() -> void:
+	if _delete_callback.is_valid():
+		_delete_callback.call()
+		_delete_callback = Callable()
+
+## 信号处理 ===
+func _on_scripts_changed() -> void:
+	_refresh_script_grid()
+	_setup_recent_scripts()

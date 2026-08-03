@@ -1,0 +1,50 @@
+<div .panel name="panel-slot">
+    <div .tabs #t_tabs_slot style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_slot_list selected panel="panel-slot-list">插槽部位</div>
+            <div #t_panel_slot_template panel="panel-slot-template">槽位模板</div>
+        </div>
+
+        <!-- 装备槽位 -->
+        <div .panel name="panel-slot-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_slot type="tablectrl" head="slot" data-name="slot"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_slot onClick="addSlot();">新增槽位</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_slot disabled onClick="updateSlot();">更新信息</button>
+                        <button #t_btn_del_slot disabled onClick="deleteSlot();">删除槽位</button>
+                        <table .detail>
+                            <tr><td>槽位ID：</td><td><span #t_slot_id></span></td></tr>
+                            <tr><td>槽位名称：</td><td><input #t_slot_name type="text" size=20 /></td></tr>
+                            <tr><td>插孔数量：</td><td><input #t_slot_cnt type="number" size=7 step=1 value=1 min=1 /><span .comment>同一个槽位上可叠加次数，次数满了后，对应槽位上就不可再承接装备</span></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_slot_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        
+        <!-- 槽位模板 -->
+        <div .panel name="panel-slot-template">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_slot_template type="tablectrl" head="slot_template" data-name="slot_template"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_slot_template onClick="addSlotTemplate();">新增模板</button>
+                        <button #t_btn_edit_slot_template disabled onClick="editSlotTemplate();">编辑模板</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_slot_template disabled onClick="updateSlotTemplate();">更新信息</button>
+                        <button #t_btn_del_slot_template disabled onClick="deleteSlotTemplate();">删除模板</button>
+                        <table .detail>
+                            <tr><td>模板ID：</td><td><span #t_slot_template_id></span></td></tr>
+                            <tr><td>模板名称：</td><td><input #t_slot_template_name type="text" size=20 /></td></tr>
+                            <tr><td>备注：</td><td><textarea #t_slot_template_note rows=3 style="width:100%%;" /></td></tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+    </div>
+</div>

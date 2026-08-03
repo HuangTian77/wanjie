@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://template_dialog_001"]
+
+[ext_resource type="Script" path="res://scripts/ui/template_dialog.gd" id="1_tpl"]
+
+[node name="TemplateDialog" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tpl")
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.4)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -180.0
+offset_right = 220.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "从模板创建剧本"
+horizontal_alignment = 1
+
+[node name="NameHBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Panel/VBox/NameHBox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "剧本名称"
+
+[node name="ScriptNameInput" type="LineEdit" parent="Panel/VBox/NameHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+placeholder_text = "输入剧本名称..."
+
+[node name="TemplateList" type="ItemList" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="DescLabel" type="RichTextLabel" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+bbcode_enabled = true
+text = "选择模板查看描述"
+autowrap_mode = 2
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="CancelBtn" type="Button" parent="Panel/VBox/ButtonHBox"]
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+text = "取消"
+
+[node name="CreateBtn" type="Button" parent="Panel/VBox/ButtonHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 36)
+layout_mode = 2
+text = "创建"
+disabled = true
+
+[connection signal="item_selected" from="Panel/VBox/TemplateList" to="." method="_on_template_selected"]
+[connection signal="text_changed" from="Panel/VBox/NameHBox/ScriptNameInput" to="." method="_on_name_changed"]
+[connection signal="pressed" from="Panel/VBox/ButtonHBox/CancelBtn" to="." method="_on_cancel_pressed"]
+[connection signal="pressed" from="Panel/VBox/ButtonHBox/CreateBtn" to="." method="_on_create_pressed"]

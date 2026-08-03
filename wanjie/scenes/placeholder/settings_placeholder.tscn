@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://placeholder_settings_001"]
+
+[ext_resource type="Script" path="res://scripts/ui/placeholder.gd" id="1_script"]
+
+[node name="SettingsPlaceholder" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.961, 0.925, 0.843, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="VBox"]
+layout_mode = 2
+text = "设置"
+horizontal_alignment = 1
+label_settings = SubResource("LabelSettings_title")
+
+[node name="Subtitle" type="Label" parent="VBox"]
+layout_mode = 2
+text = "此功能正在开发中，敬请期待..."
+horizontal_alignment = 1
+
+[node name="BackBtn" type="Button" parent="VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(160, 42)
+size_flags_horizontal = 4
+text = "返回万界大厅"
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 32
+font_color = Color(0.29, 0.216, 0.157, 1)
+
+[connection signal="pressed" from="VBox/BackBtn" to="." method="_on_back_pressed"]

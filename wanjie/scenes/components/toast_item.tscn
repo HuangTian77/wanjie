@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/components/toast_item.gd" id="1_script"]
+
+[node name="ToastItem" type="PanelContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 0
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ContentHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ToastIcon" type="Label" parent="VBox/ContentHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ℹ"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 1, 1, 0.9)
+
+[node name="ToastText" type="Label" parent="VBox/ContentHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "通知内容"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 1, 1, 0.95)
+autowrap_mode = 2
+
+[node name="ToastProgress" type="ProgressBar" parent="VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+max_value = 2.5
+value = 0.0
+show_percentage = false

@@ -1,0 +1,316 @@
+[gd_scene load_steps=2 format=3 uid="uid://economy_panel_001"]
+
+[ext_resource type="Script" path="res://scripts/editor/panels/economy_panel.gd" id="1_ec"]
+
+[node name="EconomyPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ec")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "💰 经济系统"
+horizontal_alignment = 1
+
+[node name="TabBar" type="TabBar" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tab_count = 3
+current_tab = 0
+tabs = ["货币", "资源", "市场"]
+
+[node name="CurrencyPanel" type="HSplitContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftVBox" type="VBoxContainer" parent="Margin/VBox/CurrencyPanel"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 0)
+theme_override_constants/separation = 4
+
+[node name="Toolbar" type="HBoxContainer" parent="Margin/VBox/CurrencyPanel/LeftVBox"]
+layout_mode = 2
+
+[node name="AddBtn" type="Button" parent="Margin/VBox/CurrencyPanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "+ 添加"
+
+[node name="RemoveBtn" type="Button" parent="Margin/VBox/CurrencyPanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="ItemList" type="ItemList" parent="Margin/VBox/CurrencyPanel/LeftVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailVBox" type="VBoxContainer" parent="Margin/VBox/CurrencyPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="NameRow" type="HBoxContainer" parent="Margin/VBox/CurrencyPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Margin/VBox/CurrencyPanel/DetailVBox/NameRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "名称:"
+
+[node name="NameEdit" type="LineEdit" parent="Margin/VBox/CurrencyPanel/DetailVBox/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeRow" type="HBoxContainer" parent="Margin/VBox/CurrencyPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="Margin/VBox/CurrencyPanel/DetailVBox/TypeRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "类型:"
+
+[node name="TypeOption" type="OptionButton" parent="Margin/VBox/CurrencyPanel/DetailVBox/TypeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "universal"
+popup/item_1/text = "faction_local"
+popup/item_2/text = "token"
+
+[node name="SupplyRow" type="HBoxContainer" parent="Margin/VBox/CurrencyPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="SupplyLabel" type="Label" parent="Margin/VBox/CurrencyPanel/DetailVBox/SupplyRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "最大供应:"
+
+[node name="SupplyEdit" type="SpinBox" parent="Margin/VBox/CurrencyPanel/DetailVBox/SupplyRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = -1.0
+max_value = 999999.0
+value = -1.0
+
+[node name="InflationRow" type="HBoxContainer" parent="Margin/VBox/CurrencyPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="InflationLabel" type="Label" parent="Margin/VBox/CurrencyPanel/DetailVBox/InflationRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "通胀率:"
+
+[node name="InflationEdit" type="SpinBox" parent="Margin/VBox/CurrencyPanel/DetailVBox/InflationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.02
+
+[node name="ResourcePanel" type="HSplitContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftVBox" type="VBoxContainer" parent="Margin/VBox/ResourcePanel"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 0)
+theme_override_constants/separation = 4
+
+[node name="Toolbar" type="HBoxContainer" parent="Margin/VBox/ResourcePanel/LeftVBox"]
+layout_mode = 2
+
+[node name="AddBtn" type="Button" parent="Margin/VBox/ResourcePanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "+ 添加"
+
+[node name="RemoveBtn" type="Button" parent="Margin/VBox/ResourcePanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="ItemList" type="ItemList" parent="Margin/VBox/ResourcePanel/LeftVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailVBox" type="VBoxContainer" parent="Margin/VBox/ResourcePanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="NameRow" type="HBoxContainer" parent="Margin/VBox/ResourcePanel/DetailVBox"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Margin/VBox/ResourcePanel/DetailVBox/NameRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "名称:"
+
+[node name="NameEdit" type="LineEdit" parent="Margin/VBox/ResourcePanel/DetailVBox/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CatRow" type="HBoxContainer" parent="Margin/VBox/ResourcePanel/DetailVBox"]
+layout_mode = 2
+
+[node name="CatLabel" type="Label" parent="Margin/VBox/ResourcePanel/DetailVBox/CatRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "类别:"
+
+[node name="CatOption" type="OptionButton" parent="Margin/VBox/ResourcePanel/DetailVBox/CatRow"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "material"
+popup/item_1/text = "consumable"
+popup/item_2/text = "equipment"
+popup/item_3/text = "quest_item"
+
+[node name="StackRow" type="HBoxContainer" parent="Margin/VBox/ResourcePanel/DetailVBox"]
+layout_mode = 2
+
+[node name="StackLabel" type="Label" parent="Margin/VBox/ResourcePanel/DetailVBox/StackRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "堆叠上限:"
+
+[node name="StackEdit" type="SpinBox" parent="Margin/VBox/ResourcePanel/DetailVBox/StackRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 99999.0
+value = 999.0
+
+[node name="DecayRow" type="HBoxContainer" parent="Margin/VBox/ResourcePanel/DetailVBox"]
+layout_mode = 2
+
+[node name="DecayToggle" type="CheckButton" parent="Margin/VBox/ResourcePanel/DetailVBox/DecayRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "允许衰减"
+
+[node name="MarketPanel" type="HSplitContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftVBox" type="VBoxContainer" parent="Margin/VBox/MarketPanel"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 0)
+theme_override_constants/separation = 4
+
+[node name="Toolbar" type="HBoxContainer" parent="Margin/VBox/MarketPanel/LeftVBox"]
+layout_mode = 2
+
+[node name="AddBtn" type="Button" parent="Margin/VBox/MarketPanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "+ 添加"
+
+[node name="RemoveBtn" type="Button" parent="Margin/VBox/MarketPanel/LeftVBox/Toolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="ItemList" type="ItemList" parent="Margin/VBox/MarketPanel/LeftVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailVBox" type="VBoxContainer" parent="Margin/VBox/MarketPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="NameRow" type="HBoxContainer" parent="Margin/VBox/MarketPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Margin/VBox/MarketPanel/DetailVBox/NameRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "名称:"
+
+[node name="NameEdit" type="LineEdit" parent="Margin/VBox/MarketPanel/DetailVBox/NameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LocRow" type="HBoxContainer" parent="Margin/VBox/MarketPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="LocLabel" type="Label" parent="Margin/VBox/MarketPanel/DetailVBox/LocRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "位置:"
+
+[node name="LocEdit" type="LineEdit" parent="Margin/VBox/MarketPanel/DetailVBox/LocRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GoodsTitle" type="Label" parent="Margin/VBox/MarketPanel/DetailVBox"]
+layout_mode = 2
+text = "商品列表:"
+
+[node name="GoodsList" type="ItemList" parent="Margin/VBox/MarketPanel/DetailVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="GoodsToolbar" type="HBoxContainer" parent="Margin/VBox/MarketPanel/DetailVBox"]
+layout_mode = 2
+
+[node name="AddGoodBtn" type="Button" parent="Margin/VBox/MarketPanel/DetailVBox/GoodsToolbar"]
+layout_mode = 2
+text = "+ 添加商品"
+
+[node name="RemoveGoodBtn" type="Button" parent="Margin/VBox/MarketPanel/DetailVBox/GoodsToolbar"]
+layout_mode = 2
+text = "- 删除商品"
+
+[connection signal="pressed" from="Margin/VBox/CurrencyPanel/LeftVBox/Toolbar/AddBtn" to="." method="_on_add_currency_pressed"]
+[connection signal="pressed" from="Margin/VBox/CurrencyPanel/LeftVBox/Toolbar/RemoveBtn" to="." method="_on_remove_currency_pressed"]
+[connection signal="item_selected" from="Margin/VBox/CurrencyPanel/LeftVBox/ItemList" to="." method="_on_currency_selected"]
+[connection signal="text_changed" from="Margin/VBox/CurrencyPanel/DetailVBox/NameRow/NameEdit" to="." method="_on_currency_name_changed"]
+[connection signal="item_selected" from="Margin/VBox/CurrencyPanel/DetailVBox/TypeRow/TypeOption" to="." method="_on_currency_type_changed"]
+[connection signal="value_changed" from="Margin/VBox/CurrencyPanel/DetailVBox/SupplyRow/SupplyEdit" to="." method="_on_currency_supply_changed"]
+[connection signal="value_changed" from="Margin/VBox/CurrencyPanel/DetailVBox/InflationRow/InflationEdit" to="." method="_on_currency_inflation_changed"]
+[connection signal="pressed" from="Margin/VBox/ResourcePanel/LeftVBox/Toolbar/AddBtn" to="." method="_on_add_resource_pressed"]
+[connection signal="pressed" from="Margin/VBox/ResourcePanel/LeftVBox/Toolbar/RemoveBtn" to="." method="_on_remove_resource_pressed"]
+[connection signal="item_selected" from="Margin/VBox/ResourcePanel/LeftVBox/ItemList" to="." method="_on_resource_selected"]
+[connection signal="text_changed" from="Margin/VBox/ResourcePanel/DetailVBox/NameRow/NameEdit" to="." method="_on_resource_name_changed"]
+[connection signal="item_selected" from="Margin/VBox/ResourcePanel/DetailVBox/CatRow/CatOption" to="." method="_on_resource_cat_changed"]
+[connection signal="value_changed" from="Margin/VBox/ResourcePanel/DetailVBox/StackRow/StackEdit" to="." method="_on_resource_stack_changed"]
+[connection signal="toggled" from="Margin/VBox/ResourcePanel/DetailVBox/DecayRow/DecayToggle" to="." method="_on_resource_decay_changed"]
+[connection signal="pressed" from="Margin/VBox/MarketPanel/LeftVBox/Toolbar/AddBtn" to="." method="_on_add_market_pressed"]
+[connection signal="pressed" from="Margin/VBox/MarketPanel/LeftVBox/Toolbar/RemoveBtn" to="." method="_on_remove_market_pressed"]
+[connection signal="item_selected" from="Margin/VBox/MarketPanel/LeftVBox/ItemList" to="." method="_on_market_selected"]
+[connection signal="text_changed" from="Margin/VBox/MarketPanel/DetailVBox/NameRow/NameEdit" to="." method="_on_market_name_changed"]
+[connection signal="text_changed" from="Margin/VBox/MarketPanel/DetailVBox/LocRow/LocEdit" to="." method="_on_market_loc_changed"]
+[connection signal="pressed" from="Margin/VBox/MarketPanel/DetailVBox/GoodsToolbar/AddGoodBtn" to="." method="_on_add_good_pressed"]
+[connection signal="pressed" from="Margin/VBox/MarketPanel/DetailVBox/GoodsToolbar/RemoveGoodBtn" to="." method="_on_remove_good_pressed"]
+[connection signal="tab_changed" from="Margin/VBox/TabBar" to="." method="_on_tab_changed"]

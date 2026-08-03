@@ -1,0 +1,32 @@
+# ===== 万界诗篇 根目录 .gitignore =====
+
+# === 大型二进制（不入库） ===
+Godot_v4.7.1-stable_win64.exe
+ollama.zip
+
+# === 工具/配置目录 ===
+.qoder/
+.reasonix/
+_archive/
+
+# === ME 独立工具：仅保留源码（lua/sql/html），排除二进制（含子目录） ===
+ME/**/*.exe
+ME/**/*.dll
+ME/**/*.dat
+ME/**/*.spk
+ME/**/*.pkg
+ME/**/*.ico
+ME/userdb.dat
+
+# === 根目录孤立文件（脚本已移除, 仅剩 .uid） ===
+wanjie/test_blueprint_system.gd.uid
+
+# === Godot 项目内缓存 ===
+wanjie/.godot/
+wanjie/*.png.import
+wanjie/screenshot_*.png
+
+# === 系统文件 ===
+.DS_Store
+Thumbs.db
+*.tmp

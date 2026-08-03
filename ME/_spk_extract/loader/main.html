@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>Mud游戏编辑器</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src="./css/common.css" />
+    <style src="./css/tab.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+
+        .content {
+            padding: 20;
+            border: 1px solid silver;
+        }
+        .panel {
+            background-color: white;
+        }
+        ul.npcinfo {
+            min-height: 100px;
+            border: 1px solid silver;
+            margin-top: 3px;
+            padding: 0;
+            width: 100%%;
+            height: 100%%;
+            overflow: auto;
+        }
+        ul.npcinfo li {
+            width: 100%%;
+            list-style: none;
+            display: block;
+            margin: 10px;
+        }
+        ul.interact li {
+            width: 100%%;
+            display:block;
+            padding: 5 0;
+        }
+        textarea {
+            color: black;
+        }
+        input:empty {
+            color: gray;
+        }
+    </style>
+    <style>
+        @import url(./css/std-menu.css);
+
+        .popupmenu {
+            -prototype: MENU;
+        }
+
+        menu.office,
+        menu.office menu
+        {
+            background: url(./images/menu/menu-back-office.png) expand;
+            background-position: 0 0 0 24;
+            text-align:left;
+        }
+    </style>
+    <style>
+        div.toolbar {
+            /* height: 60px; */
+            /* background: gray; */
+            flow:horizontal;
+            padding-bottom: 3px;
+            margin-bottom: 3px;
+            border-bottom: 1px solid gray;
+        }
+
+        .button {
+            width: 52px;
+            height: 52px;
+            padding: 4px; margin:1px;
+            border-radius: 5px;
+            border:1px solid transparent;
+            behavior: clickable;
+        }
+
+        .button span.text {
+            display: inline-block;
+            margin: 3px auto;
+            white-space: nowrap;
+        }
+
+        .button img {
+            margin: 0 auto;
+        }
+
+        .button:hover 
+        { 
+            background-color:#F5FCF0 #EEF5E7 #DDE3D0 #EEF5E7;  
+            border-top: solid 1px #F5FCF0;
+            border-left: solid 1px #F5FCF0;
+            border-right: solid 1px #A3A8A0;
+            border-bottom: solid 1px #A3A8A0;
+        }
+        .button:active 
+        { 
+            background-color:#DDE3D0 #EEF5E7 #F5FCF0 #EEF5E7;  
+            padding:5px 3px 3px 5px;
+            border-top: solid 1px #A3A8A0;
+            border-left: solid 1px #A3A8A0;
+            border-right: solid 1px #F5FCF0;
+            border-bottom: solid 1px #F5FCF0;
+        }
+
+        .divider {
+            padding:0;
+            margin:0;
+            border-top: solid 1px #DDE3D0;
+            border-left: solid 1px #DDE3D0;
+            border-right: solid 1px #F5FCF0;
+            border-bottom: solid 1px #F5FCF0;
+        }
+
+        .vdivider {
+            padding:0;
+            margin: 10px 2px;
+            border-top: solid 1px #DDE3D0;
+            border-left: solid 1px #DDE3D0;
+            border-right: solid 1px #F5FCF0;
+            border-bottom: solid 1px #F5FCF0;
+            width:0;
+            height:100%%;
+        }
+
+        .spring {
+            width: 100%%;
+        }
+
+        .button:disabled img {
+            /* foreground-image-transformation: contrast-brightness-gamma(0.5, 0.5, 2); */
+            foreground-image-transformation: colorize(black);
+        }
+
+        .button:disabled {
+            color:gray;
+        }
+    </style>
+    <style src="./css/map.css" />
+    <style>
+        frameset {
+            background-color: white;
+        }
+
+        div.tips {
+            position: absolute;
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+            text-align: center;
+            left: 50%%;
+            width: 200px;
+            top: 50%%;
+            padding: 5px;
+        }
+    </style>
+
+    <script type="text/lua">
+        MENU = {}
+        function MENU:onClick() 
+            p('popup menu clicked ... ' .. self.attributes.pid)
+            EMIT('popupclicked', self.attributes.pid, self)
+        end
+    </script>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="./common/utils.lua"></script>
+    <script type="text/lua" src="./common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="main.lua"></script>
+    <!-- 地图脚本 -->
+    <script type="text/lua" src="./inner/main-map.lua"></script>
+    <!-- 场景脚本 -->
+    <script type="text/lua" src="./inner/main-scene.lua"></script>
+    <!-- 互动对象脚本 -->
+    <script type="text/lua" src="./inner/main-object.lua"></script>
+    <!-- 属性脚本 -->
+    <script type="text/lua" src="./inner/main-property.lua"></script>
+    <!-- 技能脚本 -->
+    <script type="text/lua" src="./inner/main-skill.lua"></script>
+    <!-- 路径对象脚本 -->
+    <script type="text/lua" src="./inner/main-linkpath.lua"></script>
+    <!-- 互动脚本 -->
+    <script type="text/lua" src="./inner/main-interact.lua"></script>
+    <!-- 交互脚本 -->
+    <script type="text/lua" src="./inner/main-alternation.lua"></script>
+    <!-- 概率脚本 -->
+    <script type="text/lua" src="./inner/main-random-trigger.lua"></script>
+    <!-- 物品脚本 -->
+    <script type="text/lua" src="./inner/main-item.lua"></script>
+    <!-- 生产脚本 -->
+    <script type="text/lua" src="./inner/main-generator.lua"></script>
+    <!-- 交易脚本 -->
+    <script type="text/lua" src="./inner/main-trade.lua"></script>
+    <!-- 插槽脚本 -->
+    <script type="text/lua" src="./inner/main-slot.lua"></script>
+    <!-- 奖励脚本 -->
+    <script type="text/lua" src="./inner/main-reward.lua"></script>
+    <!-- 故事脚本 -->
+    <script type="text/lua" src="./inner/main-story.lua"></script>
+    <!-- 战役脚本 -->
+    <script type="text/lua" src="./inner/main-campaign.lua"></script>
+    <!-- 充值脚本 -->
+    <script type="text/lua" src="./inner/main-payment.lua"></script>
+    <!-- 逻辑脚本 -->
+    <script type="text/lua" src="./inner/main-logic.lua"></script>
+    <!-- 数据脚本 -->
+    <script type="text/lua" src="./inner/main-custom-data.lua"></script>
+    <!-- 测试相关代码-->
+    <script type="text/lua" src="main-test.lua"></script>
+
+</head>
+
+<body>
+    <div .toolbar>
+        <widget tkey="new" .button title="新建" onclick="clickToolbar();"><img src="./images/toolbar/new.png" />
+            <div><span .text>新建</span></div>
+        </widget>
+        <widget tkey="open" .button title="打开" onclick="clickToolbar();"><img src="./images/toolbar/open.png" />
+            <div><span .text>打开</span></div>
+        </widget>
+        <widget #t_save tkey="save" .button disabled title="存盘" onclick="clickToolbar();"><img src="./images/toolbar/save.png" />
+            <div><span .text>保存</span></div>
+        </widget>
+        <widget #t_saveas tkey="saveas" .button disabled title="另存为" onclick="clickToolbar();"><img src="./images/toolbar/saveas.png" />
+            <div><span .text>另存为</span></div>
+        </widget>
+        <hr .vdivider />
+        <div .spring></div>
+        <hr .vdivider />
+        <!-- <widget tkey="export" .button title="导出数据到配文件" onclick="export();"><img src="./images/toolbar/export.png" /><div><span .text>导出</span></div></widget> -->
+        <!-- <widget tkey="test" .button title="测试功能" onclick="testFunction();"><img src="./images/toolbar/export.png" />
+            <div><span .text>Test</span></div>
+        </widget> -->
+        <widget tkey="startup" .button title="启动服务器" onclick="clickToolbar();"><img src="./images/toolbar/startup.png" />
+            <div><span .text>启动</span></div>
+        </widget>
+        <hr .vdivider />
+        <widget tkey="test" .button title="测试（默认客户端）" onclick="startclient();"><img src="./images/toolbar/test.png" />
+            <div><span .text>默认测试</span></div>
+        </widget>
+        <widget tkey="test1" .button title="测试（答题客户端）" onclick="startclientQAA();"><img src="./images/toolbar/test1.png" />
+            <div><span .text>答题测试</span></div>
+        </widget>
+        <widget tkey="trash" .button title="删除测试账号信息，多个游戏配置切换时请清除下用户信息，避免错乱" onclick="deleteUserData(2000);"><img src="./images/toolbar/trash.png" />
+            <div><span .text>清空数据</span></div>
+        </widget>
+        <hr .vdivider />
+        <widget tkey="management" .button title="线上管理" onclick="clickToolbar();"><img src="./images/toolbar/managment.png" />
+            <div><span .text>线上管理</span></div>
+        </widget>
+        <widget tkey="settings" .button title="全局配置" onclick="clickToolbar();"><img src="./images/toolbar/settings.png" />
+            <div><span .text>全局配置</span></div>
+        </widget>
+    </div>
+    <!-- 先左右分 -->
+    <frameset cols="3*,2*" style="width:100%%;height:100%%;">
+        <!-- 左侧地图编辑 -->
+        <frameset rows="3*,1.5*">
+            <div #t_map .map .content>
+
+            </div>
+
+            <div .content>
+                <div>
+                    地点名称:<input #t_scene_name type="text" size="20" />
+                    描述:<input #t_scene_desc type="text" style="width:100%%;" />
+                    <button #t_scene_uporadd onClick="updateOrAddSceneNode();">新建</button>
+                </div>
+
+                <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+                <!-- <button #t_scene_uporadd onClick="addObject2Scene();">增加互动对象</button> -->
+
+                <!-- <div style='margin-top:3px;'>
+                    路径方向: <select #t_direct size=1 style="width:60px;">
+                        <option value="east">东</option>
+                        <option value="south">南</option>
+                        <option value="west">西</option>
+                        <option value="north">北</option>
+                        <option value="southeast">东南</option>
+                        <option value="southwest">西南</option>
+                        <option value="northwest">西北</option>
+                        <option value="northeast">东北</option>
+                    </select>
+                    <button type="checkbox" checked #t_two_way>双向</button>
+
+                    <button onClick="addPath();" tooltip="点击选择达到的地点">增加路径</button>
+                    <button onClick="delPath();">删除路径</button>
+                </div> -->
+                <hr />
+                <div style="height:100%%;">
+                    <!-- <div>
+                        对象名称:<input #t_object_name type="text" size="20" />
+                        描述:<input #t_object_desc type="text" style="width:100%%;" />
+                        <button #t_object_uporadd onClick="addObject();">增加</button>
+                    </div> -->
+                    场景内对象
+                    <ul .npcinfo #t_cur_objects>
+                        <!--当前地图上的npc列表 -->
+                        <!-- 交互对象信息模板
+                        <li>
+                            <div>
+                                <span>乞丐甲</span> <button>交谈</button><button>战斗</button><button>+互动</button>
+                            </div>
+                            <div>
+                                <input type="text" size=40 />
+                            </div>
+                        </li>
+                        -->
+                    </ul>
+                </div>
+            </div>
+        </frameset>
+
+        <!-- 右侧互动、模块编辑 -->
+        <div>
+            <div .tabs #t_tabs style="min-height: 120px;">
+                <div .strip style="width:100%%;">
+                    <div #t_panel_scene selected panel="panel-scene">地图</div>
+                    <div #t_panel_alternation panel="panel-alternation">交互</div>
+                    <div #t_panel_random_trigger panel="panel-random-trigger">概率</div>
+                    <div #t_panel_logic panel="panel-logic">逻辑</div>
+                    <div #t_panel_property panel="panel-property">属性</div>
+                    <div #t_panel_slot panel="panel-slot">插槽</div>
+                    <div #t_panel_skill panel="panel-skill">技能</div>
+                    <div #t_panel_item panel="panel-item">物品</div>
+                    <div #t_panel_generator panel="panel-generator">生产</div>
+                    <div #t_panel_trade panel="panel-trade">交易</div>
+                    <div #t_panel_reward panel="panel-reward">奖励</div>
+                    <div #t_panel_campaign panel="panel-campaign">战役</div>
+                    <div #t_panel_story panel="panel-story">剧情</div>
+                    <div #t_panel_payment panel="panel-payment">充值</div>
+                    <div #t_panel_custom_data panel="panel-custom-data">数据</div>
+                </div>
+
+                <!-- 场景信息-->
+                <include src='inner/inner_panel_scene.html' />
+
+                <!-- 对象属性设置 -->
+                <include src='inner/inner_panel_property.html' />
+
+                <!-- 插槽设置 -->
+                <include src='inner/inner_panel_slot.html' />
+
+                <!-- 对象技能设置 -->
+                <include src='inner/inner_panel_skill.html' />
+
+                <!-- 物品设置 -->
+                <include src='inner/inner_panel_item.html' />
+
+                <!-- 生产设置 -->
+                <include src='inner/inner_panel_generator.html' />
+
+                <!-- 交易设置 -->
+                <include src='inner/inner_panel_trade.html' />
+
+                <!-- 路径 -->
+                <!-- <include src='inner/inner_panel_path.html'/> -->
+
+                <!-- 对象信息-->
+                <!-- <include src='inner/inner_panel_object.html'/> -->
+
+                <!-- 概率触发 -->
+                <include src='inner/inner_panel_random_trigger.html' />
+
+                <!-- 交互信息 -->
+                <include src='inner/inner_panel_alternation.html' />
+
+                <!-- 故事剧情 -->
+                <include src='inner/inner_panel_story.html' />
+
+                <!-- 奖励（掉落）模块 -->
+                <include src='inner/inner_panel_reward.html' />
+
+                <!-- 战役模块 -->
+                <include src='inner/inner_panel_campaign.html' />
+
+                <!-- 充值模块 -->
+                <include src='inner/inner_panel_payment.html' />
+
+                <!-- 逻辑模块 -->
+                <include src='inner/inner_panel_logic.html' />
+
+                <!-- 数据模块 -->
+                <include src='inner/inner_panel_custom_data.html' />
+            </div>
+        </div>
+    </frameset>
+    <div #t_map_link_tips .tips style="display: none;">
+        按 ESC 取消连接状态
+    </div>
+    <popup>
+        <menu #t_map_node_popup class="office">
+            <!-- <li .popupmenu pid=modify>修改节点信息</li> -->
+            <li .popupmenu>增加路径（双向出口）
+                <menu .office>
+                    <li .popupmenu pid=dd_east>右</li>
+                    <li .popupmenu pid=dd_south>下</li>
+                    <li .popupmenu pid=dd_west>左</li>
+                    <li .popupmenu pid=dd_north>上</li>
+                    <li .popupmenu pid=dd_southeast>右下</li>
+                    <li .popupmenu pid=dd_southwest>左下</li>
+                    <li .popupmenu pid=dd_northeast>右上</li>
+                    <li .popupmenu pid=dd_northwest>左上</li>
+                </menu>
+            </li>
+            <li .popupmenu>增加路径（单向出口）
+                <menu .office>
+                    <li .popupmenu pid=sd_east>右</li>
+                    <li .popupmenu pid=sd_south>下</li>
+                    <li .popupmenu pid=sd_west>左</li>
+                    <li .popupmenu pid=sd_north>上</li>
+                    <li .popupmenu pid=sd_southeast>右下</li>
+                    <li .popupmenu pid=sd_southwest>左下</li>
+                    <li .popupmenu pid=sd_northeast>右上</li>
+                    <li .popupmenu pid=sd_northwest>左上</li>
+                </menu>
+            </li>
+            <!-- <li .popupmenu pid=delete>删除节点</li> -->
+            <li .popupmenu pid=addObject>新建对象</li>
+        </menu>
+
+        <menu #t_map_empty_node_popup class="office">
+            <li .popupmenu pid=newMapNode>新建地点</li>
+        </menu>
+    </popup>
+</body>
+
+</html>

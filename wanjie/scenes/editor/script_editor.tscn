@@ -1,0 +1,517 @@
+[gd_scene load_steps=7 format=3 uid="uid://editor_main_001"]
+
+[ext_resource type="Script" path="res://scripts/editor/script_editor.gd" id="1_editor"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menubar"]
+bg_color = Color(0.12, 0.13, 0.16, 1)
+border_width_bottom = 1
+border_color = Color(0.2, 0.22, 0.28, 0.6)
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar"]
+bg_color = Color(0.12, 0.13, 0.16, 1)
+border_width_bottom = 1
+border_color = Color(0.18, 0.3, 0.5, 0.35)
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_leftpanel"]
+bg_color = Color(0.10, 0.11, 0.14, 1)
+border_width_right = 1
+border_color = Color(0.18, 0.2, 0.26, 0.5)
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_content"]
+bg_color = Color(0.10, 0.11, 0.14, 1)
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottompanel"]
+bg_color = Color(0.09, 0.10, 0.13, 1)
+border_width_top = 1
+border_color = Color(0.18, 0.28, 0.45, 0.25)
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 8.0
+content_margin_bottom = 2.0
+
+[node name="ScriptEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_editor")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.10, 0.11, 0.14, 1)
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="MenuBar" type="PanelContainer" parent="MainVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 28)
+theme_override_styles/panel = SubResource("StyleBoxFlat_menubar")
+
+[node name="MenuBarHBox" type="HBoxContainer" parent="MainVBox/MenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="FileMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "文件"
+flat = true
+
+[node name="EditMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "编辑"
+flat = true
+
+[node name="ViewMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "视图"
+flat = true
+
+[node name="RunMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "运行"
+flat = true
+
+[node name="HelpMenu" type="MenuButton" parent="MainVBox/MenuBar/MenuBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "帮助"
+flat = true
+
+[node name="TopBar" type="PanelContainer" parent="MainVBox"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar")
+
+[node name="TopBarHBox" type="HBoxContainer" parent="MainVBox/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+custom_minimum_size = Vector2(64, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "← 返回"
+flat = true
+
+[node name="Sep1" type="VSeparator" parent="MainVBox/TopBar/TopBarHBox"]
+layout_mode = 2
+theme_override_colors/separator = Color(0.3, 0.35, 0.45, 0.4)
+
+[node name="ScriptNameLabel" type="Label" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "剧本: (未加载)"
+
+[node name="VersionLabel" type="Label" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "v1.0.0"
+
+[node name="Spacer" type="Control" parent="MainVBox/TopBar/TopBarHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScriptSettingsBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.7, 0.9, 1)
+theme_override_colors/font_hover_color = Color(0.9, 0.85, 1.0, 1)
+theme_override_font_sizes/font_size = 12
+text = "⚙ 剧本设置"
+flat = true
+
+[node name="CollabBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.85, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.8, 1.0, 1.0, 1)
+theme_override_font_sizes/font_size = 12
+text = "🔄 切换编辑器"
+flat = true
+
+[node name="ModeVisualBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.85, 0.55, 1)
+theme_override_colors/font_hover_color = Color(0.7, 1.0, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "可视化"
+flat = true
+
+[node name="ModeCodeBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.85, 1)
+theme_override_colors/font_hover_color = Color(0.7, 0.8, 1.0, 1)
+theme_override_font_sizes/font_size = 12
+text = "核心"
+flat = true
+
+[node name="ModeMudBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.75, 0.35, 1)
+theme_override_colors/font_hover_color = Color(1.0, 0.85, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "🖥 MUD"
+flat = true
+
+[node name="SaveBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+custom_minimum_size = Vector2(64, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.95, 0.7, 1)
+theme_override_colors/font_hover_color = Color(0.85, 1, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "💾 保存"
+flat = true
+
+[node name="TestBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+custom_minimum_size = Vector2(64, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_colors/font_hover_color = Color(0.85, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "▶ 测试"
+flat = true
+
+[node name="PublishBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
+custom_minimum_size = Vector2(64, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 12
+text = "📢 发布"
+flat = true
+
+[node name="MainHSplit" type="HSplitContainer" parent="MainVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="LeftPanel" type="PanelContainer" parent="MainVBox/MainHSplit"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_leftpanel")
+
+[node name="LeftVBox" type="VBoxContainer" parent="MainVBox/MainHSplit/LeftPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="LeftCollapseBtn" type="Button" parent="MainVBox/MainHSplit/LeftPanel/LeftVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 22)
+theme_override_colors/font_color = Color(0.6, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "◀ 收起"
+flat = true
+
+[node name="ModuleTitle" type="Label" parent="MainVBox/MainHSplit/LeftPanel/LeftVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "▸ 场景导航"
+
+[node name="ModuleTree" type="Tree" parent="MainVBox/MainHSplit/LeftPanel/LeftVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/title_button_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_colors/guide_color = Color(0.25, 0.28, 0.35, 0.3)
+theme_override_colors/font_color = Color(0.78, 0.8, 0.86, 1)
+theme_override_colors/font_selected_color = Color(0.6, 0.85, 1.0, 1)
+theme_override_font_sizes/title_button_font_size = 12
+theme_override_font_sizes/font_size = 12
+hide_root = true
+select_mode = 0
+
+[node name="CenterVSplit" type="VSplitContainer" parent="MainVBox/MainHSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/separation = 4
+
+[node name="EditorContainer" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+theme_override_constants/separation = 0
+
+[node name="BottomPanel" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+theme_override_constants/separation = 0
+
+[node name="BottomTabBar" type="TabBar" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 28)
+theme_override_colors/font_selected_color = Color(1, 1, 1, 1)
+theme_override_colors/font_unselected_color = Color(0.55, 0.58, 0.65, 1)
+theme_override_colors/font_hover_color = Color(0.8, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 11
+tab_count = 3
+current_tab = 0
+tabs = ["输出日志", "校验结果", "模板浏览器"]
+
+[node name="BottomContent" type="PanelContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_content")
+
+[node name="BottomStack" type="Control" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent"]
+unique_name_in_owner = true
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OutputPanel" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
+
+[node name="OutputLabel" type="Label" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/OutputPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "✅ 就绪"
+
+[node name="OutputLog" type="RichTextLabel" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/OutputPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.75, 0.78, 0.85, 1)
+theme_override_font_sizes/normal_font_size = 11
+bbcode_enabled = true
+text = ""
+scroll_following = false
+
+[node name="ValidationPanel" type="HSplitContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+theme_override_constants/separation = 6
+
+[node name="ErrorPanel" type="PanelContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_content")
+
+[node name="ErrorVBox" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/ErrorPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ErrorTitle" type="Label" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/ErrorPanel/ErrorVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 11
+text = "❌ 错误"
+
+[node name="ErrorList" type="ItemList" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/ErrorPanel/ErrorVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.9, 0.75, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+
+[node name="WarningPanel" type="PanelContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_content")
+
+[node name="WarningVBox" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/WarningPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="WarningTitle" type="Label" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/WarningPanel/WarningVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 11
+text = "⚠ 警告"
+
+[node name="WarningList" type="ItemList" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/WarningPanel/WarningVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.9, 0.85, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+
+[node name="SuggestionPanel" type="PanelContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_content")
+
+[node name="SuggestionVBox" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/SuggestionPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SuggestionTitle" type="Label" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/SuggestionPanel/SuggestionVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "💡 建议"
+
+[node name="SuggestionList" type="ItemList" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/ValidationPanel/SuggestionPanel/SuggestionVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.7, 0.8, 0.95, 1)
+theme_override_font_sizes/font_size = 11
+
+[node name="TemplatePanel" type="VBoxContainer" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+theme_override_constants/separation = 4
+
+[node name="TemplateTree" type="Tree" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/TemplatePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/title_button_color = Color(0.8, 0.82, 0.88, 1)
+theme_override_colors/guide_color = Color(0.3, 0.32, 0.38, 0.3)
+theme_override_font_sizes/title_button_font_size = 12
+hide_root = true
+select_mode = 0
+
+[node name="CodeEditorContainer" type="VBoxContainer" parent="MainVBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="MudEditorContainer" type="VBoxContainer" parent="MainVBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="StatusBar" type="PanelContainer" parent="MainVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 24)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottompanel")
+
+[node name="StatusBarHBox" type="HBoxContainer" parent="MainVBox/StatusBar"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StatusLabel" type="Label" parent="MainVBox/StatusBar/StatusBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "✅ 就绪"
+
+[node name="NodeCountLabel" type="Label" parent="MainVBox/StatusBar/StatusBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "事件: 0 | 势力: 0 | 技能: 0"
+
+[node name="StatusSpacer" type="Control" parent="MainVBox/StatusBar/StatusBarHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ModeLabel" type="Label" parent="MainVBox/StatusBar/StatusBarHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 11
+text = "可视化模式"
+
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/BackBtn" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/SaveBtn" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/TestBtn" to="." method="_on_test_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/PublishBtn" to="." method="_on_publish_pressed"]
+[connection signal="item_selected" from="MainVBox/MainHSplit/LeftPanel/LeftVBox/ModuleTree" to="." method="_on_module_tree_selected"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/ScriptSettingsBtn" to="." method="_on_script_settings_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/CollabBtn" to="." method="_on_switch_editor_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/ModeVisualBtn" to="." method="_on_mode_visual_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/ModeCodeBtn" to="." method="_on_mode_code_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopBarHBox/ModeMudBtn" to="." method="_on_mode_mud_pressed"]
+[connection signal="tab_changed" from="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomTabBar" to="." method="_on_bottom_tab_changed"]
+[connection signal="pressed" from="MainVBox/MainHSplit/LeftPanel/LeftVBox/LeftCollapseBtn" to="." method="_on_left_collapse_pressed"]
+[connection signal="item_selected" from="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/TemplatePanel/TemplateTree" to="." method="_on_template_selected"]

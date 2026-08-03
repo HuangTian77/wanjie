@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>全局配置</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 交互模块 css -->
+    <style src='../css/alternation.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul,ul.cond {
+            border: 1px solid silver;
+            margin: 2px 0 2px 0;
+            padding: 0 5px 0 0;
+            overflow: auto;
+        }
+
+        ul.campaign-property {
+            accept-drop: selector(li.campaign-property);
+        }
+
+        li {
+            list-style: none;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        li.campaign-property {
+            draggable: only-move;
+        }
+
+        span.full-width {
+            display: inline-block;
+            width: 100%%;
+        }
+
+        /* 给 div 用的*/
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        .panel-container {
+            width: 100%%;
+            height: 100%%;
+            padding: 0 10px 10px 10px;
+        }
+
+        .panel-container > p {
+            padding: 0;
+            margin: 0 0 5px 0;
+        }
+
+        .detail-info td:nth-child(1) {
+            vertical-align: middle;
+        }
+
+        .detail-info td:nth-child(2) {
+            font-weight: normal;
+            color: black;
+        }
+        
+        label.oneline-text {
+            text-overflow:ellipsis;
+            font-weight: bold;
+            display: inline-block;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="globalConfig.lua"></script>
+</head>
+
+<body>
+    <!-- <button onClick="clickTest()">测试输出</button> -->
+    <div .board>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div #t_panel_game selected panel="panel-game">游戏设置</div>
+                <div #t_panel_map panel="panel-map">地图设置</div>
+                <div #t_panel_campaign panel="panel-campaign">战斗设置</div>
+                <div #t_panel_skill panel="panel-skill">技能设置</div>
+                <div #t_panel_navigation panel="panel-navigation">导航栏</div>
+                <!-- <div #t_panel_multiple panel="panel-multiple">多人互动</div> -->
+                <div #t_panel_script panel="panel-script">脚本</div>
+                <div #t_panel_sharereward panel="panel-sharereward">分享奖励</div>
+            </div>
+
+            <!-- 游戏设置 -->
+            <div .panel name="panel-game">
+                <div .panel-container>
+                    <div .board>
+                        <table .detail-info>
+                            <tr>
+                                <td>游戏名称：</td>
+                                <td>
+                                    <input #t_game_title_input type=text style="width:100%%;" novalue="请填写游戏标题" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>游戏版本：</td>
+                                <td>
+                                    <input #t_game_version_input type=text style="width:100%%;" novalue="请填写游戏版本"
+                                        filter="0~9." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td title="针对 RPG 类的游戏，是否在道具类型的弹出框中显示内置的『已装备』标签栏">装备标签：</td>
+                                <td>
+                                    <input #t_goods_use_equip_tab type="checkbox" checked />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td title="是否在游戏日志中输出在脚本中的 trace 调试数据，线上发布版中无效">测试输出：</td>
+                                <td>
+                                    <input #t_game_show_trace_log type="checkbox" checked />
+                                </td>
+                            </tr>
+                            <tr style="display: none;">
+                                <td title="仅开发使用，不会记录到文件中">开发选项：</td>
+                                <td>
+                                    <button #t_btn_debug_test type="checkbox" onclick="clickTestServer()">内网游戏服务器</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div .bottom_button>
+                        <button onclick="saveGameConfigData()">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地图设置 -->
+            <div .panel name="panel-map">
+                <div .panel-container>
+                    <div .board>
+                        <table .detail-info>
+                            <tr>
+                                <td>初始出生点：</td>
+                                <td>
+                                    <select #t_game_born_map style="width:150px;"></select>
+                                    <select #t_game_born_point style="width:100%%;"></select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td title="点击地图移动的时间，类似于从A走到B的过程，会播放地图移动的动画">地图移动延时：</td>
+                                <td>
+                                    <input #t_map_move_time type=number style="width:100%%;" novalue="地图移动的时间，单位：毫秒" />
+                                    毫秒
+                                </td>
+                            </tr>
+                            <tr>
+                                <td title="勾选表示在进出地图节点时会在日志中输出一条『你来到了xxx』的信息">进入场景提示信息：</td>
+                                <td>
+                                    <input #t_map_move_show_log type=checkbox checked />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div .bottom_button>
+                        <button onclick="saveMapConfigData();">保存</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 战斗设置 -->
+            <div .panel name="panel-campaign">
+                <div .panel-container>
+                    <div .tabs style="min-height: 120px;">
+                        <div .strip style="width:100%%;">
+                            <div #t_panel_campaign_fail_trigger selected panel="panel-campaign-fail-trigger">失败触发</div>
+                            <div #t_panel_campaign_property selected panel="panel-campaign-property">属性展现</div>
+                        </div>
+
+                        <!-- 失败触发 -->
+                        <div .panel name="panel-campaign-fail-trigger">
+                            <div .panel-container>
+                                默认战斗失败触发
+                                <div>
+                                    <button onclick="clickAddCampaignTrigger();">增加触发</button>
+                                    <span .full-width></span>
+                                    <button onclick="clickSaveCampaignTrigger()">保存</button>
+                                </div>
+                                <ul #t_campaign_default_trigger_container .cond></ul>
+                            </div>
+                        </div>
+                        <!-- 战役属性展现 -->
+                        <div .panel name="panel-campaign-property">
+                            <div .panel-container>
+                                战斗界面属性展现配置
+                                <div>
+                                    <button onclick="clickAddCampaignProperty();">增加属性</button>
+                                    <span .full-width></span>
+                                    <button onclick="clickSaveCampaignProperty();">保存</button>
+                                </div>
+                                <ul #t_camapign_property .campaign-property .cond> </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 技能设置 -->
+            <div .panel name="panel-skill">
+                <div .panel-container>
+                    <button #t_skill_default_checkbox type=checkbox onclick="clickSkillEnemyDefault();" title="开启后所有敌人会默认携带此技能，如果敌人的数据中配置了技能，则不会添加">敌人默认技能：</button>
+                    <select #t_skill_default_select size=1 .skill-data disabled style="width:100%%;"></select>
+                </div>
+            </div>
+
+            <!-- 导航栏 -->
+            <div .panel name="panel-navigation">
+                <div .panel-container>
+                    <button onclick="clickAddNaviButton();">新增导航按钮</button>
+                    <span .full-width></span>
+                    <button onclick="clickNavigatorSave();">保存</button>
+                    <ul #t_navigation_content style="height:100%%;">
+                        <!-- <li tid=1 tp=1 name="角色"><button type=checkbox>角色（显示当前玩家的一些属性信息）</button></li>
+                        <li tid=2 tp=2 name="道具"><button type=checkbox>道具（物品和道具都在这个标签下）</button></li>
+                        <li tid=3 tp=3 name="技能"><button type=checkbox>技能（当前玩家的技能配置）</button></li> -->
+                    </ul>
+                </div>
+            </div>
+
+            <div .panel name="panel-script">
+                <div .panel-container>
+                    <div .tabs #t_tab_script style="min-height: 120px;">
+                        <div .strip style="width:100%%;">
+                            <div #t_panel_hook selected panel="panel-hook">事件回调处理</div>
+                            <div #t_panel_pluggin panel="panel-pluggin">脚本插件库</div>
+                        </div>
+                        <!-- 回调事件 -->
+                        <div .panel name="panel-hook">
+                            <div .panel-container>
+                                <button onclick="clickCheckGrammar(this:find_nearest_parent('div'):F('widget').value);">语法检查</button>
+                                <span .full-width></span>
+                                <button onclick="clickHookSampleCode();">样例填充</button>
+                                <button onclick="clickHookSave();">保存</button>
+                                <widget #t_multiple_script type="scintilla" .board style="margin-top:2px;" />
+                            </div>
+                        </div>
+                        <div .panel name="panel-pluggin">
+                            <div .panel-container>
+                                <div>
+                                    <button onclick="clickAddScriptPluggin()">新增插件</button>
+                                    <span .full-width></span>
+                                    <!-- <button onclick="clickSaveScriptPluggin()">保存</button> -->
+                                </div>
+                                <ul #t_pluggin_container style="height:100%%;"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分享奖励 -->
+            <div .panel name="panel-sharereward">
+                <div .panel-container>
+                    玩家分享后，对应玩家登陆游戏后会获得以下配置的奖励数据<br />
+                    <button onclick="clickAddSharerewardItem(this:find_nearest_parent('div'):F('ul'));">增加奖励</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div'):F('ul').html=''">清空</button>
+                    <button onclick="clickSharerewardSave();">保存</button>
+                    <ul #t_sharereward style="height:100%%"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

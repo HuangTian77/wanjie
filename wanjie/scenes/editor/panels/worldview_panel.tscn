@@ -1,0 +1,138 @@
+[gd_scene load_steps=2 format=3 uid="uid://worldview_panel_001"]
+
+[ext_resource type="Script" path="res://scripts/editor/panels/worldview_panel.gd" id="1_wv"]
+
+[node name="WorldviewPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wv")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "📖 世界观设定"
+horizontal_alignment = 1
+
+[node name="TabBar" type="TabBar" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+tab_count = 4
+current_tab = 0
+tabs = ["背景故事", "时代定义", "世界规则", "势力设定"]
+
+[node name="ContentPanel" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BgVBox" type="VBoxContainer" parent="Margin/VBox/ContentPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BgLabel" type="Label" parent="Margin/VBox/ContentPanel/BgVBox"]
+layout_mode = 2
+text = "背景故事："
+
+[node name="BgEdit" type="TextEdit" parent="Margin/VBox/ContentPanel/BgVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "在这里描述你的世界背景故事..."
+autowrap_mode = 2
+
+[node name="EraVBox" type="VBoxContainer" parent="Margin/VBox/ContentPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="EraToolbar" type="HBoxContainer" parent="Margin/VBox/ContentPanel/EraVBox"]
+layout_mode = 2
+
+[node name="AddEraBtn" type="Button" parent="Margin/VBox/ContentPanel/EraVBox/EraToolbar"]
+layout_mode = 2
+text = "+ 添加时代"
+
+[node name="RemoveEraBtn" type="Button" parent="Margin/VBox/ContentPanel/EraVBox/EraToolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="EraList" type="ItemList" parent="Margin/VBox/ContentPanel/EraVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EraDetail" type="VBoxContainer" parent="Margin/VBox/ContentPanel/EraVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RuleVBox" type="VBoxContainer" parent="Margin/VBox/ContentPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="RuleToolbar" type="HBoxContainer" parent="Margin/VBox/ContentPanel/RuleVBox"]
+layout_mode = 2
+
+[node name="AddRuleBtn" type="Button" parent="Margin/VBox/ContentPanel/RuleVBox/RuleToolbar"]
+layout_mode = 2
+text = "+ 添加规则"
+
+[node name="RemoveRuleBtn" type="Button" parent="Margin/VBox/ContentPanel/RuleVBox/RuleToolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="RuleList" type="ItemList" parent="Margin/VBox/ContentPanel/RuleVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FactionVBox" type="VBoxContainer" parent="Margin/VBox/ContentPanel"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="FactionToolbar" type="HBoxContainer" parent="Margin/VBox/ContentPanel/FactionVBox"]
+layout_mode = 2
+
+[node name="AddFactionBtn" type="Button" parent="Margin/VBox/ContentPanel/FactionVBox/FactionToolbar"]
+layout_mode = 2
+text = "+ 添加势力"
+
+[node name="RemoveFactionBtn" type="Button" parent="Margin/VBox/ContentPanel/FactionVBox/FactionToolbar"]
+layout_mode = 2
+text = "- 删除"
+
+[node name="FactionList" type="ItemList" parent="Margin/VBox/ContentPanel/FactionVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FactionDetail" type="VBoxContainer" parent="Margin/VBox/ContentPanel/FactionVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="pressed" from="Margin/VBox/ContentPanel/EraVBox/EraToolbar/AddEraBtn" to="." method="_on_add_era_pressed"]
+[connection signal="pressed" from="Margin/VBox/ContentPanel/EraVBox/EraToolbar/RemoveEraBtn" to="." method="_on_remove_era_pressed"]
+[connection signal="pressed" from="Margin/VBox/ContentPanel/RuleVBox/RuleToolbar/AddRuleBtn" to="." method="_on_add_rule_pressed"]
+[connection signal="pressed" from="Margin/VBox/ContentPanel/RuleVBox/RuleToolbar/RemoveRuleBtn" to="." method="_on_remove_rule_pressed"]
+[connection signal="pressed" from="Margin/VBox/ContentPanel/FactionVBox/FactionToolbar/AddFactionBtn" to="." method="_on_add_faction_pressed"]
+[connection signal="pressed" from="Margin/VBox/ContentPanel/FactionVBox/FactionToolbar/RemoveFactionBtn" to="." method="_on_remove_faction_pressed"]
+[connection signal="text_changed" from="Margin/VBox/ContentPanel/BgVBox/BgEdit" to="." method="_on_bg_edit_text_changed"]

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>交互详情编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src="../css/tab.css" />
+    <style src="../css/alternation.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editalternation.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest();">输出测试</button> -->
+    <div>
+        <table .detail-info>
+        <tr><td>交互ID：</td><td #t_id></td></tr>
+        <tr><td>交互标题：</td><td #t_name></td></tr>
+        <tr><td>交互内容：</td><td #t_desc></td></tr>
+        </table>
+    </div>
+    <div #t_alternation_control .alternation-module style="flow:horizontal;height:100%%;">
+        <include src='./inner-alternation.html' />
+    </div>
+    <div .bottom_button>
+        <button onClick="save();">保存</button>
+        <button onClick="yes();">保存关闭</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# System/tool-specific ignores
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Project-specific: temp scripts generated at runtime
+# 测试脚本（temp_scripts/test_*.gd）为验证资产, 纳入版本管理
+temp_scripts/prof_*.gd
+temp_scripts/_dbg_*.gd
+temp_scripts/*.uid
+
+# Screenshots / debug captures
+screenshot_*.png
+screenshot_*.png.import

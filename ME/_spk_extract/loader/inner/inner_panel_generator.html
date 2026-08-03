@@ -1,0 +1,53 @@
+<div .panel name="panel-generator">
+    <frameset rows="2*,*" style="width:100%%;height:100%%;">
+        <widget .querytable #t_qu_generator type="tablectrl" head="generator" data-name="generator"></widget>
+        <div .action .content>
+            <ul .interact>
+                <button #t_btn_add_generator onClick="addGenerator();">新增生产</button>
+                <button #t_btn_copy_generator disabled onClick="copyGenerator();">复制生产</button>
+                <button #t_btn_edit_generator disabled onClick="editGenerator();">生产编辑</button>
+                <span style="display:inline-block;width:100%%"></span>
+                <button #t_btn_up_generator disabled onClick="updateGenerator();">更新数据</button>
+                <button #t_btn_del_generator disabled onClick="deleteGenerator();">删除生产</button>
+                <table .detail>
+                    <tr>
+                        <td>ID：</td><td #t_generator_id></td>
+                    </tr>
+                    <tr>
+                        <td>名称：</td><td><input #t_generator_name type="text" size=20 /> </td>
+                    </tr>
+                    <!-- <tr>
+                        <td>运行类型：</td><td #t_generator_run_type></td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>自动开启：</td><td #t_generator_auto_start></td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>完成关闭：</td><td #t_generator_auto_end></td>
+                    </tr> -->
+                    <tr>
+                        <td>生产类型：</td><td #t_generator_type></td>
+                    </tr>
+                    <tr>
+                        <td>数据类型：</td><td #t_generator_data_type></td>
+                    </tr>
+                    <tr>
+                        <td>开启条件：</td><td #t_generator_cond_open_type></td>
+                    </tr>
+                    <tr>
+                        <td>开启触发：</td><td #t_generator_trigger_open_type></td>
+                    </tr>
+                    <tr>
+                        <td>领取条件：</td><td #t_generator_cond_get_type></td>
+                    </tr>
+                    <tr>
+                        <td>领取触发：</td><td #t_generator_trigger_get_type></td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td><td><textarea #t_generator_note rows=5 style="width:100%%;" /></td>
+                    </tr>
+                </table>
+            </ul>
+        </div>
+    </frameset>
+</div>

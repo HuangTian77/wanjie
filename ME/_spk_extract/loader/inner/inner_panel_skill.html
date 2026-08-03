@@ -1,0 +1,85 @@
+<div .panel name="panel-skill">
+    <div .tabs #t_tabs_skill style="min-height: 120px;">
+        <div .strip style="width:100%%;">
+            <div #t_panel_skill_list selected panel="panel-skill-list">技能表</div>
+            <div #t_panel_skill_type panel="panel-skill-type">分类表</div>
+        </div>
+        <!-- 技能列表 -->
+        <div .panel name="panel-skill-list">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_skill type="tablectrl" head="skill" data-name="skill"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_skill onClick="addSkill();">新增技能</button>
+                        <button #t_btn_detail_skill disabled onClick="detailSkill();">技能编辑</button>
+                        <button #t_btn_export_data_skill onClick="exportCSVData('skill', 'skill');">导出数据</button>
+                        <button #t_btn_import_data_skill onClick="importCSVData('skill', 'skill');">导入数据</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_skill disabled onClick="updateSkill();">更新信息</button>
+                        <button #t_btn_del_skill disabled onClick="deleteSkill();">删除信息</button>
+                        <table .detail>
+                            <tr>
+                                <td>ID：</td>
+                                <td><span #t_skill_id></span> </td>
+                            </tr>
+                            <tr>
+                                <td>名称：</td>
+                                <td><input #t_skill_name type="text" size=20 /> </td>
+                            </tr>
+                            <tr>
+                                <td>分类：</td>
+                                <td>
+                                    <select #t_skill_type_select size=1 style="width:150px;"></select>
+                                    <span .comment>技能分类请在分类表中添加</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>描述：</td>
+                                <td><textarea #t_skill_desc rows=3 style="width:100%%;" /></td>
+                            </tr>
+                            <tr>
+                                <td>备注：</td><td><textarea #t_skill_note rows=2 style="width:100%%;" /></td>
+                            </tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+        <!-- 技能分类 -->
+        <div .panel name="panel-skill-type">
+            <frameset rows="2*,*" style="width:100%%;height:100%%;">
+                <widget .querytable #t_qu_skill_type type="tablectrl" head="skill_type" data-name="skill_type"></widget>
+                <div .action .content>
+                    <ul .interact>
+                        <button #t_btn_add_skill_type onClick="addSkillType();">新增分类</button>
+                        <button #t_btn_detail_skill_type disabled onClick="detailSkillType();" style="display:none;">详情编辑</button>
+                        <span style="display:inline-block;width:100%%"></span>
+                        <button #t_btn_up_skill_type disabled onClick="updateSkillType();">更新信息</button>
+                        <button #t_btn_del_skill_type disabled onClick="deleteSkillType();">删除信息</button>
+                        <table .detail>
+                            <tr>
+                                <td>ID：</td>
+                                <td><span #t_skill_type_id></span> </td>
+                            </tr>
+                            <tr>
+                                <td>名称：</td>
+                                <td><input #t_skill_type_name type="text" size=20 /> </td>
+                            </tr>
+                            <tr>
+                                <td>排序权重：</td>
+                                <td><input #t_skill_priority type="number" size=20 step=1 value=100 /> <span .comment>数字越小，排序越靠前，默认100</span></td>
+                            </tr>
+                            <tr>
+                                <td>可见：</td>
+                                <td><input #t_skill_type_visible type="checkbox" checked disabled /> <span .comment>如果不打勾表示当前分类标签客户端个人技能标签下不显示</span></td>
+                            </tr>
+                            <tr>
+                                <td>备注：</td><td><textarea #t_skill_type_note rows=2 style="width:100%%;" /></td>
+                            </tr>
+                        </table>
+                    </ul>
+                </div>
+            </frameset>
+        </div>
+    </div>
+</div>

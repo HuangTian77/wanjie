@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>属性高级编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        ul.result {
+            border: 1px solid silver;
+            padding: 0;
+            margin: 0;
+            width: 100%%;
+            height: 100%%;
+            overflow-y: auto;
+            accept-drop: selector(li.t_item)
+        }
+
+        li.t_item {
+            draggable: only-move;
+            padding: 3px;
+            behavior: clickable;
+        }
+
+        li.t_item:checked {
+            background-color:#3399ff;
+            color: white;
+        }
+
+        p.inner {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        span.small {
+            font-size: 11px;
+        }
+
+        span.tempvalue {
+            color:royalblue;
+            font-weight: bold;
+        }
+
+        span.tag {
+            color: whitesmoke;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            background-color: orangered;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 条件触发的 ui 公共脚本-->
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="editproperty.lua"></script>
+</head>
+
+<body>
+    <!-- <button onClick="clickTest()">测试输出</button> -->
+    <div .board>
+        <table .detail-info>
+            <tr>
+                <td>名称：</td>
+                <td #t_prop_name></td>
+            </tr>
+            <tr>
+                <td>描述：</td>
+                <td #t_prop_desc></td>
+            </tr>
+            <tr>
+                <td>ID：</td>
+                <td #t_prop_id></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td #t_prop_note></td>
+            </tr>
+        </table>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div #t_panel_basic selected panel="panel-basic">基本配置</div>
+                <div #t_panel_tirgger panel="panel-trigger">触发配置</div>
+                <div #t_panel_dictionary panel="panel-dictionary">属性字典</div>
+            </div>
+            <!-- 公式编辑页面 -->
+            <div .panel name="panel-basic">
+                <div #t_range_container style="width:100%%;">
+                    <p>取值范围：<select size=1 #t_range>
+                            <option value=0>不启用</option>
+                            <option value=1>启用</option>
+                        </select><span .comment>不启用表示范围默认为 0 ～ 21亿 </span></p>
+                    <div style="border:1px solid silver;width:100%%;height:100%%;">
+                        <p .inner> 最小值：<input type='text' disabled style="width:100%%;" #t_min filter="0~9-" /></p>
+                        <p .inner> 最大值：<input type='text' disabled style="width:100%%;" #t_max filter="0~9-" /></p>
+                    </div>
+                </div>
+                <div #t_tempvalue_container style="width:100%%;">
+                    <p>临时属性：<select size=1 #t_tempvalue>
+                            <option value=0>不启用</option>
+                            <option value=1>启用</option>
+                        </select>
+                        <span .small #t_prop_sub_name_container style="display:none;">&nbsp;临时属性名称：<span .tempvalue
+                                #t_prop_sub_name></span></span>
+                    </p>
+                    <p .comment>临时属性启用后，表示当前属性值有一个可变动的值，类似生命值的概念。<br />临时属性的名称可以在外部的属性表中修改。</p>
+                </div>
+                <div #t_script_container style="width:100%%;height:100%%;">
+                    <!-- <p>属性依赖预览：<input #t_dependent type=text style="width:100%%;" novalue="点击生成依赖按钮可以查看属性计算公式中的ID" /> <button onclick="generateDependent();">生成依赖</button></p> -->
+                    <p>
+                        属性计算公式：<span .comment>可以依赖其他属性参与计算公式</span>
+                    </p>
+                    <div>
+                        <button onclick="clickGrammarCheck();">语法检查</button>
+                        <span style="display: inline-block;width:100%%;"></span>
+                        <button onclick="clickAddFunctionTemplate();">公式模板</button>
+                    </div>
+                    <div style="width:100%%;height:100%%;margin-top:3px;">
+                        <widget type="scintilla" #t_script />
+                    </div>
+                    <div #t_script_comment style="display: none;"><span .tag>临时属性仅支持公式编辑</span></div>
+                </div>
+            </div>
+            <!-- 触发配置页面 -->
+            <div .panel name="panel-trigger">
+                <div style="margin-bottom:3px;">
+                    <button onclick="clickAddTriggerItem()">增加触发配置</button>
+                </div>
+                <div .board style="flow: horizontal;">
+                    <div .board style="width:200px;margin-right:5px;">
+                        <ul #t_trigger_item .result></ul>
+                    </div>
+                    <div .board style="width: 100%%;border:1px solid silver;padding: 5px;">
+                        触发类型：<span #t_trigger_type>
+                            <button ctype=lock type=radio v=0 checked onclick="clickRadioBox(this.attributes.v)">临界值触发</button>&nbsp;
+                            <button ctype=lock type=radio v=1 onclick="clickRadioBox(this.attributes.v)">变化触发</button>
+                        </span>
+                        <div tkey="container-value" style="display:block;">
+                            临界值：<input ctype=lock #t_tvalue type=text filter="0~9-" style="text-align: right;" />
+                            <div .comment>临界值就是监控的那个值，不需要属性等于的时候才触发，比如设定触发值为30，则从 1 变化到 31 或者从 31 变化到 1，都会进行触发</div>
+                        </div>
+                        <p>
+                            结果类型：<select ctype=lock #t_select_trigger size=1>
+                                <option value=0>无</option>
+                                <option value=1>配置</option>
+                                <option value=2>脚本</option>
+                            </select>
+                        </p>
+                        <div .board tkey="container-config" style="display:none;">
+                            <div style="margin-bottom:3px;">
+                                <button onclick="clickAddResult(this:find_nearest_parent('div.board'):F('ul'));">增加触发</button>
+                                <span .full-width></span>
+                                <button onclick="this:find_nearest_parent('div.board'):F('ul').html=''">清空</button>
+                            </div>
+                            <ul #t_trigger .result></ul>
+                        </div>
+                        <div .board tkey="container-script" style="display:none;">
+                            <widget type="scintilla" #t_script_trigger />
+                        </div>
+                    </div>
+                </div>
+                <div .comment>
+                    触发配置的数据表示会监控这个属性的数值（目前仅支持数值监控），当临界值到达后会触发配置的功能，如果是变化触发则每次数值变化后都会触发一次。<br />
+                    触发配置可以有多个，比如角色在 1 级、5级、15级，16级 需要有 4 种不同的触发奖励，那就可以在这里配置 4 条。触发的配置本身没有顺序关系，但是也会按照顺序执行。
+                </div>
+            </div>
+            <!-- 属性字典 -->
+            <div .panel name="panel-dictionary">
+                <div style="margin-bottom:5px;">
+                    默认描述：<input #t_dict_default style="width:100%%;" novalue="对应的值找不到时显示的描述信息，如果不配置则为空" />
+                </div>
+                <div style="margin-bottom:3px;">
+                    <button onclick="clickAddDictionaryItem(this:find_nearest_parent('div.panel'):F('ul'));">增加字典配置</button>
+                    <button onclick="clickImportDict(this:find_nearest_parent('div.panel'):F('ul'));">导入数据</button>
+                    <span .full-width></span>
+                    <button onclick="this:find_nearest_parent('div.panel'):F('ul').html=''">清空</button>
+                </div>
+                <ul #t_dict .cond></ul>
+                <div .comment>
+                    属性字典就是对应的属性值的枚举描述，可以方便在外部配置中把对应属性的值和字符串拼接在一起，方便数据的动态展现。支持范围（闭区间，包含首尾的值），方便统一配置，如果只配置起始值，则结束值会默认填充。
+                    如果配置了区间，则注意区间不要重叠，否则可能会出现和设计不符的情况。
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

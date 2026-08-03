@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>用户数据管理</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src="../css/common.css" />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        table.gameinfo {
+            /* behavior: grid; */
+            /* behavior: sortable-grid column-resizer; */
+            behavior: sortable-grid;
+            overflow: auto;
+            margin: 0;
+        }
+
+        table th:checked 
+        { 
+            foreground-image: url(stock:arrow-down); 
+            foreground-repeat: no-repeat;   
+            foreground-position-top: 50%;   
+            foreground-position-right: 5px;   
+        }
+
+        table th:nth-child(2) {
+            width:2*;
+        } 
+        table th:nth-child(3) {
+            width:5*;
+        } 
+        table th:nth-child(6) {
+            width:1.5*;
+        } 
+
+        .gameinfo td {
+            /* overflow:hidden; */
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            padding: 3px;
+        }
+
+        .gameinfo td:hover {
+            background-color:orange;
+        }
+
+        .gameinfo td:nth-child(1) {
+            text-align: right;
+            padding-right: 15px;
+            /* vertical-align: text-top; */
+        }
+
+        .gameinfo td:nth-child(4) {
+            text-align: center;
+            /* vertical-align: text-top; */
+        }
+
+        .gameinfo td:nth-child(5) {
+            text-align: center;
+            /* vertical-align: text-top; */
+        }
+
+        th {
+            padding: 5px;
+            white-space: nowrap;
+            background-color: black;
+            color:white;
+            width: 1*;
+        }
+
+        .gameinfo tr:current {
+            background-color: orange;
+            outline:1px dotted red -1px;
+        }
+
+        .gameinfo tr {
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+        
+        legend {
+            font-weight: bold;
+            color: black;
+            margin: 0 auto;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="user-manager.lua"></script>
+
+</head>
+
+<body>
+    <div .board>
+        <fieldset>
+            <legend>用户信息</legend>
+            <div style="margin:0 10px 10px 10px;">
+                <label #t_nickname></label><span .full-width></span><button onclick="logout()">注销</button>
+            </div>
+        </fieldset>
+        <div style="margin: 3px 0 3px 0;">
+            <button onclick="clickAddNewGame()">新增游戏</button>
+        </div>
+        <fieldset style="height:100%%;">
+            <legend>游戏列表</legend>
+            <!-- <div .board style="border: 1px solid silver;padding:0;"> -->
+            <table #t_gameinfo .board .gameinfo fixedrows=1 fixedlayout>
+            </table>
+            <!-- </div> -->
+        </fieldset>
+    </div>
+</body>
+
+</html>

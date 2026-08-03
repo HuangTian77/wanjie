@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/components/script_card.gd" id="1_script"]
+
+[node name="ScriptCard" type="PanelContainer"]
+custom_minimum_size = Vector2(220, 160)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="CardName" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "剧本名称"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.29, 0.216, 0.157, 1)
+
+[node name="CardAuthor" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "by 作者"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 0.7)
+
+[node name="CardDesc" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "剧本简介..."
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.8)
+autowrap_mode = 2
+max_lines_visible = 2
+
+[node name="CardTags" type="HBoxContainer" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="InfoHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CardRating" type="Label" parent="VBox/InfoHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "★ 0.0"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.769, 0.588, 0.353, 1)
+
+[node name="CardPlay" type="Label" parent="VBox/InfoHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0人体验"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.6)
+
+[node name="CardProgress" type="Label" parent="VBox/InfoHBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0%"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.353, 0.478, 0.353, 1)
+horizontal_alignment = 2
+
+[node name="ActionHBox" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CardEditBtn" type="Button" parent="VBox/ActionHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 24)
+layout_mode = 2
+text = "编辑"
+theme_override_font_sizes/font_size = 11
+
+[node name="CardDeleteBtn" type="Button" parent="VBox/ActionHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 24)
+layout_mode = 2
+text = "删除"
+theme_override_font_sizes/font_size = 11

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+
+    <title>交易编辑</title>
+    <!-- css配置优先级：从上往下，优先级越高 -->
+    <!-- 全局配置  -->
+    <style src="bundle://res/master.css" />
+    <!-- 基本css  -->
+    <style src='../css/common.css' />
+    <style src='../css/tab.css' />
+    <!-- 当前页面CSS配置 -->
+    <style>
+        .bottom_button {
+            margin-top: 5px;
+        }
+
+        .bottom_button button {
+            width: 100px;
+        }
+
+        ul {
+            border: 1px solid silver;
+            margin: 5px 0 0 0;
+            padding: 0;
+            height: 100%%;
+            width: 100%%;
+            overflow: auto;
+        }
+
+        ul.token {
+          background-color: #ddeeff;  
+        }
+
+        .board {
+            width: 100%%;
+            height: 100%%;
+        }
+
+        li.target-item {
+            behavior: clickable;
+        }
+
+        li.target-item:checked {
+            background-color: #6db2f7;
+        }
+        
+        div.left {
+            width: 50%;
+            margin-right: 8px;
+        }
+    </style>
+
+    <!-- 公共脚本 -->
+    <script type="text/lua" src="../common/utils.lua"></script>
+    <script type="text/lua" src="../common/view.lua"></script>
+
+    <script type="text/lua" src="bp://trigger_ui.lua"></script>
+
+    <!-- 当前页面脚本 -->
+    <script type="text/lua" src="edittrade.lua"></script>
+</head>
+
+<body>
+    <!-- <button onclick="clickTest()">测试</button> -->
+    <div .board>
+        <table .detail-info>
+            <tr>
+                <td>名称：</td>
+                <td #t_name></td>
+            </tr>
+            <tr>
+                <td>描述：</td>
+                <td #t_desc></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td #t_note></td>
+            </tr>
+        </table>
+        交易类型：<select #t_type_select size=1>
+            <option value=0>普通</option>
+            <option value=1>合成</option>
+            <option value=2>分解</option>
+        </select>
+        <div .tabs #t_tabs style="min-height: 120px;">
+            <div .strip style="width:100%%;">
+                <div #t_panel_tradeout selected panel="panel-tradeout">NPC售卖</div>
+                <div #t_panel_tradein panel="panel-tradein">NPC回购</div>
+            </div>
+
+            <!-- 卖出配置 -->
+            <div .panel name="panel-tradeout">
+                <div .board style="flow:horizontal;">
+                    <div .board .left>
+                        <button onclick="clickAddTargetResult(this:find_nearest_parent('div'):F('ul'))">增加可卖出条目</button>
+                        <!-- <button>批量添加</button> -->
+                        <span .full-width></span>
+                        <button onclick="this:find_nearest_parent('div'):F('ul').html = '';">清空数据</button>
+                        <ul tkey="target"></ul>
+                    </div>
+                    <div .board>
+                        <button tkey="btn-add" disabled onclick="clickAddTokenResult(this:find_nearest_parent('div'):F('ul'));">增加替换物</button>
+                        <!-- <button>批量增加</button> -->
+                        <span .full-width></span>
+                        <button tkey="btn-clear" disabled onclick="this:find_nearest_parent('div'):F('ul').html = '';">清空数据</button>
+                        <ul tkey="token" .token></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 买入配置 -->
+            <div .panel name="panel-tradein">
+                <div .board style="flow:horizontal;">
+                    <div .board .left>
+                        <button onclick="clickAddTargetResult(this:find_nearest_parent('div'):F('ul'))">增加可回购条目</button>
+                        <!-- <button>批量添加</button> -->
+                        <span .full-width></span>
+                        <button onclick="this:find_nearest_parent('div'):F('ul').html = '';">清空数据</button>
+                        <ul tkey="target"></ul>
+                    </div>
+                    <div .board>
+                        <button tkey="btn-add" disabled onclick="clickAddTokenResult(this:find_nearest_parent('div'):F('ul'));">增加替换物</button>
+                        <!-- <button>批量增加</button> -->
+                        <span .full-width></span>
+                        <button tkey="btn-clear" disabled onclick="this:find_nearest_parent('div'):F('ul').html = '';">清空数据</button>
+                        <ul tkey="token" .token></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div .bottom_button>
+        <button onClick="yes();">保存</button>
+        <button onClick="no();">取消</button>
+    </div>
+</body>
+
+</html>

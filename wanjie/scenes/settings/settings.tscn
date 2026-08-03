@@ -1,0 +1,355 @@
+[gd_scene load_steps=2 format=3 uid="uid://settings_scene_001"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings.gd" id="1_settings"]
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.961, 0.925, 0.843, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TopBar" type="HBoxContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+
+[node name="BackBtn" type="Button" parent="MarginContainer/VBox/TopBar"]
+custom_minimum_size = Vector2(80, 36)
+layout_mode = 2
+text = "← 返回"
+
+[node name="Title" type="Label" parent="MarginContainer/VBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "设置"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.29, 0.216, 0.157, 1)
+horizontal_alignment = 1
+
+[node name="SaveBtn" type="Button" parent="MarginContainer/VBox/TopBar"]
+custom_minimum_size = Vector2(120, 36)
+layout_mode = 2
+text = "保存并返回"
+
+[node name="Scroll" type="ScrollContainer" parent="MarginContainer/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContentVBox" type="VBoxContainer" parent="MarginContainer/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="GameCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="GameSection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="GameTitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection"]
+layout_mode = 2
+text = "游戏设置"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="NameHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection/NameHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "玩家名称"
+
+[node name="PlayerNameInput" type="LineEdit" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection/NameHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+text = "旅者"
+
+[node name="DiffHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection"]
+layout_mode = 2
+
+[node name="DiffLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection/DiffHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "难度模式"
+
+[node name="DifficultyOption" type="OptionButton" parent="MarginContainer/VBox/Scroll/ContentVBox/GameCard/GameSection/DiffHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "自适应"
+popup/item_1/text = "简单"
+popup/item_2/text = "普通"
+popup/item_3/text = "困难"
+
+[node name="DisplayCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="DisplaySection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DisplayTitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+layout_mode = 2
+text = "显示设置"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="FontHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+layout_mode = 2
+
+[node name="FontLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/FontHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "字体大小"
+
+[node name="FontSizeOption" type="OptionButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/FontHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "小 (13px)"
+popup/item_1/text = "中 (15px)"
+popup/item_2/text = "大 (17px)"
+popup/item_3/text = "超大 (20px)"
+
+[node name="AnimToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "开启动效"
+button_pressed = true
+
+[node name="FullscreenToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "全屏显示"
+
+[node name="AudioCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="AudioSection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AudioTitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection"]
+layout_mode = 2
+text = "音频设置"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="MasterHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection"]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/MasterHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "主音量"
+
+[node name="MasterVolume" type="HSlider" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/MasterHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="MasterPercent" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/MasterHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+text = "80%"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
+
+[node name="BGMHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection"]
+layout_mode = 2
+
+[node name="BGMLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/BGMHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "BGM音量"
+
+[node name="BGMVolume" type="HSlider" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/BGMHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="BGMPercent" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/BGMHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+text = "80%"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
+
+[node name="SFXHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/SFXHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "音效音量"
+
+[node name="SFXVolume" type="HSlider" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/SFXHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="SFXPercent" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AudioCard/AudioSection/SFXHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+text = "80%"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
+
+[node name="AICard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="AISection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AICard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AITitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AICard/AISection"]
+layout_mode = 2
+text = "AI设置"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="AIToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/AICard/AISection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "AI功能"
+button_pressed = true
+
+[node name="AINPCToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/AICard/AISection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "AI NPC对话"
+button_pressed = true
+
+[node name="DataCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="DataSection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DataTitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection"]
+layout_mode = 2
+text = "数据管理"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="DataBtnHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ClearCacheBtn" type="Button" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox"]
+layout_mode = 2
+text = "清除缓存"
+
+[node name="ExportDataBtn" type="Button" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox"]
+layout_mode = 2
+text = "导出所有数据"
+
+[node name="AboutCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
+layout_mode = 2
+
+[node name="AboutSection" type="VBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/AboutCard"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AboutTitle" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AboutCard/AboutSection"]
+layout_mode = 2
+text = "关于"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.545, 0.396, 0.282, 1)
+
+[node name="VersionLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AboutCard/AboutSection"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "万界诗篇 v1.0.0"
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
+
+[node name="EngineLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/AboutCard/AboutSection"]
+layout_mode = 2
+text = "Powered by Godot 4.7.1"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.5)
+
+[node name="SaveConfirmPopup" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -30.0
+offset_right = 120.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="SaveConfirmPopup"]
+layout_mode = 2
+text = "已保存"
+horizontal_alignment = 1
+
+[node name="ExportDialog" type="FileDialog" parent="."]
+title = "选择导出目录"
+size = Vector2i(500, 400)
+file_mode = 4
+access = 2
+
+[connection signal="pressed" from="MarginContainer/VBox/TopBar/BackBtn" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="MarginContainer/VBox/TopBar/SaveBtn" to="." method="_on_save_pressed"]
+[connection signal="item_selected" from="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/FontSizeOption" to="." method="_on_font_size_changed"]
+[connection signal="pressed" from="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox/ClearCacheBtn" to="." method="_on_clear_cache_pressed"]
+[connection signal="pressed" from="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox/ExportDataBtn" to="." method="_on_export_data_pressed"]
+[connection signal="dir_selected" from="ExportDialog" to="." method="_on_export_dialog_dir_selected"]
