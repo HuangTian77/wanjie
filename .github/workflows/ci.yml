@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    name: Godot headless 测试
+    runs-on: windows-latest
+    steps:
+      - name: 检出代码（含 LFS 大文件）
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: 验证 LFS 对象完整性
+        run: |
+          git lfs ls-files | Measure-Object | Select-Object -ExpandProperty Count
+          if (-not (Test-Path .\Godot_v4.7.1-stable_win64.exe)) { Write-Error "引擎 exe 缺失（LFS 未拉取）"; exit 1 }
+        shell: pwsh
+
+      - name: 导入校验（SCRIPT_ERROR_COUNT 必须为 0）
+        run: |
+          $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie --import 2>&1 | Out-String
+          $errs = ([regex]::Matches($out, "SCRIPT ERROR")).Count
+          Write-Host "SCRIPT_ERROR_COUNT=$errs"
+          if ($errs -gt 0) { exit 1 }
+        shell: pwsh
+
+      - name: 运行全部测试脚本
+        run: |
+          $fail = 0
+          $total = 0
+          Get-ChildItem wanjie/temp_scripts/test_*.gd | ForEach-Object {
+            $total++
+            $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie -s $_.FullName 2>&1 | Out-String
+            if ($out -match "ALL_TESTS_PASSED") { Write-Host "PASS $($_.Name)" }
+            else { Write-Host "FAIL $($_.Name)"; $fail++ }
+          }
+          Write-Host "RESULT total=$total pass=$($total-$fail) fail=$fail"
+          if ($fail -gt 0) { exit 1 }
+        shell: pwsh
+
+      - name: 主场景冒烟（10 帧无错误）
+        run: |
+          $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie --quit-after 10 2>&1 | Out-String
+          $errs = ([regex]::Matches($out, "SCRIPT ERROR|ERROR")).Count
+          Write-Host "SMOKE_ERRORS=$errs"
+          if ($errs -gt 0) { exit 1 }
+        shell: pwsh
