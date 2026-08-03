@@ -123,6 +123,16 @@ func _build_editor_theme() -> Theme:
 	t.set_color("font_color", "PopupMenu", IDEThemeClass.C_TEXT)
 	t.set_color("font_hover_color", "PopupMenu", IDEThemeClass.C_TEXT)
 	t.set_color("font_color", "MenuButton", IDEThemeClass.C_TEXT)
+	# 深色面板/树/列表背景（左侧模块树/文件系统等继承, 避免浅色渗入）
+	var tree_panel := StyleBoxFlat.new()
+	tree_panel.bg_color = IDEThemeClass.C_BG_BASE
+	tree_panel.set_content_margin_all(4)
+	t.set_stylebox("panel", "Tree", tree_panel)
+	t.set_stylebox("panel", "ItemList", tree_panel)
+	var panel_sb := StyleBoxFlat.new()
+	panel_sb.bg_color = IDEThemeClass.C_BG_BASE
+	t.set_stylebox("panel", "PanelContainer", panel_sb)
+	t.set_stylebox("panel", "ScrollContainer", panel_sb)
 	return t
 
 func _ready() -> void:

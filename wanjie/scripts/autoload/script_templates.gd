@@ -88,7 +88,7 @@ static func _add_choice(graph: Dictionary, parent_id: String, text0: String, tex
 static func _apply_rpg_adventure(ws: WorldScriptData) -> void:
 	_set_meta(ws, "新手村的勇者", ["奇幻", "冒险", "成长"], 30.0)
 	# 世界观
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "艾德兰大陆, 魔王军自黑暗裂隙涌出。身为新手村勇者的你, 踏上讨伐之路。"
 	wv.add_era("和平纪元", 0, 300)
 	wv.add_era("魔王降临", 300, 347)
@@ -98,7 +98,7 @@ static func _apply_rpg_adventure(ws: WorldScriptData) -> void:
 	wv.add_faction("demon", "魔王军", "demon", 75)
 	wv.add_faction("merchant", "商会", "neutral", 40)
 	# 事件
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("intro", "村长嘱托", "chain")
 	es.story_events[0]["description"] = "村长交给你一把旧铁剑: 去西边森林讨伐野狼。"
 	es.story_events[0]["choices"] = [{"id": "c1", "text": "立刻出发", "consequences": [{"target": "world", "effect": "quest_started"}]}]
@@ -111,21 +111,21 @@ static func _apply_rpg_adventure(ws: WorldScriptData) -> void:
 	es.story_events[2]["choices"] = [{"id": "c1", "text": "举起武器", "consequences": [{"target": "world", "effect": "demon_defeated"}]}]
 	es.add_random_event("wild_encounter", "野外遭遇", 0.15)
 	# 经济
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("gold", "金币", "universal")
 	ec.add_resource("iron", "铁矿石", "material")
 	ec.add_resource("herb", "草药", "material")
 	ec.add_market("village_shop", "村庄商店", "新手村")
 	ec.markets[0]["goods"] = [{"item": "iron", "base_price": 10.0, "demand_factor": 1.0, "supply_ratio": 0.5}]
 	# 能力
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("slash", "斩击", "active", "physical", "melee", "基础攻击")
 	ab.add_skill_simple("fireball", "火球术", "active", "elemental", "fire", "火焰伤害")
 	ab.add_skill_simple("heal", "治疗术", "support", "elemental", "light", "恢复生命")
 	ab.add_growth_path("warrior_path", "勇者之路", "物理攻击路线")
 	# 任务
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_main1", "讨伐野狼", "main")
 	qs.quests[0]["description"] = "前往西边森林讨伐 3 只野狼"
 	qs.quests[0]["objectives"] = [{"description": "讨伐野狼", "target_type": "kill", "target_id": "wolf", "required_count": 3}]
@@ -135,7 +135,7 @@ static func _apply_rpg_adventure(ws: WorldScriptData) -> void:
 	qs.quests[1]["rewards"] = {"exp": 300, "gold": 200}
 	qs.quests[1]["prerequisites"] = ["q_main1"]
 	# 战斗
-	var cs := ws.combat_system
+	var cs: CombatSystemData = ws.combat_system
 	cs.add_enemy_template("wolf", "野狼", 30, 8, 3)
 	cs.add_enemy_template("demon_soldier", "恶魔士兵", 60, 15, 8)
 	cs.add_battle_config("wolf_den_battle", "狼穴遭遇")
@@ -168,12 +168,12 @@ static func _rpg_economy_graph() -> Dictionary:
 
 static func _apply_visual_novel(ws: WorldScriptData) -> void:
 	_set_meta(ws, "雨夜的咖啡店", ["剧情", "选择", "情感"], 8.0)
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "都市雨夜, 你走进一家即将打烊的咖啡店。店里的神秘客人改变了这个夜晚。"
 	wv.add_faction("cafe", "咖啡店", "neutral", 30)
 	wv.add_faction("mystery", "神秘组织", "unknown", 70)
 	# 事件
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("rainy_night", "雨夜来客", "chain")
 	es.story_events[0]["description"] = "雨声敲打窗棂, 一名戴面具的客人坐在角落。"
 	es.story_events[0]["choices"] = [
@@ -195,15 +195,15 @@ static func _apply_visual_novel(ws: WorldScriptData) -> void:
 		{"id": "c2", "text": "留在店里", "consequences": [{"target": "world", "effect": "ending_stay"}]},
 	]
 	# 能力（观察/共情技能）
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("observe", "细致观察", "passive", "physical", "melee", "洞察细节, 提高发现隐藏线索的概率")
 	ab.add_skill_simple("empathy", "共情", "support", "elemental", "light", "提升对话信任")
 	# 经济（极简）
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("coin", "硬币", "universal")
 	# 任务（好感链）
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_trust", "信任之线", "main")
 	qs.quests[0]["description"] = "在对话中积累神秘客人的信任"
 	qs.quests[0]["objectives"] = [{"description": "完成三段关键对话", "target_type": "dialogue", "target_id": "masked", "required_count": 3}]
@@ -223,16 +223,16 @@ static func _apply_visual_novel(ws: WorldScriptData) -> void:
 
 static func _apply_simulation_tycoon(ws: WorldScriptData) -> void:
 	_set_meta(ws, "云端小镇工坊", ["经营", "经济", "资源"], 20.0)
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "云端小镇的手工作坊主, 通过采集、生产与贸易, 让小镇繁荣起来。"
 	wv.add_faction("guild", "商会", "neutral", 50)
 	wv.add_faction("town", "镇议会", "neutral", 45)
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("first_order", "第一笔订单", "chain")
 	es.story_events[0]["description"] = "商会送来订单: 交付 5 份木料。"
 	es.story_events[0]["choices"] = [{"id": "c1", "text": "接下订单", "consequences": [{"target": "world", "effect": "order_accepted"}]}]
 	es.add_random_event("market_fluc", "市场波动", 0.2)
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("silver", "银币", "universal")
 	ec.add_currency("gold", "金币", "premium")
 	ec.add_resource("wood", "木料", "material")
@@ -248,10 +248,10 @@ static func _apply_simulation_tycoon(ws: WorldScriptData) -> void:
 		{"resource": "wood", "sources": [{"type": "forest", "interval": "2h"}]},
 		{"resource": "iron", "sources": [{"type": "mine", "interval": "4h"}]},
 	]
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("haggle", "议价", "support", "physical", "melee", "提高交易价格")
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_growth", "小镇繁荣", "main")
 	qs.quests[0]["description"] = "将小镇繁荣度提升到 100"
 	qs.quests[0]["objectives"] = [{"description": "完成 10 笔交易", "target_type": "trade", "target_id": "market", "required_count": 10}]
@@ -268,12 +268,12 @@ static func _apply_simulation_tycoon(ws: WorldScriptData) -> void:
 
 static func _apply_turn_strategy(ws: WorldScriptData) -> void:
 	_set_meta(ws, "裂土之盟", ["策略", "战役", "阵营"], 40.0)
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "三大王国为争夺圣山展开百年战争。你是边境将领, 统率一军。"
 	wv.add_faction("north", "北境王国", "human", 60)
 	wv.add_faction("south", "南方联盟", "human", 55)
 	wv.add_faction("elves", "精灵议会", "elf", 50)
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("border_skirmish", "边境冲突", "chain")
 	es.story_events[0]["description"] = "斥候回报: 南方联盟的部队正在边境集结。"
 	es.story_events[0]["choices"] = [{"id": "c1", "text": "主动出击", "consequences": [{"target": "world", "effect": "war_started"}]}]
@@ -281,20 +281,20 @@ static func _apply_turn_strategy(ws: WorldScriptData) -> void:
 	es.story_events[1]["prerequisite"] = "border_skirmish"
 	es.story_events[1]["description"] = "圣山城下, 决战在即。"
 	es.story_events[1]["choices"] = [{"id": "c1", "text": "发动总攻", "consequences": [{"target": "world", "effect": "siege_won"}]}]
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("gold", "军饷", "universal")
 	ec.add_resource("iron", "铁矿石", "material")
 	ec.add_resource("food", "军粮", "material")
 	ec.add_market("supply_depot", "军需库", "边境要塞")
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("shield_wall", "盾墙", "passive", "physical", "melee", "提升防御")
 	ab.add_skill_simple("cavalry_charge", "骑兵冲锋", "active", "physical", "melee", "高额伤害")
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_campaign", "圣山战役", "main")
 	qs.quests[0]["description"] = "赢得圣山围城战"
 	qs.quests[0]["objectives"] = [{"description": "击败南方联盟主力", "target_type": "battle", "target_id": "siege", "required_count": 1}]
-	var cs := ws.combat_system
+	var cs: CombatSystemData = ws.combat_system
 	cs.add_enemy_template("south_sword", "南方剑士", 45, 12, 6)
 	cs.add_enemy_template("south_cavalry", "南方骑兵", 55, 16, 5)
 	cs.add_battle_config("siege_battle", "圣山决战")
@@ -312,10 +312,10 @@ static func _apply_turn_strategy(ws: WorldScriptData) -> void:
 
 static func _apply_combat_arena(ws: WorldScriptData) -> void:
 	_set_meta(ws, "雷鸣竞技场", ["战斗", "竞技", "技能"], 15.0)
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "雷鸣竞技场: 胜者扬名, 败者离场。挑战层层对手, 冲击冠军之位。"
 	wv.add_faction("arena", "竞技场管理", "neutral", 55)
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("challenge_1", "初战", "chain")
 	es.story_events[0]["description"] = "第一位对手走上擂台: 铁拳阿德。"
 	es.story_events[0]["choices"] = [{"id": "c1", "text": "应战", "consequences": [{"target": "world", "effect": "fight_1"}]}]
@@ -323,19 +323,19 @@ static func _apply_combat_arena(ws: WorldScriptData) -> void:
 	es.story_events[1]["prerequisite"] = "challenge_1"
 	es.story_events[1]["description"] = "最终对手: 竞技场之王。"
 	es.story_events[1]["choices"] = [{"id": "c1", "text": "全力一战", "consequences": [{"target": "world", "effect": "champion"}]}]
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("gold", "金币", "universal")
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("punch", "重拳", "active", "physical", "melee", "基础伤害")
 	ab.add_skill_simple("thunder_slash", "雷斩", "active", "elemental", "lightning", "雷属性伤害")
 	ab.add_skill_simple("iron_guard", "铁壁", "passive", "physical", "melee", "减伤")
 	ab.add_skill_simple("berserk", "狂化", "active", "physical", "melee", "攻防互换")
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_rank", "段位晋升", "main")
 	qs.quests[0]["description"] = "击败全部 5 名对手"
 	qs.quests[0]["objectives"] = [{"description": "连胜 5 场", "target_type": "win", "target_id": "arena", "required_count": 5}]
-	var cs := ws.combat_system
+	var cs: CombatSystemData = ws.combat_system
 	cs.add_enemy_template("ade", "铁拳阿德", 40, 10, 4)
 	cs.add_enemy_template("king", "竞技场之王", 80, 20, 12)
 	cs.add_battle_config("arena_1", "初战")
@@ -357,7 +357,7 @@ static func _apply_combat_arena(ws: WorldScriptData) -> void:
 
 static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 	_set_meta(ws, "失落遗迹", ["探索", "解谜", "遗迹"], 12.0)
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "古老遗迹深处隐藏着失落的文明。解开谜题, 收集线索, 抵达真相。"
 	wv.add_faction("ruins", "遗迹守卫", "unknown", 65)
 	wv.geography = {"regions": [
@@ -365,7 +365,7 @@ static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 		{"id": "hall", "name": "回响大厅", "description": "巨大的石像注视着来者"},
 		{"id": "chamber", "name": "最终密室", "description": "传说中的宝物所在"},
 	]}
-	var es := ws.event_system
+	var es: EventSystemData = ws.event_system
 	es.add_story_event("gate_riddle", "石门谜题", "chain")
 	es.story_events[0]["description"] = "石门铭文: '光明照不到的角落, 隐藏着钥匙'。"
 	es.story_events[0]["choices"] = [
@@ -380,14 +380,14 @@ static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 		{"id": "c2", "text": "直接砸开", "consequences": [{"target": "player", "effect": "gold -20"}]},
 	]
 	# 能力（解谜与探索技能）
-	var ab := ws.ability_system
+	var ab: AbilitySystemData = ws.ability_system
 	ab.initialize_combat_defaults()
 	ab.add_skill_simple("decipher", "古语解读", "passive", "elemental", "light", "解读遗迹铭文")
 	ab.add_skill_simple("stealth", "潜行", "active", "physical", "melee", "避开遗迹守卫")
-	var ec := ws.economy_system
+	var ec: EconomySystemData = ws.economy_system
 	ec.add_currency("gold", "金币", "universal")
 	ec.add_resource("key", "遗迹钥匙", "special")
-	var qs := ws.quest_system
+	var qs: QuestSystemData = ws.quest_system
 	qs.add_quest("q_riddle", "解开谜题", "main")
 	qs.quests[0]["description"] = "解开遗迹中的所有谜题"
 	qs.quests[0]["objectives"] = [{"description": "解开门谜", "target_type": "puzzle", "target_id": "gate", "required_count": 1}]
@@ -405,7 +405,7 @@ static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 static func _apply_dragonflame_worldview(ws: WorldScriptData) -> void:
 	_set_meta(ws, "龙焰纪元·世界观蓝图", ["奇幻", "世界观", "蓝图模板"], 20.0)
 	# 世界观数据（表单层可读）
-	var wv := ws.worldview
+	var wv: WorldviewData = ws.worldview
 	wv.background_story = "艾泽兰大陆, 龙焰纪元 DF 347 年。龙族消失 244 年后的白银和平即将破裂, 四大王国暗流涌动。"
 	wv.add_era("创世与诸神", -3000, -2000)
 	wv.add_era("龙族黄金纪元", -2000, 0)
