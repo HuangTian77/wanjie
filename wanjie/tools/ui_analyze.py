@@ -104,6 +104,47 @@ def diff(path_a, path_b):
     n = wa*ha
     print(f"DIFF: 平均色差={tot/n:.2f} (0=相同, >10=明显变化), 变化像素%={changed/n*100:.1f}")
 
+def visual_regression(bl_dir, cur_dir, threshold=2.0):
+    """视觉回归：对比 baseline 目录与当前截图目录同名 PNG，平均色差超阈值判定失败。
+    返回退出码 0=通过 / 1=有差异超阈值"""
+    import glob
+    bl_files = sorted(glob.glob(os.path.join(bl_dir, '*.png')))
+    fails, passes, missing = [], [], []
+    for bf in bl_files:
+        name = os.path.basename(bf)
+        cf = os.path.join(cur_dir, name)
+        if not os.path.exists(cf):
+            missing.append(name)
+            continue
+        wb, hb, rb = decode_png(bf)
+        wc, hc, rc = decode_png(cf)
+        if (wb, hb) != (wc, hc):
+            fails.append(f"{name} 尺寸不同 {wb}x{hb} vs {wc}x{hc}")
+            continue
+        tot, changed = 0, 0
+        for y in range(hb):
+            ca, cb = rb[y], rc[y]
+            for x in range(wb):
+                d = sum(abs(ca[x][i]-cb[x][i]) for i in range(3))
+                tot += d
+                if d > 30:
+                    changed += 1
+        avg = tot / (wb*hb)
+        line = f"{name}: avg_diff={avg:.2f} changed%={changed/(wb*hb)*100:.1f}"
+        if avg > threshold:
+            fails.append(line + "  <-- 超阈值")
+        else:
+            passes.append(line)
+    print(f"VR_CHECK threshold={threshold}")
+    for l in passes:
+        print("  OK  " + l)
+    for l in fails:
+        print("  FAIL " + l)
+    for m in missing:
+        print("  MISS " + m + " (baseline 无对应当前截图)")
+    print(f"VR_RESULT: pass={len(passes)} fail={len(fails)} missing={len(missing)}")
+    return 1 if fails or missing else 0
+
 def motion_curve(frames):
     """帧序列动画分析：相邻帧平均色差曲线 + 平滑度判定"""
     diffs = []
@@ -137,6 +178,11 @@ def motion_curve(frames):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
+    if sys.argv[1] == '--check':
+        # 用法: ui_analyze.py --check <baseline_dir> <current_dir> [threshold]
+        bl_dir, cur_dir = sys.argv[2], sys.argv[3]
+        thr = float(sys.argv[4]) if len(sys.argv) > 4 else 2.0
+        sys.exit(visual_regression(bl_dir, cur_dir, thr))
     if sys.argv[1] == '--motion':
         import glob
         frames = glob.glob(sys.argv[2])
