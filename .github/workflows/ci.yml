@@ -61,6 +61,13 @@ jobs:
         shell: pwsh
         working-directory: wanjie
 
+      - name: GdUnit4 测试（迁移试点套件 test/）
+        run: |
+          $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie -s res://addons/gdUnit4/bin/GdUnitCmdTool.gd --add res://test --ignoreHeadlessMode 2>&1 | Out-String
+          Write-Host $out
+          if ($LASTEXITCODE -ne 0) { Write-Error "GdUnit4 未通过"; exit 1 }
+        shell: pwsh
+
       - name: 主场景冒烟（10 帧无错误）
         run: |
           $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie --quit-after 10 2>&1 | Out-String

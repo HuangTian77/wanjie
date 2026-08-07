@@ -30,3 +30,6 @@ _ui_shots/
 
 # UI 布局断言报告（产物，不入库）
 _ui_layout_report.txt
+
+# GdUnit4 测试报告产物
+wanjie/reports/
