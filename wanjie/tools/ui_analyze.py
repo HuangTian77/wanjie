@@ -104,9 +104,47 @@ def diff(path_a, path_b):
     n = wa*ha
     print(f"DIFF: 平均色差={tot/n:.2f} (0=相同, >10=明显变化), 变化像素%={changed/n*100:.1f}")
 
+def motion_curve(frames):
+    """帧序列动画分析：相邻帧平均色差曲线 + 平滑度判定"""
+    diffs = []
+    prev = None
+    for f in sorted(frames):
+        w, h, rows = decode_png(f)
+        if prev is not None:
+            pw, ph, prows = prev
+            if (w, h) == (pw, ph):
+                tot = 0
+                for y in range(h):
+                    pa, ca = prows[y], rows[y]
+                    for x in range(w):
+                        tot += sum(abs(ca[x][i]-pa[x][i]) for i in range(3))
+                diffs.append(tot / (w*h))
+        prev = (w, h, rows)
+    n = len(diffs)
+    if n == 0:
+        print("MOTION: 无帧间变化（动画未触发?）")
+        return
+    peak = max(diffs); avg = sum(diffs)/n
+    print(f"MOTION: 帧数={n} 峰值={peak:.2f} 均值={avg:.2f}")
+    print("MOTION_CURVE: " + " ".join(f"{d:.2f}" for d in diffs))
+    if peak < 0.2:
+        print("MOTION_VERDICT: NO_ANIMATION（无动画或未触发）")
+    elif peak > 40:
+        print("MOTION_VERDICT: JUMP（存在跳变帧，动画可能不平滑）")
+    else:
+        print("MOTION_VERDICT: SMOOTH（动画存在且平滑）")
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
+    if sys.argv[1] == '--motion':
+        import glob
+        frames = glob.glob(sys.argv[2])
+        frames.sort()
+        if not frames:
+            print("无匹配帧文件"); sys.exit(1)
+        motion_curve(frames)
+        sys.exit(0)
     if len(sys.argv) == 3 and os.path.exists(sys.argv[1]) and os.path.exists(sys.argv[2]):
         analyze(os.path.basename(sys.argv[1]), sys.argv[1])
         analyze(os.path.basename(sys.argv[2]), sys.argv[2])

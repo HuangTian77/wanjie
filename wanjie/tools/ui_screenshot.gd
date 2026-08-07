@@ -14,7 +14,12 @@ func _initialize() -> void:
 	for a in OS.get_cmdline_args():
 		if a == "main_hub" or a == "editor" or a.begins_with("res://"):
 			arg = a
-			break
+		elif a.begins_with("--res "):
+			var parts: PackedStringArray = a.trim_prefix("--res ").split("x")
+			if parts.size() == 2:
+				DisplayServer.window_set_size(Vector2i(int(parts[0]), int(parts[1])))
+				root.size = Vector2i(int(parts[0]), int(parts[1]))
+				print("SCREENSHOT_RES=", parts[0], "x", parts[1])
 	var scenes := _resolve_scenes(arg)
 	print("SCREENSHOT_SCENES=", scenes)
 	_shot_all(scenes)

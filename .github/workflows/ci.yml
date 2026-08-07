@@ -44,6 +44,14 @@ jobs:
           if ($fail -gt 0) { exit 1 }
         shell: pwsh
 
+      - name: UI 布局断言（10 场景越界/重叠/零尺寸检查）
+        run: |
+          $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie -s tools/ui_layout_check.gd 2>&1 | Out-String
+          Write-Host $out
+          if ($LASTEXITCODE -ne 0) { Write-Error "布局断言失败（存在 HARD 问题）"; exit 1 }
+          if ($out -notmatch "LAYOUT_HARD=0") { Write-Error "布局断言未通过"; exit 1 }
+        shell: pwsh
+
       - name: 主场景冒烟（10 帧无错误）
         run: |
           $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie --quit-after 10 2>&1 | Out-String
