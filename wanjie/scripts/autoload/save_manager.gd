@@ -45,20 +45,20 @@ func save_game(slot: int, is_autosave: bool = false) -> bool:
 	if current_save == null or current_script_id.is_empty():
 		push_warning("SaveManager: 没有活跃的存档数据")
 		return false
-	
+
 	# 更新游玩时长
 	current_save.play_time_seconds += Time.get_ticks_msec() / 1000.0 - session_start_time
 	session_start_time = Time.get_ticks_msec() / 1000.0
-	
+
 	# 更新时间戳
 	current_save.saved_at = Time.get_datetime_string_from_system()
 	current_save.is_autosave = is_autosave
 	current_save.slot_index = slot
-	
+
 	# 确保目录存在
 	var dir_path := _get_save_dir(current_script_id)
 	DirAccess.make_dir_recursive_absolute(dir_path)
-	
+
 	var file_path := _get_save_path(current_script_id, slot, is_autosave)
 	if is_autosave:
 		# === 差分存档: base.json(完整基准) + delta ===
@@ -79,7 +79,7 @@ func save_game(slot: int, is_autosave: bool = false) -> bool:
 		if not _write_json(file_path, full):
 			return false
 		_write_base_snapshot()
-	
+
 	# 更新元数据
 	_update_metadata(slot, is_autosave)
 	save_completed.emit(slot)
@@ -91,21 +91,21 @@ func load_game(slot: int, is_autosave: bool = false) -> SaveData:
 	if not FileAccess.file_exists(file_path):
 		push_warning("SaveManager: 存档不存在 %s" % file_path)
 		return null
-	
+
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if file == null:
 		push_error("SaveManager: 无法读取文件 %s" % file_path)
 		return null
-	
+
 	var json_string := file.get_as_text()
 	file.close()
-	
+
 	var json := JSON.new()
 	var err := json.parse(json_string)
 	if err != OK:
 		push_error("SaveManager: JSON解析失败 %s" % json.get_error_message())
 		return null
-	
+
 	var data_dict: Dictionary = json.data
 	# 兼容差分格式: {format:2, delta} + base.json 合并
 	if data_dict.get("format", 1) == SAVE_FORMAT_VERSION and data_dict.has("delta"):
@@ -136,7 +136,7 @@ func list_saves(script_id: String) -> Array[Dictionary]:
 	var dir := DirAccess.open(dir_path)
 	if dir == null:
 		return saves
-	
+
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
@@ -156,7 +156,7 @@ func list_saves(script_id: String) -> Array[Dictionary]:
 			saves.append(info)
 		file_name = dir.get_next()
 	dir.list_dir_end()
-	
+
 	saves.sort_custom(func(a, b): return a.get("saved_at", "") > b.get("saved_at", ""))
 	return saves
 
@@ -308,10 +308,10 @@ func _update_metadata(_slot: int, _is_autosave: bool) -> void:
 			if j.parse(reader.get_as_text()) == OK:
 				meta = j.data
 			reader.close()
-	
+
 	meta["last_save"] = Time.get_datetime_string_from_system()
 	meta["total_saves"] = meta.get("total_saves", 0) + 1
-	
+
 	var writer := FileAccess.open(meta_path, FileAccess.WRITE)
 	if writer:
 		writer.store_string(JSON.stringify(meta, "\t"))

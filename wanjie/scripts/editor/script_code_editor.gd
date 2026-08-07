@@ -1,4 +1,4 @@
-﻿## 核心编辑器模式主控制器 - 复刻 Godot 4.7.1 编辑器布局
+## 核心编辑器模式主控制器 - 复刻 Godot 4.7.1 编辑器布局
 ## 组装: 菜单栏 + 顶栏 + 左Dock(场景/文件) + 中央工作区 + 底部面板 + 右Dock(检查器) + 状态栏
 ## 公共API保持兼容: build_into/load_data/get_code/apply_code/validate_code/export_code/import_code/insert_template
 extends Control
@@ -689,14 +689,14 @@ func _on_scene_tree_selected(nodes: Array[Dictionary]) -> void:
 func _on_scene_modified() -> void:
 	_log("场景已修改", IDETheme.C_YELLOW)
 
-func _on_property_changed(node: Dictionary, property: String, new_value: Variant) -> void:
+func _on_property_changed(_node: Dictionary, property: String, new_value: Variant) -> void:
 	_log("属性变更: %s = %s" % [property, str(new_value)], IDETheme.C_TEXT_DIM)
 
 # ============================================================
 # 场景编辑器选中/修改/撤销重做
 # ============================================================
 
-func _on_editor_selection_changed(domain: String, nodes: Array[Dictionary], scene_root: Dictionary) -> void:
+func _on_editor_selection_changed(_domain: String, nodes: Array[Dictionary], scene_root: Dictionary) -> void:
 	_dock_right.set_selected_nodes(nodes)
 	var node: Dictionary = nodes[0] if not nodes.is_empty() else {}
 	_dock_right.set_node_panel_target(node, scene_root)

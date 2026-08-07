@@ -37,14 +37,14 @@ func _ready() -> void:
 func start_dialog(character: Dictionary) -> void:
 	current_character = character
 	dialog_history.clear()
-	
+
 	# 添加角色开场白
 	if character.has("greeting") and character["greeting"] != "":
 		dialog_history.append({
 			"role": "assistant",
 			"content": character["greeting"]
 		})
-	
+
 	dialog_started.emit(str(character.get("id", "")))
 
 ## 结束当前对话
@@ -58,22 +58,22 @@ func end_dialog() -> void:
 func send_message(player_text: String) -> String:
 	if current_character.is_empty():
 		return ""
-	
+
 	# 添加玩家消息
 	dialog_history.append({"role": "user", "content": player_text})
 	message_added.emit("user", player_text)
-	
+
 	# 组装完整prompt
 	var messages := _build_context_messages()
 	var system_prompt := _build_system_prompt()
-	
+
 	# 调用LLM（使用autoload的LLMClient单例）
 	var response: String = await LLMClient.chat(messages, system_prompt)
-	
+
 	if response != "":
 		dialog_history.append({"role": "assistant", "content": response})
 		message_added.emit("assistant", response)
-	
+
 	return response
 
 ## 注册世界书
@@ -121,7 +121,7 @@ func _build_system_prompt() -> String:
 	prompt = prompt.replace("{name}", str(current_character.get("name", "未知")))
 	prompt = prompt.replace("{personality}", str(current_character.get("personality", "友善")))
 	prompt = prompt.replace("{background}", str(current_character.get("background", "无特殊背景")))
-	
+
 	# 加载关联世界书
 	var world_id: String = current_character.get("world_id", "")
 	var world_setting := "无特定世界设定"
@@ -132,20 +132,20 @@ func _build_system_prompt() -> String:
 			world_setting += "\n\n传说：" + str(world["lore"])
 		if world.has("rules"):
 			world_setting += "\n\n规则：" + str(world["rules"])
-	
+
 	prompt = prompt.replace("{world_setting}", world_setting)
 	return prompt
 
 func _build_context_messages() -> Array:
 	var messages: Array = []
 	var total_tokens_estimate := 0
-	
+
 	# 添加示例对话（如果有）
 	if current_character.has("example_dialogs"):
 		for example in current_character["example_dialogs"]:
 			messages.append({"role": "system", "content": "示例: " + example})
 			total_tokens_estimate += _estimate_tokens(example)
-	
+
 	# 从历史消息中构建上下文（限制token）
 	var context_messages: Array = []
 	for i in range(dialog_history.size() - 1, -1, -1):
@@ -155,7 +155,7 @@ func _build_context_messages() -> Array:
 			break
 		context_messages.push_front(msg)
 		total_tokens_estimate += msg_tokens
-	
+
 	messages.append_array(context_messages)
 	return messages
 

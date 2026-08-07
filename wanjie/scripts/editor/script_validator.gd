@@ -13,17 +13,17 @@ func validate(script_data: WorldScriptData) -> Dictionary:
 	errors.clear()
 	warnings.clear()
 	suggestions.clear()
-	
+
 	if script_data == null:
 		errors.append("剧本数据为空")
 		return get_report()
-	
+
 	_validate_metadata(script_data)
 	_validate_worldview(script_data.worldview)
 	_validate_events(script_data.event_system)
 	_validate_economy(script_data.economy_system)
 	_validate_abilities(script_data.ability_system)
-	
+
 	return get_report()
 
 ## 获取校验报告

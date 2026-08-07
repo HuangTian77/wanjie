@@ -32,7 +32,7 @@ func change_scene(scene_path: String) -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.z_index = 100
 	get_tree().root.add_child(overlay)
-	
+
 	var tween := create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(overlay, "color:a", 1.0, 0.25)
 	tween.tween_callback(_do_scene_switch.bind(scene_path))

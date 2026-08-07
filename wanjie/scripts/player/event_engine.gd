@@ -100,28 +100,28 @@ func make_choice(choice_id: String) -> Array[Dictionary]:
 		if c["id"] == choice_id:
 			consequences.assign(Array(c.get("consequences", []), TYPE_DICTIONARY, "", null))
 			break
-	
+
 	# 记录选择
 	choices_history.append({
 		"event_id": pending_event["id"],
 		"choice_id": choice_id,
 		"timestamp": world_state.get_time_display() if world_state else ""
 	})
-	
+
 	# 添加因果标记
 	causal_marks.append({
 		"id": "chose_%s_%s" % [pending_event["id"], choice_id],
 		"from_event": pending_event["id"],
 		"intensity": 1.0
 	})
-	
+
 	# 更新触发记录
 	for te in triggered_events:
 		if te.get("event_id", "") == pending_event["id"]:
 			te["choice_made"] = choice_id
 			te["consequences_applied"] = consequences
 			break
-	
+
 	choice_made.emit(pending_event["id"], choice_id)
 	pending_event = {}
 	return consequences
@@ -132,7 +132,7 @@ func _check_conditions(event: Dictionary) -> bool:
 	var prereq: String = event.get("prerequisite", "")
 	if not prereq.is_empty() and not triggered_ids.has(prereq):
 		return false
-	
+
 	# 检查条件列表
 	for cond in event.get("conditions", []):
 		if not _evaluate_condition(cond):
@@ -143,7 +143,7 @@ func _check_conditions(event: Dictionary) -> bool:
 func _evaluate_condition(cond: Dictionary) -> bool:
 	var cond_type: String = cond.get("type", "")
 	var check: String = cond.get("check", "")
-	
+
 	match cond_type:
 		"world_state":
 			return _check_world_state(check)

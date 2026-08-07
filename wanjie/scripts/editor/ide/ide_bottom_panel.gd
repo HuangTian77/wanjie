@@ -1,4 +1,4 @@
-﻿## IDE底部面板 - 复刻 Godot 4.7.1 Bottom Panel
+## IDE底部面板 - 复刻 Godot 4.7.1 Bottom Panel
 ## 标签按钮行: 输出 | 调试器 | 音频 | 动画 + 折叠按钮
 ## 错误计数badge(红色数字)、可折叠
 extends VBoxContainer

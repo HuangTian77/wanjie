@@ -86,7 +86,7 @@ func update_config(config: Dictionary) -> void:
 
 ## === 内部方法 ===
 
-func _on_http_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+func _on_http_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS:
 		request_failed.emit("网络错误: result=%d" % result)
 		return
@@ -112,7 +112,7 @@ func _on_http_completed(result: int, response_code: int, headers: PackedStringAr
 	})
 
 ## 模拟响应(开发/测试用)
-func _mock_response(messages: Array, context: Dictionary) -> void:
+func _mock_response(_messages: Array, context: Dictionary) -> void:
 	var feature: String = context.get("feature", "general")
 	var mock_content := ""
 	match feature:

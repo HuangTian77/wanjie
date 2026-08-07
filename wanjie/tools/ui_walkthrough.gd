@@ -96,7 +96,7 @@ func _open_mud_mode() -> bool:
 	return false
 
 ## 编辑器模块树选中 path 对应的子系统
-func _open_editor_sub(tab_index: int, path: String) -> bool:
+func _open_editor_sub(_tab_index: int, path: String) -> bool:
 	var ed := root.find_child("ScriptEditor", true, false) as Control
 	if ed == null:
 		return false

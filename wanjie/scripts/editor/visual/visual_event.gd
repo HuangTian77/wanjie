@@ -722,7 +722,9 @@ func _on_event_graph_input(event: InputEvent, canvas: Control) -> void:
 				_bp_mod._bp_node_dragging = false
 			elif _bp_mod._bp_box_selecting:
 				_bp_mod._bp_box_selecting = false
-				var sel_rect := Rect2(VisualBlueprintDraw.screen_to_world(_bp_mod._bp_box_start, _bp_mod._bp_offset, _bp_mod._bp_zoom), VisualBlueprintDraw.screen_to_world(_bp_mod._bp_box_end, _bp_mod._bp_offset, _bp_mod._bp_zoom) - VisualBlueprintDraw.screen_to_world(_bp_mod._bp_box_start, _bp_mod._bp_offset, _bp_mod._bp_zoom)).abs()
+				var sel_start := VisualBlueprintDraw.screen_to_world(_bp_mod._bp_box_start, _bp_mod._bp_offset, _bp_mod._bp_zoom)
+				var sel_end := VisualBlueprintDraw.screen_to_world(_bp_mod._bp_box_end, _bp_mod._bp_offset, _bp_mod._bp_zoom)
+				var sel_rect := Rect2(sel_start, sel_end - sel_start).abs()
 				_bp_mod._bp_selected_ids.clear()
 				for nid in graph["nodes"]:
 					var node_rect := Rect2(graph["nodes"][nid]["pos"], VisualBlueprintDraw.BP_NODE_SIZE)

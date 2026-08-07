@@ -206,17 +206,17 @@ func _refresh_script_grid() -> void:
 	for card in script_cards:
 		card.queue_free()
 	script_cards.clear()
-	
+
 	var scripts_list: Array[WorldScriptData]
 	if GameManager.current_tab == 4:
 		scripts_list = _search_scripts(search_input.text)
 	else:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
-	
+
 	if scripts_list.is_empty():
 		_show_empty_state()
 		return
-	
+
 	for script_data in scripts_list:
 		var card: ScriptCard = SCRIPT_CARD_SCENE.instantiate()
 		script_grid.add_child(card)

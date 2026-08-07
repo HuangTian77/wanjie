@@ -57,3 +57,20 @@ CI（`.github/workflows/ci.yml`）已含：import 校验、全部测试、**UI �
 - 27/27 测试 PASS、import/编辑器加载/主场景零错误零警告
 - 布局断言 10 场景 HARD=0 WARN=0
 - PhantomCamera/Dialogic 插件已禁用（autoload 移除，未使用；需要时重新启用）
+
+## 7. Godot 4.7 新特性（调研 2026-08）
+
+- **`Control.offset_transform_*`**（官方重磅 UI 特性）：`offset_transform_enabled/offset/rotation/scale` 让 Control 平移/旋转/缩放**不被容器布局覆盖**（类似 CSS transform，纯视觉）→ 容器内动画优先用这个，其次 scale/modulate；**不要再尝试 position 动画**（布局会覆盖）
+- **PopupMenu 搜索栏**：长菜单项可用（官方 PR #11423）
+- **Tree 拖放**：新 drop 位置指示器
+- 4.7 无主题系统级变更，现有三套主题工作流不受影响
+
+## 8. 工具生态调研结论（2026-08）
+
+| 工具 | 状态 | 结论 |
+|---|---|---|
+| gdtoolkit（gdlint/gdformat）4.5.0 | pip 可装、Windows headless 可跑 | ⚠️ gdformat 对嵌套多行 lambda 输出 4.7 拒绝的缩进（issue #424）；gdlint 跳过 static func（#425）；Python 3.14 无官方背书 |
+| GdUnit4 v6.2.1 | 官方兼容 Godot 4.7/4.7.1 | 断言库/Scene Runner/JUnit+HTML 报告/GitHub Action，无覆盖率 |
+| GUT 9.7.1 | 对应 4.7.x | 老牌稳定，无覆盖率 |
+| 视觉回归 | 生态无成熟工具 | 自建截图+pixel diff 是主流（本项目 ui_analyze.py 方向正确） |
+| GDScript 覆盖率 | 无成熟方案 | C# 生态才有（GoDotTest+coverlet） |

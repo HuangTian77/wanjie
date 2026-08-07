@@ -52,6 +52,15 @@ jobs:
           if ($out -notmatch "LAYOUT_HARD=0") { Write-Error "布局断言未通过"; exit 1 }
         shell: pwsh
 
+      - name: GDScript 静态 lint（gdlint，产品代码零告警）
+        run: |
+          pip install gdtoolkit
+          $out = gdlint scripts resources/data autoload tools 2>&1 | Out-String
+          Write-Host $out
+          if ($LASTEXITCODE -ne 0) { Write-Error "gdlint 未通过"; exit 1 }
+        shell: pwsh
+        working-directory: wanjie
+
       - name: 主场景冒烟（10 帧无错误）
         run: |
           $out = .\Godot_v4.7.1-stable_win64.exe --headless --path wanjie --quit-after 10 2>&1 | Out-String

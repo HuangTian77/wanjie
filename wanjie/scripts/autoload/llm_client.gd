@@ -162,7 +162,7 @@ func chat(messages: Array, system_prompt: String = "") -> String:
 	if not is_configured():
 		response_error.emit("未配置API Key或模型", active_provider)
 		return ""
-	
+
 	var request_body := _build_request(messages, system_prompt, false)
 	return await _send_request(request_body)
 
@@ -171,7 +171,7 @@ func chat_stream(messages: Array, system_prompt: String = "") -> void:
 	if not is_configured():
 		response_error.emit("未配置API Key或模型", active_provider)
 		return
-	
+
 	var request_body := _build_request(messages, system_prompt, true)
 	await _send_stream_request(request_body)
 
@@ -199,7 +199,7 @@ func _build_request(messages: Array, system_prompt: String, stream: bool) -> Dic
 	if system_prompt != "":
 		full_messages.append({"role": "system", "content": system_prompt})
 	full_messages.append_array(messages)
-	
+
 	return {
 		"model": get_current_model(),
 		"messages": full_messages,
@@ -212,18 +212,18 @@ func _send_request(body: Dictionary) -> String:
 	var http := HTTPRequest.new()
 	add_child(http)
 	http.timeout = timeout
-	
+
 	var json_body := JSON.stringify(body)
 	var headers := [
 		"Content-Type: application/json",
 		"Authorization: Bearer " + get_api_key(),
 	]
-	
+
 	var url := get_base_url() + "/chat/completions"
 	http.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	var result = await http.request_completed
 	http.queue_free()
-	
+
 	if result[0] == HTTPRequest.RESULT_SUCCESS:
 		var json := JSON.new()
 		var err := json.parse(result[3].get_string_from_utf8())
@@ -246,18 +246,18 @@ func _send_stream_request(body: Dictionary) -> void:
 	var http := HTTPRequest.new()
 	add_child(http)
 	http.timeout = timeout
-	
+
 	var json_body := JSON.stringify(body)
 	var headers := [
 		"Content-Type: application/json",
 		"Authorization: Bearer " + get_api_key(),
 	]
-	
+
 	var url := get_base_url() + "/chat/completions"
 	http.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	var result = await http.request_completed
 	http.queue_free()
-	
+
 	if result[0] == HTTPRequest.RESULT_SUCCESS:
 		var raw_text: String = result[3].get_string_from_utf8()
 		var full_text := _parse_sse_stream(raw_text)

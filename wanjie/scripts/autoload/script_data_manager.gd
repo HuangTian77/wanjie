@@ -22,6 +22,8 @@ signal script_imported(script_id: String)
 ## 所有用户创建的剧本缓存
 var user_scripts: Dictionary = {}
 
+const SCRIPT_TEMPLATES_CLASS := preload("res://scripts/autoload/script_templates.gd")
+
 func _ready() -> void:
 	_ensure_dir()
 	_migrate_legacy()
@@ -270,15 +272,15 @@ func create_script(script_name: String, author: String = "旅者", template_id: 
 	ws.created_at = Time.get_datetime_string_from_system()
 	ws.updated_at = ws.created_at
 	ws.ensure_subsystems()
-	
+
 	# 合并额外 metadata（编辑器模式、运行类型等）
 	if not extra_metadata.is_empty():
 		ws.metadata.merge(extra_metadata)
-	
+
 	# 如果指定了模板，应用模板数据
 	if not template_id.is_empty():
 		_apply_template(ws, template_id)
-	
+
 	save_script(ws)
 	script_created.emit(ws.id)
 	return ws
@@ -347,17 +349,17 @@ func import_script(import_path: String) -> WorldScriptData:
 	if json.parse(file.get_as_text()) != OK:
 		return null
 	file.close()
-	
+
 	var ws := _dict_to_script(json.data as Dictionary)
 	if ws == null:
 		return null
-	
+
 	# 生成新ID避免冲突
 	ws.id = WorldScriptData.generate_id()
 	ws.status = "draft"
 	ws.created_at = Time.get_datetime_string_from_system()
 	ws.updated_at = ws.created_at
-	
+
 	save_script(ws)
 	script_imported.emit(ws.id)
 	return ws
@@ -387,8 +389,7 @@ func get_templates() -> Array[Dictionary]:
 		}
 	]
 	# 游戏类型模板（预置可运行骨架 + 蓝图图）
-	var ScriptTemplatesClass = load("res://scripts/autoload/script_templates.gd")
-	for t in ScriptTemplatesClass.get_template_defs():
+	for t in SCRIPT_TEMPLATES_CLASS.get_template_defs():
 		result.append(t)
 	# 完整剧本模板（具体世界观的完整示例）
 	result.append({
@@ -402,8 +403,7 @@ func get_templates() -> Array[Dictionary]:
 ## 应用模板到剧本
 func _apply_template(ws: WorldScriptData, template_id: String) -> void:
 	# 游戏类型模板优先（含完整骨架与蓝图图）
-	var ScriptTemplatesClass = load("res://scripts/autoload/script_templates.gd")
-	if ScriptTemplatesClass.apply_template(ws, template_id):
+	if SCRIPT_TEMPLATES_CLASS.apply_template(ws, template_id):
 		return
 	match template_id:
 		"dragonflame_era":

@@ -1,4 +1,4 @@
-﻿## IDE检查器 - 复刻 Godot 4.7.1 Inspector 面板
+## IDE检查器 - 复刻 Godot 4.7.1 Inspector 面板
 ## 属性分组折叠、类型着色、数值拖拽调整(Godot特色)、多种编辑控件
 extends VBoxContainer
 

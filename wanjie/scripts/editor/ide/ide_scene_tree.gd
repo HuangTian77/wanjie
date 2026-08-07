@@ -1,4 +1,4 @@
-﻿## IDE场景树 - 复刻 Godot 4.7.1 场景面板
+## IDE场景树 - 复刻 Godot 4.7.1 场景面板
 ## 支持：拖拽重排、右键菜单、多选、可见性眼睛图标、锁定图标、类型着色
 extends VBoxContainer
 
@@ -230,7 +230,7 @@ func _on_item_selected() -> void:
 		_selected_nodes = [node]
 	node_selected.emit(_selected_nodes)
 
-func _on_multi_selected(item: TreeItem, column: int, selected: bool) -> void:
+func _on_multi_selected(item: TreeItem, _column: int, selected: bool) -> void:
 	var node: Dictionary = item.get_metadata(COL_NAME)
 	if node.is_empty():
 		return

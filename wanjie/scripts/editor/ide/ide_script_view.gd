@@ -388,7 +388,11 @@ func _on_code_completion_requested() -> void:
 		return
 	var suggestions: Array[String] = []
 	# GDScript关键字
-	for kw in ["func", "var", "const", "if", "elif", "else", "for", "while", "return", "pass", "break", "continue", "true", "false", "null", "and", "or", "not", "in", "is", "as", "void", "int", "float", "bool", "String", "Array", "Dictionary", "Vector2", "Vector3", "self", "super", "signal", "enum", "class", "extends", "static", "await", "match", "preload", "assert", "class_name"]:
+	for kw in ["func", "var", "const", "if", "elif", "else", "for", "while", "return",
+			"pass", "break", "continue", "true", "false", "null", "and", "or", "not",
+			"in", "is", "as", "void", "int", "float", "bool", "String", "Array",
+			"Dictionary", "Vector2", "Vector3", "self", "super", "signal", "enum",
+			"class", "extends", "static", "await", "match", "preload", "assert", "class_name"]:
 		if kw.begins_with(word.to_lower()) and kw != word:
 			suggestions.append(kw)
 	# 内置函数

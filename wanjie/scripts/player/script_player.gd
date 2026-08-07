@@ -77,19 +77,19 @@ func _init_engines() -> void:
 	if script_data == null:
 		return
 	script_data.ensure_subsystems()
-	
+
 	world_state = load("res://scripts/player/world_state.gd").new()
 	if script_data.worldview:
 		world_state.initialize_factions(script_data.worldview)
-	
+
 	event_engine = load("res://scripts/player/event_engine.gd").new()
 	event_engine.init(script_data.event_system, world_state, {})
 	event_engine.choices_presented.connect(_on_choices_presented)
 	event_engine.event_triggered.connect(_on_event_triggered)
-	
+
 	economy_engine = load("res://scripts/player/economy_engine.gd").new()
 	economy_engine.init(script_data.economy_system, {"gold": 100}, {})
-	
+
 	combat_engine = load("res://scripts/player/combat_engine.gd").new()
 	combat_engine.init(script_data.ability_system)
 	combat_engine.set_player_stats({
@@ -101,9 +101,9 @@ func _init_engines() -> void:
 		"speed": 10, "agility": 10,
 		"level": 1, "skills": []
 	})
-	
+
 	SaveManager.start_new_game(sid)
-	
+
 	# 蓝图执行器: 注入全部引擎, 事件带蓝图图时由蓝图驱动运行时
 	blueprint_executor = load("res://scripts/player/blueprint_executor.gd").new()
 	blueprint_executor.init_engines(
@@ -136,7 +136,7 @@ func _advance_to_next_event() -> void:
 		world_state.advance_time(1)
 		world_state.tick_effects()
 	_update_ui()
-	
+
 	var triggerable: Array = event_engine.check_triggerable_events()
 	if triggerable.is_empty():
 		var random_event: Dictionary = event_engine.check_random_events()
@@ -317,14 +317,14 @@ func _on_choice_selected(choice_id: String) -> void:
 		return
 	var consequences: Array = event_engine.make_choice(choice_id)
 	_add_history("选择: %s" % choice_id)
-	
+
 	var consequence_text := ""
 	for c in consequences:
 		var target: String = c.get("target", "")
 		var effect: String = c.get("effect", "")
 		consequence_text += "→ %s: %s\n" % [target, effect]
 		_apply_consequence(c)
-	
+
 	if consequence_text.is_empty():
 		consequence_text = "你的选择已经改变了世界的走向..."
 	_set_main_text("[i]你的选择产生了后果...[/i]\n\n%s" % consequence_text)
@@ -342,7 +342,7 @@ func _on_continue_exploring() -> void:
 func _apply_consequence(consequence: Dictionary) -> void:
 	var target: String = consequence.get("target", "")
 	var effect: String = consequence.get("effect", "")
-	
+
 	match target:
 		"player":
 			if "gold" in effect or "receive" in effect:
@@ -361,7 +361,7 @@ func _apply_consequence(consequence: Dictionary) -> void:
 					var num_str := effect.get_slice("-", 1).strip_edges()
 					delta = -float(num_str) if num_str.is_valid_float() else -10.0
 				world_state.modify_faction_relationship(target, "player", delta)
-	
+
 	if SaveManager.current_save:
 		SaveManager.current_save.event_history = event_engine.to_dict()
 		SaveManager.current_save.world_state = world_state.to_dict() if world_state else {}
@@ -392,7 +392,7 @@ func _show_slot_selector(mode: String) -> void:
 	var old := get_node_or_null("SlotSelector")
 	if old:
 		old.queue_free()
-	
+
 	var selector := PanelContainer.new()
 	selector.name = "SlotSelector"
 	var style := StyleBoxFlat.new()
@@ -404,17 +404,17 @@ func _show_slot_selector(mode: String) -> void:
 	selector.add_theme_stylebox_override("panel", style)
 	selector.custom_minimum_size = Vector2(320, 220)
 	selector.set_anchors_preset(Control.PRESET_CENTER)
-	
+
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 8)
 	selector.add_child(vbox)
-	
+
 	var title_label := Label.new()
 	title_label.text = "选择存档槽位" if mode == "save" else "选择加载槽位"
 	title_label.add_theme_font_size_override("font_size", 16)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
-	
+
 	for slot in 3:
 		var btn := Button.new()
 		var slot_info := _get_slot_info(slot)
@@ -425,12 +425,12 @@ func _show_slot_selector(mode: String) -> void:
 		else:
 			btn.pressed.connect(_on_slot_load_selected.bind(slot))
 		vbox.add_child(btn)
-	
+
 	var cancel_btn := Button.new()
 	cancel_btn.text = "取消"
 	cancel_btn.pressed.connect(func(): selector.queue_free())
 	vbox.add_child(cancel_btn)
-	
+
 	add_child(selector)
 
 ## 获取槽位信息

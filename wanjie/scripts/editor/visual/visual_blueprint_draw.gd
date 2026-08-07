@@ -188,7 +188,7 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	draw_typed_pins(canvas, node, pos, offset, zoom)
 
 ## 绘制类型引脚（执行=三角, 数据=圆形）
-static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vector2, offset: Vector2, zoom: float) -> void:
+static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vector2, _offset: Vector2, zoom: float) -> void:
 	var node_width: float = 180.0 * zoom
 	var pin_start_y: float = screen_pos.y + (BP_TITLE_HEIGHT + 10) * zoom
 	var pin_spacing: float = 20.0 * zoom

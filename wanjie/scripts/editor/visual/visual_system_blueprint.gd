@@ -49,11 +49,11 @@ func create(sub_type: String = "", meta: Dictionary = {}) -> Control:
 	root.add_theme_stylebox_override("panel", _ui().make_bg_style())
 	root.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var main_vbox := VBoxContainer.new()
-	main_vbox.add_theme_constant_override("separation", 0)
-	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.add_child(main_vbox)
+	var _main_vbox := VBoxContainer.new()
+	_main_vbox.add_theme_constant_override("separation", 0)
+	_main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_child(_main_vbox)
 
 	# === 顶部栏: 标题 + 蓝图/表单切换 ===
 	var header := PanelContainer.new()
@@ -65,7 +65,7 @@ func create(sub_type: String = "", meta: Dictionary = {}) -> Control:
 	hb.content_margin_left = 10.0
 	hb.content_margin_right = 10.0
 	header.add_theme_stylebox_override("panel", hb)
-	main_vbox.add_child(header)
+	_main_vbox.add_child(header)
 	var hbox := HBoxContainer.new()
 	hbox.add_theme_constant_override("separation", 8)
 	header.add_child(hbox)
@@ -88,31 +88,31 @@ func create(sub_type: String = "", meta: Dictionary = {}) -> Control:
 	bp_btn.pressed.connect(func():
 		bp_btn.button_pressed = true
 		form_btn.button_pressed = false
-		_show_view(true, form_module, form_sub, main_vbox)
+		_show_view(true, form_module, form_sub, _main_vbox)
 	)
 	form_btn.pressed.connect(func():
 		bp_btn.button_pressed = false
 		form_btn.button_pressed = true
-		_show_view(false, form_module, form_sub, main_vbox)
+		_show_view(false, form_module, form_sub, _main_vbox)
 	)
 
 	# === 蓝图视图（锁定 workspace） ===
 	_bp_mod = load("res://scripts/editor/visual/visual_blueprint_workspace.gd").new(_host)
 	_bp_mod._locked_key = sys_key
 	_bp_view = _bp_mod.create(sub_type, meta)
-	main_vbox.add_child(_bp_view)
+	_main_vbox.add_child(_bp_view)
 	_bp_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	# 表单视图（延迟构建）
 	_form_view = VBoxContainer.new()
 	_form_view.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_form_view.visible = false
-	main_vbox.add_child(_form_view)
+	_main_vbox.add_child(_form_view)
 
 	return root
 
 ## 蓝图/表单视图切换
-func _show_view(blueprint: bool, form_module: String, form_sub: String, main_vbox: VBoxContainer) -> void:
+func _show_view(blueprint: bool, form_module: String, form_sub: String, _main_vbox: VBoxContainer) -> void:
 	if _bp_view:
 		_bp_view.visible = blueprint
 		_bp_view.size_flags_vertical = Control.SIZE_EXPAND_FILL if blueprint else Control.SIZE_SHRINK_BEGIN

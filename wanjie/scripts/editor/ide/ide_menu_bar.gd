@@ -1,4 +1,4 @@
-﻿## IDE菜单栏 - 复刻 Godot 4.7.1 菜单结构
+## IDE菜单栏 - 复刻 Godot 4.7.1 菜单结构
 ## 场景(S) / 项目(P) / 调试(D) / 编辑器(E) / 帮助(H)
 extends HBoxContainer
 

@@ -14,7 +14,7 @@ const BASE_FLOW_TYPES: Array[String] = [
 ]
 
 ## 按前缀分发到对应分类处理器；无法识别返回 -1
-static func dispatch(ctx, node_type: String) -> int:
+static func dispatch(_ctx, node_type: String) -> int:
 	if node_type in BASE_FLOW_TYPES or node_type.begins_with("flow_"):
 		return 1
 	if node_type.begins_with("eco_"):
@@ -126,7 +126,7 @@ static func handle_flow(ctx, node: Dictionary, graph: Dictionary) -> int:
 
 # === 2. 经济交易 (economy) ===
 
-static func handle_economy(ctx, node: Dictionary, graph: Dictionary) -> int:
+static func handle_economy(ctx, node: Dictionary, _graph: Dictionary) -> int:
 	var node_type: String = node["node_type"]
 	var props: Dictionary = node.get("properties", {})
 	match node_type:
@@ -433,7 +433,7 @@ static func handle_world(ctx, node: Dictionary, graph: Dictionary) -> int:
 
 # === 5. 角色玩家 (player) ===
 
-static func handle_player(ctx, node: Dictionary, graph: Dictionary) -> int:
+static func handle_player(ctx, node: Dictionary, _graph: Dictionary) -> int:
 	var node_type: String = node["node_type"]
 	var props: Dictionary = node.get("properties", {})
 	match node_type:
@@ -511,7 +511,7 @@ static func handle_player(ctx, node: Dictionary, graph: Dictionary) -> int:
 
 # === 6. 战斗系统 (combat) ===
 
-static func handle_combat(ctx, node: Dictionary, graph: Dictionary) -> int:
+static func handle_combat(ctx, node: Dictionary, _graph: Dictionary) -> int:
 	var node_type: String = node["node_type"]
 	var props: Dictionary = node.get("properties", {})
 	match node_type:
@@ -650,7 +650,7 @@ static func handle_combat(ctx, node: Dictionary, graph: Dictionary) -> int:
 
 # === 7. 技能能力 (ability) ===
 
-static func handle_ability(ctx, node: Dictionary, graph: Dictionary) -> int:
+static func handle_ability(ctx, node: Dictionary, _graph: Dictionary) -> int:
 	var node_type: String = node["node_type"]
 	var props: Dictionary = node.get("properties", {})
 	match node_type:
@@ -727,7 +727,7 @@ static func handle_ability(ctx, node: Dictionary, graph: Dictionary) -> int:
 
 # === 8. 任务系统 (quest) ===
 
-static func handle_quest(ctx, node: Dictionary, graph: Dictionary) -> int:
+static func handle_quest(ctx, node: Dictionary, _graph: Dictionary) -> int:
 	var node_type: String = node["node_type"]
 	var props: Dictionary = node.get("properties", {})
 	match node_type:
