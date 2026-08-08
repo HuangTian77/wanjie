@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "godot-mcp": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@coding-solo/godot-mcp"],
+      "env": {
+        "GODOT_PATH": "E:\\ZX\\QWXM\\WJSP\\XM1\\Godot_v4.7.1-stable_win64.exe",
+        "DEBUG": "false"
+      }
+    },
+    "filesystem": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-filesystem", "E:\\ZX\\QWXM\\WJSP\\XM1"]
+    },
+    "git": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-git", "--repository", "E:\\ZX\\QWXM\\WJSP\\XM1"]
+    },
+    "fetch": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-fetch"]
+    }
+  }
+}

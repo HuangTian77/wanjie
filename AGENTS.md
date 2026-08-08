@@ -62,7 +62,15 @@ bash wanjie/tools/verify_all.sh
 
 - 提交信息中文，格式：`<类型> <摘要>：<要点 ① ② ③>`（类型：修复/新增/优化/重构/文档/CI）
 - 单次提交聚焦一件事；产物不入库（_ui_shots/、_ui_layout_report.txt、wanjie/reports/ 已忽略）
-- 推送 master 需：临时放宽分支保护（CI+1 批准+admin）→ push → 恢复（/tmp/loose.json 与 /tmp/restore.json 存有保护配置）
+- 推送 master 需：临时放宽分支保护（CI+1 批准+admin）→ push → 恢复（模板 .githooks/gh-loose.json / gh-restore.json）
+
+## 6.5 Definition of Done（验收标准，交付前逐项勾选）
+
+- [ ] `bash wanjie/tools/verify_all.sh` 输出 PASS=5 全绿（import 0 / 27 测试 / GdUnit4 6/6 / gdlint 0 / 布局 HARD=0）
+- [ ] 涉及 UI 视觉/交互：真实窗口截图或走查验证（ui_screenshot / ui_walkthrough / ui_motion_capture）
+- [ ] pre-commit 钩子通过（gdlint + import）
+- [ ] 提交信息符合 §6 规范；无产物入库
+- [ ] 影响文档时同步更新（docs/UI_GUIDE.md / docs/DEVELOPMENT_WORKFLOW.md / AGENTS.md）
 
 ## 7. 已知坑（详见 docs/UI_GUIDE.md §4）
 
