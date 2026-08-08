@@ -72,3 +72,20 @@ P3（架构安全，渐进）→ 风险项逐个消除
 ```
 
 每批交付均过 verify_all（PASS=6）+ 相关测试。P0 为数据正确性基础，建议最先执行。
+
+## 6. 平台化（Roblox 式愿景）——2026-08 落地与路线
+
+现状：引擎/游玩成型；社区/市场缺失（无网络层/账号/远程市场）。
+
+**已落地（提交 7c98b02）**：
+- 单文件分享：导出 .json 内嵌封面 base64（ZipPacker 编辑器专用故用 base64），导入还原 assets/cover.png
+- 封面系统：编辑器"设置封面"→ assets/cover.png，ScriptCard 显示封面图
+- 评分系统：体验器菜单 1-5 星（rating_count 平均，本地/未来上传服务端）
+- 收藏系统：user_data.favorites_script_ids + 卡片 ♥ + 大厅"收藏"标签页
+
+**剩余路线（需服务端，本地留接口）**：
+1. 市场标签页远程数据源（现 get_scripts_by_tab 本地；预留远程列表缓存接口）
+2. 账号系统（UserData.account_id 字段已兼容 from_dict）
+3. 发布=上传（本地 status=published 已是触发点；需 REST 上传 .json 包）
+4. 统计（rating/play_count 本地自增 → 服务端聚合）
+5. 订阅/下载归属（下载剧本 id 单独字段，现 created/favorites 复用）
