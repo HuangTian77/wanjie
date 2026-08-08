@@ -74,8 +74,11 @@ func _input(event: InputEvent) -> void:
 	# F1: 打开创建剧本（无测试副作用）
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F1:
 		_on_create_script_pressed()
-	# Esc: 取消搜索模式
+	# Esc: 优先关闭打开的对话框，其次取消搜索模式
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		if setup_dialog != null and setup_dialog.visible:
+			setup_dialog.visible = false
+			return
 		if GameManager.current_tab == 4:
 			search_input.text = ""
 			_on_tab_pressed(0)
@@ -144,8 +147,14 @@ func _update_carousel() -> void:
 		_dot_inactive_style = StyleBoxFlat.new()
 		_dot_inactive_style.bg_color = Color(0.769, 0.588, 0.353, 0.3)
 		_dot_inactive_style.set_corner_radius_all(4)
+	# 指示器数量随轮播页数动态增减（tscn 固定 4 个 → 按需补齐/隐藏）
+	while carousel_indicator.get_child_count() < featured_scripts.size():
+		var dot := Panel.new()
+		dot.custom_minimum_size = Vector2(8, 8)
+		carousel_indicator.add_child(dot)
 	for i in carousel_indicator.get_child_count():
 		var dot: Panel = carousel_indicator.get_child(i)
+		dot.visible = i < featured_scripts.size()
 		dot.add_theme_stylebox_override("panel", _dot_active_style if i == carousel_index else _dot_inactive_style)
 
 func _on_carousel_timer_timeout() -> void:
@@ -214,7 +223,14 @@ func _refresh_script_grid() -> void:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
 
 	if scripts_list.is_empty():
-		_show_empty_state()
+		if GameManager.current_tab == 4:
+			# 搜索无结果：区分文案，不显示创建按钮
+			var empty_search: EmptyState = EMPTY_STATE_SCENE.instantiate()
+			script_grid.add_child(empty_search)
+			empty_search.setup("未找到匹配的剧本", "🔍", "", false)
+			script_cards.append(empty_search)
+		else:
+			_show_empty_state()
 		return
 
 	for script_data in scripts_list:
@@ -264,6 +280,8 @@ func _setup_recent_scripts() -> void:
 
 ## === 底部操作栏 ===
 func _on_create_script_pressed() -> void:
+	if setup_dialog != null and setup_dialog.visible:
+		return  # 防重入：对话框已打开时不重复消耗/弹出
 	if not GameManager.user_data.consume_creation_energy():
 		ToastManager.warning("精力不足，无法创建剧本！请等待恢复或稍后再试")
 		return

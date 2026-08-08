@@ -36,6 +36,7 @@ func _load_settings() -> void:
 		GameManager.user_data.font_size_preset = config.get_value("display", "font_size", "medium")
 		GameManager.user_data.animations_enabled = config.get_value("display", "animations", true)
 		GameManager.user_data.ai_enabled = config.get_value("ai", "enabled", true)
+		GameManager.user_data.ai_npc_enabled = config.get_value("ai", "npc_enabled", false)
 	var ud := GameManager.user_data
 	player_name_input.text = ud.player_name
 	# 难度
@@ -125,7 +126,10 @@ func _on_save_pressed() -> void:
 	config.set_value("audio", "bgm", bgm_volume.value)
 	config.set_value("audio", "sfx", sfx_volume.value)
 	config.set_value("ai", "enabled", ud.ai_enabled)
+	config.set_value("ai", "npc_enabled", ud.ai_npc_enabled)
 	config.save(SETTINGS_PATH)
+	# user_data 侧同步持久化（settings.cfg 与 user_data 双源一致）
+	GameManager.save_user_data()
 	SceneManager.go_back_to_hub()
 
 ## 返回

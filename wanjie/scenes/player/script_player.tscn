@@ -252,8 +252,58 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "关闭菜单"
 
+[node name="BattlePanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -200.0
+offset_right = 320.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BattleVBox" type="VBoxContainer" parent="BattlePanel"]
+layout_mode = 2
+
+[node name="BattleTitle" type="Label" parent="BattlePanel/BattleVBox"]
+layout_mode = 2
+text = "⚔ 战斗"
+horizontal_alignment = 1
+
+[node name="EnemyInfo" type="Label" parent="BattlePanel/BattleVBox"]
+layout_mode = 2
+text = ""
+
+[node name="BattleLog" type="RichTextLabel" parent="BattlePanel/BattleVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+text = ""
+bbcode_enabled = true
+
+[node name="BattleButtons" type="HBoxContainer" parent="BattlePanel/BattleVBox"]
+layout_mode = 2
+
+[node name="AttackBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+layout_mode = 2
+text = "⚔ 攻击"
+
+[node name="SkillBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+layout_mode = 2
+text = "✦ 技能"
+
+[node name="FleeBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+layout_mode = 2
+text = "🏃 逃跑"
+
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/MenuBtn" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/SaveBtn" to="." method="_on_menu_save_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/LoadBtn" to="." method="_on_menu_load_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]
-[connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_back_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_close_pressed"]
+[connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/AttackBtn" to="." method="_on_battle_attack_pressed"]
+[connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/SkillBtn" to="." method="_on_battle_skill_pressed"]
+[connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/FleeBtn" to="." method="_on_battle_flee_pressed"]

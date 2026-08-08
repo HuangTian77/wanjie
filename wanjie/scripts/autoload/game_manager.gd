@@ -157,6 +157,19 @@ func get_recent_scripts() -> Array[WorldScriptData]:
 			result.append(scripts[sid])
 	return result
 
+## 记录一次体验（体验数+1、最近体验前置、持久化剧本）
+func record_play(script_id: String) -> void:
+	var ws := get_script_data(script_id)
+	if ws == null:
+		return
+	ws.play_count += 1
+	user_data.recent_script_ids.erase(script_id)
+	user_data.recent_script_ids.push_front(script_id)
+	if user_data.recent_script_ids.size() > 5:
+		user_data.recent_script_ids.resize(5)
+	_save_user_data()
+	ScriptDataManager.update_script(ws, ["play_count"])
+
 ## 切换标签页
 func set_current_tab(tab_index: int) -> void:
 	current_tab = tab_index

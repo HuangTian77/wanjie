@@ -37,11 +37,15 @@ var _typewriter_done: bool = true
 @onready var menu_panel: Control = %MenuPanel
 @onready var history_panel: Control = %HistoryPanel
 @onready var history_toggle: Button = %HistoryToggle
+@onready var battle_panel: PanelContainer = %BattlePanel
+@onready var enemy_info: Label = %EnemyInfo
+@onready var battle_log: RichTextLabel = %BattleLog
 
 func _ready() -> void:
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
+	ToastManager.info("已消耗 1 点灵感进入剧本")
 
 func _process(delta: float) -> void:
 	# 打字机效果
@@ -56,8 +60,14 @@ func _process(delta: float) -> void:
 			_typewriter_done = true
 
 func _unhandled_input(event: InputEvent) -> void:
-	# 点击跳过打字机
-	if not _typewriter_done and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	# 点击或空格/回车跳过打字机
+	var skip := false
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		skip = true
+	elif event is InputEventKey and event.pressed and not event.echo \
+			and (event.keycode == KEY_SPACE or event.keycode == KEY_ENTER):
+		skip = true
+	if skip and not _typewriter_done:
 		_skip_typewriter()
 		get_viewport().set_input_as_handled()
 
@@ -77,6 +87,8 @@ func _init_engines() -> void:
 	if script_data == null:
 		return
 	script_data.ensure_subsystems()
+	# 记录一次体验（体验数+1、最近体验前置）
+	GameManager.record_play(sid)
 
 	world_state = load("res://scripts/player/world_state.gd").new()
 	if script_data.worldview:
@@ -104,6 +116,12 @@ func _init_engines() -> void:
 
 	SaveManager.start_new_game(sid)
 
+	# 连接战斗信号（战斗 UI 由 combat_engine 事件驱动）
+	combat_engine.combat_started.connect(_on_combat_started)
+	combat_engine.combat_round_started.connect(_on_combat_round_started)
+	combat_engine.action_taken.connect(_on_combat_action_taken)
+	combat_engine.combat_ended.connect(_on_combat_ended)
+
 	# 蓝图执行器: 注入全部引擎, 事件带蓝图图时由蓝图驱动运行时
 	blueprint_executor = load("res://scripts/player/blueprint_executor.gd").new()
 	blueprint_executor.init_engines(
@@ -111,6 +129,8 @@ func _init_engines() -> void:
 		SaveManager.current_save.player_state if SaveManager.current_save else {},
 		script_data
 	)
+	# 蓝图日志 → 玩家可见（dialog 显示主文本，info/error 进历史）
+	blueprint_executor.log_message.connect(_on_blueprint_log)
 
 ## 开始体验
 func _start_experience() -> void:
@@ -118,6 +138,14 @@ func _start_experience() -> void:
 		main_text.text = "无法加载剧本数据"
 		return
 	script_title.text = script_data.name
+	# 有存档 → 从存档继续；否则新开
+	if SaveManager.has_save(script_data.id):
+		_continue_from_save()
+		return
+	_start_new_experience()
+
+## 新开一局（无存档时的初始流程）
+func _start_new_experience() -> void:
 	_update_ui()
 	var bg_text := ""
 	if script_data.worldview and not script_data.worldview.background_story.is_empty():
@@ -126,6 +154,27 @@ func _start_experience() -> void:
 		bg_text = script_data.description
 	_set_main_text("[b]【%s】[/b]\n\n%s" % [script_data.name, bg_text])
 	_add_history("进入世界: %s" % script_data.name)
+	_advance_to_next_event()
+
+## 从存档继续（优先手动存档槽 0，回退自动存档）
+func _continue_from_save() -> void:
+	var sd: SaveData = SaveManager.load_game(0, false)
+	if sd == null:
+		sd = SaveManager.load_game(0, true)
+	if sd == null:
+		_start_new_experience()
+		return
+	SaveManager.current_save = sd
+	if event_engine:
+		event_engine.load_history(sd.event_history)
+	if world_state:
+		world_state.load_from_dict(sd.world_state)
+	if economy_engine:
+		economy_engine.load_from_dict(sd.economy_state)
+	_update_ui()
+	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
+	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
+	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	_advance_to_next_event()
 
 ## 推进到下一个事件
@@ -181,6 +230,7 @@ func _run_blueprint_event(event: Dictionary, graph: Dictionary) -> void:
 	_blueprint_choices = []
 	_clear_choices()
 	var result: Dictionary = blueprint_executor.execute_graph(graph)
+	_sync_save_state()
 	_handle_blueprint_result(result)
 
 ## 处理蓝图执行结果: 暂停等待选择 / 出错 / 正常完成
@@ -333,9 +383,11 @@ func _on_choice_selected(choice_id: String) -> void:
 
 func _on_continue_pressed() -> void:
 	_clear_choices()
+	_sync_save_state()
 	_advance_to_next_event()
 
 func _on_continue_exploring() -> void:
+	_sync_save_state()
 	_advance_to_next_event()
 
 ## 应用后果
@@ -362,10 +414,102 @@ func _apply_consequence(consequence: Dictionary) -> void:
 					delta = -float(num_str) if num_str.is_valid_float() else -10.0
 				world_state.modify_faction_relationship(target, "player", delta)
 
-	if SaveManager.current_save:
-		SaveManager.current_save.event_history = event_engine.to_dict()
-		SaveManager.current_save.world_state = world_state.to_dict() if world_state else {}
-		SaveManager.current_save.economy_state = economy_engine.to_dict() if economy_engine else {}
+	_sync_save_state()
+
+## 同步当前引擎状态到存档（蓝图路径/传统路径共用，防止进度丢失）
+func _sync_save_state() -> void:
+	if SaveManager.current_save == null:
+		return
+	SaveManager.current_save.event_history = event_engine.to_dict() if event_engine else {}
+	SaveManager.current_save.world_state = world_state.to_dict() if world_state else {}
+	SaveManager.current_save.economy_state = economy_engine.to_dict() if economy_engine else {}
+
+## 蓝图日志处理：dialog 显示主文本（对话可见），info/error 进历史
+func _on_blueprint_log(level: String, text: String) -> void:
+	match level:
+		"dialog":
+			_set_main_text(text)
+			_add_history(text)
+		"error":
+			_add_history("[错误] %s" % text)
+		_:
+			_add_history(text)
+
+## === 战斗 UI ===
+func _on_combat_started(enemies: Array) -> void:
+	battle_panel.visible = true
+	_refresh_battle_ui()
+	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size())
+	menu_panel.visible = false
+
+func _on_combat_round_started(round_num: int) -> void:
+	_battle_log_line("[color=#c9a06a]第 %d 回合[/color]" % round_num)
+	_refresh_battle_ui()
+
+func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
+	_refresh_battle_ui()
+
+func _on_combat_ended(result: String) -> void:
+	battle_panel.visible = false
+	_sync_save_state()
+	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
+	_add_history(msg)
+	_set_main_text("[b]战斗结束：%s[/b]" % msg)
+
+func _battle_log_line(line: String) -> void:
+	battle_log.append_text(line + "\n")
+
+func _refresh_battle_ui() -> void:
+	if combat_engine == null:
+		return
+	var parts: Array[String] = []
+	var alive := 0
+	for e in combat_engine.enemies:
+		if e.get("is_alive", true):
+			alive += 1
+			parts.append("%s HP:%d/%d" % [e.get("name", "?"), int(e.get("hp", 0)), int(e.get("max_hp", 1))])
+	enemy_info.text = "敌人：%s" % ("；".join(parts) if parts.is_empty() == false else "（无）")
+	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
+	# 玩家状态
+	var ps := combat_engine.player_combat_stats
+	if not ps.is_empty():
+		enemy_info.text += "\n%s HP:%d/%d MP:%d/%d" % [
+			ps.get("name", "旅者"), int(ps.get("hp", 0)), int(ps.get("max_hp", 1)),
+			int(ps.get("mp", 0)), int(ps.get("max_mp", 1))]
+	# 敌人清空且战斗未结束 → 结束
+	if alive == 0 and combat_engine.enemies.size() > 0:
+		combat_engine.call("_check_combat_end")
+
+func _on_battle_attack_pressed() -> void:
+	if combat_engine == null:
+		return
+	var res: Dictionary = combat_engine.player_attack(0)
+	if not res.is_empty():
+		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
+	_refresh_battle_ui()
+
+func _on_battle_skill_pressed() -> void:
+	if combat_engine == null or combat_engine.ability_data == null:
+		return
+	var skills: Array = combat_engine.ability_data.skills
+	if skills.is_empty():
+		_battle_log_line("没有可用的技能")
+		return
+	var menu := PopupMenu.new()
+	menu.name = "BattleSkillMenu"
+	for s in skills:
+		var sid: String = s.get("id", "")
+		menu.add_item(s.get("name", sid), skills.find(s))
+	menu.id_pressed.connect(func(id: int):
+		combat_engine.player_use_skill(skills[id].get("id", ""), 0)
+		_refresh_battle_ui())
+	add_child(menu)
+	menu.popup(Rect2i(0, 0, 0, 0))
+	menu.position = Vector2i(get_viewport().get_visible_rect().size / 2) - Vector2i(100, 50)
+
+func _on_battle_flee_pressed() -> void:
+	if combat_engine != null:
+		combat_engine.try_flee()
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
@@ -383,9 +527,30 @@ func _on_menu_load_pressed() -> void:
 	_show_slot_selector("load")
 
 func _on_menu_back_pressed() -> void:
+	_sync_save_state()
+	_write_progress()
 	SaveManager.autosave()
 	menu_panel.visible = false
+	ToastManager.success("已自动保存")
 	SceneManager.go_back_to_hub()
+
+## 按事件完成度回写剧本进度（大厅卡片进度条可见）
+func _write_progress() -> void:
+	if script_data == null or script_data.event_system == null:
+		return
+	var total := script_data.event_system.story_events.size()
+	if total <= 0:
+		return
+	var done := 0
+	for e in script_data.event_system.story_events:
+		if event_engine != null and event_engine.triggered_ids.has(e.get("id", "")):
+			done += 1
+	script_data.progress = clampf(float(done) / float(total), 0.0, 1.0)
+	ScriptDataManager.update_script(script_data, ["progress"])
+
+## 关闭菜单（仅隐藏面板，不退出游戏）
+func _on_menu_close_pressed() -> void:
+	menu_panel.visible = false
 
 ## 显示槽位选择器
 func _show_slot_selector(mode: String) -> void:
