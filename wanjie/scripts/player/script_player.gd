@@ -719,6 +719,42 @@ func _on_menu_shop_pressed() -> void:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
 	list.append_text("[color=#c9a06a]持有金币: %d[/color]\n\n" % gold)
 	var bought_any := false
+	# === 出售区（背包物品半价卖出） ===
+	var sell_title := Label.new()
+	sell_title.text = "【出售】"
+	sell_title.add_theme_color_override("font_color", Color(0.55, 0.65, 0.85))
+	box.add_child(sell_title)
+	var sold_any := false
+	if economy_engine and not economy_engine.player_inventory.is_empty():
+		for item_id in economy_engine.player_inventory:
+			var qty: int = int(economy_engine.player_inventory[item_id])
+			if qty <= 0:
+				continue
+			var price := 0.0
+			for m in economy_engine.economy_data.markets if economy_engine.economy_data else []:
+				var mid: String = m.get("id", "")
+				var p: float = economy_engine.get_price(mid, item_id)
+				if p > 0.0:
+					price = p * 0.5
+					break
+			var sell_btn := Button.new()
+			sell_btn.text = "出售 %s ×%d（+%d 金币）" % [item_id, qty, int(price)]
+			sell_btn.pressed.connect(func():
+				if economy_engine.sell("market_1", item_id):
+					ToastManager.success("已出售 %s +%d 金币" % [item_id, int(price)])
+					_sync_save_state()
+					_on_menu_shop_pressed()
+					dialog.queue_free()
+				else:
+					ToastManager.warning("出售失败"))
+			box.add_child(sell_btn)
+			sold_any = true
+	if not sold_any:
+		var no_sell := Label.new()
+		no_sell.text = "（背包为空，无可出售物品）"
+		no_sell.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		no_sell.add_theme_font_size_override("font_size", 11)
+		box.add_child(no_sell)
 	if economy_engine and economy_engine.economy_data:
 		for m in economy_engine.economy_data.markets:
 			var mid: String = m.get("id", "")
