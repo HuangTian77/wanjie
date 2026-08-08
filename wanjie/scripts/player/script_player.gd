@@ -85,6 +85,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if skip and not _typewriter_done:
 		_skip_typewriter()
 		get_viewport().set_input_as_handled()
+	# Esc: 切换菜单（菜单已开则关闭）
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		menu_panel.visible = not menu_panel.visible
+		get_viewport().set_input_as_handled()
 
 func _skip_typewriter() -> void:
 	_typewriter_index = _typewriter_text.length()

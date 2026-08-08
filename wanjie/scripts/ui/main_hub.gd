@@ -98,6 +98,24 @@ func _connect_signals() -> void:
 	GameManager.tab_changed.connect(_on_tab_changed)
 	GameManager.scripts_changed.connect(_on_scripts_changed)
 
+## 关于对话框
+func _show_about() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "关于万界诗篇"
+	dialog.dialog_text = """🌌 万界诗篇 v1.1.0
+
+沙盒式游戏剧本创作与游玩平台
+
+【创作】三模式编辑器 + 蓝图工作区 + 2D/3D 场景 + 6 游戏类型模板
+【游玩】事件驱动剧情 + 经济/战斗 + 对话 + 存档继续
+【社区】发布 → 市场 → 收藏 → 分享
+
+引擎：Godot 4.7.1
+"""
+	dialog.min_size = Vector2i(420, 320)
+	add_child(dialog)
+	dialog.popup_centered()
+
 ## 刷新个人统计（剧本数/游玩数/成就数）
 func _refresh_personal_stats() -> void:
 	var created: int = GameManager.user_data.created_script_ids.size()
@@ -143,6 +161,13 @@ func _setup_top_bar() -> void:
 			view_btn.text = "⊟ 列表" if _list_view else "⊞ 网格"
 			_update_grid_columns())
 		get_node("MainMargin/VBox/TopBar/TopHBox").add_child(view_btn)
+	# 关于按钮
+	var about_btn := Button.new()
+	about_btn.text = "❓"
+	about_btn.tooltip_text = "关于"
+	about_btn.flat = true
+	about_btn.pressed.connect(_show_about)
+	get_node("MainMargin/VBox/TopBar/TopHBox").add_child(about_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
 func _refresh_resource_labels() -> void:
