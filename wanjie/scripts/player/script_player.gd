@@ -49,6 +49,7 @@ var _auto_timer: float = 0.0
 @onready var tavern_input: LineEdit = %TavernInput
 @onready var econ_label: Label = %EconLabel
 @onready var item_label: Label = %ItemLabel
+@onready var quest_label: Label = %QuestLabel
 
 func _ready() -> void:
 	_init_engines()
@@ -375,6 +376,17 @@ func _update_ui() -> void:
 		else:
 			econ_label.text = "💰 0"
 			item_label.text = "🎒 0"
+		# 任务追踪（当前进行中的任务）
+		if script_data != null and script_data.quest_system != null and script_data.quest_system.quests.size() > 0:
+			var active_q := ""
+			for q in script_data.quest_system.quests:
+				var qstatus: String = str(q.get("status", ""))
+				if qstatus.is_empty() or qstatus == "active":
+					active_q = str(q.get("name", q.get("id", "")))
+					break
+			if not active_q.is_empty():
+				quest_label.text = "📋 %s" % active_q
+				quest_label.visible = true
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
 		mp_bar.max_value = max_mp
