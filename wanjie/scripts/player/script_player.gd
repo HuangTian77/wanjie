@@ -50,6 +50,7 @@ var _auto_timer: float = 0.0
 @onready var econ_label: Label = %EconLabel
 @onready var item_label: Label = %ItemLabel
 @onready var quest_label: Label = %QuestLabel
+@onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
 	_init_engines()
@@ -387,6 +388,12 @@ func _update_ui() -> void:
 			if not active_q.is_empty():
 				quest_label.text = "📋 %s" % active_q
 				quest_label.visible = true
+		# 当前事件链
+		if world_state:
+			var chain: String = str(world_state.get_variable("current_chain", ""))
+			if not chain.is_empty():
+				chain_label.text = "🔗 %s" % chain
+				chain_label.visible = true
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
 		mp_bar.max_value = max_mp
