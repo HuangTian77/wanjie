@@ -433,6 +433,16 @@ func _on_card_clicked(script_id: String) -> void:
 		dialog.queue_free()
 		ToastManager.success("收藏已更新"))
 	btns.add_child(fav)
+	# 同标签搜索（社区发现）
+	if not ws.tags.is_empty():
+		var tag_btn := Button.new()
+		tag_btn.text = "🔍 同标签"
+		tag_btn.pressed.connect(func():
+			dialog.queue_free()
+			search_input.text = str(ws.tags[0])
+			_on_tab_pressed(6)
+			search_input.grab_focus())
+		btns.add_child(tag_btn)
 	box.add_child(btns)
 	dialog.popup_centered()
 
