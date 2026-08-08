@@ -1716,7 +1716,7 @@ func _global_redo() -> void:
 ## 设置自动保存定时器
 func _setup_auto_save() -> void:
 	_auto_save_timer = Timer.new()
-	_auto_save_timer.wait_time = AUTO_SAVE_INTERVAL
+	_auto_save_timer.wait_time = maxf(GameManager.user_data.editor_auto_save_interval, 10.0)
 	_auto_save_timer.autostart = true
 	_auto_save_timer.timeout.connect(_do_auto_save)
 	add_child(_auto_save_timer)

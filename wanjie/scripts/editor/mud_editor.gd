@@ -141,6 +141,7 @@ func _build_ui(parent: Node) -> void:
 	_build_right_panel(hsplit)
 
 	_build_status_bar(root)
+	_set_status("MUD 数据编辑器就绪：15 个数据表标签页（地图/物品/NPC/技能等），修改自动保存")
 
 func _build_toolbar(parent: VBoxContainer) -> void:
 	var panel := PanelContainer.new()

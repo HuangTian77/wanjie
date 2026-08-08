@@ -41,6 +41,8 @@ extends Resource
 @export var animations_enabled: bool = true
 ## 全屏显示
 @export var fullscreen: bool = false
+## 编辑器自动保存间隔（秒）
+@export var editor_auto_save_interval: float = 60.0
 ## 设置：字体大小 (small/medium/large/xlarge)
 @export var font_size_preset: String = "medium"
 ## 上次资源恢复时间戳（unix 秒, 用于离线恢复灵感/精力）
@@ -68,6 +70,7 @@ func to_dict() -> Dictionary:
 		"difficulty_mode": difficulty_mode,
 		"animations_enabled": animations_enabled,
 		"fullscreen": fullscreen,
+		"editor_auto_save_interval": editor_auto_save_interval,
 		"font_size_preset": font_size_preset,
 		"last_recovery_time": last_recovery_time,
 	}
