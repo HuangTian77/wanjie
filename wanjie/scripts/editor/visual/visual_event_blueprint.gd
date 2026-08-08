@@ -686,6 +686,15 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
+		elif event.keycode == KEY_EQUAL or event.keycode == KEY_KP_ADD:
+			_bp_zoom = clampf(_bp_zoom * 1.15, 0.2, 3.0)
+			canvas.queue_redraw()
+		elif event.keycode == KEY_MINUS or event.keycode == KEY_KP_SUBTRACT:
+			_bp_zoom = clampf(_bp_zoom / 1.15, 0.2, 3.0)
+			canvas.queue_redraw()
+		elif event.keycode == KEY_0:
+			_bp_zoom = 1.0
+			canvas.queue_redraw()
 
 # === 右键菜单 ===
 
