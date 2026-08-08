@@ -202,6 +202,15 @@ func _update_carousel() -> void:
 	carousel_label.modulate.a = 0.0
 	_carousel_tween = ThemeManager.create_anim(carousel_label)
 	_carousel_tween.tween_property(carousel_label, "modulate:a", 1.0, 0.35)
+	# 点击轮播进入该剧本（悬停提示）
+	if not carousel_label.gui_input.is_connected(_on_carousel_clicked):
+		carousel_label.gui_input.connect(_on_carousel_clicked)
+
+## 轮播点击进入剧本
+func _on_carousel_clicked(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if not featured_scripts.is_empty() and carousel_index < featured_scripts.size():
+			SceneManager.enter_script(featured_scripts[carousel_index].id)
 	# 更新指示器（预创建样式, 避免每次切换重复 duplicate）
 	if _dot_active_style == null:
 		_dot_active_style = StyleBoxFlat.new()
