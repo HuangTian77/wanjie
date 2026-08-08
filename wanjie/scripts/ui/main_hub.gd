@@ -13,6 +13,8 @@ extends Control
 @onready var carousel_indicator: HBoxContainer = %CarouselIndicator
 @onready var tab_container: HBoxContainer = %TabContainer
 @onready var script_grid: GridContainer = %ScriptGrid
+## 列表视图模式（单列紧凑）
+var _list_view: bool = false
 @onready var recent_container: HBoxContainer = %RecentContainer
 @onready var no_recent_label: Label = %NoRecentLabel
 @onready var search_input: LineEdit = %SearchInput
@@ -107,6 +109,9 @@ func _on_window_resized() -> void:
 	_update_grid_columns()
 
 func _update_grid_columns() -> void:
+	if _list_view:
+		script_grid.columns = 1
+		return
 	var available_width := size.x - 48  # 减去左右 margin
 	var columns := clampi(int(available_width / CARD_MIN_WIDTH), 2, 5)
 	script_grid.columns = columns
@@ -116,6 +121,17 @@ func _setup_top_bar() -> void:
 	_refresh_resource_labels()
 	# 资源恢复/变化时实时刷新顶栏
 	GameManager.resources_recovered.connect(_refresh_resource_labels)
+	# 视图切换按钮（网格/列表）——追加到顶栏
+	if has_node("MainMargin/VBox/TopBar/TopHBox"):
+		var view_btn := Button.new()
+		view_btn.text = "⊞ 视图"
+		view_btn.tooltip_text = "切换 网格/列表 视图"
+		view_btn.flat = true
+		view_btn.pressed.connect(func():
+			_list_view = not _list_view
+			view_btn.text = "⊟ 列表" if _list_view else "⊞ 网格"
+			_update_grid_columns())
+		get_node("MainMargin/VBox/TopBar/TopHBox").add_child(view_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
 func _refresh_resource_labels() -> void:
