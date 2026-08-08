@@ -242,6 +242,10 @@ func _build_module_tree() -> void:
 	stats_item.set_text(0, "📊 剧本统计")
 	stats_item.set_metadata(0, {"path": "stats", "type": "stats"})
 	stats_item.set_custom_color(0, Color(0.6, 0.9, 0.6, 1))
+	var assets_item := module_tree.create_item(root)
+	assets_item.set_text(0, "📁 剧本资源")
+	assets_item.set_metadata(0, {"path": "assets", "type": "assets"})
+	assets_item.set_custom_color(0, Color(0.9, 0.8, 0.5, 1))
 	meta_item.set_custom_color(0, Color(0.95, 0.85, 0.55, 1))
 
 	# 世界观
@@ -573,6 +577,8 @@ func _get_editor_key(path: String) -> String:
 		return "metadata"
 	elif path == "stats":
 		return "stats"
+	elif path == "assets":
+		return "assets"
 	elif path.begins_with("worldview/"):
 		return "worldview"
 	elif path.begins_with("event/"):
@@ -594,6 +600,49 @@ func _get_editor_key(path: String) -> String:
 	return path
 
 ## === 面板创建工厂 ===
+func _create_assets_panel() -> Control:
+	var panel := _make_scroll_panel()
+	var vbox := _make_vbox(panel)
+	_add_section_label(vbox, "📁 剧本资源")
+	if current_script == null:
+		return panel
+	var assets_dir := ScriptDataManager.get_script_dir(current_script.id) + "/assets"
+	var dir := DirAccess.open(assets_dir)
+	if dir == null:
+		_add_text_field(vbox, "资源目录", "（空，先设置封面会生成 assets/）", func(_v): pass)
+		return panel
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	var count := 0
+	while fname != "":
+		if fname != "." and fname != ".." and not dir.current_is_dir():
+			var row := HBoxContainer.new()
+			var lbl := Label.new()
+			lbl.text = fname
+			lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			lbl.add_theme_font_size_override("font_size", 13)
+			row.add_child(lbl)
+			var del := Button.new()
+			del.text = "删除"
+			del.add_theme_color_override("font_color", IDETheme.C_RED)
+			var full := assets_dir + "/" + fname
+			del.pressed.connect(func():
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(full))
+				ToastManager.success("资源已删除")
+				_on_assets_changed())
+			row.add_child(del)
+			vbox.add_child(row)
+			count += 1
+		fname = dir.get_next()
+	dir.list_dir_end()
+	if count == 0:
+		_add_text_field(vbox, "资源目录", "（空，先设置封面会生成 assets/）", func(_v): pass)
+	return panel
+
+func _on_assets_changed() -> void:
+	# 刷新资源面板
+	_open_editor_for_path("assets", "📁 剧本资源", {"type": "assets"})
+
 func _create_stats_panel() -> Control:
 	var panel := _make_scroll_panel()
 	var vbox := _make_vbox(panel)
