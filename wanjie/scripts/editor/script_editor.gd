@@ -1610,8 +1610,9 @@ func _setup_tab_container() -> void:
 	_tab_container = TabContainer.new()
 	_tab_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_tab_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_tab_container.tabs_closable = true
-	_tab_container.tab_close_display_policy = 1  # CLOSE_BUTTON_SHOW_ACTIVE_ONLY
+	# Godot 4.7：关闭按钮配置在 TabBar（TabContainer 不再有 tabs_closable）
+	var tab_bar := _tab_container.get_tab_bar()
+	tab_bar.tab_close_display_policy = TabBar.CLOSE_BUTTON_SHOW_ACTIVE_ONLY
 	# 挂载到 editor_container 所在位置（多标签与单容器互斥显示）
 	var parent := editor_container.get_parent()
 	if parent:
@@ -1619,7 +1620,8 @@ func _setup_tab_container() -> void:
 		parent.move_child(_tab_container, editor_container.get_index())
 	_tab_container.visible = false
 	# 连接标签关闭信号
-	_tab_container.tab_close_pressed.connect(_on_tab_close)
+	# 连接标签关闭信号（4.7 在 TabBar 上）
+	tab_bar.tab_close_pressed.connect(_on_tab_close)
 	_tab_container.tab_changed.connect(_on_tab_changed)
 
 ## 打开新标签页（panel 已在标签中则激活，避免重复）

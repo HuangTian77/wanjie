@@ -181,7 +181,9 @@ func _on_map_canvas_input(event: InputEvent, canvas: Control) -> void:
 		_create_map_connection(from_id, to_id)
 	var on_delete := func(rid: String):
 		_delete_map_region(rid)
-	_host._mod_event._on_bp_canvas_input(event, canvas, _host._mod_event._map_nodes, on_click, on_dbl_click, on_connect, on_delete)
+	# 地图画布交互（visual_event 的画布输入 API；不存在时忽略——地图编辑器画布交互待补）
+	if _host._mod_event.has_method("_on_bp_canvas_input"):
+		_host._mod_event._on_bp_canvas_input(event, canvas, _host._mod_event._map_nodes, on_click, on_dbl_click, on_connect, on_delete)
 
 ## 创建地图连接
 func _create_map_connection(from_id: String, to_id: String) -> void:

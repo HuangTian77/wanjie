@@ -66,6 +66,7 @@ layout_mode = 2
 text = "🏮 酒馆"
 
 [node name="TavernPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,6 +81,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="TavernCharSelect" type="OptionButton" parent="TavernPanel/TavernVBox/TavernHeader"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -88,6 +90,7 @@ layout_mode = 2
 text = "关闭"
 
 [node name="TavernMsgs" type="RichTextLabel" parent="TavernPanel/TavernVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
@@ -96,6 +99,7 @@ bbcode_enabled = true
 layout_mode = 2
 
 [node name="TavernInput" type="LineEdit" parent="TavernPanel/TavernVBox/TavernInputRow"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "对角色说话…"
@@ -307,6 +311,7 @@ custom_minimum_size = Vector2(0, 38)
 text = "关闭菜单"
 
 [node name="BattlePanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 visible = false
 anchors_preset = 8
 anchor_left = 0.5
@@ -329,10 +334,12 @@ text = "⚔ 战斗"
 horizontal_alignment = 1
 
 [node name="EnemyInfo" type="Label" parent="BattlePanel/BattleVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = ""
 
 [node name="BattleLog" type="RichTextLabel" parent="BattlePanel/BattleVBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 text = ""

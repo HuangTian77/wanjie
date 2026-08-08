@@ -11,6 +11,7 @@ script = ExtResource("1_script")
 [node name="VBox" type="VBoxContainer" parent="."]
 
 [node name="CoverTexture" type="TextureRect" parent="VBox"]
+unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
@@ -81,6 +82,7 @@ layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="CardFavBtn" type="Button" parent="VBox/ActionHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "♡"
 

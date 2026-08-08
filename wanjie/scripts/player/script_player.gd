@@ -561,7 +561,7 @@ func _refresh_battle_ui() -> void:
 	enemy_info.text = "敌人：%s" % ("；".join(parts) if parts.is_empty() == false else "（无）")
 	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
 	# 玩家状态
-	var ps := combat_engine.player_combat_stats
+	var ps: Dictionary = combat_engine.player_combat_stats
 	if not ps.is_empty():
 		enemy_info.text += "\n%s HP:%d/%d MP:%d/%d" % [
 			ps.get("name", "旅者"), int(ps.get("hp", 0)), int(ps.get("max_hp", 1)),
@@ -649,7 +649,7 @@ func _on_menu_rating_pressed() -> void:
 		var ws: Variant = script_data
 		if ws == null:
 			return
-		var new_rating := (ws.rating * ws.rating_count + chosen[0]) / float(ws.rating_count + 1)
+		var new_rating: float = (ws.rating * ws.rating_count + chosen[0]) / float(ws.rating_count + 1)
 		ws.rating = snappedf(new_rating, 0.1)
 		ws.rating_count += 1
 		ScriptDataManager.update_script(ws, ["rating", "rating_count"])
