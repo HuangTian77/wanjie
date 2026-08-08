@@ -181,9 +181,11 @@ func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
 	list_vbox.add_child(add_btn)
 	for e in es.story_events:
 		var eid: String = e.get("id", "")
+		var row := HBoxContainer.new()
 		var btn := Button.new()
 		btn.text = e.get("name", eid)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.add_theme_font_size_override("font_size", 12)
 		if eid == _l1_current_event_id:
 			btn.add_theme_color_override("font_color", EditorUIFactory.C_ACCENT)
@@ -191,7 +193,45 @@ func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
 			_l1_current_event_id = eid
 			_build_l1_form_view(_event_l1_container)
 		)
-		list_vbox.add_child(btn)
+		row.add_child(btn)
+		# 复制事件
+		var dup_btn := Button.new()
+		dup_btn.text = "⧉"
+		dup_btn.tooltip_text = "复制事件"
+		dup_btn.custom_minimum_size.x = 28
+		dup_btn.add_theme_font_size_override("font_size", 11)
+		dup_btn.pressed.connect(func():
+			var src: Dictionary = es.get_story_event(eid)
+			if src.is_empty():
+				return
+			var new_id := "event_dup_%d" % Time.get_ticks_msec()
+			var copy := src.duplicate(true)
+			copy["id"] = new_id
+			copy["name"] = str(src.get("name", "")) + " 副本"
+			es.story_events.append(copy)
+			_host._mark_dirty()
+			_host._sync_to_code_editor()
+			_build_l1_form_view(_event_l1_container))
+		row.add_child(dup_btn)
+		# 删除事件
+		var del_btn := Button.new()
+		del_btn.text = "✕"
+		del_btn.tooltip_text = "删除事件"
+		del_btn.custom_minimum_size.x = 28
+		del_btn.add_theme_color_override("font_color", IDETheme.C_RED)
+		del_btn.add_theme_font_size_override("font_size", 11)
+		del_btn.pressed.connect(func():
+			for i in es.story_events.size():
+				if es.story_events[i].get("id", "") == eid:
+					es.story_events.remove_at(i)
+					break
+			if _l1_current_event_id == eid:
+				_l1_current_event_id = ""
+			_host._mark_dirty()
+			_host._sync_to_code_editor()
+			_build_l1_form_view(_event_l1_container))
+		row.add_child(del_btn)
+		list_vbox.add_child(row)
 
 ## 构建L1单事件表单
 func _build_l1_event_form(form_vbox: VBoxContainer, event_id: String) -> void:

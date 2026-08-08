@@ -84,6 +84,12 @@ func _input(event: InputEvent) -> void:
 	# F1: 打开创建剧本（无测试副作用）
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F1:
 		_on_create_script_pressed()
+	# Ctrl+F: 聚焦搜索框
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F and event.ctrl_pressed:
+		search_input.grab_focus()
+		if GameManager.current_tab != 6:
+			_on_tab_pressed(6)
+		return
 	# Esc: 优先关闭打开的对话框，其次取消搜索模式
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		if setup_dialog != null and setup_dialog.visible:
