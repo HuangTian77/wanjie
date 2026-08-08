@@ -333,6 +333,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "★ 评分"
 
+[node name="LogBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "📜 世界日志"
+
 [node name="RestBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -418,6 +423,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/ShopBtn" to="." method="_on_menu_shop_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BagBtn" to="." method="_on_menu_bag_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RatingBtn" to="." method="_on_menu_rating_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/LogBtn" to="." method="_on_menu_log_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RestBtn" to="." method="_on_menu_rest_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]

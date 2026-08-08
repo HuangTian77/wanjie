@@ -896,6 +896,32 @@ func _write_progress() -> void:
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
 
+## 世界日志（因果标记/选择历史）
+func _on_menu_log_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "世界日志"
+	dialog.min_size = Vector2i(400, 360)
+	add_child(dialog)
+	var list := RichTextLabel.new()
+	dialog.add_child(list)
+	var has_any := false
+	if event_engine:
+		if not event_engine.causal_marks.is_empty():
+			list.append_text("[b]【因果标记】[/b]\n")
+			for cm in event_engine.causal_marks:
+				list.append_text("• %s\n" % str(cm.get("mark", cm)))
+				has_any = true
+		if not event_engine.choices_history.is_empty():
+			list.append_text("\n[b]【选择历史】[/b]\n")
+			for ch in event_engine.choices_history:
+				var cid: String = str(ch.get("choice_id", ch.get("choice", "")))
+				var eid: String = str(ch.get("event_id", ""))
+				list.append_text("• %s（%s）\n" % [cid, eid])
+				has_any = true
+	if not has_any:
+		list.append_text("[color=#999]暂无世界事件记录…[/color]")
+	dialog.popup_centered()
+
 ## 休息：时间推进 + 回满状态
 func _on_menu_rest_pressed() -> void:
 	if world_state:
