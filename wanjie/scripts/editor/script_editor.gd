@@ -873,6 +873,7 @@ func _setup_menus() -> void:
 	fp.add_item("保存 (Ctrl+S)", 1)
 	fp.add_item("设置封面...", 5)
 	fp.add_item("另存为副本...", 6)
+	fp.add_item("导出校验报告...", 7)
 	fp.add_item("导出剧本...", 2)
 	fp.add_item("导入剧本...", 3)
 	fp.add_separator()
@@ -885,6 +886,7 @@ func _setup_menus() -> void:
 			4: _on_back_pressed()
 			5: _on_set_cover_pressed()
 			6: _on_clone_script_pressed()
+			7: _on_export_validation_report()
 	)
 	# 编辑菜单
 	var ep := edit_menu.get_popup()
@@ -1090,6 +1092,49 @@ func _on_publish_pressed() -> void:
 	ToastManager.success("剧本已发布")
 	GameManager.unlock_achievement("first_publish", "首次发布剧本")
 	_log_output("📢 剧本已发布: %s" % current_script.name)
+
+## 导出校验报告（txt）
+func _on_export_validation_report() -> void:
+	if current_script == null:
+		_log_output("⚠ 请先加载剧本")
+		return
+	var validator := ScriptValidator.new()
+	var report := validator.validate(current_script)
+	var lines: Array[String] = []
+	lines.append("万界诗篇剧本校验报告")
+	lines.append("剧本: %s  作者: %s" % [current_script.name, current_script.author])
+	lines.append("校验时间: %s" % Time.get_datetime_string_from_system())
+	lines.append("结果: %s（%d 错误 / %d 警告 / %d 建议）" % ["通过" if report.get("is_valid", false) else "未通过", report.get("error_count", 0), report.get("warning_count", 0), report.get("suggestion_count", 0)])
+	lines.append("")
+	lines.append("【错误】")
+	for e in report.get("errors", []):
+		lines.append("  - " + str(e))
+	lines.append("")
+	lines.append("【警告】")
+	for w in report.get("warnings", []):
+		lines.append("  - " + str(w))
+	lines.append("")
+	lines.append("【建议】")
+	for su in report.get("suggestions", []):
+		lines.append("  - " + str(su))
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	dialog.title = "导出校验报告"
+	dialog.add_filter("*.txt ; 文本文件")
+	dialog.current_path = current_script.name + "_校验报告.txt"
+	dialog.min_size = Vector2i(600, 400)
+	add_child(dialog)
+	dialog.file_selected.connect(func(path: String):
+		var f := FileAccess.open(path, FileAccess.WRITE)
+		if f:
+			f.store_string("\n".join(lines))
+			f.close()
+			_log_output("✅ 校验报告已导出: %s" % path)
+			ToastManager.success("校验报告已导出")
+		else:
+			_log_output("[color=red]❌ 导出失败[/color]")
+		dialog.queue_free())
+	dialog.popup_centered()
 
 ## 另存为副本（克隆剧本）
 func _on_clone_script_pressed() -> void:
