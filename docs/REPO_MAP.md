@@ -1252,7 +1252,7 @@
 
 ### scripts/ui/main_hub.gd (main_hub.gd)
 
-- func `_ready` (L57)
+- func `_ready` (L59)
 
 ### scripts/ui/script_setup_dialog.gd (`ScriptSetupDialog`)
 

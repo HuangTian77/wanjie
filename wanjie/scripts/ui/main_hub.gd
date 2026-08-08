@@ -16,6 +16,8 @@ extends Control
 @onready var stats_label: Label = %StatsLabel
 ## 列表视图模式（单列紧凑）
 var _list_view: bool = false
+## 排序模式（0 默认/1 名称/2 更新时间/3 评分）
+var _sort_mode: int = 0
 @onready var recent_container: HBoxContainer = %RecentContainer
 @onready var no_recent_label: Label = %NoRecentLabel
 @onready var search_input: LineEdit = %SearchInput
@@ -209,6 +211,18 @@ func _setup_top_bar() -> void:
 		GameManager.reload_scripts()
 		ToastManager.success("剧本库已刷新"))
 	get_node("MainMargin/VBox/TopBar").add_child(refresh_btn)
+	# 排序选项
+	var sort_opt := OptionButton.new()
+	sort_opt.add_item("默认排序", 0)
+	sort_opt.add_item("按名称", 1)
+	sort_opt.add_item("按更新时间", 2)
+	sort_opt.add_item("按评分", 3)
+	sort_opt.flat = true
+	sort_opt.tooltip_text = "排序方式"
+	sort_opt.item_selected.connect(func(idx: int):
+		_sort_mode = idx
+		_refresh_script_grid())
+	get_node("MainMargin/VBox/TopBar").add_child(sort_opt)
 	get_node("MainMargin/VBox/TopBar").add_child(about_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
@@ -329,6 +343,14 @@ func _refresh_script_grid() -> void:
 		scripts_list = _search_scripts(search_input.text)
 	else:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
+	# 排序（名称/更新时间/评分）
+	match _sort_mode:
+		1:
+			scripts_list.sort_custom(func(a, b): return a.name < b.name)
+		2:
+			scripts_list.sort_custom(func(a, b): return a.updated_at > b.updated_at)
+		3:
+			scripts_list.sort_custom(func(a, b): return a.rating > b.rating)
 
 	if scripts_list.is_empty():
 		if GameManager.current_tab == 6:
