@@ -52,6 +52,11 @@ var _search_timer: Timer = null
 const CARD_MIN_WIDTH := 240
 
 func _ready() -> void:
+	# 首次启动欢迎引导
+	if GameManager.user_data.first_launch:
+		GameManager.user_data.first_launch = false
+		GameManager.save_user_data()
+		ToastManager.info("欢迎来到万界诗篇！点击下方【创建剧本】开始你的第一个世界")
 	_setup_top_bar()
 	_setup_carousel()
 	_setup_tabs()

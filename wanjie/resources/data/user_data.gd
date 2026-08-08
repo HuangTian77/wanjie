@@ -5,6 +5,8 @@ extends Resource
 
 ## 玩家名称
 @export var player_name: String = "旅者"
+## 首次启动标记（用于欢迎引导）
+@export var first_launch: bool = true
 ## 诗墨（软货币）
 @export var shimo: int = 1250
 ## 界石（硬货币）
@@ -44,6 +46,7 @@ extends Resource
 func to_dict() -> Dictionary:
 	return {
 		"player_name": player_name,
+		"first_launch": first_launch,
 		"shimo": shimo,
 		"jieshi": jieshi,
 		"inspiration": inspiration,
