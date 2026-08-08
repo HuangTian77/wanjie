@@ -719,6 +719,17 @@ func _collect_content_meshes(node: Node3D, out: Array) -> void:
 # === 视口输入 ===
 
 func _on_viewport_input(event: InputEvent) -> void:
+	# 键盘快捷键：Del 删除 / Ctrl+C 复制 / Ctrl+V 粘贴（对齐 2D）
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_DELETE:
+			_delete_selected()
+			return
+		if event.ctrl_pressed:
+			match event.keycode:
+				KEY_C:
+					_copy_selected()
+				KEY_V:
+					_paste()
 	if event is InputEventMouseButton:
 		var mb: InputEventMouseButton = event
 		if mb.button_index == MOUSE_BUTTON_WHEEL_UP:

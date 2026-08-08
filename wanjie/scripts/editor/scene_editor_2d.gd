@@ -846,6 +846,7 @@ func _on_tree_selected() -> void:
 		var node := _find_node_by_name(_scene_root, item.get_text(0))
 		if node:
 			_selected_nodes = [node]
+			_status("选中: %s (%s)" % [node.get("name", ""), node.get("type", "")], C_ACCENT)
 	_refresh_inspector()
 	_canvas.queue_redraw()
 	selection_changed.emit()
