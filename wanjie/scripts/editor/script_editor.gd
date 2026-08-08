@@ -157,6 +157,7 @@ func _ready() -> void:
 	_load_script()
 	_build_module_tree()
 	_build_template_tree()
+	_setup_module_tree_context()
 	_update_validation()
 	_init_code_editor()
 	_init_mud_editor()
@@ -368,6 +369,45 @@ func _add_leaf(parent_item: TreeItem, text: String, path: String, node_type: Str
 	item.set_custom_color(0, Color(0.75, 0.78, 0.85, 1))
 
 ## === 模块树点击 ===
+## 模块树右键菜单（剧本级操作：封面/导出/删除）
+func _setup_module_tree_context() -> void:
+	if not module_tree.gui_input.is_connected(_on_module_tree_gui_input):
+		module_tree.gui_input.connect(_on_module_tree_gui_input)
+
+func _on_module_tree_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		_popup_module_menu(event.global_position)
+
+func _popup_module_menu(pos: Vector2) -> void:
+	if current_script == null:
+		return
+	var menu := PopupMenu.new()
+	menu.add_item("🎨 设置封面…", 1)
+	menu.add_item("📦 导出剧本…", 2)
+	menu.add_item("🗑 删除剧本…", 3)
+	menu.id_pressed.connect(_on_module_menu_id)
+	add_child(menu)
+	menu.popup(Rect2i(pos, Vector2i.ZERO))
+
+func _on_module_menu_id(id: int) -> void:
+	match id:
+		1: _on_set_cover_pressed()
+		2: _on_export_script_pressed()
+		3: _confirm_delete_script()
+
+func _confirm_delete_script() -> void:
+	if current_script == null:
+		return
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "确定删除剧本《%s》？将移入回收站（user://scripts_trash 可恢复）。" % current_script.name
+	confirm.confirmed.connect(func():
+		var sid := current_script.id
+		ScriptDataManager.delete_script(sid)
+		ToastManager.success("剧本已删除")
+		SceneManager.go_back_to_hub())
+	add_child(confirm)
+	confirm.popup_centered()
+
 func _on_module_tree_selected() -> void:
 	var item := module_tree.get_selected()
 	if item == null:
@@ -707,10 +747,19 @@ func _update_validation() -> void:
 	error_list.clear()
 	for e in report.get("errors", []):
 		error_list.add_item(str(e))
-	# 点击错误/警告条目复制全文（便于定位排查）
+	# 点击错误条目：有定位则跳转事件，否则复制全文
+	var err_report: Dictionary = report
 	error_list.item_activated.connect(func(index: int):
+		var locs: Array = err_report.get("error_locations", [])
+		if index < locs.size():
+			var loc: Dictionary = locs[index]
+			var ev_id: String = str(loc.get("event_id", ""))
+			if not ev_id.is_empty():
+				_jump_to_event(ev_id)
+				return
 		DisplayServer.clipboard_set(error_list.get_item_text(index))
 		ToastManager.info("已复制错误信息"))
+
 	warning_list.clear()
 	for w in report.get("warnings", []):
 		warning_list.add_item(str(w))
@@ -723,6 +772,15 @@ func _update_validation() -> void:
 	else:
 		status_label.text = "⚠ %d错误 %d警告" % [report["error_count"], report["warning_count"]]
 		_log_output("[color=red]❌ 校验失败: %d 错误 %d 警告[/color]" % [report["error_count"], report["warning_count"]])
+## 校验错误跳转：打开事件编辑器并进入对应事件蓝图
+func _jump_to_event(event_id: String) -> void:
+	_open_editor_for_path("event/list", "事件列表", {})
+	var panel: Variant = _editors.get("event", null)
+	if panel != null and panel.has_method("_enter_event_blueprint"):
+		panel.call("_enter_event_blueprint", event_id)
+		status_label.text = "🎯 已定位事件: %s" % event_id
+	else:
+		status_label.text = "⚠ 无法定位事件（请先在事件列表中查看）"
 
 func _update_node_count() -> void:
 	if current_script == null:

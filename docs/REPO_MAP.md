@@ -86,22 +86,22 @@
 ### resources/data/user_data.gd (`UserData`)
 
 - class_name **UserData**
-- func `to_dict` (L42)
-- func `from_dict` (L64)
-- func `get_inspiration_display` (L94)
-- func `get_creation_energy_display` (L98)
-- func `can_enter_script` (L102)
-- func `consume_inspiration` (L106)
-- func `can_create_script` (L113)
-- func `consume_creation_energy` (L117)
+- func `to_dict` (L46)
+- func `from_dict` (L70)
+- func `get_inspiration_display` (L101)
+- func `get_creation_energy_display` (L105)
+- func `can_enter_script` (L109)
+- func `consume_inspiration` (L113)
+- func `can_create_script` (L120)
+- func `consume_creation_energy` (L124)
 
 ### resources/data/world_script_data.gd (`WorldScriptData`)
 
 - class_name **WorldScriptData**
-- func `ensure_subsystems` (L54)
-- func `generate_id` (L71)
-- func `get_tags_display` (L75)
-- func `get_status_display` (L79)
+- func `ensure_subsystems` (L56)
+- func `generate_id` (L73)
+- func `get_tags_display` (L77)
+- func `get_status_display` (L81)
 
 ### resources/data/worldview_data.gd (`WorldviewData`)
 
@@ -129,9 +129,13 @@
 - func `save_user_data` (L89)
 - func `get_script_data` (L115)
 - func `get_scripts_by_tab` (L119)
-- func `get_featured_scripts` (L144)
-- func `get_recent_scripts` (L153)
-- func `set_current_tab` (L161)
+- func `get_featured_scripts` (L152)
+- func `get_recent_scripts` (L161)
+- func `record_play` (L169)
+- func `toggle_favorite` (L182)
+- func `is_favorite` (L192)
+- func `get_favorites` (L196)
+- func `set_current_tab` (L205)
 
 ### scripts/autoload/llm_client.gd (llm_client.gd)
 
@@ -141,19 +145,19 @@
 - signal `stream_finished`
 - signal `provider_switched`
 - func `_ready` (L71)
-- func `save_config` (L92)
-- func `set_provider` (L106)
-- func `set_api_key` (L113)
-- func `get_provider_name` (L118)
-- func `get_current_model` (L124)
-- func `get_base_url` (L132)
-- func `get_api_key` (L140)
-- func `is_configured` (L144)
-- func `get_available_providers` (L150)
-- func `chat` (L161)
-- func `chat_stream` (L170)
-- func `generate` (L179)
-- func `test_connection` (L187)
+- func `save_config` (L98)
+- func `set_provider` (L115)
+- func `set_api_key` (L122)
+- func `get_provider_name` (L127)
+- func `get_current_model` (L133)
+- func `get_base_url` (L141)
+- func `get_api_key` (L149)
+- func `is_configured` (L153)
+- func `get_available_providers` (L159)
+- func `chat` (L170)
+- func `chat_stream` (L179)
+- func `generate` (L188)
+- func `test_connection` (L196)
 
 ### scripts/autoload/save_manager.gd (save_manager.gd)
 
@@ -192,10 +196,11 @@
 - func `create_script` (L265)
 - func `update_script` (L291)
 - func `delete_script` (L297)
-- func `find_script` (L327)
-- func `export_script` (L331)
-- func `import_script` (L344)
-- func `get_templates` (L370)
+- func `empty_trash` (L319)
+- func `find_script` (L342)
+- func `export_script` (L346)
+- func `import_script` (L366)
+- func `get_templates` (L403)
 
 ### scripts/autoload/script_templates.gd (`ScriptTemplates`)
 
@@ -213,10 +218,12 @@
 - func `start_dialog` (L37)
 - func `end_dialog` (L51)
 - func `send_message` (L58)
-- func `register_world` (L80)
-- func `load_world_book` (L84)
-- func `get_dialog_history` (L90)
-- func `clear_history` (L94)
+- func `register_world` (L83)
+- func `load_world_book` (L87)
+- func `get_dialog_history` (L93)
+- func `clear_history` (L97)
+- func `save_history` (L173)
+- func `load_history` (L190)
 
 ### scripts/autoload/theme_manager.gd (theme_manager.gd)
 
@@ -448,15 +455,15 @@
 
 ### scripts/editor/script_code_editor.gd (script_code_editor.gd)
 
-- func `_ready` (L69)
-- func `build_into` (L72)
-- func `load_data` (L80)
-- func `get_code` (L97)
-- func `apply_code` (L100)
-- func `validate_code` (L118)
-- func `export_code` (L130)
-- func `import_code` (L140)
-- func `insert_template` (L150)
+- func `_ready` (L74)
+- func `build_into` (L77)
+- func `load_data` (L85)
+- func `get_code` (L102)
+- func `apply_code` (L105)
+- func `validate_code` (L123)
+- func `export_code` (L135)
+- func `import_code` (L145)
+- func `insert_template` (L155)
 
 ### scripts/editor/script_codegen.gd (`ScriptCodeGen`)
 
@@ -474,8 +481,8 @@
 ### scripts/editor/script_validator.gd (`ScriptValidator`)
 
 - class_name **ScriptValidator**
-- func `validate` (L12)
-- func `get_report` (L30)
+- func `validate` (L14)
+- func `get_report` (L33)
 
 ## scripts/editor/ide/
 
@@ -606,8 +613,8 @@
 
 ### scripts/editor/ide/ide_shortcuts_dialog.gd (ide_shortcuts_dialog.gd)
 
-- func `_ready` (L28)
-- func `open` (L61)
+- func `_ready` (L29)
+- func `open` (L62)
 
 ### scripts/editor/ide/ide_signal_dialog.gd (ide_signal_dialog.gd)
 
@@ -1043,7 +1050,7 @@
 
 ### scripts/editor/visual/visual_ai_assistant.gd (visual_ai_assistant.gd)
 
-- func `create` (L16)
+- func `create` (L20)
 
 ### scripts/editor/visual/visual_blueprint_draw.gd (`VisualBlueprintDraw`)
 
@@ -1149,11 +1156,11 @@
 - func `handle_flow` (L54)
 - func `handle_economy` (L129)
 - func `handle_story` (L241)
-- func `handle_world` (L356)
-- func `handle_player` (L436)
-- func `handle_combat` (L514)
-- func `handle_ability` (L653)
-- func `handle_quest` (L730)
+- func `handle_world` (L358)
+- func `handle_player` (L438)
+- func `handle_combat` (L516)
+- func `handle_ability` (L655)
+- func `handle_quest` (L732)
 
 ### scripts/player/combat_engine.gd (combat_engine.gd)
 
@@ -1215,8 +1222,8 @@
 
 ### scripts/player/script_player.gd (script_player.gd)
 
-- func `_ready` (L41)
-- func `_process` (L46)
+- func `_ready` (L48)
+- func `_process` (L63)
 
 ### scripts/player/world_state.gd (world_state.gd)
 
@@ -1300,10 +1307,11 @@
 
 - class_name **ScriptCard**
 - signal `clicked`
+- signal `favorite_requested`
 - signal `edit_requested`
 - signal `delete_requested`
-- func `setup` (L24)
-- func `_ready` (L48)
+- func `setup` (L27)
+- func `_ready` (L63)
 
 ### scripts/ui/components/section_header.gd (`SectionHeader`)
 

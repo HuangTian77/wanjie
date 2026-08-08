@@ -7,6 +7,8 @@ extends RefCounted
 var errors: Array[String] = []
 var warnings: Array[String] = []
 var suggestions: Array[String] = []
+## 错误定位映射（与 errors 索引对齐；含 event_id 时点击可跳转）
+var error_locations: Array[Dictionary] = []
 
 ## 执行完整校验
 func validate(script_data: WorldScriptData) -> Dictionary:
@@ -16,6 +18,7 @@ func validate(script_data: WorldScriptData) -> Dictionary:
 
 	if script_data == null:
 		errors.append("剧本数据为空")
+		error_locations.append({})
 		return get_report()
 
 	_validate_metadata(script_data)
@@ -35,13 +38,15 @@ func get_report() -> Dictionary:
 		"suggestion_count": suggestions.size(),
 		"errors": errors.duplicate(),
 		"warnings": warnings.duplicate(),
-		"suggestions": suggestions.duplicate()
+		"suggestions": suggestions.duplicate(),
+		"error_locations": error_locations.duplicate()
 	}
 
 ## 校验元数据
 func _validate_metadata(ws: WorldScriptData) -> void:
 	if ws.name.is_empty():
 		errors.append("剧本名称不能为空")
+		error_locations.append({})
 	if ws.description.is_empty():
 		warnings.append("剧本缺少简介描述")
 	if ws.tags.is_empty():
@@ -69,8 +74,10 @@ func _validate_worldview(wv: WorldviewData) -> void:
 			if f["id"] == to_id: found_to = true
 		if not found_from:
 			errors.append("势力关系引用了不存在的势力: %s" % from_id)
+			error_locations.append({})
 		if not found_to:
 			errors.append("势力关系引用了不存在的势力: %s" % to_id)
+			error_locations.append({})
 
 ## 校验事件系统
 func _validate_events(es: EventSystemData) -> void:
@@ -88,6 +95,7 @@ func _validate_events(es: EventSystemData) -> void:
 					break
 			if not found:
 				errors.append("事件 '%s' 的前置事件 '%s' 不存在" % [e.get("id", ""), prereq])
+				error_locations.append({})
 		# 检查选择
 		if e.get("choices", []).is_empty():
 			warnings.append("事件 '%s' 没有玩家选择" % e.get("id", ""))
@@ -107,6 +115,7 @@ func _validate_events(es: EventSystemData) -> void:
 		var visited := {}
 		if _has_cycle(e["id"], es, visited):
 			errors.append("检测到事件循环: %s" % e["id"])
+			error_locations.append({})
 	if es.story_events.is_empty():
 		suggestions.append("建议添加至少一个剧情事件")
 
