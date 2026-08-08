@@ -1002,6 +1002,10 @@ func _on_save_pressed() -> void:
 	ScriptDataManager.update_script(current_script)
 	_update_validation()
 	_build_module_tree()
+	# 保存状态提示
+	var now := Time.get_time_string_from_system().substr(0, 5)
+	status_label.text = "💾 已保存 %s" % now
+	_log_output("[color=green]✅ 已保存 %s[/color]" % now)
 	status_label.text = "💾 已保存"
 	ToastManager.success("剧本已保存")
 	_log_output("💾 剧本已保存: %s" % current_script.name)

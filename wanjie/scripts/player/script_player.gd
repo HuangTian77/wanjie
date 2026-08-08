@@ -702,6 +702,29 @@ func _write_progress() -> void:
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
 
+## 操作帮助弹窗
+func _on_menu_help_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "操作帮助"
+	dialog.dialog_text = """【基本操作】
+- 点击 / 空格 / 回车：继续剧情、跳过打字机
+- 顶部菜单：存档 / 读档 / 酒馆对话 / 评分
+
+【战斗】
+- 遭遇敌人后出现战斗面板：攻击 / 技能 / 逃跑
+- 技能需消耗 MP，魔力不足无法释放
+
+【酒馆 🏮】
+- 与旅店老板娘 / 老学者对话，了解世界观线索
+- 对话历史自动保存
+
+【提示】
+- 每 5 分钟自动存档，退出前建议手动保存
+- 剧本进度会同步到大厅卡片进度条"""
+	dialog.min_size = Vector2i(480, 360)
+	add_child(dialog)
+	dialog.popup_centered()
+
 ## 显示槽位选择器
 func _show_slot_selector(mode: String) -> void:
 	var old := get_node_or_null("SlotSelector")
