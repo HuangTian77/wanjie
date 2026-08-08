@@ -306,6 +306,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "删除存档"
 
+[node name="BagBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "🎒 背包"
+
 [node name="RatingBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -383,6 +388,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/SaveBtn" to="." method="_on_menu_save_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/LoadBtn" to="." method="_on_menu_load_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/DeleteBtn" to="." method="_on_menu_delete_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/BagBtn" to="." method="_on_menu_bag_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RatingBtn" to="." method="_on_menu_rating_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]

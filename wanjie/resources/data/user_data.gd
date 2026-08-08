@@ -39,6 +39,8 @@ extends Resource
 @export var difficulty_mode: String = "adaptive"
 ## 设置：动效是否开启
 @export var animations_enabled: bool = true
+## 全屏显示
+@export var fullscreen: bool = false
 ## 设置：字体大小 (small/medium/large/xlarge)
 @export var font_size_preset: String = "medium"
 ## 上次资源恢复时间戳（unix 秒, 用于离线恢复灵感/精力）
@@ -65,6 +67,7 @@ func to_dict() -> Dictionary:
 		"ai_npc_enabled": ai_npc_enabled,
 		"difficulty_mode": difficulty_mode,
 		"animations_enabled": animations_enabled,
+		"fullscreen": fullscreen,
 		"font_size_preset": font_size_preset,
 		"last_recovery_time": last_recovery_time,
 	}

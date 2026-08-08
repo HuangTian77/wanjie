@@ -638,6 +638,30 @@ func _on_menu_load_pressed() -> void:
 func _on_menu_delete_pressed() -> void:
 	_show_slot_selector("delete")
 
+## 背包查看弹窗
+func _on_menu_bag_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "背包"
+	dialog.min_size = Vector2i(360, 300)
+	add_child(dialog)
+	var box := VBoxContainer.new()
+	dialog.add_child(box)
+	var title := Label.new()
+	title.text = "持有物品"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(title)
+	var list := RichTextLabel.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(list)
+	if economy_engine == null or economy_engine.player_inventory.is_empty():
+		list.append_text("[color=#999]背包空空如也…[/color]")
+	else:
+		for item_id in economy_engine.player_inventory:
+			var qty: int = int(economy_engine.player_inventory[item_id])
+			if qty > 0:
+				list.append_text("• %s × %d\n" % [item_id, qty])
+	dialog.popup_centered()
+
 ## 评分：1-5 星（平均后写入剧本）
 func _on_menu_rating_pressed() -> void:
 	var old := get_node_or_null("RatingDialog")

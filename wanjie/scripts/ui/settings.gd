@@ -9,6 +9,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 @onready var font_size_option: OptionButton = %FontSizeOption
 @onready var anim_toggle: CheckButton = %AnimToggle
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
+@onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var master_volume: HSlider = %MasterVolume
 @onready var bgm_volume: HSlider = %BGMVolume
 @onready var sfx_volume: HSlider = %SFXVolume
@@ -28,6 +29,14 @@ func _ready() -> void:
 	sfx_volume.value_changed.connect(_on_sfx_volume_changed)
 
 ## 加载设置到UI
+## 全屏切换即时生效
+func _on_fullscreen_toggled(enabled: bool) -> void:
+	GameManager.user_data.fullscreen = enabled
+	_apply_fullscreen(enabled)
+
+func _apply_fullscreen(enabled: bool) -> void:
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED)
+
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	if config.load(SETTINGS_PATH) == OK:
@@ -49,6 +58,8 @@ func _load_settings() -> void:
 	font_size_option.selected = max(idx, 0)
 	# 动效
 	anim_toggle.button_pressed = ud.animations_enabled
+	fullscreen_toggle.button_pressed = ud.fullscreen
+	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
 	# 全屏
 	fullscreen_toggle.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
 	# 音量
@@ -106,6 +117,7 @@ func _on_save_pressed() -> void:
 	var font_map := ["small", "medium", "large", "xlarge"]
 	ud.font_size_preset = font_map[font_size_option.selected]
 	ud.animations_enabled = anim_toggle.button_pressed
+	ud.fullscreen = fullscreen_toggle.button_pressed
 	ud.ai_enabled = ai_toggle.button_pressed
 	ud.ai_npc_enabled = ai_npc_toggle.button_pressed
 	# 全屏切换
@@ -115,6 +127,7 @@ func _on_save_pressed() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	# 应用动效设置到 ThemeManager
 	ThemeManager.set_animations_enabled(ud.animations_enabled)
+	_apply_fullscreen(ud.fullscreen)
 	ThemeManager.apply_font_preset(ud.font_size_preset)
 	# 持久化到配置文件
 	var config := ConfigFile.new()
@@ -122,6 +135,7 @@ func _on_save_pressed() -> void:
 	config.set_value("game", "difficulty", ud.difficulty_mode)
 	config.set_value("display", "font_size", ud.font_size_preset)
 	config.set_value("display", "animations", ud.animations_enabled)
+	config.set_value("display", "fullscreen", ud.fullscreen)
 	config.set_value("audio", "master", master_volume.value)
 	config.set_value("audio", "bgm", bgm_volume.value)
 	config.set_value("audio", "sfx", sfx_volume.value)
