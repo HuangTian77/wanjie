@@ -184,6 +184,9 @@ func _continue_from_save() -> void:
 		world_state.load_from_dict(sd.world_state)
 	if economy_engine:
 		economy_engine.load_from_dict(sd.economy_state)
+	# 恢复战斗状态（player_state 中的 HP/MP/等级）
+	if combat_engine and sd.player_state:
+		combat_engine.set_player_stats(sd.player_state)
 	_update_ui()
 	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])

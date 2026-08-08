@@ -293,11 +293,20 @@ func update_script(script_data: WorldScriptData, dirty_keys: Array = []) -> void
 	save_script(script_data, dirty_keys)
 	script_updated.emit(script_data.id)
 
-## 删除剧本 (递归删除整个项目文件夹)
+## 删除剧本（先移入回收站 scripts_trash/ 可恢复，不直接删）
 func delete_script(script_id: String) -> bool:
 	var script_dir := get_script_dir(script_id)
 	if DirAccess.dir_exists_absolute(script_dir):
-		_remove_dir_recursive(script_dir)
+		var trash := "user://scripts_trash/"
+		DirAccess.make_dir_recursive_absolute(trash)
+		var ts := Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
+		var dest := trash + script_id + "_" + ts
+		var ok := DirAccess.rename_absolute(
+			ProjectSettings.globalize_path(script_dir),
+			ProjectSettings.globalize_path(dest))
+		if not ok:
+			# 重命名失败则退回原删除（目录占用等场景）
+			_remove_dir_recursive(script_dir)
 	# 兼容旧单文件残留
 	var legacy_file := SCRIPTS_PATH + script_id + ".json"
 	if FileAccess.file_exists(legacy_file):
@@ -305,6 +314,12 @@ func delete_script(script_id: String) -> bool:
 	user_scripts.erase(script_id)
 	script_deleted.emit(script_id)
 	return true
+
+## 彻底清空回收站（可选调用，释放空间）
+func empty_trash() -> void:
+	var trash := ProjectSettings.globalize_path("user://scripts_trash/")
+	if DirAccess.dir_exists_absolute(trash):
+		_remove_dir_recursive(trash)
 
 ## 递归删除目录及其全部内容
 func _remove_dir_recursive(path: String) -> void:

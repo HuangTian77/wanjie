@@ -267,17 +267,19 @@ static func handle_story(ctx, node: Dictionary, graph: Dictionary) -> int:
 				ctx._log("info", "因果标记: %s (%.1f)" % [mid, intensity])
 			return 0
 		"story_choice":
-			# 等待玩家输入: 记录待选选项与所在图（子图内暂停也能正确 resume）并暂停执行
+			# 等待玩家输入: 记录待选选项（最多 4 个, 空文本自动省略）与所在图并暂停执行
+			var options: Array = []
+			for ci in 4:
+				var opt: String = props.get("choice_%d_text" % ci, "")
+				if not opt.is_empty():
+					options.append(opt)
 			ctx._pending_choice = {
 				"node_id": node["id"],
 				"node_type": "story_choice",
 				"graph": graph,
-				"options": [
-					props.get("choice_0_text", "选项A"),
-					props.get("choice_1_text", "选项B"),
-				],
+				"options": options,
 			}
-			ctx.halt("info", "等待玩家选择: [%s / %s]" % [props.get("choice_0_text", "A"), props.get("choice_1_text", "B")])
+			ctx.halt("info", "等待玩家选择: %s" % " / ".join(PackedStringArray(options)))
 			return 0
 		"story_branch":
 			var cond_val: bool = ctx._resolve_input_bool(graph, node, 1)

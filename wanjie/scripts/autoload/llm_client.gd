@@ -83,10 +83,16 @@ func _load_config() -> void:
 		temperature = config.get_value("llm", "temperature", 0.8)
 		custom_base_url = config.get_value("llm", "custom_base_url", "")
 		custom_model = config.get_value("llm", "custom_model", "")
-		# 加载已保存的API keys
+		# 加载已保存的API keys（优先 secrets.ini，兼容旧 llm_config.ini）
+		var secrets := ConfigFile.new()
+		if secrets.load("user://secrets.ini") == OK:
+			for provider in PROVIDERS.keys():
+				var key: String = secrets.get_value("api_keys", provider, "")
+				if key != "":
+					api_keys[provider] = key
 		for provider in PROVIDERS.keys():
 			var key: String = config.get_value("api_keys", provider, "")
-			if key != "":
+			if key != "" and not api_keys.has(provider):
 				api_keys[provider] = key
 
 func save_config() -> void:
@@ -96,9 +102,12 @@ func save_config() -> void:
 	config.set_value("llm", "temperature", temperature)
 	config.set_value("llm", "custom_base_url", custom_base_url)
 	config.set_value("llm", "custom_model", custom_model)
-	for provider in api_keys:
-		config.set_value("api_keys", provider, api_keys[provider])
 	config.save("user://llm_config.ini")
+	# API keys 写入独立 secrets 文件（与主配置分离，降低误共享/误提交风险）
+	var secrets := ConfigFile.new()
+	for provider in api_keys:
+		secrets.set_value("api_keys", provider, api_keys[provider])
+	secrets.save("user://secrets.ini")
 
 # === 公共API ===
 

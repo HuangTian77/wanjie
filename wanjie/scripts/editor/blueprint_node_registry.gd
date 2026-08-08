@@ -365,9 +365,11 @@ static func _register_story_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_ref_param("event_id", "事件", "event_story_events")], "P0")
 	_reg("story_choice", "story", "显示玩家选择", "向玩家展示选项并等待选择",
-		[_exec_in()], [_exec_out("choice_0"), _exec_out("choice_1")],
+		[_exec_in()], [_exec_out("choice_0"), _exec_out("choice_1"), _exec_out("choice_2"), _exec_out("choice_3")],
 		[_param("choice_0_text", "选项1文本", "string", "选项A"),
-		_param("choice_1_text", "选项2文本", "string", "选项B")], "P0")
+		_param("choice_1_text", "选项2文本", "string", "选项B"),
+		_param("choice_2_text", "选项3文本", "string", ""),
+		_param("choice_3_text", "选项4文本", "string", "")], "P0")
 	_reg("story_branch", "story", "进入分支", "根据条件跳转到不同事件",
 		[_exec_in(), _pin("condition", B)], [_exec_out("branch_true"), _exec_out("branch_false")],
 		[_ref_param("true_event", "满足时事件", "event_story_events"),

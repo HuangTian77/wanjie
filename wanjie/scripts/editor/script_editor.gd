@@ -1633,6 +1633,14 @@ func _on_tab_close(tab_idx: int) -> void:
 	_tab_container.remove_child(child)
 	child.queue_free()
 	_tab_editor_map.erase(tab_name)
+	# 同步释放 _editors 缓存（防止重开引用已释放面板）
+	var key_to_erase: String = ""
+	for k in _editors:
+		if _editors[k] == child:
+			key_to_erase = k
+			break
+	if not key_to_erase.is_empty():
+		_editors.erase(key_to_erase)
 
 ## 标签页切换
 func _on_tab_changed(tab_idx: int) -> void:
