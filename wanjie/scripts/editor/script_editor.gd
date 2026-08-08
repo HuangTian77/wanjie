@@ -1086,12 +1086,18 @@ func _on_test_pressed() -> void:
 func _on_publish_pressed() -> void:
 	if current_script == null:
 		return
-	current_script.status = "published"
-	ScriptDataManager.update_script(current_script)
-	status_label.text = "📢 已发布"
-	ToastManager.success("剧本已发布")
-	GameManager.unlock_achievement("first_publish", "首次发布剧本")
-	_log_output("📢 剧本已发布: %s" % current_script.name)
+	# 发布确认：显示剧本信息与市场提示
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "发布《%s》到市场？\n\n将向所有玩家开放体验（本地市场）。\n建议先设置封面与完成校验。" % current_script.name
+	confirm.confirmed.connect(func():
+		current_script.status = "published"
+		ScriptDataManager.update_script(current_script)
+		status_label.text = "📢 已发布"
+		ToastManager.success("剧本已发布")
+		GameManager.unlock_achievement("first_publish", "首次发布剧本")
+		_log_output("📢 剧本已发布: %s" % current_script.name))
+	add_child(confirm)
+	confirm.popup_centered()
 
 ## 导出校验报告（txt）
 func _on_export_validation_report() -> void:
