@@ -542,6 +542,20 @@ func _after_undo_redo() -> void:
 # === 画布交互 ===
 
 func _on_canvas_input(event: InputEvent) -> void:
+	# 键盘快捷键：Del 删除 / Ctrl+C 复制 / Ctrl+V 粘贴 / Ctrl+D 复制并粘贴
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_DELETE:
+			_delete_selected()
+			return
+		if event.ctrl_pressed:
+			match event.keycode:
+				KEY_C:
+					_copy_selected()
+				KEY_V:
+					_paste()
+				KEY_D:
+					_copy_selected()
+					_paste()
 	if event is InputEventMouseButton:
 		var mb: InputEventMouseButton = event
 		if mb.button_index == MOUSE_BUTTON_LEFT:
