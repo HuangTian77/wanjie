@@ -40,12 +40,25 @@ var _typewriter_done: bool = true
 @onready var battle_panel: PanelContainer = %BattlePanel
 @onready var enemy_info: Label = %EnemyInfo
 @onready var battle_log: RichTextLabel = %BattleLog
+@onready var tavern_panel: PanelContainer = %TavernPanel
+@onready var tavern_char_select: OptionButton = %TavernCharSelect
+@onready var tavern_msgs: RichTextLabel = %TavernMsgs
+@onready var tavern_input: LineEdit = %TavernInput
 
 func _ready() -> void:
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
 	ToastManager.info("已消耗 1 点灵感进入剧本")
+	# 定时自动存档（每 5 分钟）
+	var auto_save_timer := Timer.new()
+	auto_save_timer.wait_time = 300.0
+	auto_save_timer.autostart = true
+	auto_save_timer.timeout.connect(func():
+		_sync_save_state()
+		SaveManager.autosave()
+		ToastManager.success("已自动存档"))
+	add_child(auto_save_timer)
 
 func _process(delta: float) -> void:
 	# 打字机效果
@@ -436,6 +449,80 @@ func _on_blueprint_log(level: String, text: String) -> void:
 			_add_history(text)
 
 ## === 战斗 UI ===
+
+## === 酒馆（AI 对话） ===
+const TAVERN_CHARS: Array = [
+	{
+		"id": "innkeeper",
+		"name": "旅店老板娘·艾琳",
+		"personality": "热情健谈，消息灵通",
+		"background": "开了三十年旅店，认识镇上每个人",
+		"greeting": "欢迎光临！客官打尖还是住店？最近镇上可不太平…"
+	},
+	{
+		"id": "old_scholar",
+		"name": "老学者·费恩",
+		"personality": "博学寡言，说话喜欢引经据典",
+		"background": "研究古代遗迹的退休学者",
+		"greeting": "年轻人，你来得正好。我正想找人讨论那本残缺的古籍。"
+	}
+]
+
+func _on_tavern_pressed() -> void:
+	tavern_panel.visible = true
+	menu_panel.visible = false
+	tavern_char_select.clear()
+	for i in TAVERN_CHARS.size():
+		tavern_char_select.add_item(TAVERN_CHARS[i]["name"], i)
+	tavern_char_select.item_selected.connect(_on_tavern_char_selected)
+	_enter_tavern_char(0)
+	tavern_input.grab_focus()
+
+func _on_tavern_close_pressed() -> void:
+	TavernManager.end_dialog()
+	tavern_panel.visible = false
+
+func _on_tavern_char_selected(index: int) -> void:
+	_enter_tavern_char(index)
+
+func _enter_tavern_char(index: int) -> void:
+	tavern_msgs.clear()
+	var char: Dictionary = TAVERN_CHARS[index]
+	TavernManager.start_dialog(char)
+	# 恢复历史对话
+	var history: Array = TavernManager.load_history(char["id"])
+	if not history.is_empty():
+		for msg in history:
+			_tavern_append(msg.get("role", ""), msg.get("content", ""))
+	else:
+		_tavern_append("assistant", char["greeting"])
+
+func _on_tavern_send_pressed() -> void:
+	var text := tavern_input.text.strip_edges()
+	if text.is_empty():
+		return
+	tavern_input.text = ""
+	_tavern_append("user", text)
+	TavernManager.dialog_history.append({"role": "user", "content": text})
+	# 本地演示回复（真实 LLM 接入可替换为 LLMClient 调用）
+	var reply := _tavern_mock_reply(text)
+	TavernManager.dialog_history.append({"role": "assistant", "content": reply})
+	_tavern_append("assistant", reply)
+	TavernManager.save_history()
+
+func _tavern_append(role: String, content: String) -> void:
+	var prefix := "[color=#c9a06a][b]%s[/b][/color] " % ("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")
+	tavern_msgs.append_text(prefix + content.replace("[", "［").replace("]", "］") + "\n\n")
+
+func _tavern_mock_reply(text: String) -> String:
+	var char_name: String = TavernManager.current_character.get("name", "角色")
+	var replies := [
+		"（%s若有所思地点点头）嗯，你说得对，继续说下去。" % char_name,
+		"（%s压低声音）这事说来话长…改天细聊。" % char_name,
+		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。" % char_name,
+		"（%s认真打量你）你这话，倒是提醒了我一件事。" % char_name,
+	]
+	return replies[abs(text.hash()) % replies.size()]
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
 	_refresh_battle_ui()
@@ -526,6 +613,9 @@ func _on_menu_save_pressed() -> void:
 func _on_menu_load_pressed() -> void:
 	_show_slot_selector("load")
 
+func _on_menu_delete_pressed() -> void:
+	_show_slot_selector("delete")
+
 func _on_menu_back_pressed() -> void:
 	_sync_save_state()
 	_write_progress()
@@ -575,7 +665,7 @@ func _show_slot_selector(mode: String) -> void:
 	selector.add_child(vbox)
 
 	var title_label := Label.new()
-	title_label.text = "选择存档槽位" if mode == "save" else "选择加载槽位"
+	title_label.text = "选择存档槽位" if mode == "save" else ("选择加载槽位" if mode == "load" else "选择删除槽位")
 	title_label.add_theme_font_size_override("font_size", 16)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
@@ -585,10 +675,13 @@ func _show_slot_selector(mode: String) -> void:
 		var slot_info := _get_slot_info(slot)
 		btn.text = "槽位 %d: %s" % [slot + 1, slot_info]
 		btn.custom_minimum_size = Vector2(0, 40)
-		if mode == "save":
-			btn.pressed.connect(_on_slot_save_selected.bind(slot))
-		else:
-			btn.pressed.connect(_on_slot_load_selected.bind(slot))
+		match mode:
+			"save":
+				btn.pressed.connect(_on_slot_save_selected.bind(slot))
+			"load":
+				btn.pressed.connect(_on_slot_load_selected.bind(slot))
+			"delete":
+				btn.pressed.connect(_on_slot_delete_selected.bind(slot))
 		vbox.add_child(btn)
 
 	var cancel_btn := Button.new()
@@ -618,12 +711,49 @@ func _on_slot_save_selected(slot: int) -> void:
 		sel.queue_free()
 	menu_panel.visible = false
 
+## 槽位删除（带确认）
+func _on_slot_delete_selected(slot: int) -> void:
+	var slot_info := _get_slot_info(slot)
+	if slot_info == "(空)":
+		return
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "确定删除槽位 %d 的存档吗？此操作不可恢复。" % (slot + 1)
+	confirm.confirmed.connect(func():
+		SaveManager.delete_save(script_data.id if script_data else "", slot)
+		ToastManager.success("存档已删除")
+		var sel := get_node_or_null("SlotSelector")
+		if sel:
+			sel.queue_free())
+	add_child(confirm)
+	confirm.popup_centered()
+
 ## 槽位加载
 func _on_slot_load_selected(slot: int) -> void:
-	SaveManager.load_game(slot)
-	_add_history("已从槽位 %d 加载" % (slot + 1))
-	var sel := get_node_or_null("SlotSelector")
-	if sel:
-		sel.queue_free()
-	menu_panel.visible = false
-	_update_ui()
+	# 加载确认（覆盖当前进度不可恢复）
+	var slot_info := _get_slot_info(slot)
+	if slot_info == "(空)":
+		ToastManager.warning("该槽位为空")
+		return
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "从槽位 %d 加载？当前未保存进度将被覆盖。" % (slot + 1)
+	confirm.confirmed.connect(func():
+		SaveManager.load_game(slot)
+		_add_history("已从槽位 %d 加载" % (slot + 1))
+		var sel := get_node_or_null("SlotSelector")
+		if sel:
+			sel.queue_free()
+		menu_panel.visible = false
+		_update_ui()
+		# 恢复三引擎状态
+		var sd := SaveManager.current_save
+		if sd:
+			if event_engine:
+				event_engine.load_history(sd.event_history)
+			if world_state:
+				world_state.load_from_dict(sd.world_state)
+			if economy_engine:
+				economy_engine.load_from_dict(sd.economy_state)
+			_set_main_text("[b]已加载存档[/b]\n\n%s" % script_data.name)
+			_advance_to_next_event())
+	add_child(confirm)
+	confirm.popup_centered()

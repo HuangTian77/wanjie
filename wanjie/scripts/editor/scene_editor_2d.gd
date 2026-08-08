@@ -514,13 +514,30 @@ func _paste() -> void:
 # === 撤销/重做 ===
 
 func _save_undo_state() -> void:
-	pass
+	# 操作前快照（深拷贝防共享），容量 50，新操作清空 redo
+	_undo_stack.push_back(_scene_root.duplicate(true))
+	if _undo_stack.size() > 50:
+		_undo_stack.pop_front()
+	_redo_stack.clear()
 
 func _undo() -> void:
-	undo_requested.emit()
+	if _undo_stack.is_empty():
+		return
+	_redo_stack.push_back(_scene_root.duplicate(true))
+	_scene_root = _undo_stack.pop_back()
+	_after_undo_redo()
 
 func _redo() -> void:
-	redo_requested.emit()
+	if _redo_stack.is_empty():
+		return
+	_undo_stack.push_back(_scene_root.duplicate(true))
+	_scene_root = _redo_stack.pop_back()
+	_after_undo_redo()
+
+func _after_undo_redo() -> void:
+	_selected_nodes.clear()
+	scene_modified.emit("2d")
+	queue_redraw()
 
 # === 画布交互 ===
 

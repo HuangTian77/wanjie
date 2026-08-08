@@ -416,6 +416,10 @@ func _switch_editor(key: String, title: String, panel: Control) -> void:
 	# 缓存编辑器
 	_editors[key] = panel
 	_current_editor_key = key
+	# 单容器模式：隐藏多标签（若有）
+	if _tab_container != null:
+		_tab_container.visible = false
+	editor_container.visible = true
 	# 清除当前内容
 	for child in editor_container.get_children():
 		editor_container.remove_child(child)
@@ -437,9 +441,9 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 	var editor_key: String = _get_editor_key(path)
 	var panel: Control = null
 
-	# 如果编辑器已缓存，直接激活
+	# 如果编辑器已缓存，直接激活（多标签：面板已在标签则切换，否则新增）
 	if _editors.has(editor_key):
-		_switch_editor(editor_key, title, _editors[editor_key])
+		_activate_module_editor(editor_key, title, _editors[editor_key])
 		return
 
 	# 子系统子分支（非概览页）: 蓝图优先（锁定子系统图, 可切回表单）
@@ -449,7 +453,7 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 		editor_key = "blueprint_system"
 		if panel == null:
 			return
-		_switch_editor(editor_key, title, panel)
+		_activate_module_editor(editor_key, title, panel)
 		return
 
 	# 根据路径创建对应编辑器
@@ -498,7 +502,17 @@ func _open_editor_for_path(path: String, title: String, meta: Dictionary) -> voi
 
 	if panel == null:
 		return
-	_switch_editor(editor_key, title, panel)
+	_activate_module_editor(editor_key, title, panel)
+
+## 模块编辑器激活：走多标签页（子系统面板可多开/切换）
+func _activate_module_editor(editor_key: String, title: String, panel: Control) -> void:
+	if _tab_container == null:
+		_setup_tab_container()
+	_open_tab(title, editor_key, panel)
+	# 多标签模式：隐藏单容器（子系统面板进标签页）
+	editor_container.visible = false
+	if _tab_container != null:
+		_tab_container.visible = true
 
 ## 获取路径对应的编辑器key
 func _get_editor_key(path: String) -> String:
@@ -693,6 +707,10 @@ func _update_validation() -> void:
 	error_list.clear()
 	for e in report.get("errors", []):
 		error_list.add_item(str(e))
+	# 点击错误/警告条目复制全文（便于定位排查）
+	error_list.item_activated.connect(func(index: int):
+		DisplayServer.clipboard_set(error_list.get_item_text(index))
+		ToastManager.info("已复制错误信息"))
 	warning_list.clear()
 	for w in report.get("warnings", []):
 		warning_list.add_item(str(w))
@@ -749,12 +767,17 @@ func _setup_menus() -> void:
 	)
 	# 编辑菜单
 	var ep := edit_menu.get_popup()
+	ep.add_item("撤销 (Ctrl+Z)", 12)
+	ep.add_item("重做 (Ctrl+Y)", 13)
+	ep.add_separator()
 	ep.add_item("切换可视化模式", 10)
 	ep.add_item("切换代码模式", 11)
 	ep.id_pressed.connect(func(id: int):
 		match id:
 			10: _on_mode_visual_pressed()
 			11: _on_mode_code_pressed()
+			12: _global_undo()
+			13: _global_redo()
 	)
 	# 视图菜单
 	var vp := view_menu.get_popup()
@@ -1565,25 +1588,41 @@ func _setup_tab_container() -> void:
 	_tab_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_tab_container.tabs_closable = true
 	_tab_container.tab_close_display_policy = 1  # CLOSE_BUTTON_SHOW_ACTIVE_ONLY
+	# 挂载到 editor_container 所在位置（多标签与单容器互斥显示）
+	var parent := editor_container.get_parent()
+	if parent:
+		parent.add_child(_tab_container)
+		parent.move_child(_tab_container, editor_container.get_index())
+	_tab_container.visible = false
 	# 连接标签关闭信号
 	_tab_container.tab_close_pressed.connect(_on_tab_close)
 	_tab_container.tab_changed.connect(_on_tab_changed)
 
-## 打开新标签页
+## 打开新标签页（panel 已在标签中则激活，避免重复）
 func _open_tab(tab_name: String, editor_key: String, panel: Control) -> void:
 	if _tab_container == null:
 		_setup_tab_container()
-	# 如果已存在，直接激活
+	# panel 已在标签容器中 → 直接激活该标签
+	if panel.get_parent() == _tab_container:
+		for i in _tab_container.get_tab_count():
+			if _tab_container.get_child(i) == panel:
+				_tab_container.current_tab = i
+				_tab_container.set_tab_title(i, tab_name)
+				_current_editor_key = editor_key
+				return
+	# 标题已存在 → 激活
 	for i in _tab_container.get_tab_count():
 		if _tab_container.get_tab_title(i) == tab_name:
 			_tab_container.current_tab = i
+			_current_editor_key = editor_key
 			return
-	# 添加新标签
+	# 新增标签
 	if panel.get_parent() != null:
 		panel.get_parent().remove_child(panel)
 	_tab_container.add_child(panel)
 	var idx := _tab_container.get_tab_count() - 1
 	_tab_container.set_tab_title(idx, tab_name)
+	_current_editor_key = editor_key
 	_tab_editor_map[tab_name] = editor_key
 	_tab_container.current_tab = idx
 

@@ -60,6 +60,50 @@ custom_minimum_size = Vector2(60, 32)
 layout_mode = 2
 text = "菜单"
 
+[node name="TavernBtn" type="Button" parent="MainVBox/TopBar/TopHBox"]
+custom_minimum_size = Vector2(60, 32)
+layout_mode = 2
+text = "🏮 酒馆"
+
+[node name="TavernPanel" type="PanelContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TavernVBox" type="VBoxContainer" parent="TavernPanel"]
+layout_mode = 2
+
+[node name="TavernHeader" type="HBoxContainer" parent="TavernPanel/TavernVBox"]
+layout_mode = 2
+
+[node name="TavernCharSelect" type="OptionButton" parent="TavernPanel/TavernVBox/TavernHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TavernClose" type="Button" parent="TavernPanel/TavernVBox/TavernHeader"]
+layout_mode = 2
+text = "关闭"
+
+[node name="TavernMsgs" type="RichTextLabel" parent="TavernPanel/TavernVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="TavernInputRow" type="HBoxContainer" parent="TavernPanel/TavernVBox"]
+layout_mode = 2
+
+[node name="TavernInput" type="LineEdit" parent="TavernPanel/TavernVBox/TavernInputRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "对角色说话…"
+
+[node name="TavernSend" type="Button" parent="TavernPanel/TavernVBox/TavernInputRow"]
+layout_mode = 2
+text = "发送"
+
 [node name="HSplit" type="HSplitContainer" parent="MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -242,6 +286,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "加载存档"
 
+[node name="DeleteBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "删除存档"
+
 [node name="BackBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -300,8 +349,12 @@ layout_mode = 2
 text = "🏃 逃跑"
 
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/MenuBtn" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="MainVBox/TopBar/TopHBox/TavernBtn" to="." method="_on_tavern_pressed"]
+[connection signal="pressed" from="TavernPanel/TavernVBox/TavernHeader/TavernClose" to="." method="_on_tavern_close_pressed"]
+[connection signal="pressed" from="TavernPanel/TavernVBox/TavernInputRow/TavernSend" to="." method="_on_tavern_send_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/SaveBtn" to="." method="_on_menu_save_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/LoadBtn" to="." method="_on_menu_load_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/DeleteBtn" to="." method="_on_menu_delete_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_close_pressed"]
 [connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/AttackBtn" to="." method="_on_battle_attack_pressed"]

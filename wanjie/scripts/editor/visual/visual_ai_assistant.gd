@@ -11,6 +11,10 @@ var _chat_log: RichTextLabel = null
 var _input_edit: TextEdit = null
 var _status_label: Label = null
 var _is_busy: bool = false
+## 多轮上下文历史（最近 40 条，含 user/assistant）
+var _chat_history: Array = []
+## JSON 解析失败重试计数（单次，防循环）
+var _ai_retry_count: int = 0
 
 ## 入口
 func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
@@ -210,10 +214,16 @@ func _send_message() -> void:
 	_input_edit.text = ""
 	_append_user(text)
 	var context_info: String = AIPromptsClass.build_script_context(_host.current_script)
+	# 多轮上下文：系统 + 最近 6 轮历史 + 当前消息
 	var messages: Array = [
 		{"role": "system", "content": AIPromptsClass.SYSTEM_BASE},
-		{"role": "user", "content": AIPromptsClass.general_user_prompt(text, context_info)},
 	]
+	var recent := _chat_history.duplicate()
+	if recent.size() > 12:
+		recent = recent.slice(recent.size() - 12)
+	messages.append_array(recent)
+	messages.append({"role": "user", "content": AIPromptsClass.general_user_prompt(text, context_info)})
+	_chat_history.append({"role": "user", "content": text})
 	_ai_service.chat_completion(messages, {"feature": "general"})
 	_set_busy(true)
 
@@ -224,8 +234,99 @@ func _on_ai_completed(result: Dictionary) -> void:
 	var content: String = result.get("content", "")
 	var usage: Dictionary = result.get("usage", {})
 	_append_ai(content)
+	# 记录助手回复到多轮上下文（仅内容，不含分析追加）
+	if not content.is_empty():
+		_chat_history.append({"role": "assistant", "content": content})
+		if _chat_history.size() > 40:
+			_chat_history = _chat_history.slice(_chat_history.size() - 40)
 	if usage.get("total_tokens", 0) > 0:
 		_append_system("tokens: %d" % usage.get("total_tokens", 0))
+	# 尝试解析结构化 JSON 并一键应用（失败仅提示，不阻断显示）
+	var feature: String = result.get("feature", "")
+	var parsed: Variant = _extract_json(content)
+	if parsed is Dictionary and not feature.is_empty():
+		var applied: int = _apply_ai_result(feature, parsed)
+		if applied > 0:
+			_append_system("[应用成功] 已写入 %d 项" % applied)
+			_host._mark_dirty()
+		else:
+			_append_system("[提示] 结果无可应用项（分析类或 Schema 不匹配）")
+	elif parsed is not Dictionary and not feature.is_empty() and _ai_retry_count < 1:
+		# Schema 解析失败 → 单次重试（要求严格 JSON 输出）
+		_ai_retry_count += 1
+		_append_system("[重试] 输出非 JSON，正在请求重新生成…")
+		_quick_action(feature)
+	else:
+		_ai_retry_count = 0
+
+## 从 AI 文本中提取第一个 JSON 对象（容错包裹代码块/前后文字）
+func _extract_json(text: String) -> Variant:
+	var start := text.find("{")
+	var end := text.rfind("}")
+	if start < 0 or end <= start:
+		return null
+	var json := JSON.new()
+	if json.parse(text.substr(start, end - start + 1)) == OK:
+		return json.data
+	return null
+
+## 按 feature 写回剧本子系统（写回前做字段类型校验）
+func _apply_ai_result(feature: String, data: Dictionary) -> int:
+	var ws: Variant = _host.current_script
+	if ws == null:
+		return 0
+	var applied: int = 0
+	match feature:
+		"worldview_gen":
+			if ws.worldview == null:
+				return 0
+			if data.get("era") is String and not (data.get("era") as String).is_empty():
+				ws.worldview.era_name = data.get("era")
+				applied += 1
+			if data.get("timeline") is Array and not (data.get("timeline") as Array).is_empty():
+				ws.worldview.timeline = data.get("timeline")
+				applied += 1
+			if data.get("factions") is Array and not (data.get("factions") as Array).is_empty():
+				ws.worldview.factions = data.get("factions")
+				applied += 1
+			if data.get("rules") is String and not (data.get("rules") as String).is_empty():
+				ws.worldview.world_rules = [data.get("rules")]
+				applied += 1
+		"event_gen":
+			if ws.event_system == null or not (data.get("name") is String):
+				return 0
+			var ev_name: String = data.get("name")
+			if ev_name.is_empty():
+				return 0
+			var eid := "ai_evt_%d" % Time.get_ticks_msec()
+			var ev: Dictionary = ws.event_system.add_story_event(eid, ev_name, str(data.get("description", "")))
+			if data.get("choices") is Array:
+				var choices: Array = data.get("choices")
+				if not choices.is_empty():
+					ev["choices"] = choices
+			applied += 1
+		"ability_gen":
+			if ws.ability_system == null or not (data.get("name") is String):
+				return 0
+			var ab_name: String = data.get("name")
+			if ab_name.is_empty():
+				return 0
+			ws.ability_system.add_skill(
+				"ai_skill_%d" % Time.get_ticks_msec(), ab_name,
+				str(data.get("category", "active")), "magic", "none", str(data.get("description", "")))
+			applied += 1
+		"quest_gen":
+			if ws.quest_system == null or not (data.get("title") is String):
+				return 0
+			ws.quest_system.quests.append({
+				"id": "ai_quest_%d" % Time.get_ticks_msec(),
+				"title": data.get("title"),
+				"description": str(data.get("description", "")),
+				"objectives": data.get("objectives", []),
+				"rewards": data.get("rewards", {})
+			})
+			applied += 1
+	return applied
 
 func _on_ai_failed(error_msg: String) -> void:
 	_set_busy(false)
@@ -245,6 +346,7 @@ func _append_system(text: String) -> void:
 func _clear_chat() -> void:
 	_chat_log.clear()
 	_chat_log.append_text("[color=#88aacc]对话已清空[/color]\n\n")
+	_chat_history.clear()
 
 func _set_busy(busy: bool) -> void:
 	_is_busy = busy

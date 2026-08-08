@@ -58,6 +58,9 @@ func end_dialog() -> void:
 func send_message(player_text: String) -> String:
 	if current_character.is_empty():
 		return ""
+	# 保存对话历史（落盘，防进度丢失）
+	save_history()
+	return ""
 
 	# 添加玩家消息
 	dialog_history.append({"role": "user", "content": player_text})
@@ -162,3 +165,40 @@ func _build_context_messages() -> Array:
 func _estimate_tokens(text: String) -> int:
 	# 粗略估算：中文约1.5字/token，英文约4字符/token
 	return int(text.length() / 1.5)
+
+## === 对话历史落盘 ===
+const HISTORY_DIR := "user://tavern/"
+
+## 保存当前对话历史到磁盘
+func save_history() -> void:
+	if current_character.is_empty() or dialog_history.is_empty():
+		return
+	var dir := DirAccess.open("user://")
+	if dir == null or not dir.dir_exists("tavern"):
+		DirAccess.make_dir_recursive_absolute("user://tavern/")
+	var f := FileAccess.open(HISTORY_DIR + str(current_character.get("id", "char")) + ".json", FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify({
+			"character_id": current_character.get("id", ""),
+			"character_name": current_character.get("name", ""),
+			"history": dialog_history,
+			"saved_at": Time.get_datetime_string_from_system()
+		}))
+		f.close()
+
+## 加载某角色的历史对话（返回历史数组）
+func load_history(character_id: String) -> Array:
+	var path := HISTORY_DIR + character_id + ".json"
+	if not FileAccess.file_exists(path):
+		return []
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return []
+	var json := JSON.new()
+	if json.parse(f.get_as_text()) != OK:
+		return []
+	f.close()
+	var data: Dictionary = json.data
+	if data.get("history") is Array:
+		return data.get("history")
+	return []
