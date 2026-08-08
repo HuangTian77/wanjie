@@ -615,8 +615,8 @@
 
 ### scripts/editor/ide/ide_shortcuts_dialog.gd (ide_shortcuts_dialog.gd)
 
-- func `_ready` (L29)
-- func `open` (L62)
+- func `_ready` (L31)
+- func `open` (L64)
 
 ### scripts/editor/ide/ide_signal_dialog.gd (ide_signal_dialog.gd)
 

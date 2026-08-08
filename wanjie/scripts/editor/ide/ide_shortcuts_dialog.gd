@@ -21,6 +21,8 @@ const SHORTCUTS := [
 	["F8", "停止运行"],
 	["Ctrl+F", "查找"],
 	["Ctrl+H", "替换"],
+	["+ / - / 0", "蓝图画布缩放/重置"],
+	["Del / Ctrl+C / Ctrl+V / Ctrl+D", "2D/3D 删除/复制/粘贴/复制粘贴"],
 	["Ctrl+1", "切换左侧Dock"],
 	["Ctrl+2", "切换右侧Dock"],
 	["Ctrl+3", "切换底部面板"],
