@@ -372,7 +372,60 @@ func _on_favorite_pressed(script_id: String) -> void:
 		_on_tab_pressed(4)
 
 func _on_card_clicked(script_id: String) -> void:
-	SceneManager.enter_script(script_id)
+	# 详情弹窗（大图/描述/评分/操作），避免误触直接进入
+	var ws: Variant = GameManager.get_script_data(script_id)
+	if ws == null:
+		return
+	var dialog := AcceptDialog.new()
+	dialog.title = ws.name
+	dialog.min_size = Vector2i(460, 420)
+	add_child(dialog)
+	var box := VBoxContainer.new()
+	dialog.add_child(box)
+	# 封面
+	var cover_path := ""
+	if not ws.thumbnail_path.is_empty():
+		cover_path = ProjectSettings.globalize_path("user://scripts/%s/%s" % [ws.id, ws.thumbnail_path])
+	if not cover_path.is_empty() and FileAccess.file_exists(cover_path):
+		var tex := ImageTexture.create_from_image(Image.load_from_file(cover_path))
+		if tex != null:
+			var cover := TextureRect.new()
+			cover.texture = tex
+			cover.custom_minimum_size.y = 140
+			cover.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			cover.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+			box.add_child(cover)
+	# 信息
+	var info := RichTextLabel.new()
+	info.custom_minimum_size.y = 150
+	info.bbcode_enabled = true
+	info.append_text("[color=#c9a06a][b]%s[/b][/color]  by %s\n" % [ws.name, ws.author])
+	info.append_text("★ %.1f（%d人） · %d人体验 · 📜%s\n" % [ws.rating, ws.rating_count, ws.play_count, str(ws.status)])
+	info.append_text("\n%s" % ws.description)
+	box.add_child(info)
+	# 操作
+	var btns := HBoxContainer.new()
+	var play := Button.new()
+	play.text = "▶ 体验"
+	play.pressed.connect(func():
+		dialog.queue_free()
+		SceneManager.enter_script(script_id))
+	btns.add_child(play)
+	var edit := Button.new()
+	edit.text = "✏ 编辑"
+	edit.pressed.connect(func():
+		dialog.queue_free()
+		SceneManager.open_script_editor(script_id))
+	btns.add_child(edit)
+	var fav := Button.new()
+	fav.text = "♥ 收藏" if not GameManager.is_favorite(script_id) else "♡ 取消收藏"
+	fav.pressed.connect(func():
+		GameManager.toggle_favorite(script_id)
+		dialog.queue_free()
+		ToastManager.success("收藏已更新"))
+	btns.add_child(fav)
+	box.add_child(btns)
+	dialog.popup_centered()
 
 ## === 最近体验（组件化） ===
 func _setup_recent_scripts() -> void:
