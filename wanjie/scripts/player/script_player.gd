@@ -912,6 +912,14 @@ func _on_menu_log_pressed() -> void:
 	var list := RichTextLabel.new()
 	dialog.add_child(list)
 	var has_any := false
+	# 势力关系
+	if world_state and not world_state.faction_states.is_empty():
+		list.append_text("[b]【势力关系】[/b]\n")
+		for fid in world_state.faction_states:
+			var rel := world_state.faction_states[fid]
+			var val: float = float(rel.get("relationship", rel)) if rel is Dictionary else float(rel)
+			list.append_text("• %s: %s\n" % [fid, str(val)])
+			has_any = true
 	if event_engine:
 		if not event_engine.causal_marks.is_empty():
 			list.append_text("[b]【因果标记】[/b]\n")
