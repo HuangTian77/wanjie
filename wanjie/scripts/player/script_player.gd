@@ -603,7 +603,12 @@ func _on_battle_skill_pressed() -> void:
 	menu.name = "BattleSkillMenu"
 	for s in skills:
 		var sid: String = s.get("id", "")
-		menu.add_item(s.get("name", sid), skills.find(s))
+		# 显示 MP 消耗
+		var mana_cost: int = int((s.get("cost", {}) as Dictionary).get("mana", 0))
+		var label: String = s.get("name", sid)
+		if mana_cost > 0:
+			label += "（MP %d）" % mana_cost
+		menu.add_item(label, skills.find(s))
 	menu.id_pressed.connect(func(id: int):
 		combat_engine.player_use_skill(skills[id].get("id", ""), 0)
 		_refresh_battle_ui())

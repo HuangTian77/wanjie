@@ -818,6 +818,7 @@ func _setup_menus() -> void:
 	var fp := file_menu.get_popup()
 	fp.add_item("保存 (Ctrl+S)", 1)
 	fp.add_item("设置封面...", 5)
+	fp.add_item("另存为副本...", 6)
 	fp.add_item("导出剧本...", 2)
 	fp.add_item("导入剧本...", 3)
 	fp.add_separator()
@@ -829,6 +830,7 @@ func _setup_menus() -> void:
 			3: _on_import_script_pressed()
 			4: _on_back_pressed()
 			5: _on_set_cover_pressed()
+			6: _on_clone_script_pressed()
 	)
 	# 编辑菜单
 	var ep := edit_menu.get_popup()
@@ -1026,6 +1028,18 @@ func _on_publish_pressed() -> void:
 	ToastManager.success("剧本已发布")
 	GameManager.unlock_achievement("first_publish", "首次发布剧本")
 	_log_output("📢 剧本已发布: %s" % current_script.name)
+
+## 另存为副本（克隆剧本）
+func _on_clone_script_pressed() -> void:
+	if current_script == null:
+		_log_output("⚠ 请先加载剧本")
+		return
+	var cloned := ScriptDataManager.clone_script(current_script.id)
+	if cloned != null:
+		_log_output("✅ 已创建副本: %s" % cloned.name)
+		ToastManager.success("副本已创建: %s" % cloned.name)
+	else:
+		_log_output("[color=red]❌ 克隆失败[/color]")
 
 ## 设置剧本封面（选择图片 → assets/cover.png）
 func _on_set_cover_pressed() -> void:

@@ -362,6 +362,53 @@ func export_script(script_id: String, export_path: String) -> bool:
 	file.close()
 	return true
 
+## 克隆剧本（复制目录 + 新 id/名称；返回新剧本）
+func clone_script(script_id: String, new_name: String = "") -> WorldScriptData:
+	var ws := find_script(script_id)
+	if ws == null:
+		return null
+	var new_id := WorldScriptData.generate_id()
+	var src := get_script_dir(script_id)
+	var dst := get_script_dir(new_id)
+	DirAccess.make_dir_recursive_absolute(dst)
+	_copy_dir_recursive(src, dst)
+	# 从磁盘加载新剧本并注册（find_script 走内存注册表）
+	var new_ws := _load_script_dir(get_script_dir(new_id))
+	if new_ws == null:
+		return null
+	user_scripts[new_ws.id] = new_ws
+	new_ws.id = new_id
+	new_ws.name = new_name if not new_name.is_empty() else ws.name + " 副本"
+	new_ws.status = "draft"
+	new_ws.created_at = Time.get_datetime_string_from_system()
+	new_ws.updated_at = new_ws.created_at
+	new_ws.play_count = 0
+	new_ws.progress = 0.0
+	update_script(new_ws, ["name", "status", "created_at", "updated_at", "play_count", "progress"])
+	script_imported.emit(new_id)
+	return new_ws
+
+## 递归复制目录（DirAccess 无内置复制）
+func _copy_dir_recursive(src: String, dst: String) -> void:
+	var dir := DirAccess.open(src)
+	if dir == null:
+		return
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	while fname != "":
+		var full := src + "/" + fname
+		var dest := dst + "/" + fname
+		if dir.current_is_dir():
+			if fname == "." or fname == "..":
+				fname = dir.get_next()
+				continue
+			DirAccess.make_dir_recursive_absolute(dest)
+			_copy_dir_recursive(full, dest)
+		else:
+			DirAccess.copy_absolute(ProjectSettings.globalize_path(full), ProjectSettings.globalize_path(dest))
+		fname = dir.get_next()
+	dir.list_dir_end()
+
 ## 从JSON文件导入剧本
 func import_script(import_path: String) -> WorldScriptData:
 	var file := FileAccess.open(import_path, FileAccess.READ)

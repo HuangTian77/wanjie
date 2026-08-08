@@ -200,8 +200,9 @@
 - func `empty_trash` (L319)
 - func `find_script` (L342)
 - func `export_script` (L346)
-- func `import_script` (L366)
-- func `get_templates` (L403)
+- func `clone_script` (L366)
+- func `import_script` (L413)
+- func `get_templates` (L450)
 
 ### scripts/autoload/script_templates.gd (`ScriptTemplates`)
 
