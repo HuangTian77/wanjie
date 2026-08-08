@@ -13,6 +13,7 @@ signal delete_requested(script_id: String, script_name: String)
 @onready var desc_label: Label = %CardDesc
 @onready var cover_texture: TextureRect = %CoverTexture
 @onready var fav_btn: Button = %CardFavBtn
+@onready var status_badge: Label = %StatusBadge
 @onready var tags_container: HBoxContainer = %CardTags
 @onready var rating_label: Label = %CardRating
 @onready var play_label: Label = %CardPlay
@@ -53,6 +54,8 @@ func setup(data: WorldScriptData) -> void:
 		tag_label.add_theme_font_size_override("font_size", 11)
 		tag_label.add_theme_color_override("font_color", ThemeManager.C_ACCENT)
 		tags_container.add_child(tag_label)
+	# 已发布徽章
+	status_badge.visible = data.status == "published"
 	# 进度
 	if data.progress > 0:
 		progress_label.text = "%d%%" % int(data.progress * 100)

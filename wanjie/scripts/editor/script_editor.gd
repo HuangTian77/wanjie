@@ -164,6 +164,11 @@ func _ready() -> void:
 	_update_mode_buttons()
 	# 根据 metadata 中的编辑器偏好自动切换模式
 	_apply_saved_editor_mode()
+	# 首次进入编辑器引导
+	if not GameManager.user_data.editor_visited:
+		GameManager.user_data.editor_visited = true
+		GameManager.save_user_data()
+		ToastManager.info("欢迎进入编辑器！左侧模块树选择子系统，右侧编辑，Ctrl+S 保存，F1 展开帮助")
 	# 锁定编辑器模式：隐藏模式切换按钮（创建剧本时已确定，不允许自由切换）
 	_lock_mode_buttons()
 	# 显示欢迎编辑器

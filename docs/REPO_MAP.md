@@ -86,14 +86,14 @@
 ### resources/data/user_data.gd (`UserData`)
 
 - class_name **UserData**
-- func `to_dict` (L46)
-- func `from_dict` (L70)
-- func `get_inspiration_display` (L101)
-- func `get_creation_energy_display` (L105)
-- func `can_enter_script` (L109)
-- func `consume_inspiration` (L113)
-- func `can_create_script` (L120)
-- func `consume_creation_energy` (L124)
+- func `to_dict` (L48)
+- func `from_dict` (L73)
+- func `get_inspiration_display` (L104)
+- func `get_creation_energy_display` (L108)
+- func `can_enter_script` (L112)
+- func `consume_inspiration` (L116)
+- func `can_create_script` (L123)
+- func `consume_creation_energy` (L127)
 
 ### resources/data/world_script_data.gd (`WorldScriptData`)
 
@@ -135,7 +135,8 @@
 - func `toggle_favorite` (L182)
 - func `is_favorite` (L192)
 - func `get_favorites` (L196)
-- func `set_current_tab` (L205)
+- func `unlock_achievement` (L205)
+- func `set_current_tab` (L214)
 
 ### scripts/autoload/llm_client.gd (llm_client.gd)
 
@@ -1222,8 +1223,8 @@
 
 ### scripts/player/script_player.gd (script_player.gd)
 
-- func `_ready` (L48)
-- func `_process` (L63)
+- func `_ready` (L50)
+- func `_process` (L65)
 
 ### scripts/player/world_state.gd (world_state.gd)
 
@@ -1310,8 +1311,8 @@
 - signal `favorite_requested`
 - signal `edit_requested`
 - signal `delete_requested`
-- func `setup` (L27)
-- func `_ready` (L63)
+- func `setup` (L28)
+- func `_ready` (L66)
 
 ### scripts/ui/components/section_header.gd (`SectionHeader`)
 

@@ -7,6 +7,8 @@ extends Resource
 @export var player_name: String = "旅者"
 ## 首次启动标记（用于欢迎引导）
 @export var first_launch: bool = true
+## 编辑器首次访问标记（首启引导）
+@export var editor_visited: bool = false
 ## 诗墨（软货币）
 @export var shimo: int = 1250
 ## 界石（硬货币）
@@ -47,6 +49,7 @@ func to_dict() -> Dictionary:
 	return {
 		"player_name": player_name,
 		"first_launch": first_launch,
+		"editor_visited": editor_visited,
 		"shimo": shimo,
 		"jieshi": jieshi,
 		"inspiration": inspiration,
