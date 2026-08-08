@@ -29,6 +29,11 @@ var _dock_left: PanelContainer
 var _dock_right: PanelContainer
 var _workspace: Control
 var _bottom_panel: VBoxContainer
+var _find_bar: HBoxContainer = null
+var _find_input: LineEdit = null
+var _replace_input: LineEdit = null
+var _last_find_pos: int = -1
+var _find_query: String = ""
 var _status_bar: HBoxContainer
 var _main_hsplit: HSplitContainer
 var _center_vsplit: VSplitContainer
@@ -232,6 +237,7 @@ func _build_ui(target: Node) -> void:
 
 	_bottom_panel = IDEBottomPanelClass.new()
 	_bottom_panel.error_clicked.connect(_on_error_clicked)
+	_build_find_bar(main_vbox)
 	_center_vsplit.add_child(_bottom_panel)
 
 	_dock_right = IDEDockRightClass.new()
@@ -582,6 +588,126 @@ func _toggle_left_dock() -> void:
 func _toggle_right_dock() -> void:
 	_dock_right.visible = not _dock_right.visible
 
+## === 查找替换栏 ===
+func _build_find_bar(parent: Control) -> void:
+	_find_bar = HBoxContainer.new()
+	_find_bar.add_theme_constant_override("separation", 6)
+	_find_bar.visible = false
+	parent.add_child(_find_bar)
+	_find_input = LineEdit.new()
+	_find_input.placeholder_text = "查找…"
+	_find_input.custom_minimum_size.x = 220
+	_find_input.text_submitted.connect(func(_t): _find_next(true))
+	_find_bar.add_child(_find_input)
+	var prev := Button.new()
+	prev.text = "▲"
+	prev.tooltip_text = "上一个"
+	prev.pressed.connect(func(): _find_next(false))
+	_find_bar.add_child(prev)
+	var next := Button.new()
+	next.text = "▼"
+	next.tooltip_text = "下一个"
+	next.pressed.connect(func(): _find_next(true))
+	_find_bar.add_child(next)
+	_replace_input = LineEdit.new()
+	_replace_input.placeholder_text = "替换为…"
+	_replace_input.custom_minimum_size.x = 180
+	_find_bar.add_child(_replace_input)
+	var rep_btn := Button.new()
+	rep_btn.text = "替换"
+	rep_btn.pressed.connect(_replace_current)
+	_find_bar.add_child(rep_btn)
+	var rep_all := Button.new()
+	rep_all.text = "全部"
+	rep_all.pressed.connect(_replace_all)
+	_find_bar.add_child(rep_all)
+	var close := Button.new()
+	close.text = "✕"
+	close.pressed.connect(func(): _find_bar.visible = false)
+	_find_bar.add_child(close)
+
+func _show_find_bar(focus_find: bool) -> void:
+	if _find_bar == null:
+		return
+	_find_bar.visible = true
+	_last_find_pos = -1
+	if focus_find:
+		_find_input.grab_focus()
+	else:
+		_replace_input.grab_focus()
+
+func _get_code_text() -> String:
+	var ce := _get_active_code_edit()
+	return ce.text if ce != null else ""
+
+func _set_code_text(new_text: String) -> void:
+	var ce := _get_active_code_edit()
+	if ce != null:
+		ce.text = new_text
+		_on_code_changed()
+
+func _find_next(forward: bool) -> bool:
+	var query := _find_input.text
+	if query.is_empty():
+		return false
+	if query != _find_query:
+		_find_query = query
+		_last_find_pos = -1
+	var text := _get_code_text()
+	var start: int = _last_find_pos + 1 if forward else _last_find_pos - 1
+	if start < 0:
+		start = 0
+	var pos := text.find(query, start)
+	if pos < 0:
+		pos = text.find(query, 0 if forward else text.length() - 1)
+		if pos < 0:
+			_log("未找到: %s" % query, IDETheme.C_YELLOW)
+			return false
+	_last_find_pos = pos
+	var ce := _get_active_code_edit()
+	if ce != null:
+		var from_lc := _char_to_line_col(text, pos)
+		var to_lc := _char_to_line_col(text, pos + query.length())
+		ce.select(from_lc[0], from_lc[1], to_lc[0], to_lc[1])
+		ce.ensure_caret_visible()
+	return true
+
+## 字符偏移 → [line, col]（TextEdit.select 用行列坐标）
+func _char_to_line_col(text: String, char_pos: int) -> Array:
+	var acc := 0
+	for l in text.split("\n"):
+		if acc + l.length() >= char_pos or acc + l.length() >= text.length():
+			return [text.split("\n").find(l), clampi(char_pos - acc, 0, l.length())]
+		acc += l.length() + 1
+	return [0, 0]
+
+func _replace_current() -> void:
+	if _last_find_pos < 0 or _find_query.is_empty():
+		_find_next(true)
+		if _last_find_pos < 0:
+			return
+	var text := _get_code_text()
+	if text.substr(_last_find_pos, _find_query.length()) != _find_query:
+		_last_find_pos = -1
+		_find_next(true)
+		return
+	var repl := _replace_input.text
+	_set_code_text(text.substr(0, _last_find_pos) + repl + text.substr(_last_find_pos + _find_query.length()))
+	_last_find_pos += repl.length()
+	_find_next(true)
+
+func _replace_all() -> void:
+	var query := _find_input.text
+	if query.is_empty():
+		return
+	var text := _get_code_text()
+	var count := text.count(query)
+	if count == 0:
+		_log("未找到: %s" % query, IDETheme.C_YELLOW)
+		return
+	_set_code_text(text.replace(query, _replace_input.text))
+	_log("已替换 %d 处: %s" % [count, query], IDETheme.C_GREEN)
+
 func _toggle_bottom_panel() -> void:
 	_bottom_panel.toggle_collapse()
 
@@ -614,6 +740,18 @@ func _on_menu_action(action: String) -> void:
 			_import_dialog.popup_centered()
 		"project_settings":
 			_settings_dialog.open()
+		"undo":
+			var ce := _get_active_code_edit()
+			if ce != null:
+				ce.undo()
+		"redo":
+			var ce := _get_active_code_edit()
+			if ce != null:
+				ce.redo()
+		"find":
+			_show_find_bar(true)
+		"replace":
+			_show_find_bar(false)
 		"tool_regenerate":
 			if world_script:
 				_set_active_text(ScriptCodeGenClass.generate(world_script))

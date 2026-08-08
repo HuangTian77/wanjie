@@ -36,6 +36,15 @@ func _build_menus() -> void:
 		{"id": "import", "text": "导入代码..."},
 	])
 
+	# 编辑(E) - 查找/替换/撤销/重做
+	_create_menu("编辑(E)", [
+		{"id": "undo", "text": "撤销", "shortcut": "Ctrl+Z"},
+		{"id": "redo", "text": "重做", "shortcut": "Ctrl+Y"},
+		{"type": "separator"},
+		{"id": "find", "text": "查找", "shortcut": "Ctrl+F"},
+		{"id": "replace", "text": "替换", "shortcut": "Ctrl+H"},
+	])
+
 	# 项目(P) - 对应Godot的Project菜单
 	_create_menu("项目(P)", [
 		{"id": "project_settings", "text": "项目设置..."},
