@@ -384,6 +384,8 @@ func _back_to_event_list() -> void:
 	_bp_mod._bp_selected_ids.clear()
 	_event_list_synced = false
 	_sync_event_list_graph()
+	_host._mark_dirty()
+	_host._sync_to_code_editor()
 	_update_toolbar_buttons()
 	_bp_mod._bp_redraw_canvas()
 	# 恢复右侧概览

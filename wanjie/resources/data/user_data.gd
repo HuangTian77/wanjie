@@ -41,6 +41,8 @@ extends Resource
 @export var animations_enabled: bool = true
 ## 全屏显示
 @export var fullscreen: bool = false
+## 文本速度（slow/standard/fast）
+@export var text_speed_preset: String = "standard"
 ## 编辑器自动保存间隔（秒）
 @export var editor_auto_save_interval: float = 60.0
 ## 设置：字体大小 (small/medium/large/xlarge)
@@ -71,6 +73,7 @@ func to_dict() -> Dictionary:
 		"animations_enabled": animations_enabled,
 		"fullscreen": fullscreen,
 		"editor_auto_save_interval": editor_auto_save_interval,
+		"text_speed_preset": text_speed_preset,
 		"font_size_preset": font_size_preset,
 		"last_recovery_time": last_recovery_time,
 	}

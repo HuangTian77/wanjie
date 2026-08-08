@@ -67,6 +67,11 @@ func _process(delta: float) -> void:
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
 		_typewriter_timer += delta
 		var speed := 0.03 if ThemeManager.animations_enabled else 0.001
+		var sp: String = GameManager.user_data.text_speed_preset
+		if sp == "slow":
+			speed = 0.06
+		elif sp == "fast":
+			speed = 0.01
 		while _typewriter_timer >= speed and _typewriter_index < _typewriter_text.length():
 			_typewriter_timer -= speed
 			_typewriter_index += 1

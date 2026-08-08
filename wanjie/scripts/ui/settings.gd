@@ -9,6 +9,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 @onready var font_size_option: OptionButton = %FontSizeOption
 @onready var anim_toggle: CheckButton = %AnimToggle
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
+@onready var text_speed_option: OptionButton = %TextSpeedOption
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var master_volume: HSlider = %MasterVolume
 @onready var bgm_volume: HSlider = %BGMVolume
@@ -59,6 +60,8 @@ func _load_settings() -> void:
 	# 动效
 	anim_toggle.button_pressed = ud.animations_enabled
 	fullscreen_toggle.button_pressed = ud.fullscreen
+	var speed_map := ["slow", "standard", "fast"]
+	text_speed_option.selected = max(speed_map.find(ud.text_speed_preset), 0)
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
 	# 全屏
 	fullscreen_toggle.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -118,6 +121,8 @@ func _on_save_pressed() -> void:
 	ud.font_size_preset = font_map[font_size_option.selected]
 	ud.animations_enabled = anim_toggle.button_pressed
 	ud.fullscreen = fullscreen_toggle.button_pressed
+	var speed_map2 := ["slow", "standard", "fast"]
+	ud.text_speed_preset = speed_map2[text_speed_option.selected]
 	ud.ai_enabled = ai_toggle.button_pressed
 	ud.ai_npc_enabled = ai_npc_toggle.button_pressed
 	# 全屏切换

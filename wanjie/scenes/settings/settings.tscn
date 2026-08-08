@@ -144,6 +144,23 @@ popup/item_1/text = "中 (15px)"
 popup/item_2/text = "大 (17px)"
 popup/item_3/text = "超大 (20px)"
 
+[node name="SpeedHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/SpeedHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "文本速度"
+
+[node name="TextSpeedOption" type="OptionButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/SpeedHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "慢"
+popup/item_1/text = "标准"
+popup/item_2/text = "快"
+
 [node name="AnimToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
 unique_name_in_owner = true
 layout_mode = 2
