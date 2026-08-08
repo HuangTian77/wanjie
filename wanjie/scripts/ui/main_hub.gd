@@ -128,7 +128,7 @@ func _show_achievements() -> void:
 func _show_about() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "关于万界诗篇"
-	dialog.dialog_text = """🌌 万界诗篇 v1.1.0
+	dialog.dialog_text = """🌌 万界诗篇 v1.2.0
 
 沙盒式游戏剧本创作与游玩平台
 
@@ -177,7 +177,7 @@ func _setup_top_bar() -> void:
 	# 资源恢复/变化时实时刷新顶栏
 	GameManager.resources_recovered.connect(_refresh_resource_labels)
 	# 视图切换按钮（网格/列表）——追加到顶栏
-	if has_node("MainMargin/VBox/TopBar/TopHBox"):
+	if has_node("MainMargin/VBox/TopBar"):
 		var view_btn := Button.new()
 		view_btn.text = "⊞ 视图"
 		view_btn.tooltip_text = "切换 网格/列表 视图"
@@ -186,7 +186,7 @@ func _setup_top_bar() -> void:
 			_list_view = not _list_view
 			view_btn.text = "⊟ 列表" if _list_view else "⊞ 网格"
 			_update_grid_columns())
-		get_node("MainMargin/VBox/TopBar/TopHBox").add_child(view_btn)
+		get_node("MainMargin/VBox/TopBar").add_child(view_btn)
 	# 关于按钮
 	var about_btn := Button.new()
 	about_btn.text = "❓"
@@ -199,8 +199,8 @@ func _setup_top_bar() -> void:
 	ach_btn.tooltip_text = "成就"
 	ach_btn.flat = true
 	ach_btn.pressed.connect(_show_achievements)
-	get_node("MainMargin/VBox/TopBar/TopHBox").add_child(ach_btn)
-	get_node("MainMargin/VBox/TopBar/TopHBox").add_child(about_btn)
+	get_node("MainMargin/VBox/TopBar").add_child(ach_btn)
+	get_node("MainMargin/VBox/TopBar").add_child(about_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
 func _refresh_resource_labels() -> void:

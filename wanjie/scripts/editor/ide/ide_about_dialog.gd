@@ -3,7 +3,7 @@ extends AcceptDialog
 
 const IDETheme = preload("res://scripts/editor/ide/ide_theme.gd")
 
-const VERSION := "1.1.0"
+const VERSION := "1.2.0"
 const ENGINE := "Godot 4.7.1"
 
 func _ready() -> void:

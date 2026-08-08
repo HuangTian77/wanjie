@@ -596,6 +596,8 @@ func _refresh_battle_ui() -> void:
 			parts.append("%s HP:%d/%d" % [e.get("name", "?"), int(e.get("hp", 0)), int(e.get("max_hp", 1))])
 	enemy_info.text = "敌人：%s" % ("；".join(parts) if parts.is_empty() == false else "（无）")
 	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
+	# 玩家状态
+	var ps: Dictionary = combat_engine.player_combat_stats
 	# 状态效果提示（玩家/敌人 buff）
 	var fx_lines: Array[String] = []
 	var pfx: Array = ps.get("status_effects", []) if not ps.is_empty() else []
@@ -607,8 +609,6 @@ func _refresh_battle_ui() -> void:
 				fx_lines.append("%s:%s" % [e.get("name", "?"), fx.get("name", "?")])
 	if not fx_lines.is_empty():
 		enemy_info.text += "\n[效果] %s" % "，".join(fx_lines)
-	# 玩家状态
-	var ps: Dictionary = combat_engine.player_combat_stats
 	if not ps.is_empty():
 		enemy_info.text += "\n%s HP:%d/%d MP:%d/%d" % [
 			ps.get("name", "旅者"), int(ps.get("hp", 0)), int(ps.get("max_hp", 1)),
