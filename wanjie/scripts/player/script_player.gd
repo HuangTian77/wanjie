@@ -604,6 +604,22 @@ func _on_combat_ended(result: String) -> void:
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_sync_save_state()
+		# 经验升级（每 100 经验升 1 级，属性成长）
+		var stats: Dictionary = combat_engine.player_combat_stats
+		if not stats.is_empty():
+			stats["exp"] = int(stats.get("exp", 0)) + exp
+			while int(stats.get("exp", 0)) >= 100:
+				stats["exp"] = int(stats.get("exp", 0)) - 100
+				stats["level"] = int(stats.get("level", 1)) + 1
+				stats["max_hp"] = int(stats.get("max_hp", 100)) + 10
+				stats["max_mp"] = int(stats.get("max_mp", 50)) + 5
+				stats["atk"] = int(stats.get("atk", 15)) + 2
+				stats["def"] = int(stats.get("def", 10)) + 1
+				stats["hp"] = stats.get("max_hp", 100)
+				stats["mp"] = stats.get("max_mp", 50)
+				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满）" % int(stats.get("level", 1)))
+				msg += " 🎉 升级 Lv.%d！" % int(stats.get("level", 1))
+			_sync_save_state()
 	_add_history(msg)
 	_set_main_text("[b]战斗结束：%s[/b]" % msg)
 	# 战斗结束后提供"继续"推进剧情
