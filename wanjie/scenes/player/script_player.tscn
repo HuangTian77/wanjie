@@ -384,6 +384,10 @@ bbcode_enabled = true
 [node name="BattleButtons" type="HBoxContainer" parent="BattlePanel/BattleVBox"]
 layout_mode = 2
 
+[node name="AutoBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+layout_mode = 2
+text = "⚡ 自动"
+
 [node name="AttackBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 layout_mode = 2
 text = "⚔ 攻击"
@@ -411,6 +415,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_close_pressed"]
+[connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/AutoBtn" to="." method="_on_battle_auto_pressed"]
 [connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/AttackBtn" to="." method="_on_battle_attack_pressed"]
 [connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/SkillBtn" to="." method="_on_battle_skill_pressed"]
 [connection signal="pressed" from="BattlePanel/BattleVBox/BattleButtons/FleeBtn" to="." method="_on_battle_flee_pressed"]

@@ -21,6 +21,9 @@ var _typewriter_text: String = ""
 var _typewriter_index: int = 0
 var _typewriter_timer: float = 0.0
 var _typewriter_done: bool = true
+## 自动战斗标记与计时
+var _auto_battle: bool = false
+var _auto_timer: float = 0.0
 
 ## UI节点
 @onready var script_title: Label = %ScriptTitle
@@ -63,6 +66,12 @@ func _ready() -> void:
 	add_child(auto_save_timer)
 
 func _process(delta: float) -> void:
+	# 自动战斗：定时攻击（0.6s 间隔）
+	if _auto_battle and battle_panel.visible and combat_engine != null and combat_engine.is_active:
+		_auto_timer += delta
+		if _auto_timer >= 0.6:
+			_auto_timer = 0.0
+			_on_battle_attack_pressed()
 	# 打字机效果
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
 		_typewriter_timer += delta
@@ -652,6 +661,15 @@ func _on_battle_skill_pressed() -> void:
 func _on_battle_flee_pressed() -> void:
 	if combat_engine != null:
 		combat_engine.try_flee()
+
+## 自动战斗开关
+func _on_battle_auto_pressed() -> void:
+	_auto_battle = not _auto_battle
+	if _auto_battle:
+		_auto_timer = 0.0
+		ToastManager.info("自动战斗开启")
+	else:
+		ToastManager.info("自动战斗关闭")
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
