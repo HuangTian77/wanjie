@@ -136,7 +136,8 @@
 - func `is_favorite` (L192)
 - func `get_favorites` (L196)
 - func `unlock_achievement` (L213)
-- func `set_current_tab` (L222)
+- func `reload_scripts` (L222)
+- func `set_current_tab` (L227)
 
 ### scripts/autoload/llm_client.gd (llm_client.gd)
 

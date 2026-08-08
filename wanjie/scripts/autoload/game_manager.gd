@@ -218,6 +218,11 @@ func unlock_achievement(id: String, title: String = "") -> bool:
 	ToastManager.success("🏆 成就解锁: %s" % title)
 	return true
 
+## 刷新剧本库（重新扫描 user://scripts）
+func reload_scripts() -> void:
+	ScriptDataManager.call("_load_all_scripts")
+	scripts_changed.emit("refresh")
+
 ## 切换标签页
 func set_current_tab(tab_index: int) -> void:
 	current_tab = tab_index

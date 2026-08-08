@@ -200,6 +200,15 @@ func _setup_top_bar() -> void:
 	ach_btn.flat = true
 	ach_btn.pressed.connect(_show_achievements)
 	get_node("MainMargin/VBox/TopBar").add_child(ach_btn)
+	# 刷新按钮
+	var refresh_btn := Button.new()
+	refresh_btn.text = "↻"
+	refresh_btn.tooltip_text = "刷新剧本库"
+	refresh_btn.flat = true
+	refresh_btn.pressed.connect(func():
+		GameManager.reload_scripts()
+		ToastManager.success("剧本库已刷新"))
+	get_node("MainMargin/VBox/TopBar").add_child(refresh_btn)
 	get_node("MainMargin/VBox/TopBar").add_child(about_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
