@@ -201,6 +201,14 @@ func get_favorites() -> Array[WorldScriptData]:
 			result.append(ws)
 	return result
 
+## 成就表（id → 名称）
+const ACHIEVEMENTS := {
+	"first_create": "首次创作剧本",
+	"first_play": "首次游玩剧本",
+	"first_publish": "首次发布剧本",
+	"first_favorite": "收藏第一个剧本",
+}
+
 ## 解锁成就（首次触发才解锁；返回是否新解锁）
 func unlock_achievement(id: String, title: String = "") -> bool:
 	if user_data.achievements.has(id):

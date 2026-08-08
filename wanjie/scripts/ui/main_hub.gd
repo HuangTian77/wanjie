@@ -104,6 +104,26 @@ func _connect_signals() -> void:
 	GameManager.tab_changed.connect(_on_tab_changed)
 	GameManager.scripts_changed.connect(_on_scripts_changed)
 
+## 成就查看面板
+func _show_achievements() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "成就"
+	dialog.min_size = Vector2i(380, 320)
+	add_child(dialog)
+	var list := RichTextLabel.new()
+	dialog.add_child(list)
+	var unlocked: Array = GameManager.user_data.achievements
+	var count := 0
+	for aid in GameManager.ACHIEVEMENTS:
+		var name: String = GameManager.ACHIEVEMENTS[aid]
+		if unlocked.has(aid):
+			list.append_text("[color=#c9a06a]🏆 %s[/color]\n" % name)
+			count += 1
+		else:
+			list.append_text("[color=#999]🔒 %s[/color]\n" % name)
+	list.append_text("\n[color=#888]已解锁 %d / %d[/color]" % [count, GameManager.ACHIEVEMENTS.size()])
+	dialog.popup_centered()
+
 ## 关于对话框
 func _show_about() -> void:
 	var dialog := AcceptDialog.new()
@@ -173,6 +193,13 @@ func _setup_top_bar() -> void:
 	about_btn.tooltip_text = "关于"
 	about_btn.flat = true
 	about_btn.pressed.connect(_show_about)
+	# 成就按钮
+	var ach_btn := Button.new()
+	ach_btn.text = "🏆"
+	ach_btn.tooltip_text = "成就"
+	ach_btn.flat = true
+	ach_btn.pressed.connect(_show_achievements)
+	get_node("MainMargin/VBox/TopBar/TopHBox").add_child(ach_btn)
 	get_node("MainMargin/VBox/TopBar/TopHBox").add_child(about_btn)
 	GameManager.resources_changed.connect(_refresh_resource_labels)
 
