@@ -159,6 +159,7 @@ func _ready() -> void:
 	_build_template_tree()
 	_setup_template_tree()
 	_setup_module_tree_context()
+	_setup_module_tree_search()
 	_update_validation()
 	_init_code_editor()
 	_init_mud_editor()
@@ -384,6 +385,36 @@ func _add_leaf(parent_item: TreeItem, text: String, path: String, node_type: Str
 
 ## === 模块树点击 ===
 ## 模块树右键菜单（剧本级操作：封面/导出/删除）
+## 模块树搜索过滤（快速定位子系统）
+func _setup_module_tree_search() -> void:
+	var left := get_node_or_null("MainMargin/VBox/MainHSplit/LeftPanel/LeftVBox")
+	if left == null:
+		return
+	var search := LineEdit.new()
+	search.placeholder_text = "🔍 过滤模块..."
+	search.custom_minimum_size.y = 30
+	search.text_changed.connect(_filter_module_tree)
+	left.add_child(search)
+	left.move_child(search, 0)
+
+func _filter_module_tree(query: String) -> void:
+	var q := query.strip_edges().to_lower()
+	var root := module_tree.get_root()
+	if root == null:
+		return
+	_toggle_items(root, q)
+
+func _toggle_items(item: TreeItem, q: String) -> bool:
+	var text := item.get_text(0).to_lower()
+	var match_self := q.is_empty() or text.contains(q)
+	var any_child := false
+	for c in item.get_children():
+		if _toggle_items(c, q):
+			any_child = true
+	var visible := match_self or any_child
+	item.visible = visible
+	return visible
+
 func _setup_module_tree_context() -> void:
 	if not module_tree.gui_input.is_connected(_on_module_tree_gui_input):
 		module_tree.gui_input.connect(_on_module_tree_gui_input)
