@@ -13,6 +13,7 @@ extends Control
 @onready var carousel_indicator: HBoxContainer = %CarouselIndicator
 @onready var tab_container: HBoxContainer = %TabContainer
 @onready var script_grid: GridContainer = %ScriptGrid
+@onready var stats_label: Label = %StatsLabel
 ## 列表视图模式（单列紧凑）
 var _list_view: bool = false
 @onready var recent_container: HBoxContainer = %RecentContainer
@@ -54,6 +55,8 @@ var _search_timer: Timer = null
 const CARD_MIN_WIDTH := 240
 
 func _ready() -> void:
+	_refresh_personal_stats()
+	GameManager.scripts_changed.connect(func(_i): _refresh_personal_stats())
 	# 首次启动欢迎引导
 	if GameManager.user_data.first_launch:
 		GameManager.user_data.first_launch = false
@@ -94,6 +97,14 @@ func _input(event: InputEvent) -> void:
 func _connect_signals() -> void:
 	GameManager.tab_changed.connect(_on_tab_changed)
 	GameManager.scripts_changed.connect(_on_scripts_changed)
+
+## 刷新个人统计（剧本数/游玩数/成就数）
+func _refresh_personal_stats() -> void:
+	var created: int = GameManager.user_data.created_script_ids.size()
+	var played: int = GameManager.user_data.played_script_ids.size()
+	var ach: int = GameManager.user_data.achievements.size()
+	if stats_label != null:
+		stats_label.text = "📜 %d 个剧本   🎮 %d 次游玩   🏆 %d 成就" % [created, played, ach]
 
 ## 动态创建对话框
 func _setup_dialogs() -> void:

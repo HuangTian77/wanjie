@@ -638,6 +638,38 @@ func _on_menu_load_pressed() -> void:
 func _on_menu_delete_pressed() -> void:
 	_show_slot_selector("delete")
 
+## 角色状态面板
+func _on_menu_char_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "角色状态"
+	dialog.min_size = Vector2i(360, 340)
+	add_child(dialog)
+	var list := RichTextLabel.new()
+	dialog.add_child(list)
+	var ps: Dictionary = {}
+	if SaveManager.current_save:
+		ps = SaveManager.current_save.player_state
+	elif combat_engine != null:
+		ps = combat_engine.player_combat_stats
+	if ps.is_empty():
+		list.append_text("[color=#999]角色数据未初始化[/color]")
+	else:
+		var rows := [
+			["名称", str(ps.get("name", "旅者"))],
+			["等级", "Lv.%d" % int(ps.get("level", 1))],
+			["生命", "%d/%d" % [int(ps.get("hp", 0)), int(ps.get("max_hp", 1))]],
+			["魔力", "%d/%d" % [int(ps.get("mp", 0)), int(ps.get("max_mp", 1))]],
+			["攻击", str(ps.get("atk", 0))],
+			["防御", str(ps.get("def", 0))],
+			["魔攻", str(ps.get("matk", 0))],
+			["魔防", str(ps.get("mdef", 0))],
+			["速度", str(ps.get("speed", 0))],
+			["敏捷", str(ps.get("agility", 0))],
+		]
+		for row in rows:
+			list.append_text("[color=#c9a06a]%s[/color]  %s\n" % [row[0], row[1]])
+	dialog.popup_centered()
+
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
