@@ -703,6 +703,45 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("[color=#c9a06a]%s[/color]  %s\n" % [row[0], row[1]])
 	dialog.popup_centered()
 
+## 商店弹窗（购买物品）
+func _on_menu_shop_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "商店"
+	dialog.min_size = Vector2i(420, 360)
+	add_child(dialog)
+	var box := VBoxContainer.new()
+	dialog.add_child(box)
+	var list := RichTextLabel.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(list)
+	var gold := 0
+	if economy_engine:
+		gold = int(economy_engine.player_currencies.get("gold", 0))
+	list.append_text("[color=#c9a06a]持有金币: %d[/color]\n\n" % gold)
+	var bought_any := false
+	if economy_engine and economy_engine.economy_data:
+		for m in economy_engine.economy_data.markets:
+			var mid: String = m.get("id", "")
+			list.append_text("[b]%s[/b]\n" % m.get("name", mid))
+			for g in m.get("goods", []):
+				var item_id: String = g.get("item", "")
+				var price: float = economy_engine.get_price(mid, item_id)
+				var btn := Button.new()
+				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				btn.pressed.connect(func():
+					if economy_engine.buy(mid, item_id):
+						ToastManager.success("已购买 %s" % item_id)
+						_sync_save_state()
+						_on_menu_shop_pressed()  # 刷新商店
+						dialog.queue_free()
+					else:
+						ToastManager.warning("金币不足！"))
+				box.add_child(btn)
+				bought_any = true
+	if not bought_any:
+		list.append_text("[color=#999]当前市场暂无商品…[/color]")
+	dialog.popup_centered()
+
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()

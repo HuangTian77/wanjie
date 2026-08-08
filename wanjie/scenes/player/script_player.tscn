@@ -311,6 +311,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "👤 角色"
 
+[node name="ShopBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "🏪 商店"
+
 [node name="BagBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -394,6 +399,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/LoadBtn" to="." method="_on_menu_load_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/DeleteBtn" to="." method="_on_menu_delete_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/CharBtn" to="." method="_on_menu_char_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/ShopBtn" to="." method="_on_menu_shop_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BagBtn" to="." method="_on_menu_bag_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RatingBtn" to="." method="_on_menu_rating_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]

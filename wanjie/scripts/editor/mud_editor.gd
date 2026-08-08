@@ -839,6 +839,8 @@ func _on_open() -> void:
 func _on_save() -> void:
 	save_data()
 	_set_status("已保存到剧本 metadata")
+	if has_node("/root/ToastManager"):
+		get_node("/root/ToastManager").success("MUD 数据已保存")
 
 func _on_save_as() -> void:
 	var dialog := FileDialog.new()
