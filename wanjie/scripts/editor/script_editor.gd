@@ -946,6 +946,29 @@ func _log_output(msg: String) -> void:
 	if output_log:
 		output_log.text += msg + "\n"
 
+## 导出日志到 txt
+func _on_export_log_pressed() -> void:
+	if output_log == null:
+		return
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	dialog.title = "导出日志"
+	dialog.add_filter("*.txt ; 文本文件")
+	dialog.current_path = "编辑器日志.txt"
+	dialog.min_size = Vector2i(600, 400)
+	add_child(dialog)
+	dialog.file_selected.connect(func(path: String):
+		var f := FileAccess.open(path, FileAccess.WRITE)
+		if f:
+			f.store_string(output_log.text)
+			f.close()
+			_log_output("✅ 日志已导出: %s" % path)
+			ToastManager.success("日志已导出")
+		else:
+			_log_output("[color=red]❌ 日志导出失败[/color]")
+		dialog.queue_free())
+	dialog.popup_centered()
+
 ## 设置菜单栏
 func _setup_menus() -> void:
 	# 文件菜单

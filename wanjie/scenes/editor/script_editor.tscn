@@ -341,7 +341,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 4
 
+[node name="ExportLogBtn" type="Button" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/OutputPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "导出日志"
+
 [node name="OutputLabel" type="Label" parent="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/OutputPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.8, 0.6, 1)
 theme_override_font_sizes/font_size = 11
@@ -515,3 +521,4 @@ text = "可视化模式"
 [connection signal="tab_changed" from="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomTabBar" to="." method="_on_bottom_tab_changed"]
 [connection signal="pressed" from="MainVBox/MainHSplit/LeftPanel/LeftVBox/LeftCollapseBtn" to="." method="_on_left_collapse_pressed"]
 [connection signal="item_selected" from="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/TemplatePanel/TemplateTree" to="." method="_on_template_selected"]
+[connection signal="pressed" from="MainVBox/MainHSplit/CenterVSplit/BottomPanel/BottomContent/BottomStack/OutputPanel/ExportLogBtn" to="." method="_on_export_log_pressed"]
