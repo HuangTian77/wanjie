@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# 提交前自动检查（Codex 式 ship gate）：gdlint + import 快速校验，失败阻止提交
+# 安装: git config core.hooksPath .githooks
+set -u
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+GODOT="$ROOT/Godot_v4.7.1-stable_win64.exe"
+PROJ="$ROOT/wanjie"
+echo "[pre-commit] gdlint 检查..."
+if command -v gdlint >/dev/null 2>&1; then
+  LINT=$(cd "$ROOT" && gdlint wanjie/scripts wanjie/resources/data wanjie/autoload wanjie/tools 2>&1)
+  LERR=$(echo "$LINT" | grep -cE "Error|No terminal matches" || true)
+  if [ "$LERR" != "0" ]; then
+    echo "❌ gdlint 发现 $LERR 个问题，提交被阻止："
+    echo "$LINT" | head -10
+    exit 1
+  fi
+  echo "[pre-commit] gdlint OK"
+fi
+echo "[pre-commit] import 检查..."
+ERR=$(timeout 300 "$GODOT" --headless --path "$PROJ" --import 2>&1 | grep -c "SCRIPT ERROR")
+if [ "$ERR" != "0" ]; then
+  echo "❌ import 发现 $ERR 个 SCRIPT ERROR，提交被阻止"
+  exit 1
+fi
+echo "[pre-commit] ✅ 检查通过"
