@@ -569,6 +569,7 @@ func _on_combat_ended(result: String) -> void:
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
+			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_sync_save_state()
 	_add_history(msg)
 	_set_main_text("[b]战斗结束：%s[/b]" % msg)
