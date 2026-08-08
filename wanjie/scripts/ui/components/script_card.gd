@@ -4,12 +4,15 @@ class_name ScriptCard
 extends PanelContainer
 
 signal clicked(script_id: String)
+signal favorite_requested(script_id: String)
 signal edit_requested(script_id: String)
 signal delete_requested(script_id: String, script_name: String)
 
 @onready var name_label: Label = %CardName
 @onready var author_label: Label = %CardAuthor
 @onready var desc_label: Label = %CardDesc
+@onready var cover_texture: TextureRect = %CoverTexture
+@onready var fav_btn: Button = %CardFavBtn
 @onready var tags_container: HBoxContainer = %CardTags
 @onready var rating_label: Label = %CardRating
 @onready var play_label: Label = %CardPlay
@@ -29,6 +32,18 @@ func setup(data: WorldScriptData) -> void:
 	desc_label.text = data.description if not data.description.is_empty() else "暂无简介"
 	rating_label.text = "★ %.1f" % data.rating
 	play_label.text = "%d人体验" % data.play_count
+	# 封面（thumbnail_path 指向 assets/cover.png，存在则显示）
+	var cover_path := ""
+	if not data.thumbnail_path.is_empty():
+		cover_path = ProjectSettings.globalize_path("user://scripts/%s/%s" % [data.id, data.thumbnail_path])
+	if not cover_path.is_empty() and FileAccess.file_exists(cover_path):
+		var tex := ImageTexture.create_from_image(Image.load_from_file(cover_path))
+		if tex != null:
+			cover_texture.texture = tex
+			cover_texture.visible = true
+	else:
+		cover_texture.texture = null
+		cover_texture.visible = false
 	# 标签
 	for child in tags_container.get_children():
 		child.queue_free()
@@ -49,6 +64,7 @@ func _ready() -> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	gui_input.connect(_on_gui_input)
+	fav_btn.pressed.connect(func(): favorite_requested.emit(script_id))
 	edit_btn.pressed.connect(func(): edit_requested.emit(script_id))
 	delete_btn.pressed.connect(func(): delete_requested.emit(script_id, script_name))
 

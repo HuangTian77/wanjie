@@ -348,6 +348,13 @@ func export_script(script_id: String, export_path: String) -> bool:
 	if script_data == null:
 		return false
 	var dict := _script_to_dict(script_data)
+	# 内嵌封面 base64（单文件分享携带资源；ZipPacker 编辑器专用，运行时用 base64）
+	var cover_path := ""
+	if not script_data.thumbnail_path.is_empty():
+		cover_path = get_script_dir(script_id) + "/" + script_data.thumbnail_path
+	if not cover_path.is_empty() and FileAccess.file_exists(cover_path):
+		dict["thumbnail_base64"] = Marshalls.raw_to_base64(FileAccess.get_file_as_bytes(cover_path))
+		dict["thumbnail_ext"] = cover_path.get_extension()
 	var file := FileAccess.open(export_path, FileAccess.WRITE)
 	if file == null:
 		return false
@@ -376,6 +383,17 @@ func import_script(import_path: String) -> WorldScriptData:
 	ws.updated_at = ws.created_at
 
 	save_script(ws)
+	# 还原内嵌封面（assets/cover.* + thumbnail_path）
+	if json.data is Dictionary and (json.data as Dictionary).has("thumbnail_base64"):
+		var ext: String = str((json.data as Dictionary).get("thumbnail_ext", "png"))
+		var dest := get_script_dir(ws.id) + "/assets/cover." + ext
+		DirAccess.make_dir_recursive_absolute(get_script_dir(ws.id) + "/assets")
+		var f := FileAccess.open(dest, FileAccess.WRITE)
+		if f:
+			f.store_buffer(Marshalls.base64_to_raw(str((json.data as Dictionary).get("thumbnail_base64", ""))))
+			f.close()
+			ws.thumbnail_path = "assets/cover." + ext
+			update_script(ws, ["thumbnail_path"])
 	script_imported.emit(ws.id)
 	return ws
 
@@ -520,6 +538,7 @@ func _script_to_meta_dict(ws: WorldScriptData) -> Dictionary:
 		"progress": ws.progress,
 		"ai_generated": ws.ai_generated,
 		"rating": ws.rating,
+		"rating_count": ws.rating_count,
 		"play_count": ws.play_count,
 		"estimated_hours": ws.estimated_hours,
 		"metadata": ws.metadata
@@ -558,6 +577,7 @@ func _apply_meta_to_ws(d: Dictionary, ws: WorldScriptData) -> void:
 	ws.progress = d.get("progress", 0.0)
 	ws.ai_generated = d.get("ai_generated", false)
 	ws.rating = d.get("rating", 0.0)
+	ws.rating_count = d.get("rating_count", 0)
 	ws.play_count = d.get("play_count", 0)
 	ws.estimated_hours = d.get("estimated_hours", 0.0)
 	ws.metadata = d.get("metadata", {})

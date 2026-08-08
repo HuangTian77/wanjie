@@ -754,6 +754,7 @@ func _setup_menus() -> void:
 	# 文件菜单
 	var fp := file_menu.get_popup()
 	fp.add_item("保存 (Ctrl+S)", 1)
+	fp.add_item("设置封面...", 5)
 	fp.add_item("导出剧本...", 2)
 	fp.add_item("导入剧本...", 3)
 	fp.add_separator()
@@ -764,6 +765,7 @@ func _setup_menus() -> void:
 			2: _on_export_script_pressed()
 			3: _on_import_script_pressed()
 			4: _on_back_pressed()
+			5: _on_set_cover_pressed()
 	)
 	# 编辑菜单
 	var ep := edit_menu.get_popup()
@@ -961,7 +963,29 @@ func _on_publish_pressed() -> void:
 	ToastManager.success("剧本已发布")
 	_log_output("📢 剧本已发布: %s" % current_script.name)
 
-## 导出剧本到磁盘文件 (JSON)
+## 设置剧本封面（选择图片 → assets/cover.png）
+func _on_set_cover_pressed() -> void:
+	if current_script == null:
+		_log_output("⚠ 请先加载剧本")
+		return
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.filters = PackedStringArray(["*.png ; PNG 图片", "*.jpg ; JPG 图片", "*.webp ; WebP 图片"])
+	dialog.title = "选择封面图片"
+	dialog.min_size = Vector2i(600, 400)
+	add_child(dialog)
+	dialog.file_selected.connect(func(path: String):
+		if ScriptDataManager.set_cover(current_script.id, path):
+			_log_output("✅ 封面已设置")
+			ToastManager.success("封面已设置")
+		else:
+			_log_output("[color=red]❌ 封面设置失败[/color]")
+		dialog.queue_free())
+	dialog.canceled.connect(func(): dialog.queue_free())
+	dialog.popup_centered()
+
+## 导出剧本到磁盘文件（.wspk 打包：含 assets 资源；.json 兼容单文件）
 func _on_export_script_pressed() -> void:
 	if current_script == null:
 		_log_output("⚠ 请先加载剧本")
@@ -969,7 +993,7 @@ func _on_export_script_pressed() -> void:
 	var dialog := FileDialog.new()
 	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	dialog.title = "导出剧本"
-	dialog.add_filter("*.json", "JSON 剧本文件")
+	dialog.add_filter("*.json ; 剧本文件（含封面）")
 	dialog.current_path = current_script.name + ".json"
 	dialog.min_size = Vector2i(600, 400)
 	add_child(dialog)

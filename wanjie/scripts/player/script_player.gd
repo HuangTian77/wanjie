@@ -619,6 +619,44 @@ func _on_menu_load_pressed() -> void:
 func _on_menu_delete_pressed() -> void:
 	_show_slot_selector("delete")
 
+## 评分：1-5 星（平均后写入剧本）
+func _on_menu_rating_pressed() -> void:
+	var old := get_node_or_null("RatingDialog")
+	if old:
+		old.queue_free()
+	var dialog := ConfirmationDialog.new()
+	dialog.name = "RatingDialog"
+	dialog.title = "评分"
+	dialog.dialog_text = "为《%s》评分（当前 %.1f ★，%d 人）" % [script_data.name if script_data else "", script_data.rating if script_data else 0.0, script_data.rating_count if script_data else 0]
+	dialog.get_ok_button().text = "提交评分"
+	add_child(dialog)
+	# 星级选择（HBox 5 个 ★ 按钮）
+	var stars := HBoxContainer.new()
+	stars.add_theme_constant_override("separation", 6)
+	var chosen := [0]
+	for i in 5:
+		var b := Button.new()
+		b.text = "★"
+		b.modulate = Color(0.8, 0.65, 0.2)
+		b.toggle_mode = true
+		b.button_group = ButtonGroup.new()
+		b.pressed.connect(func(): chosen[0] = i + 1)
+		stars.add_child(b)
+	dialog.add_child(stars)
+	dialog.confirmed.connect(func():
+		if chosen[0] <= 0:
+			return
+		var ws: Variant = script_data
+		if ws == null:
+			return
+		var new_rating := (ws.rating * ws.rating_count + chosen[0]) / float(ws.rating_count + 1)
+		ws.rating = snappedf(new_rating, 0.1)
+		ws.rating_count += 1
+		ScriptDataManager.update_script(ws, ["rating", "rating_count"])
+		ToastManager.success("评分已提交 ★%d" % chosen[0]))
+	dialog.popup_centered()
+	stars.position = Vector2(120, 70)
+
 func _on_menu_back_pressed() -> void:
 	_sync_save_state()
 	_write_progress()

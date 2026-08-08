@@ -79,7 +79,7 @@ func _input(event: InputEvent) -> void:
 		if setup_dialog != null and setup_dialog.visible:
 			setup_dialog.visible = false
 			return
-		if GameManager.current_tab == 4:
+		if GameManager.current_tab == 5:
 			search_input.text = ""
 			_on_tab_pressed(0)
 
@@ -179,7 +179,7 @@ func _on_carousel_next_pressed() -> void:
 
 ## === 标签页设置 ===
 func _setup_tabs() -> void:
-	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "搜索"]
+	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "收藏", "搜索"]
 	for i in tab_names.size():
 		var btn := Button.new()
 		btn.text = tab_names[i]
@@ -217,13 +217,13 @@ func _refresh_script_grid() -> void:
 	script_cards.clear()
 
 	var scripts_list: Array[WorldScriptData]
-	if GameManager.current_tab == 4:
+	if GameManager.current_tab == 5:
 		scripts_list = _search_scripts(search_input.text)
 	else:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
 
 	if scripts_list.is_empty():
-		if GameManager.current_tab == 4:
+		if GameManager.current_tab == 5:
 			# 搜索无结果：区分文案，不显示创建按钮
 			var empty_search: EmptyState = EMPTY_STATE_SCENE.instantiate()
 			script_grid.add_child(empty_search)
@@ -240,6 +240,7 @@ func _refresh_script_grid() -> void:
 		card.clicked.connect(_on_card_clicked)
 		card.edit_requested.connect(_on_edit_script_pressed)
 		card.delete_requested.connect(_on_delete_script_pressed)
+		card.favorite_requested.connect(_on_favorite_pressed)
 		script_cards.append(card)
 
 func _search_scripts(query: String) -> Array[WorldScriptData]:
@@ -261,6 +262,13 @@ func _show_empty_state() -> void:
 	empty.setup("这里还没有剧本", "📜", "创建新剧本", true)
 	empty.action_pressed.connect(_on_create_script_pressed)
 	script_cards.append(empty)
+
+func _on_favorite_pressed(script_id: String) -> void:
+	var fav := GameManager.toggle_favorite(script_id)
+	ToastManager.success("已收藏 ♥" if fav else "已取消收藏")
+	_refresh_script_grid()
+	if GameManager.current_tab == 4:
+		_on_tab_pressed(4)
 
 func _on_card_clicked(script_id: String) -> void:
 	SceneManager.enter_script(script_id)
@@ -321,11 +329,11 @@ func _on_import_script_pressed() -> void:
 	var file_dialog := FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	file_dialog.filters = PackedStringArray(["*.json ; JSON文件"])
+	file_dialog.filters = PackedStringArray(["*.json ; 剧本文件"])
 	file_dialog.title = "导入剧本"
 	add_child(file_dialog)
 	file_dialog.file_selected.connect(func(path: String):
-		var ws := ScriptDataManager.import_script(path)
+		var ws: WorldScriptData = ScriptDataManager.import_script(path)
 		if ws != null:
 			ToastManager.success("导入成功: %s" % ws.name)
 		else:

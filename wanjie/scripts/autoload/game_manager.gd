@@ -138,6 +138,8 @@ func get_scripts_by_tab(tab_index: int) -> Array[WorldScriptData]:
 			all.sort_custom(func(a, b): return a.rating > b.rating)
 			for s in all:
 				result.append(s)
+		4: # 收藏（市场/社区雏形）
+			result = get_favorites()
 	return result
 
 ## 获取推荐剧本（用于轮播）
@@ -169,6 +171,29 @@ func record_play(script_id: String) -> void:
 		user_data.recent_script_ids.resize(5)
 	_save_user_data()
 	ScriptDataManager.update_script(ws, ["play_count"])
+
+## 收藏/取消收藏（返回是否已收藏）
+func toggle_favorite(script_id: String) -> bool:
+	var favorites := user_data.favorites_script_ids
+	if favorites.has(script_id):
+		favorites.erase(script_id)
+		_save_user_data()
+		return false
+	favorites.append(script_id)
+	_save_user_data()
+	return true
+
+func is_favorite(script_id: String) -> bool:
+	return user_data.favorites_script_ids.has(script_id)
+
+## 收藏列表
+func get_favorites() -> Array[WorldScriptData]:
+	var result: Array[WorldScriptData] = []
+	for sid in user_data.favorites_script_ids:
+		var ws := get_script_data(sid)
+		if ws != null:
+			result.append(ws)
+	return result
 
 ## 切换标签页
 func set_current_tab(tab_index: int) -> void:

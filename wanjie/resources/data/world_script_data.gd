@@ -29,6 +29,8 @@ extends Resource
 @export var ai_generated: bool = false
 ## 评分 (0.0 - 10.0)
 @export var rating: float = 0.0
+## 评分人数（本地平均用）
+@export var rating_count: int = 0
 ## 体验次数
 @export var play_count: int = 0
 ## 预计游玩时长（小时）

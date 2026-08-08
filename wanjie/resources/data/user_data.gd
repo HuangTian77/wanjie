@@ -23,6 +23,8 @@ extends Resource
 @export var played_script_ids: Array[String] = []
 ## 已创建剧本ID列表
 @export var created_script_ids: Array[String] = []
+## 收藏的剧本 id（市场/社区雏形）
+@export var favorites_script_ids: Array[String] = []
 ## 成就列表
 @export var achievements: Array[String] = []
 ## 设置：AI功能是否开启
@@ -51,6 +53,7 @@ func to_dict() -> Dictionary:
 		"recent_script_ids": recent_script_ids,
 		"played_script_ids": played_script_ids,
 		"created_script_ids": created_script_ids,
+		"favorites_script_ids": favorites_script_ids,
 		"achievements": achievements,
 		"ai_enabled": ai_enabled,
 		"ai_npc_enabled": ai_npc_enabled,
@@ -73,6 +76,7 @@ static func from_dict(d: Dictionary) -> UserData:
 	u.recent_script_ids = _to_string_array(d.get("recent_script_ids", []))
 	u.played_script_ids = _to_string_array(d.get("played_script_ids", []))
 	u.created_script_ids = _to_string_array(d.get("created_script_ids", []))
+	u.favorites_script_ids = _to_string_array(d.get("favorites_script_ids", []))
 	u.achievements = _to_string_array(d.get("achievements", []))
 	u.ai_enabled = bool(d.get("ai_enabled", u.ai_enabled))
 	u.ai_npc_enabled = bool(d.get("ai_npc_enabled", u.ai_npc_enabled))
