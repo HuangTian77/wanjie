@@ -622,9 +622,34 @@ func _on_combat_ended(result: String) -> void:
 			_sync_save_state()
 	_add_history(msg)
 	_set_main_text("[b]战斗结束：%s[/b]" % msg)
-	# 战斗结束后提供"继续"推进剧情
 	_clear_choices()
-	_add_choice_button("继续", "_on_continue_pressed")
+	if result == "defeat":
+		# 失败：提供重试（读自动存档恢复状态）
+		_add_choice_button("🔄 重试（读档）", "_on_retry_from_save")
+	else:
+		# 战斗结束后提供"继续"推进剧情
+		_add_choice_button("继续", "_on_continue_pressed")
+
+## 战斗失败重试：读自动存档恢复
+func _on_retry_from_save() -> void:
+	var sd: SaveData = SaveManager.load_game(0, true)
+	if sd == null:
+		ToastManager.warning("无自动存档，无法重试")
+		return
+	SaveManager.current_save = sd
+	if event_engine:
+		event_engine.load_history(sd.event_history)
+	if world_state:
+		world_state.load_from_dict(sd.world_state)
+	if economy_engine:
+		economy_engine.load_from_dict(sd.economy_state)
+	if combat_engine and sd.player_state:
+		combat_engine.set_player_stats(sd.player_state)
+	_update_ui()
+	_sync_save_state()
+	ToastManager.success("已从自动存档恢复")
+	_add_history("重新振作，继续冒险…")
+	_advance_to_next_event()
 
 func _battle_log_line(line: String) -> void:
 	battle_log.append_text(line + "\n")
