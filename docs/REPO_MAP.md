@@ -1263,7 +1263,7 @@
 
 ### scripts/ui/settings.gd (settings.gd)
 
-- func `_ready` (L24)
+- func `_ready` (L25)
 
 ### scripts/ui/template_dialog.gd (template_dialog.gd)
 

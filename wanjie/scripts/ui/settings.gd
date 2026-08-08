@@ -10,6 +10,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 @onready var anim_toggle: CheckButton = %AnimToggle
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var text_speed_option: OptionButton = %TextSpeedOption
+@onready var auto_save_option: OptionButton = %AutoSaveOption
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var master_volume: HSlider = %MasterVolume
 @onready var bgm_volume: HSlider = %BGMVolume
@@ -62,6 +63,13 @@ func _load_settings() -> void:
 	fullscreen_toggle.button_pressed = ud.fullscreen
 	var speed_map := ["slow", "standard", "fast"]
 	text_speed_option.selected = max(speed_map.find(ud.text_speed_preset), 0)
+	var as_map := [60.0, 180.0, 300.0, 600.0]
+	var as_idx := 2
+	for i in as_map.size():
+		if absf(ud.editor_auto_save_interval - as_map[i]) < 5.0:
+			as_idx = i
+			break
+	auto_save_option.selected = as_idx
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
 	# 全屏
 	fullscreen_toggle.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -123,6 +131,8 @@ func _on_save_pressed() -> void:
 	ud.fullscreen = fullscreen_toggle.button_pressed
 	var speed_map2 := ["slow", "standard", "fast"]
 	ud.text_speed_preset = speed_map2[text_speed_option.selected]
+	var as_map2 := [60.0, 180.0, 300.0, 600.0]
+	ud.editor_auto_save_interval = as_map2[auto_save_option.selected]
 	ud.ai_enabled = ai_toggle.button_pressed
 	ud.ai_npc_enabled = ai_npc_toggle.button_pressed
 	# 全屏切换

@@ -161,6 +161,24 @@ popup/item_0/text = "慢"
 popup/item_1/text = "标准"
 popup/item_2/text = "快"
 
+[node name="AutoSaveHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+layout_mode = 2
+
+[node name="AutoSaveLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/AutoSaveHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "自动保存间隔"
+
+[node name="AutoSaveOption" type="OptionButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/AutoSaveHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+item_count = 4
+popup/item_0/text = "1 分钟"
+popup/item_1/text = "3 分钟"
+popup/item_2/text = "5 分钟"
+popup/item_3/text = "10 分钟"
+
 [node name="AnimToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
 unique_name_in_owner = true
 layout_mode = 2
