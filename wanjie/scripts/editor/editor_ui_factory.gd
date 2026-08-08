@@ -419,6 +419,24 @@ func add_list_editor(parent: Control, data_array: Array, fields: Array, on_add: 
 					_host._sync_to_code_editor()
 			)
 			header.add_child(del_btn)
+			# 复制条目
+			var dup_btn := Button.new()
+			dup_btn.text = "⧉"
+			dup_btn.custom_minimum_size = Vector2(28, 24)
+			dup_btn.add_theme_font_size_override("font_size", 11)
+			dup_btn.flat = true
+			dup_btn.tooltip_text = "复制此条目"
+			var dup_idx := i
+			dup_btn.pressed.connect(func():
+				if dup_idx >= 0 and dup_idx < data_array.size():
+					var copy: Dictionary = (data_array[dup_idx] as Dictionary).duplicate(true)
+					copy["id"] = "copy_%d" % Time.get_ticks_msec()
+					data_array.append(copy)
+					build_items.call()
+					_host._mark_dirty()
+					_host._sync_to_code_editor()
+			)
+			header.add_child(dup_btn)
 			var edit_box := VBoxContainer.new()
 			edit_box.add_theme_constant_override("separation", 6)
 			edit_box.visible = false

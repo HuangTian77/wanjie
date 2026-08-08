@@ -389,7 +389,7 @@
 - func `add_button` (L325)
 - func `field_label` (L333)
 - func `add_list_editor` (L338)
-- func `add_dict_editor` (L483)
+- func `add_dict_editor` (L501)
 
 ### scripts/editor/editor_undo_redo.gd (`EditorUndoRedo`)
 
