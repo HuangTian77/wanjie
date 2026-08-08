@@ -24,6 +24,6 @@ gdlint wanjie/scripts wanjie/resources/data wanjie/autoload wanjie/tools
 
 ## 验收标准（Definition of Done）
 - [ ] import 零 SCRIPT ERROR
-- [ ] `verify_all.sh` PASS=5 全绿（27 测试 + GdUnit4 6/6 + gdlint 0 + 布局 HARD=0）
+- [ ] `verify_all.sh` PASS=6 全绿（27 测试 + GdUnit4 6/6 + gdlint 0 + 布局 HARD=0 + 符号地图刷新）
 - [ ] 提交信息中文规范 `<类型> <摘要>：① ② ③`
 - [ ] 产物不入库（_ui_shots/、_ui_layout_report.txt、wanjie/reports/）

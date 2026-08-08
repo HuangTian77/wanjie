@@ -48,6 +48,12 @@ LAY=$(timeout 120 "$GODOT" --headless --path "$PROJ" -s tools/ui_layout_check.gd
 echo "$LAY" | grep "LAYOUT_HARD"
 if echo "$LAY" | grep -q "LAYOUT_HARD=0"; then PASS=$((PASS+1)); else FAIL=$((FAIL+1)); fi
 
+# ⑥ 刷新符号地图（AI 上下文加速，每次验证顺带更新）
+step "⑥ 刷新符号地图（gen_repo_map.py）"
+MAP=$(cd "$ROOT" && python wanjie/tools/gen_repo_map.py 2>&1)
+echo "$MAP" | tail -1
+if echo "$MAP" | grep -q "REPO_MAP generated"; then PASS=$((PASS+1)); else FAIL=$((FAIL+1)); fi
+
 echo ""
 echo "======================"
 echo "VERIFY_RESULT: PASS=$PASS FAIL=$FAIL"

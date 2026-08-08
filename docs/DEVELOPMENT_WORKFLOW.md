@@ -27,7 +27,7 @@ Plan → Implement → Verify（循环到全过）→ Review → Ship
 | ⑤ 布局断言 | ui_layout_check.gd | 越界/重叠/响应式 | CI + verify_all |
 | 视觉/交互/动效 | ui_screenshot/walkthrough/motion_capture | 真实窗口验证 | 本地 |
 
-一键：`bash wanjie/tools/verify_all.sh`（PASS=5 全绿退出 0）。
+一键：`bash wanjie/tools/verify_all.sh`（PASS=6 全绿退出 0，含符号地图刷新）。
 
 ## 3. CI（GitHub Actions，master 推送自动跑）
 

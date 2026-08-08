@@ -1,6 +1,16 @@
 # AGENTS.md — wanjie 项目规范（AI 代理与开发者每次会话必读）
 
-> 本文件是项目常驻规范（类似 Codex 的 AGENTS.md），每次会话自动加载。配套：`docs/UI_GUIDE.md`（UI 规范）、`docs/DEVELOPMENT_WORKFLOW.md`（工作流）、记忆 `wanjie-ui-architecture`（详细速查）。
+> 本文件是项目常驻规范（Reasonix/Codex 等每次会话自动加载，类似 Claude Code 的 CLAUDE.md），配套：`docs/UI_GUIDE.md`（UI 规范）、`docs/DEVELOPMENT_WORKFLOW.md`（工作流）、`docs/AI_TOOLS_RESEARCH.md`（AI 工具机制调研）、记忆 `wanjie-ui-architecture`（详细速查）。
+
+## 0. 每次会话启动协议（每次对话自动执行，勿跳过）
+
+1. **上下文对齐（30 秒）**：记忆速查（`wanjie-ui-architecture`）已自动加载 → 定位符号先查 `docs/REPO_MAP.md`（verify 自动刷新，125 文件类/信号/函数+行号）→ 复杂/长期任务 run_skill(`ai-tools-patterns`) 对齐业界设计模式
+2. **任务路由**（选一个入口，不要裸做）：
+   - 任何开发任务 → run_skill(`wanjie-workflow`)：Plan→Implement→Verify→Ship 生命周期
+   - UI 相关任务 → 额外 run_skill(`wanjie-ui-audit`)：审计清单（布局/主题/焦点/动效/性能）+ 验证
+   - 复杂/长期/架构设计 → run_skill(`ai-tools-patterns`)：六条设计逻辑（上下文资产/软硬双轨/渐进信任/可恢复/文件即配置/DoD）
+3. **强制约束**：改动后必须 `bash wanjie/tools/verify_all.sh` 全绿（PASS=6）才继续/提交；pre-commit 自动门禁（gdlint+import）；提交规范见 §6；交付前勾选 §6.5 DoD
+4. **上下文纪律**：优先 REPO_MAP + grep 定向定位；大文件（visual_event.gd 等）分段读；检索用子代理隔离（explore/task）；autoload 在 -s 脚本用 `get_node_or_null("/root/X")`
 
 ## 1. 项目概况
 
@@ -66,7 +76,7 @@ bash wanjie/tools/verify_all.sh
 
 ## 6.5 Definition of Done（验收标准，交付前逐项勾选）
 
-- [ ] `bash wanjie/tools/verify_all.sh` 输出 PASS=5 全绿（import 0 / 27 测试 / GdUnit4 6/6 / gdlint 0 / 布局 HARD=0）
+- [ ] `bash wanjie/tools/verify_all.sh` 输出 PASS=6 全绿（import 0 / 27 测试 / GdUnit4 6/6 / gdlint 0 / 布局 HARD=0 / 符号地图刷新）
 - [ ] 涉及 UI 视觉/交互：真实窗口截图或走查验证（ui_screenshot / ui_walkthrough / ui_motion_capture）
 - [ ] pre-commit 钩子通过（gdlint + import）
 - [ ] 提交信息符合 §6 规范；无产物入库
