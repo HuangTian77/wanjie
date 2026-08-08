@@ -138,8 +138,14 @@ func get_scripts_by_tab(tab_index: int) -> Array[WorldScriptData]:
 			all.sort_custom(func(a, b): return a.rating > b.rating)
 			for s in all:
 				result.append(s)
-		4: # 收藏（市场/社区雏形）
+		4: # 收藏
 			result = get_favorites()
+		5: # 市场（本地：已发布剧本；未来接远程数据源）
+			for sid in scripts:
+				var ws: Variant = scripts[sid]
+				if ws.status == "published":
+					result.append(ws)
+			result.sort_custom(func(a, b): return a.updated_at > b.updated_at)
 	return result
 
 ## 获取推荐剧本（用于轮播）

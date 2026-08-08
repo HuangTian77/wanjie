@@ -79,7 +79,7 @@ func _input(event: InputEvent) -> void:
 		if setup_dialog != null and setup_dialog.visible:
 			setup_dialog.visible = false
 			return
-		if GameManager.current_tab == 5:
+		if GameManager.current_tab == 6:
 			search_input.text = ""
 			_on_tab_pressed(0)
 
@@ -179,7 +179,7 @@ func _on_carousel_next_pressed() -> void:
 
 ## === 标签页设置 ===
 func _setup_tabs() -> void:
-	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "收藏", "搜索"]
+	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "收藏", "市场", "搜索"]
 	for i in tab_names.size():
 		var btn := Button.new()
 		btn.text = tab_names[i]
@@ -217,13 +217,13 @@ func _refresh_script_grid() -> void:
 	script_cards.clear()
 
 	var scripts_list: Array[WorldScriptData]
-	if GameManager.current_tab == 5:
+	if GameManager.current_tab == 6:
 		scripts_list = _search_scripts(search_input.text)
 	else:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
 
 	if scripts_list.is_empty():
-		if GameManager.current_tab == 5:
+		if GameManager.current_tab == 6:
 			# 搜索无结果：区分文案，不显示创建按钮
 			var empty_search: EmptyState = EMPTY_STATE_SCENE.instantiate()
 			script_grid.add_child(empty_search)
