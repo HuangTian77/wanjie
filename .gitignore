@@ -33,3 +33,6 @@ _ui_layout_report.txt
 
 # GdUnit4 测试报告产物
 wanjie/reports/
+
+# 导出构建产物
+build/
