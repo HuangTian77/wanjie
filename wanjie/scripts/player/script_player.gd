@@ -365,7 +365,7 @@ func _update_ui() -> void:
 		var inv: Dictionary = ps.get("inventory", {})
 		player_gold_label.text = "金币: %d" % inv.get("gold", 0)
 	if world_state:
-		time_label.text = world_state.get_time_display()
+		time_label.text = "🗓 " + world_state.get_time_display()
 
 ## === 事件回调 ===
 func _on_event_triggered(event: Dictionary) -> void:

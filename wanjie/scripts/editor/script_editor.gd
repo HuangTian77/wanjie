@@ -237,6 +237,10 @@ func _build_module_tree() -> void:
 	var meta_item := module_tree.create_item(root)
 	meta_item.set_text(0, "📋 剧本元数据")
 	meta_item.set_metadata(0, {"path": "metadata", "type": "metadata"})
+	var stats_item := module_tree.create_item(root)
+	stats_item.set_text(0, "📊 剧本统计")
+	stats_item.set_metadata(0, {"path": "stats", "type": "stats"})
+	stats_item.set_custom_color(0, Color(0.6, 0.9, 0.6, 1))
 	meta_item.set_custom_color(0, Color(0.95, 0.85, 0.55, 1))
 
 	# 世界观
@@ -566,6 +570,8 @@ func _get_editor_key(path: String) -> String:
 		return "blueprint_system"
 	if path == "metadata":
 		return "metadata"
+	elif path == "stats":
+		return "stats"
 	elif path.begins_with("worldview/"):
 		return "worldview"
 	elif path.begins_with("event/"):
@@ -587,6 +593,53 @@ func _get_editor_key(path: String) -> String:
 	return path
 
 ## === 面板创建工厂 ===
+func _create_stats_panel() -> Control:
+	var panel := _make_scroll_panel()
+	var vbox := _make_vbox(panel)
+	_add_section_label(vbox, "📊 剧本统计")
+	var ws := current_script
+	# 事件
+	var ev_count := ws.event_system.story_events.size() if ws.event_system else 0
+	var rand_count := ws.event_system.random_events.size() if ws.event_system else 0
+	var chain_count := ws.event_system.event_chains.size() if ws.event_system else 0
+	# 字数（背景+事件描述）
+	var words := 0
+	if ws.worldview:
+		words += ws.worldview.background_story.length()
+	if ws.event_system:
+		for e in ws.event_system.story_events:
+			words += str(e.get("description", "")).length()
+	# 技能/经济
+	var skill_count: int = ws.ability_system.skills.size() if ws.ability_system else 0
+	var npc_count: int = ws.combat_system.combat_npcs.size() if ws.combat_system else 0
+	var money_types: int = ws.economy_system.currencies.size() if ws.economy_system else 0
+	var stats := [
+		["📜 剧情事件", str(ev_count)],
+		["🎲 随机事件", str(rand_count)],
+		["🔗 事件链", str(chain_count)],
+		["✍️ 剧情字数", str(words)],
+		["⚔ 技能数", str(skill_count)],
+		["👹 NPC", str(npc_count)],
+		["💰 货币种类", str(money_types)],
+		["📏 预估体验时长", "%d 分钟" % int(ev_count * 3.0)],
+		["📈 体验次数", str(ws.play_count)],
+		["⭐ 评分", "%.1f（%d人）" % [ws.rating, ws.rating_count]],
+	]
+	for item in stats:
+		var row := HBoxContainer.new()
+		var k := Label.new()
+		k.text = item[0]
+		k.custom_minimum_size.x = 140
+		k.add_theme_font_size_override("font_size", 13)
+		row.add_child(k)
+		var v := Label.new()
+		v.text = item[1]
+		v.add_theme_color_override("font_color", Color(0.85, 0.75, 0.5))
+		v.add_theme_font_size_override("font_size", 13)
+		row.add_child(v)
+		vbox.add_child(row)
+	return panel
+
 func _create_metadata_panel() -> Control:
 	var panel := _make_scroll_panel()
 	var vbox := _make_vbox(panel)
