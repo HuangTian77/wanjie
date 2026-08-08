@@ -573,6 +573,9 @@ func _on_combat_ended(result: String) -> void:
 			_sync_save_state()
 	_add_history(msg)
 	_set_main_text("[b]战斗结束：%s[/b]" % msg)
+	# 战斗结束后提供"继续"推进剧情
+	_clear_choices()
+	_add_choice_button("继续", "_on_continue_pressed")
 
 func _battle_log_line(line: String) -> void:
 	battle_log.append_text(line + "\n")
