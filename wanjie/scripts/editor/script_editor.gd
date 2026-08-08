@@ -1019,6 +1019,7 @@ func _on_publish_pressed() -> void:
 	ScriptDataManager.update_script(current_script)
 	status_label.text = "📢 已发布"
 	ToastManager.success("剧本已发布")
+	GameManager.unlock_achievement("first_publish", "首次发布剧本")
 	_log_output("📢 剧本已发布: %s" % current_script.name)
 
 ## 设置剧本封面（选择图片 → assets/cover.png）

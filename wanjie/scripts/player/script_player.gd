@@ -44,6 +44,8 @@ var _typewriter_done: bool = true
 @onready var tavern_char_select: OptionButton = %TavernCharSelect
 @onready var tavern_msgs: RichTextLabel = %TavernMsgs
 @onready var tavern_input: LineEdit = %TavernInput
+@onready var econ_label: Label = %EconLabel
+@onready var item_label: Label = %ItemLabel
 
 func _ready() -> void:
 	_init_engines()
@@ -102,6 +104,7 @@ func _init_engines() -> void:
 	script_data.ensure_subsystems()
 	# 记录一次体验（体验数+1、最近体验前置）
 	GameManager.record_play(sid)
+	GameManager.unlock_achievement("first_play", "首次游玩剧本")
 
 	world_state = load("res://scripts/player/world_state.gd").new()
 	if script_data.worldview:
@@ -344,6 +347,16 @@ func _update_ui() -> void:
 		hp_bar.max_value = max_hp
 		hp_bar.value = current_hp
 		hp_label.text = "HP: %d/%d" % [current_hp, max_hp]
+		# 经济状态（金币/物品）
+		if economy_engine != null:
+			var gold := 0
+			for cid in economy_engine.player_currencies:
+				gold += int(economy_engine.player_currencies[cid])
+			econ_label.text = "💰 %d" % gold
+			item_label.text = "🎒 %d" % economy_engine.player_inventory.size()
+		else:
+			econ_label.text = "💰 0"
+			item_label.text = "🎒 0"
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
 		mp_bar.max_value = max_mp
@@ -436,6 +449,7 @@ func _apply_consequence(consequence: Dictionary) -> void:
 func _sync_save_state() -> void:
 	if SaveManager.current_save == null:
 		return
+	_update_ui()
 	SaveManager.current_save.event_history = event_engine.to_dict() if event_engine else {}
 	SaveManager.current_save.world_state = world_state.to_dict() if world_state else {}
 	SaveManager.current_save.economy_state = economy_engine.to_dict() if economy_engine else {}

@@ -271,6 +271,8 @@ func _show_empty_state() -> void:
 func _on_favorite_pressed(script_id: String) -> void:
 	var fav := GameManager.toggle_favorite(script_id)
 	ToastManager.success("已收藏 ♥" if fav else "已取消收藏")
+	if fav:
+		GameManager.unlock_achievement("first_favorite", "收藏第一个剧本")
 	_refresh_script_grid()
 	if GameManager.current_tab == 4:
 		_on_tab_pressed(4)

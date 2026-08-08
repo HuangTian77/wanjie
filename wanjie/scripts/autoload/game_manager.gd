@@ -201,6 +201,15 @@ func get_favorites() -> Array[WorldScriptData]:
 			result.append(ws)
 	return result
 
+## 解锁成就（首次触发才解锁；返回是否新解锁）
+func unlock_achievement(id: String, title: String = "") -> bool:
+	if user_data.achievements.has(id):
+		return false
+	user_data.achievements.append(id)
+	_save_user_data()
+	ToastManager.success("🏆 成就解锁: %s" % title)
+	return true
+
 ## 切换标签页
 func set_current_tab(tab_index: int) -> void:
 	current_tab = tab_index
@@ -208,6 +217,7 @@ func set_current_tab(tab_index: int) -> void:
 
 ## === ScriptDataManager信号处理 ===
 func _on_script_created(script_id: String) -> void:
+	unlock_achievement("first_create", "首次创作剧本")
 	var ws := ScriptDataManager.find_script(script_id)
 	if ws:
 		scripts[script_id] = ws

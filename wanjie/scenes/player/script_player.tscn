@@ -48,7 +48,16 @@ theme_override_colors/font_color = Color(0.29, 0.216, 0.157, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="EconLabel" type="Label" parent="MainVBox/TopBar/TopHBox"]
+layout_mode = 2
+text = "💰 0"
+
+[node name="ItemLabel" type="Label" parent="MainVBox/TopBar/TopHBox"]
+layout_mode = 2
+text = "🎒 0"
+
 [node name="TimeLabel" type="Label" parent="MainVBox/TopBar/TopHBox"]
+unique_name_in_owner = true
 unique_name_in_owner = true
 layout_mode = 2
 text = "第1年 1月 1日 8:00"
