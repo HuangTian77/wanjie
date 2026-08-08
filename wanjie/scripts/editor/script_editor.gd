@@ -157,6 +157,7 @@ func _ready() -> void:
 	_load_script()
 	_build_module_tree()
 	_build_template_tree()
+	_setup_template_tree()
 	_setup_module_tree_context()
 	_update_validation()
 	_init_code_editor()
@@ -980,6 +981,10 @@ func _add_tree_template(parent: TreeItem, text: String, category: String) -> voi
 	item.set_custom_font_size(0, 11)
 
 ## 模板树点击 - 插入到代码编辑器
+func _setup_template_tree() -> void:
+	if not template_tree.item_activated.is_connected(_on_template_selected):
+		template_tree.item_activated.connect(_on_template_selected)
+
 func _on_template_selected() -> void:
 	var item := template_tree.get_selected()
 	if item == null:

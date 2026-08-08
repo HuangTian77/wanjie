@@ -557,6 +557,15 @@ func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
 	_sync_save_state()
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
+	# 胜利奖励（经验/金币）——奖励应用并提示
+	if result == "victory" and combat_engine != null:
+		var rewards: Dictionary = combat_engine.get_rewards()
+		var gold: int = int(rewards.get("gold", 0))
+		var exp: int = int(rewards.get("experience", 0))
+		if economy_engine != null and gold > 0:
+			economy_engine.add_currency("gold", gold)
+			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
+			_sync_save_state()
 	_add_history(msg)
 	_set_main_text("[b]战斗结束：%s[/b]" % msg)
 
