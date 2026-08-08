@@ -866,6 +866,19 @@ func _write_progress() -> void:
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
 
+## 休息：时间推进 + 回满状态
+func _on_menu_rest_pressed() -> void:
+	if world_state:
+		world_state.advance_time(8)
+	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
+		var stats: Dictionary = combat_engine.player_combat_stats
+		stats["hp"] = stats.get("max_hp", 100)
+		stats["mp"] = stats.get("max_mp", 50)
+	_update_ui()
+	_sync_save_state()
+	ToastManager.success("休息片刻，HP/MP 已回满")
+	_add_history("在营地休息了 8 小时，状态恢复")
+
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
 	var dialog := AcceptDialog.new()

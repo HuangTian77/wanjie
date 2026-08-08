@@ -326,6 +326,11 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "★ 评分"
 
+[node name="RestBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "😴 休息（回满状态）"
+
 [node name="HelpBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -402,6 +407,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/ShopBtn" to="." method="_on_menu_shop_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BagBtn" to="." method="_on_menu_bag_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RatingBtn" to="." method="_on_menu_rating_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/RestBtn" to="." method="_on_menu_rest_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_close_pressed"]
