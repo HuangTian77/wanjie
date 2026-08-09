@@ -732,6 +732,23 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 					center /= count
 					_bp_offset = canvas.size / 2.0 - center * _bp_zoom
 					canvas.queue_redraw()
+		elif event.keycode in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN] and not _bp_selected_ids.is_empty():
+			# 方向键微调选中节点（Shift 加速 10px）
+			var step := 10.0 if event.shift_pressed else 1.0
+			var delta := Vector2.ZERO
+			match event.keycode:
+				KEY_LEFT: delta = Vector2(-step, 0)
+				KEY_RIGHT: delta = Vector2(step, 0)
+				KEY_UP: delta = Vector2(0, -step)
+				KEY_DOWN: delta = Vector2(0, step)
+			_bp_push_undo()
+			for nid in _bp_selected_ids:
+				var nd: Dictionary = graph["nodes"].get(nid, {})
+				if not nd.is_empty():
+					nd["pos"] = Vector2(nd.get("pos", Vector2.ZERO)) + delta
+			_save_active_graph()
+			_host._sync_to_code_editor()
+			canvas.queue_redraw()
 		elif event.keycode == KEY_EQUAL or event.keycode == KEY_KP_ADD:
 			_bp_zoom = clampf(_bp_zoom * 1.15, 0.2, 3.0)
 			canvas.queue_redraw()
