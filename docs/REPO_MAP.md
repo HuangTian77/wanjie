@@ -1311,11 +1311,12 @@
 
 - class_name **ScriptCard**
 - signal `clicked`
+- signal `double_clicked`
 - signal `favorite_requested`
 - signal `edit_requested`
 - signal `delete_requested`
-- func `setup` (L28)
-- func `_ready` (L81)
+- func `setup` (L30)
+- func `_ready` (L83)
 
 ### scripts/ui/components/section_header.gd (`SectionHeader`)
 

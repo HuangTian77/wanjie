@@ -4,6 +4,8 @@ class_name ScriptCard
 extends PanelContainer
 
 signal clicked(script_id: String)
+## 双击卡片（进入编辑器）
+signal double_clicked(script_id: String)
 signal favorite_requested(script_id: String)
 signal edit_requested(script_id: String)
 signal delete_requested(script_id: String, script_name: String)
@@ -117,4 +119,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		if edit_btn.get_global_rect().has_point(event.global_position) \
 			or delete_btn.get_global_rect().has_point(event.global_position):
 			return
-		clicked.emit(script_id)
+		if event.double_click:
+			double_clicked.emit(script_id)
+		else:
+			clicked.emit(script_id)

@@ -380,6 +380,8 @@ func _refresh_script_grid() -> void:
 		script_grid.add_child(card)
 		card.setup(script_data)
 		card.clicked.connect(_on_card_clicked)
+		card.double_clicked.connect(_on_card_double_clicked)
+		card.double_clicked.connect(_on_card_double_clicked)
 		card.edit_requested.connect(_on_edit_script_pressed)
 		card.delete_requested.connect(_on_delete_script_pressed)
 		card.favorite_requested.connect(_on_favorite_pressed)
@@ -419,6 +421,10 @@ func _on_favorite_pressed(script_id: String) -> void:
 	_refresh_script_grid()
 	if GameManager.current_tab == 4:
 		_on_tab_pressed(4)
+
+## 双击卡片：直接进入编辑器
+func _on_card_double_clicked(script_id: String) -> void:
+	SceneManager.open_script_editor(script_id)
 
 func _on_card_clicked(script_id: String) -> void:
 	# 详情弹窗（大图/描述/评分/操作），避免误触直接进入
