@@ -968,8 +968,16 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_build_basic_node_props(detail, node)
 		return
 	# === 注册表节点: 动态渲染参数控件 ===
-	# 标题栏
-	_host._ui().add_section_label(detail, "▶ %s" % node.get("title", node["node_type"]))
+	# 标题栏（可编辑重命名）
+	_host._ui().add_text_field(detail, "节点标题", node.get("title", ""), func(v):
+		var t2 := str(v).strip_edges()
+		if t2.is_empty():
+			t2 = BlueprintNodeRegistry.get_display_name(node.get("node_type", ""))
+		node["title"] = t2
+		_host._mark_dirty()
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
 	# 分类+优先级标签
