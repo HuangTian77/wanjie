@@ -278,7 +278,10 @@ func _advance_to_next_event() -> void:
 		if not random_event.is_empty():
 			_run_event(random_event)
 		else:
-			_set_main_text("你在这个世界中继续探索...\n暂时没有发现特别的事件。\n\n[i][点击继续探索][/i]")
+			var time_info := ""
+			if world_state:
+				time_info = "（%s）" % world_state.get_time_display()
+			_set_main_text("你在这个世界中继续探索...%s\n暂时没有发现特别的事件。\n\n[i][点击继续探索][/i]" % time_info)
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
