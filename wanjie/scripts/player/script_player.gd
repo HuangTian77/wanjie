@@ -616,6 +616,9 @@ func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
 	_sync_save_state()
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
+	# 结算统计：回合数
+	if combat_engine != null:
+		msg += "（共 %d 回合）" % combat_engine.current_round
 	# 胜利奖励（经验/金币）——奖励应用并提示
 	if result == "victory" and combat_engine != null:
 		var rewards: Dictionary = combat_engine.get_rewards()
