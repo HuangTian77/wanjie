@@ -550,7 +550,9 @@ func _update_ui() -> void:
 		var inv: Dictionary = ps.get("inventory", {})
 		player_gold_label.text = "金币: %d" % inv.get("gold", 0)
 	if world_state:
-		time_label.text = "🗓 " + world_state.get_time_display()
+		var region_hud: String = str(world_state.get_variable("current_region", ""))
+		var region_prefix := " 📍%s" % region_hud if not region_hud.is_empty() else ""
+		time_label.text = "🗓 " + world_state.get_time_display() + region_prefix
 
 ## HP 条填充样式（按血量百分比配色）
 func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
