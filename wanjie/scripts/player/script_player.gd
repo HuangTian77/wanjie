@@ -1208,6 +1208,28 @@ func _on_menu_log_pressed() -> void:
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("日志已复制"))
 	box.add_child(copy_btn)
+	# 导出日志按钮
+	var export_btn := Button.new()
+	export_btn.text = "💾 导出日志"
+	export_btn.pressed.connect(func():
+		var fd := FileDialog.new()
+		fd.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+		fd.title = "导出世界日志"
+		fd.add_filter("*.txt ; 文本文件")
+		fd.current_path = "世界日志.txt"
+		fd.min_size = Vector2i(600, 400)
+		add_child(fd)
+		fd.file_selected.connect(func(path: String):
+			var f := FileAccess.open(path, FileAccess.WRITE)
+			if f:
+				f.store_string(list.text)
+				f.close()
+				ToastManager.success("日志已导出")
+			else:
+				ToastManager.warning("导出失败")
+			fd.queue_free())
+		fd.popup_centered())
+	box.add_child(export_btn)
 	var has_any := false
 	# 已探索区域
 	if world_state and not world_state.explored_regions.is_empty():
