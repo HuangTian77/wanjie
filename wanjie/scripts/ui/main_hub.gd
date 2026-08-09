@@ -418,6 +418,11 @@ func _search_scripts(query: String) -> Array[WorldScriptData]:
 	var result: Array[WorldScriptData] = []
 	var ql := q.to_lower()
 	for s in GameManager.scripts.values():
+		# 支持 "作者:xxx" 前缀按作者搜索
+		if ql.begins_with("作者:"):
+			if s.author.to_lower().contains(ql.trim_prefix("作者:")):
+				result.append(s)
+			continue
 		if ql in s.name.to_lower() or ql in s.description.to_lower() or s.tags.any(func(t): return ql in t.to_lower()):
 			result.append(s)
 	return result
@@ -505,6 +510,16 @@ func _on_card_clicked(script_id: String) -> void:
 			_on_tab_pressed(6)
 			search_input.grab_focus())
 		btns.add_child(tag_btn)
+	# 同作者搜索
+	if not ws.author.is_empty():
+		var author_btn := Button.new()
+		author_btn.text = "👤 同作者"
+		author_btn.pressed.connect(func():
+			dialog.queue_free()
+			search_input.text = "作者:" + ws.author
+			_on_tab_pressed(6)
+			search_input.grab_focus())
+		btns.add_child(author_btn)
 	box.add_child(btns)
 	dialog.popup_centered()
 
