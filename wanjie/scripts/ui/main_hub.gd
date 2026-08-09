@@ -222,6 +222,10 @@ func _setup_top_bar() -> void:
 	refresh_btn.tooltip_text = "刷新剧本库"
 	refresh_btn.flat = true
 	refresh_btn.pressed.connect(func():
+		# 刷新旋转动画（尊重全局动效）
+		if ThemeManager.animations_enabled:
+			var tw := create_tween()
+			tw.tween_property(refresh_btn, "rotation", refresh_btn.rotation + TAU, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		GameManager.reload_scripts()
 		ToastManager.success("剧本库已刷新"))
 	get_node("MainMargin/VBox/TopBar").add_child(refresh_btn)
