@@ -900,11 +900,16 @@ func _refresh_battle_ui() -> void:
 		return
 	var parts: Array[String] = []
 	var alive := 0
+	var total_enemies := 0
 	for e in combat_engine.enemies:
+		total_enemies += 1
 		if e.get("is_alive", true):
 			alive += 1
 			parts.append("%s HP:%d/%d" % [e.get("name", "?"), int(e.get("hp", 0)), int(e.get("max_hp", 1))])
-	enemy_info.text = "敌人：%s" % ("；".join(parts) if parts.is_empty() == false else "（无）")
+	var count_txt := ""
+	if total_enemies > 1:
+		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
+	enemy_info.text = "敌人%s：%s" % [count_txt, "；".join(parts) if parts.is_empty() == false else "（无）"]
 	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
 	# 玩家状态
 	var ps: Dictionary = combat_engine.player_combat_stats
