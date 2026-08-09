@@ -60,6 +60,8 @@ var _ending_shown: bool = false
 var _help_shown: bool = false
 ## 本次体验开始时间（毫秒，菜单显示时长）
 var _play_start_time: int = 0
+## 战斗连击计数
+var _combo_count: int = 0
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -744,6 +746,13 @@ func _on_battle_attack_pressed() -> void:
 	if not res.is_empty():
 		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
 		_spawn_damage_popup(-int(res.get("damage", 0)))
+		# 连击计数（造成伤害 +1，≥3 提示）
+		if int(res.get("damage", 0)) > 0:
+			_combo_count += 1
+			if _combo_count >= 3 and _combo_count % 3 == 0:
+				ToastManager.success("🔥 连击 x%d！" % _combo_count)
+		else:
+			_combo_count = 0
 	_refresh_battle_ui()
 
 ## 伤害飘字（战斗手感：上浮淡出）
