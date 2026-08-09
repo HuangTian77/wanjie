@@ -224,7 +224,9 @@ func _setup_top_bar() -> void:
 		ToastManager.success("剧本库已刷新"))
 	get_node("MainMargin/VBox/TopBar").add_child(refresh_btn)
 	# 排序选项
+	_sort_mode = GameManager.user_data.hub_sort_mode
 	var sort_opt := OptionButton.new()
+	sort_opt.name = "SortOption"
 	sort_opt.add_item("默认排序", 0)
 	sort_opt.add_item("按名称", 1)
 	sort_opt.add_item("按更新时间", 2)
@@ -233,6 +235,8 @@ func _setup_top_bar() -> void:
 	sort_opt.tooltip_text = "排序方式"
 	sort_opt.item_selected.connect(func(idx: int):
 		_sort_mode = idx
+		GameManager.user_data.hub_sort_mode = idx
+		GameManager.save_user_data()
 		_refresh_script_grid())
 	get_node("MainMargin/VBox/TopBar").add_child(sort_opt)
 	get_node("MainMargin/VBox/TopBar").add_child(about_btn)
@@ -356,6 +360,9 @@ func _refresh_script_grid() -> void:
 	else:
 		scripts_list = GameManager.get_scripts_by_tab(GameManager.current_tab)
 	# 排序（名称/更新时间/评分）
+	var sort_opt2 := get_node_or_null("MainMargin/VBox/TopBar/TopHBox/SortOption")
+	if sort_opt2 is OptionButton:
+		sort_opt2.select(_sort_mode)
 	match _sort_mode:
 		1:
 			scripts_list.sort_custom(func(a, b): return a.name < b.name)

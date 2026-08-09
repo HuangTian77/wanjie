@@ -45,6 +45,8 @@ extends Resource
 @export var text_speed_preset: String = "standard"
 ## 编辑器自动保存间隔（秒）
 @export var editor_auto_save_interval: float = 60.0
+## 大厅排序模式（0默认/1名称/2更新/3评分）
+@export var hub_sort_mode: int = 0
 ## 设置：字体大小 (small/medium/large/xlarge)
 @export var font_size_preset: String = "medium"
 ## 上次资源恢复时间戳（unix 秒, 用于离线恢复灵感/精力）
@@ -57,6 +59,7 @@ func reset_to_defaults() -> void:
 	text_speed_preset = "standard"
 	font_size_preset = "medium"
 	editor_auto_save_interval = 60.0
+	hub_sort_mode = 0
 	animations_enabled = true
 	ai_enabled = false
 	ai_npc_enabled = false
@@ -84,6 +87,7 @@ func to_dict() -> Dictionary:
 		"animations_enabled": animations_enabled,
 		"fullscreen": fullscreen,
 		"editor_auto_save_interval": editor_auto_save_interval,
+		"hub_sort_mode": hub_sort_mode,
 		"text_speed_preset": text_speed_preset,
 		"font_size_preset": font_size_preset,
 		"last_recovery_time": last_recovery_time,
