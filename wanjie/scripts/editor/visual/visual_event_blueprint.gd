@@ -1062,6 +1062,16 @@ func _show_bp_node_properties(node_id: String) -> void:
 			_show_bp_node_properties(node_id)
 			_bp_redraw_canvas())
 		detail.add_child(reset_btn)
+		# 复制参数 JSON
+		var json_copy_btn := Button.new()
+		json_copy_btn.text = "⧉ 参数JSON"
+		json_copy_btn.flat = true
+		json_copy_btn.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
+		json_copy_btn.tooltip_text = "复制全部参数为 JSON"
+		json_copy_btn.pressed.connect(func():
+			DisplayServer.clipboard_set(JSON.stringify(node.get("properties", {})))
+			_host._log_output("[已复制] 节点参数 JSON"))
+		detail.add_child(json_copy_btn)
 		# 删除节点按钮
 		var del_btn := Button.new()
 		del_btn.text = "🗑 删除节点"
