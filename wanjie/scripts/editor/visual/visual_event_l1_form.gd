@@ -262,7 +262,7 @@ func _build_l1_event_form(form_vbox: VBoxContainer, event_id: String) -> void:
 		var lv: Control = _event_l1_container.find_child("L1EventList", true, false)
 		if lv:
 			_build_l1_event_list(lv)
-	)
+	, "玩家看到的剧情事件标题（必填）")
 	_host._ui().add_multiline_field(form_vbox, event.get("description", ""), func(v):
 		event["description"] = v
 		_host._mark_dirty()
