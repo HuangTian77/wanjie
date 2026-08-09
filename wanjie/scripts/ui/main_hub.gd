@@ -56,12 +56,14 @@ var _dot_inactive_style: StyleBoxFlat = null
 ## 搜索防抖计时器（200ms, 避免每次按键全量遍历剧本）
 var _search_timer: Timer = null
 
+## 版本号（与 ide_about_dialog 同步）
+const HUB_VERSION := "1.2.0"
 ## 响应式：卡片最小宽度
 const CARD_MIN_WIDTH := 240
 
 func _ready() -> void:
 	if version_label != null:
-		version_label.text = "v1.2.0"
+		version_label.text = "v%s" % HUB_VERSION
 	_refresh_personal_stats()
 	GameManager.scripts_changed.connect(func(_i): _refresh_personal_stats())
 	# 首次启动欢迎引导
