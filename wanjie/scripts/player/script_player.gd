@@ -1021,7 +1021,7 @@ func _on_menu_log_pressed() -> void:
 	if world_state and not world_state.faction_states.is_empty():
 		list.append_text("[b]【势力关系】[/b]\n")
 		for fid in world_state.faction_states:
-			var rel := world_state.faction_states[fid]
+			var rel: Variant = world_state.faction_states[fid]
 			var val: float = float(rel.get("relationship", rel)) if rel is Dictionary else float(rel)
 			list.append_text("• %s: %s\n" % [fid, str(val)])
 			has_any = true
