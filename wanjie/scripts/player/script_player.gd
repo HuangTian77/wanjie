@@ -117,6 +117,13 @@ func _process(delta: float) -> void:
 			main_text.visible_characters = _typewriter_index
 		if _typewriter_index >= _typewriter_text.length():
 			_typewriter_done = true
+			main_text.text = _typewriter_text
+			main_text.visible_characters = -1
+		else:
+			# 打字中光标闪烁（交替显示 ▌）
+			var cursor := "▌" if int(_typewriter_index / 3) % 2 == 0 else ""
+			main_text.text = _typewriter_text.substr(0, _typewriter_index) + cursor
+			main_text.visible_characters = -1
 
 func _unhandled_input(event: InputEvent) -> void:
 	# 点击或空格/回车跳过打字机
@@ -168,6 +175,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _skip_typewriter() -> void:
 	_typewriter_index = _typewriter_text.length()
 	_typewriter_done = true
+	main_text.text = _typewriter_text
 	main_text.visible_characters = -1
 
 ## 初始化引擎
