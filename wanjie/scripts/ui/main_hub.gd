@@ -267,7 +267,11 @@ func _update_carousel() -> void:
 		carousel_label.text = "暂无推荐剧本"
 		return
 	var script_data := featured_scripts[carousel_index]
-	carousel_label.text = "%s — %s\n%s" % [script_data.name, script_data.author, script_data.description]
+	# 进度显示（已体验百分比）
+	var prog_txt := ""
+	if script_data.progress > 0.0:
+		prog_txt = "  [进度 %d%%]" % int(script_data.progress * 100.0)
+	carousel_label.text = "%s — %s%s\n%s" % [script_data.name, script_data.author, prog_txt, script_data.description]
 	# 切换文字淡入动效（尊重全局动效开关）
 	if _carousel_tween:
 		_carousel_tween.kill()
