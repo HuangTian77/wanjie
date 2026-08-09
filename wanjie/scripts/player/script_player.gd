@@ -755,6 +755,9 @@ func _on_battle_attack_pressed() -> void:
 			_combo_count += 1
 			if _combo_count >= 3 and _combo_count % 3 == 0:
 				ToastManager.success("🔥 连击 x%d！" % _combo_count)
+			# 暴击提示
+			if res.get("critical", false):
+				ToastManager.info("💥 暴击！")
 		else:
 			_combo_count = 0
 	_refresh_battle_ui()
