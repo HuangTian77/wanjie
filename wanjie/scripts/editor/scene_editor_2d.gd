@@ -694,6 +694,10 @@ func _on_canvas_input(event: InputEvent) -> void:
 				_undo()
 			elif k.keycode == KEY_Y and k.ctrl_pressed:
 				_redo()
+			elif k.keycode == KEY_G and not k.ctrl_pressed:
+				# G 键快捷切换网格吸附
+				_grid_snap = not _grid_snap
+				_status("网格吸附: %s" % ("开" if _grid_snap else "关"), C_YELLOW)
 
 func _find_handle_at(pos: Vector2) -> Dictionary:
 	for node in _selected_nodes:
