@@ -1152,7 +1152,12 @@ func _refresh_menu_title() -> void:
 	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
 	if gm != null and gm.user_data != null:
 		ach_txt = " · 🏆 %d/%d" % [gm.user_data.achievements.size(), gm.ACHIEVEMENTS.size()]
-	title_node.text = "游戏菜单 · 第 %d 天%s%s%s" % [day, progress_txt, time_txt, ach_txt]
+	var save_txt := ""
+	var ast := get_node_or_null("AutoSaveTimer")
+	if ast is Timer and (ast as Timer).is_stopped() == false:
+		var remain: int = int((ast as Timer).time_left / 60.0)
+		save_txt = " · 💾 %d分" % remain if remain >= 1 else ""
+	title_node.text = "游戏菜单 · 第 %d 天%s%s%s%s" % [day, progress_txt, time_txt, ach_txt, save_txt]
 
 func _refresh_difficulty_option() -> void:
 	if difficulty_option == null:
