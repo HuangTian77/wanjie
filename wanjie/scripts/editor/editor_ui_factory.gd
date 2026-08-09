@@ -295,11 +295,19 @@ func add_multiline_field(parent: Control, value: String, on_change: Callable) ->
 	edit.add_theme_font_size_override("font_size", 13)
 	var line_count: int = maxi(1, value.count("\n") + 1)
 	edit.custom_minimum_size.y = clampi(line_count * 20, 120, 400)
+	# 字数统计标签
+	var count_lbl := Label.new()
+	count_lbl.text = "字数 %d" % value.length()
+	count_lbl.add_theme_color_override("font_color", Color(0.5, 0.52, 0.6))
+	count_lbl.add_theme_font_size_override("font_size", 11)
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	parent.add_child(count_lbl)
 	edit.text_changed.connect(func():
 		on_change.call(edit.text)
 		_host._sync_to_code_editor()
 		var lc: int = maxi(1, edit.text.count("\n") + 1)
 		edit.custom_minimum_size.y = clampi(lc * 20, 120, 400)
+		count_lbl.text = "字数 %d" % edit.text.length()
 	)
 	parent.add_child(edit)
 
