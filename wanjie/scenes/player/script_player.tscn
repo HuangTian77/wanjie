@@ -116,7 +116,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="TavernClear" type="Button" parent="TavernPanel/TavernVBox/TavernHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "清空"
+
 [node name="TavernClose" type="Button" parent="TavernPanel/TavernVBox/TavernHeader"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "关闭"
 
@@ -450,6 +456,7 @@ text = "🏃 逃跑"
 
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/MenuBtn" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/TavernBtn" to="." method="_on_tavern_pressed"]
+[connection signal="pressed" from="TavernPanel/TavernVBox/TavernHeader/TavernClear" to="." method="_on_tavern_clear_pressed"]
 [connection signal="pressed" from="TavernPanel/TavernVBox/TavernHeader/TavernClose" to="." method="_on_tavern_close_pressed"]
 [connection signal="text_submitted" from="TavernPanel/TavernVBox/TavernInputRow/TavernInput" to="." method="_on_tavern_send_pressed"]
 [connection signal="pressed" from="TavernPanel/TavernVBox/TavernInputRow/TavernSend" to="." method="_on_tavern_send_pressed"]

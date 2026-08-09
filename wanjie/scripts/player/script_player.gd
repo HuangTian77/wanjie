@@ -624,6 +624,15 @@ func _on_tavern_pressed() -> void:
 	tavern_input.grab_focus()
 	ToastManager.info("🏮 与 %s 对话（←→切换角色）" % TAVERN_CHARS[0].get("name", "角色"))
 
+## 清空当前角色对话历史
+func _on_tavern_clear_pressed() -> void:
+	var cur: int = tavern_char_select.selected
+	var char: Dictionary = TAVERN_CHARS[cur]
+	TavernManager.clear_history()
+	tavern_msgs.clear()
+	_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
+	ToastManager.info("已清空 %s 的对话历史" % char.get("name", "角色"))
+
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
 	tavern_panel.visible = false
