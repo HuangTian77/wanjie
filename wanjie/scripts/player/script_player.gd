@@ -101,9 +101,22 @@ func _process(delta: float) -> void:
 		_auto_timer += delta
 		if _auto_timer >= _auto_interval:
 			_auto_timer = 0.0
-			# 25% 概率释放第一个可用技能（MP 足够时）
+			# 智能战斗：HP<50% 优先治疗（MP 够时）
 			var used_skill := false
-			if combat_engine.ability_data != null and randf() < 0.25:
+			var hp_now: int = int(combat_engine.player_combat_stats.get("hp", 0))
+			var hp_max: int = int(combat_engine.player_combat_stats.get("max_hp", 1))
+			if combat_engine.ability_data != null and hp_max > 0 and hp_now < hp_max * 0.5:
+				for sk2 in combat_engine.ability_data.skills:
+					var etype: String = str(sk2.get("effect", {}).get("type", ""))
+					if etype == "heal":
+						var mcost2: int = int((sk2.get("cost", {}) as Dictionary).get("mana", 0))
+						if mcost2 <= int(combat_engine.player_combat_stats.get("mp", 0)):
+							combat_engine.player_use_skill(str(sk2.get("id", "")), -1)
+							_refresh_battle_ui()
+							used_skill = true
+							break
+			# 否则 25% 概率释放第一个可用技能
+			if not used_skill and combat_engine.ability_data != null and randf() < 0.25:
 				for sk in combat_engine.ability_data.skills:
 					var mcost: int = int((sk.get("cost", {}) as Dictionary).get("mana", 0))
 					if mcost <= int(combat_engine.player_combat_stats.get("mp", 0)):
