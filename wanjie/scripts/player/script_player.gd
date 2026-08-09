@@ -777,6 +777,11 @@ func _enter_tavern_char(index: int) -> void:
 		TavernManager.dialog_history.append({"role": "assistant", "content": greeting})
 		TavernManager.save_history()
 		_tavern_append("assistant", greeting)
+	# 角色简介提示（性格/背景）
+	ToastManager.info("📖 %s：%s（%s）" % [
+		char.get("name", "角色"),
+		char.get("personality", ""),
+		char.get("background", "")])
 	# 空输入禁用发送按钮
 	var sb := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/TavernSend")
 	if sb is Button:
