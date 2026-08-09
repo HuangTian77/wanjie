@@ -661,6 +661,10 @@ func _on_combat_started(enemies: Array) -> void:
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size())
 	menu_panel.visible = false
+	# 逃跑按钮 tooltip：当前成功率
+	var flee_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/FleeBtn")
+	if flee_btn is Button and combat_engine != null:
+		(flee_btn as Button).tooltip_text = "成功率 %.0f%%（敏捷影响）" % (combat_engine.last_flee_chance * 100.0)
 	# 战斗快捷键提示（替换底部常驻提示）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint:
