@@ -848,6 +848,8 @@ func _on_combat_ended(result: String) -> void:
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
+			if _best_combo >= 2:
+				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_sync_save_state()
 		# 经验升级（每 100 经验升 1 级，属性成长）
