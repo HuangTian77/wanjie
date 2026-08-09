@@ -517,21 +517,38 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.6), false, 1.0)
 
 ## 蓝图模式画布输入(事件蓝图编辑视图)
+## 缩放百分比临时提示（画布上 1 秒淡出）
+func _bp_show_zoom(canvas: Control) -> void:
+	var lbl := Label.new()
+	lbl.text = "%d%%" % int(_bp_zoom * 100.0)
+	lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.7))
+	lbl.add_theme_font_size_override("font_size", 16)
+	lbl.position = Vector2(12, 12)
+	lbl.z_index = 50
+	canvas.add_child(lbl)
+	# RefCounted 无 create_tween：用宿主节点创建
+	var host_node: Node = _host
+	var tw: Tween = host_node.create_tween()
+	tw.tween_interval(0.9)
+	tw.tween_property(lbl, "modulate:a", 0.0, 0.4)
+	tw.tween_callback(lbl.queue_free)
+
 func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 	var graph := _get_active_graph()
-	# 滚轮缩放
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			var old_zoom := _bp_zoom
 			_bp_zoom = clampf(_bp_zoom * 1.1, 0.2, 3.0)
 			_bp_offset = event.position - (event.position - _bp_offset) * (_bp_zoom / old_zoom)
 			canvas.queue_redraw()
+			_bp_show_zoom(canvas)
 			return
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			var old_zoom := _bp_zoom
 			_bp_zoom = clampf(_bp_zoom / 1.1, 0.2, 3.0)
 			_bp_offset = event.position - (event.position - _bp_offset) * (_bp_zoom / old_zoom)
 			canvas.queue_redraw()
+			_bp_show_zoom(canvas)
 			return
 	# 鼠标按下
 	if event is InputEventMouseButton and event.pressed:
