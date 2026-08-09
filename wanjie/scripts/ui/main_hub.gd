@@ -327,6 +327,9 @@ func _setup_tabs() -> void:
 	for i in tab_names.size():
 		var btn := Button.new()
 		btn.text = tab_names[i]
+		# 收藏标签显示数量 badge
+		if i == 4:
+			btn.text = "收藏(%d)" % GameManager.user_data.favorites_script_ids.size()
 		btn.toggle_mode = true
 		btn.button_pressed = (i == 0)
 		btn.add_theme_font_size_override("font_size", 14)
@@ -337,11 +340,11 @@ func _setup_tabs() -> void:
 	search_input.placeholder_text = "搜索剧本名称、标签、作者..."
 
 func _on_tab_pressed(tab_index: int) -> void:
-	search_input.visible = (tab_index == 4)
+	search_input.visible = (tab_index == 6)
 	GameManager.set_current_tab(tab_index)
 	_refresh_script_grid()
 	# 切到搜索标签时自动聚焦搜索框
-	if tab_index == 4:
+	if tab_index == 6:
 		search_input.grab_focus()
 		search_input.select_all()
 
