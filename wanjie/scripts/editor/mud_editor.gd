@@ -186,6 +186,7 @@ func _build_toolbar(parent: VBoxContainer) -> void:
 	toolbar.add_child(sep1)
 
 	_tb_btn(toolbar, "导出", C_ACCENT, _on_export)
+	_tb_btn(toolbar, "自动排列", Color(0.6, 0.8, 0.6), _on_auto_arrange)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -882,6 +883,23 @@ func _on_export() -> void:
 	var exp := MudExport.new(_data)
 	var count: int = exp.write_all(MudExport.DEFAULT_OUT_DIR)
 	_set_status("已导出 %d 个文件到 %s" % [count, MudExport.DEFAULT_OUT_DIR])
+
+## 自动排列地图场景（按 ID 网格排布，保持相对顺序）
+func _on_auto_arrange() -> void:
+	var scenes: Array = _data.get_table("scene")
+	if scenes.is_empty():
+		_set_status("无场景可排列")
+		return
+	var cols := 8
+	for i in scenes.size():
+		var s: Dictionary = scenes[i]
+		s["x"] = (i % cols) + 1
+		s["y"] = int(i / cols) + 1
+	if _map_canvas:
+		_map_canvas.queue_redraw()
+	if _tab_builder:
+		_tab_builder.refresh_table("scene")
+	_set_status("已自动排列 %d 个场景（8 列网格）" % scenes.size())
 
 func _on_clear_data() -> void:
 	_data.clear_all()   # 原地清空，数据层引用不变
