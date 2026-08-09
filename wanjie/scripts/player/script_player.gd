@@ -60,6 +60,8 @@ var _ending_shown: bool = false
 var _help_shown: bool = false
 ## 本次体验开始时间（毫秒，菜单显示时长）
 var _play_start_time: int = 0
+## 战斗当前目标索引（-1 自动选第一个存活）
+var _battle_target: int = -1
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -910,6 +912,15 @@ func _refresh_battle_ui() -> void:
 	if total_enemies > 1:
 		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
 	enemy_info.text = "敌人%s：%s" % [count_txt, "；".join(parts) if parts.is_empty() == false else "（无）"]
+	# 目标提示（点击敌人栏循环切换目标）
+	if total_enemies > 1:
+		var target_name := "自动"
+		if _battle_target >= 0 and _battle_target < combat_engine.enemies.size() \
+				and combat_engine.enemies[_battle_target].get("is_alive", true):
+			target_name = str(combat_engine.enemies[_battle_target].get("name", "?"))
+		enemy_info.text += "\n[color=#c9a06a]🎯 目标：%s（点击切换）[/color]" % target_name
+	if enemy_info.get_signal_connection_list("gui_input").is_empty():
+		enemy_info.gui_input.connect(_on_enemy_info_clicked)
 	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
 	# 玩家状态
 	var ps: Dictionary = combat_engine.player_combat_stats
@@ -932,10 +943,26 @@ func _refresh_battle_ui() -> void:
 	if alive == 0 and combat_engine.enemies.size() > 0:
 		combat_engine.call("_check_combat_end")
 
+## 点击敌人栏：循环切换攻击目标
+func _on_enemy_info_clicked(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if combat_engine == null:
+			return
+		# 循环选择下一个存活敌人
+		var count := combat_engine.enemies.size()
+		if count <= 1:
+			_battle_target = -1
+			return
+		for i in range(count):
+			_battle_target = (_battle_target + 1) % count
+			if combat_engine.enemies[_battle_target].get("is_alive", true):
+				break
+		_refresh_battle_ui()
+
 func _on_battle_attack_pressed() -> void:
 	if combat_engine == null:
 		return
-	var res: Dictionary = combat_engine.player_attack(-1)  # 自动选第一个存活敌人
+	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
 	if not res.is_empty():
 		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
 		_spawn_damage_popup(-int(res.get("damage", 0)))
