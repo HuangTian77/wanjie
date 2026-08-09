@@ -266,7 +266,7 @@ func add_stat_card(parent: Control, stats: Array) -> void:
 
 ## === 表单字段 ===
 
-func add_text_field(parent: Control, label_text: String, value: String, on_change: Callable) -> void:
+func add_text_field(parent: Control, label_text: String, value: String, on_change: Callable, hint: String = "") -> void:
 	var hbox := HBoxContainer.new()
 	hbox.add_theme_constant_override("separation", 8)
 	parent.add_child(hbox)
@@ -275,6 +275,8 @@ func add_text_field(parent: Control, label_text: String, value: String, on_chang
 	lbl.custom_minimum_size.x = 110
 	lbl.add_theme_color_override("font_color", C_LABEL)
 	lbl.add_theme_font_size_override("font_size", 13)
+	if not hint.is_empty():
+		lbl.tooltip_text = hint
 	hbox.add_child(lbl)
 	var edit := LineEdit.new()
 	edit.text = value
