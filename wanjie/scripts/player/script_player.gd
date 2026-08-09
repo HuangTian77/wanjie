@@ -1136,6 +1136,15 @@ func _on_menu_log_pressed() -> void:
 				has_any = true
 	if not has_any:
 		list.append_text("[color=#999]暂无世界事件记录…[/color]")
+	# 世界变量（关键剧情标记）
+	if world_state and not world_state.world_variables.is_empty():
+		list.append_text("\n[b]【世界变量】[/b]\n")
+		for k in world_state.world_variables:
+			var v: Variant = world_state.world_variables[k]
+			if v is bool:
+				list.append_text("• %s: %s\n" % [k, "是" if v else "否"])
+			else:
+				list.append_text("• %s: %s\n" % [k, str(v)])
 	dialog.popup_centered()
 
 ## 休息：时间推进 + 回满状态
