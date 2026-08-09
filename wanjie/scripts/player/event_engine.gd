@@ -115,6 +115,16 @@ func make_choice(choice_id: String) -> Array[Dictionary]:
 		"from_event": pending_event["id"],
 		"intensity": 1.0
 	})
+	# 记录剧情分支点（回溯/回顾用）
+	var branch := {
+		"event_id": pending_event["id"],
+		"choice_id": choice_id,
+		"day": world_state.get_current_day() if world_state else 1,
+		"timestamp": world_state.get_time_display() if world_state else "",
+	}
+	branch_points.append(branch)
+	if branch_points.size() > 50:
+		branch_points.pop_front()
 
 	# 更新触发记录
 	for te in triggered_events:
