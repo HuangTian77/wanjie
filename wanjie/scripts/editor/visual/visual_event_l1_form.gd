@@ -179,6 +179,13 @@ func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
 		_build_l1_form_view(_event_l1_container)
 	)
 	list_vbox.add_child(add_btn)
+	if es.story_events.is_empty():
+		var hint := Label.new()
+		hint.text = "（暂无事件，点击上方「+ 添加事件」创建第一个剧情事件）"
+		hint.add_theme_color_override("font_color", Color(0.5, 0.5, 0.55, 0.8))
+		hint.add_theme_font_size_override("font_size", 12)
+		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		list_vbox.add_child(hint)
 	for e in es.story_events:
 		var eid: String = e.get("id", "")
 		var row := HBoxContainer.new()
@@ -246,7 +253,11 @@ func _build_l1_event_form(form_vbox: VBoxContainer, event_id: String) -> void:
 	_host._ui().add_section_label(form_vbox, "📝 %s" % event.get("name", event_id))
 	# 基本信息
 	_host._ui().add_text_field(form_vbox, "事件名称", event.get("name", ""), func(v):
-		event["name"] = v
+		var name := str(v).strip_edges()
+		if name.is_empty():
+			ToastManager.warning("事件名称不能为空，已恢复为默认")
+			name = "未命名事件"
+		event["name"] = name
 		_host._mark_dirty()
 		var lv: Control = _event_l1_container.find_child("L1EventList", true, false)
 		if lv:
