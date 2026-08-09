@@ -85,6 +85,11 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 	gui_input.connect(_on_gui_input)
 	fav_btn.pressed.connect(func(): favorite_requested.emit(script_id))
+	# 已收藏角标（♥ 高亮）
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm != null and gm.user_data != null and gm.user_data.favorites_script_ids.has(script_id):
+		fav_btn.text = "♥"
+		fav_btn.add_theme_color_override("font_color", Color(0.95, 0.45, 0.45))
 	edit_btn.pressed.connect(func(): edit_requested.emit(script_id))
 	delete_btn.pressed.connect(func(): delete_requested.emit(script_id, script_name))
 
