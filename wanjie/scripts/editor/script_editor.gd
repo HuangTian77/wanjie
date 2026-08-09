@@ -674,6 +674,14 @@ func _on_assets_changed() -> void:
 	# 刷新资源面板
 	_open_editor_for_path("assets", "📁 剧本资源", {"type": "assets"})
 
+## 统计蓝图节点总数（所有事件图 + 世界观蓝图）
+func _count_blueprint_nodes(ws: WorldScriptData) -> int:
+	var total := 0
+	if ws.event_system:
+		for g in ws.event_system.event_blueprint_graphs.values():
+			total += (g as Dictionary).get("nodes", {}).size()
+	return total
+
 func _create_stats_panel() -> Control:
 	var panel := _make_scroll_panel()
 	var vbox := _make_vbox(panel)
@@ -702,6 +710,7 @@ func _create_stats_panel() -> Control:
 		["⚔ 技能数", str(skill_count)],
 		["👹 NPC", str(npc_count)],
 		["💰 货币种类", str(money_types)],
+		["🧩 蓝图节点", str(_count_blueprint_nodes(ws))],
 		["📏 预估体验时长", "%d 分钟" % int(ev_count * 3.0)],
 		["📈 体验次数", str(ws.play_count)],
 		["⭐ 评分", "%.1f（%d人）" % [ws.rating, ws.rating_count]],
