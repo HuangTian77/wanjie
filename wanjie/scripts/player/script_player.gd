@@ -465,6 +465,10 @@ func _update_ui() -> void:
 		else:
 			hp_bar.add_theme_stylebox_override("fill", _hp_style(0.35, 0.85, 0.4))
 		hp_label.text = "HP: %d/%d" % [current_hp, max_hp]
+		# 护盾显示（技能获得的护盾值）
+		var shield_val: int = int(ps.get("shield", 0))
+		if shield_val > 0:
+			hp_label.text += "  🛡%d" % shield_val
 		# 经济状态（金币/物品）
 		if economy_engine != null:
 			var gold := 0
