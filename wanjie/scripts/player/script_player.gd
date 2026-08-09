@@ -806,9 +806,14 @@ func _on_combat_round_started(round_num: int) -> void:
 	_refresh_battle_ui()
 
 func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
-	# 玩家受击飘字（敌人攻击时）
+	# 玩家受击飘字（敌人攻击时）+ HP 红闪反馈
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
+		hp_label.add_theme_color_override("font_color", Color(0.95, 0.3, 0.3))
+		var tween := create_tween()
+		tween.tween_interval(0.25)
+		tween.tween_callback(func():
+			hp_label.remove_theme_color_override("font_color"))
 	_refresh_battle_ui()
 
 func _on_combat_ended(result: String) -> void:
