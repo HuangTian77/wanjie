@@ -800,6 +800,13 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 自动战斗重置
+	if _auto_battle:
+		_auto_battle = false
+		var ab := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
+		if ab is Button:
+			(ab as Button).remove_theme_override("font_color")
+			(ab as Button).text = "⚡ 自动"
 	_sync_save_state()
 	# 战斗统计
 	match result:
