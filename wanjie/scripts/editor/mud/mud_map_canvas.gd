@@ -262,6 +262,12 @@ func _on_mouse_motion(mm: InputEventMouseMotion) -> void:
 		new_hover = int(scene.get("id", 0))
 	if new_hover != _hover_id:
 		_hover_id = new_hover
+		# hover tooltip：显示坐标与 noun
+		if not scene.is_empty():
+			var cell: Vector2i = _cell_of_scene(scene)
+			tooltip_text = "场景 %s（%d,%d）" % [str(scene.get("name", "#%d" % int(scene.get("id", 0)))), cell.x + 1, cell.y + 1]
+		else:
+			tooltip_text = ""
 		queue_redraw()
 	if _drag_id != 0:
 		if mm.position.distance_to(_press_pos) > 6.0:
