@@ -451,6 +451,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/MenuBtn" to="." method="_on_menu_pressed"]
 [connection signal="pressed" from="MainVBox/TopBar/TopHBox/TavernBtn" to="." method="_on_tavern_pressed"]
 [connection signal="pressed" from="TavernPanel/TavernVBox/TavernHeader/TavernClose" to="." method="_on_tavern_close_pressed"]
+[connection signal="text_submitted" from="TavernPanel/TavernVBox/TavernInputRow/TavernInput" to="." method="_on_tavern_send_pressed"]
 [connection signal="pressed" from="TavernPanel/TavernVBox/TavernInputRow/TavernSend" to="." method="_on_tavern_send_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/SaveBtn" to="." method="_on_menu_save_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/LoadBtn" to="." method="_on_menu_load_pressed"]
