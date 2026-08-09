@@ -1165,7 +1165,10 @@ func _on_menu_close_pressed() -> void:
 ## 世界日志（因果标记/选择历史）
 func _on_menu_log_pressed() -> void:
 	var dialog := AcceptDialog.new()
-	dialog.title = "世界日志"
+	var time_str := ""
+	if world_state:
+		time_str = " · " + world_state.get_time_display()
+	dialog.title = "世界日志%s" % time_str
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
 	var box := VBoxContainer.new()
