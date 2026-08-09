@@ -86,14 +86,15 @@
 ### resources/data/user_data.gd (`UserData`)
 
 - class_name **UserData**
-- func `to_dict` (L54)
-- func `from_dict` (L82)
-- func `get_inspiration_display` (L113)
-- func `get_creation_energy_display` (L117)
-- func `can_enter_script` (L121)
-- func `consume_inspiration` (L125)
-- func `can_create_script` (L132)
-- func `consume_creation_energy` (L136)
+- func `reset_to_defaults` (L55)
+- func `to_dict` (L65)
+- func `from_dict` (L93)
+- func `get_inspiration_display` (L124)
+- func `get_creation_energy_display` (L128)
+- func `can_enter_script` (L132)
+- func `consume_inspiration` (L136)
+- func `can_create_script` (L143)
+- func `consume_creation_energy` (L147)
 
 ### resources/data/world_script_data.gd (`WorldScriptData`)
 

@@ -176,6 +176,18 @@ func _on_clear_cache_pressed() -> void:
 	await get_tree().create_timer(2.0).timeout
 	$SaveConfirmPopup.visible = false
 
+## 恢复默认设置（确认后重置偏好）
+func _on_reset_defaults_pressed() -> void:
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "确定恢复默认设置？\n仅重置偏好项（姓名/文本速度/动画等），剧本与存档不受影响。"
+	confirm.confirmed.connect(func():
+		GameManager.user_data.reset_to_defaults()
+		GameManager.save_user_data()
+		_load_settings()
+		ToastManager.success("已恢复默认设置"))
+	add_child(confirm)
+	confirm.popup_centered()
+
 ## 导出数据
 func _on_export_data_pressed() -> void:
 	var export_dialog: FileDialog = $ExportDialog

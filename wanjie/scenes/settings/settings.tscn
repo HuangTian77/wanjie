@@ -331,6 +331,10 @@ text = "清除缓存"
 layout_mode = 2
 text = "导出所有数据"
 
+[node name="ResetBtn" type="Button" parent="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox"]
+layout_mode = 2
+text = "恢复默认设置"
+
 [node name="AboutCard" type="PanelContainer" parent="MarginContainer/VBox/Scroll/ContentVBox"]
 layout_mode = 2
 
@@ -386,5 +390,6 @@ access = 2
 [connection signal="pressed" from="MarginContainer/VBox/TopBar/SaveBtn" to="." method="_on_save_pressed"]
 [connection signal="item_selected" from="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/FontSizeOption" to="." method="_on_font_size_changed"]
 [connection signal="pressed" from="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox/ClearCacheBtn" to="." method="_on_clear_cache_pressed"]
+[connection signal="pressed" from="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox/ResetBtn" to="." method="_on_reset_defaults_pressed"]
 [connection signal="pressed" from="MarginContainer/VBox/Scroll/ContentVBox/DataCard/DataSection/DataBtnHBox/ExportDataBtn" to="." method="_on_export_data_pressed"]
 [connection signal="dir_selected" from="ExportDialog" to="." method="_on_export_dialog_dir_selected"]

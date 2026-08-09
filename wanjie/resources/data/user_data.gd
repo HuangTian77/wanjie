@@ -51,6 +51,17 @@ extends Resource
 @export var last_recovery_time: int = 0
 
 ## 序列化为字典
+## 恢复默认设置（仅偏好项，不动剧本/存档/成就；保存由调用方执行）
+func reset_to_defaults() -> void:
+	player_name = "旅者"
+	text_speed_preset = "standard"
+	font_size_preset = "medium"
+	editor_auto_save_interval = 60.0
+	animations_enabled = true
+	ai_enabled = false
+	ai_npc_enabled = false
+	difficulty_mode = "normal"
+
 func to_dict() -> Dictionary:
 	return {
 		"player_name": player_name,
