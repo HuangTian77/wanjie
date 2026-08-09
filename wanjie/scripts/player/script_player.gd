@@ -1105,8 +1105,18 @@ func _on_menu_log_pressed() -> void:
 	dialog.title = "世界日志"
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
+	var box := VBoxContainer.new()
+	dialog.add_child(box)
 	var list := RichTextLabel.new()
-	dialog.add_child(list)
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(list)
+	# 复制日志按钮
+	var copy_btn := Button.new()
+	copy_btn.text = "⧉ 复制日志"
+	copy_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(list.text)
+		ToastManager.success("日志已复制"))
+	box.add_child(copy_btn)
 	var has_any := false
 	# 已探索区域
 	if world_state and not world_state.explored_regions.is_empty():
