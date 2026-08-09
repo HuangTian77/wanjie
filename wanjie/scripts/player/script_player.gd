@@ -978,6 +978,10 @@ func _on_battle_skill_pressed() -> void:
 			if healed > 0:
 				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed])
 				_spawn_damage_popup(healed)  # 治疗 +绿字飘字
+			if sres.get("buffed", false):
+				ToastManager.success("🛡 %s 获得增益！" % skills[id].get("name", "技能"))
+			if sres.get("shield", 0) > 0:
+				ToastManager.info("🛡 获得 %d 点护盾" % int(sres.get("shield", 0)))
 		_refresh_battle_ui())
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
