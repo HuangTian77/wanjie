@@ -303,9 +303,10 @@
 - func `get_types_by_category` (L56)
 - func `get_definition` (L65)
 - func `get_categories` (L70)
-- func `search_nodes` (L74)
-- func `create_node` (L92)
-- func `get_param_options` (L122)
+- func `get_display_name` (L74)
+- func `search_nodes` (L80)
+- func `create_node` (L98)
+- func `get_param_options` (L128)
 
 ### scripts/editor/blueprint_validator.gd (`BlueprintValidator`)
 
@@ -1070,10 +1071,10 @@
 - func `hit_test_node` (L120)
 - func `hit_test_pins` (L133)
 - func `draw_blueprint_node` (L149)
-- func `draw_typed_pins` (L191)
-- func `draw_exec_connection` (L238)
-- func `hit_test_bp_pins` (L267)
-- func `hit_test_bp_node` (L287)
+- func `draw_typed_pins` (L193)
+- func `draw_exec_connection` (L240)
+- func `hit_test_bp_pins` (L269)
+- func `hit_test_bp_node` (L289)
 
 ### scripts/editor/visual/visual_blueprint_workspace.gd (visual_blueprint_workspace.gd)
 

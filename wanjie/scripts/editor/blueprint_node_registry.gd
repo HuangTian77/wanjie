@@ -70,6 +70,12 @@ static func get_definition(node_type: String) -> Dictionary:
 static func get_categories() -> Dictionary:
 	return CATEGORIES
 
+## 获取节点中文名（无 title 时显示）
+static func get_display_name(node_type: String) -> String:
+	ensure_init()
+	var def: Dictionary = _registry.get(node_type, {})
+	return def.get("name", node_type)
+
 ## 中文搜索节点(模糊匹配名称/描述/类型)
 static func search_nodes(keyword: String) -> Array[String]:
 	ensure_init()

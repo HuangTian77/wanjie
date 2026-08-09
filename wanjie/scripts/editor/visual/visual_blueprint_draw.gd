@@ -171,7 +171,9 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	# 标题栏
 	var title_rect := Rect2(pos, Vector2(sz.x, BP_TITLE_HEIGHT * zoom))
 	canvas.draw_rect(title_rect, node_color)
-	var title_text: String = node.get("title", node["node_type"])
+	var title_text: String = node.get("title", "")
+	if title_text.is_empty():
+		title_text = BlueprintNodeRegistry.get_display_name(node["node_type"])
 	canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, 16 * zoom), title_text, HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(11 * zoom), Color.WHITE)
 	# 属性摘要
 	var props: Dictionary = node.get("properties", {})
