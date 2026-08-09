@@ -288,7 +288,9 @@ func _advance_to_next_event() -> void:
 		return
 	if world_state:
 		world_state.advance_time(1)
-		world_state.tick_effects()
+		var expired: Array = world_state.tick_effects()
+		if not expired.is_empty():
+			ToastManager.info("⏳ 世界效果已结束：%s" % "、".join(PackedStringArray(expired)))
 	_update_ui()
 
 	var triggerable: Array = event_engine.check_triggerable_events()
