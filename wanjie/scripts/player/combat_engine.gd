@@ -93,9 +93,13 @@ func _next_round() -> void:
 	# 处理状态效果
 	_tick_status_effects()
 
-## 玩家使用普通攻击
-func player_attack(target_idx: int = 0) -> Dictionary:
-	if not is_active or target_idx >= enemies.size():
+## 玩家使用普通攻击（自动选择第一个存活敌人）
+func player_attack(target_idx: int = -1) -> Dictionary:
+	if not is_active:
+		return {}
+	if target_idx < 0:
+		target_idx = _first_alive_enemy_index()
+	if target_idx >= enemies.size():
 		return {}
 	var result := _calculate_physical_damage(player_combat_stats, enemies[target_idx])
 	enemies[target_idx]["hp"] -= result["damage"]
@@ -109,6 +113,13 @@ func player_attack(target_idx: int = 0) -> Dictionary:
 	_enemy_turn()
 	_next_round()
 	return result
+
+## 第一个存活敌人索引（无则 -1）
+func _first_alive_enemy_index() -> int:
+	for i in enemies.size():
+		if enemies[i].get("is_alive", true):
+			return i
+	return -1
 
 ## 玩家使用技能
 func player_use_skill(skill_id: String, target_idx: int = 0) -> Dictionary:

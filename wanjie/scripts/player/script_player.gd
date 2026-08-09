@@ -795,7 +795,7 @@ func _refresh_battle_ui() -> void:
 func _on_battle_attack_pressed() -> void:
 	if combat_engine == null:
 		return
-	var res: Dictionary = combat_engine.player_attack(0)
+	var res: Dictionary = combat_engine.player_attack(-1)  # 自动选第一个存活敌人
 	if not res.is_empty():
 		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
 		_spawn_damage_popup(-int(res.get("damage", 0)))
