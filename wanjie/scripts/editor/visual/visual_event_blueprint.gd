@@ -190,6 +190,11 @@ func _bp_paste() -> void:
 		new_node["id"] = new_id
 		# 偏移避免重叠
 		new_node["pos"] = new_node["pos"] + Vector2(40, 40)
+		# 复制节点自动加"副本"标题（避免同名混淆）
+		var t: String = str(new_node.get("title", ""))
+		if t.is_empty():
+			t = BlueprintNodeRegistry.get_display_name(new_node.get("node_type", ""))
+		new_node["title"] = "%s·副本" % t
 		graph["nodes"][new_id] = new_node
 		_bp_selected_ids.append(new_id)
 	# 粘贴内部连线
