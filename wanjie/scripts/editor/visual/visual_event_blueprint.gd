@@ -156,6 +156,17 @@ func _bp_redo() -> void:
 		canvas.queue_redraw()
 	_log_output("[重做] 剩余 %d 步" % _bp_redo_stack.size())
 
+## 删除选中节点（可撤销）
+func _bp_delete_selected(graph: Dictionary, canvas: Control) -> void:
+	_bp_push_undo()
+	for nid in _bp_selected_ids:
+		BlueprintData.remove_node_connections(graph, nid)
+		graph["nodes"].erase(nid)
+	_bp_selected_ids.clear()
+	_save_active_graph()
+	_host._sync_to_code_editor()
+	canvas.queue_redraw()
+
 ## 蓝图复制 (Ctrl+C)
 func _bp_copy() -> void:
 	if _bp_selected_ids.is_empty():
@@ -713,14 +724,17 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_log_output("[清除连线] 已移除 %d 条连线" % conns.size())
 		elif event.keycode == KEY_DELETE:
 			if not _bp_selected_ids.is_empty():
-				_bp_push_undo()
-				for nid in _bp_selected_ids:
-					BlueprintData.remove_node_connections(graph, nid)
-					graph["nodes"].erase(nid)
-				_bp_selected_ids.clear()
-				_save_active_graph()
-				_host._sync_to_code_editor()
-				canvas.queue_redraw()
+				# 多节点删除确认（防误删）
+				if _bp_selected_ids.size() >= 3:
+					var host_node: Node = _host
+					var confirm := ConfirmationDialog.new()
+					confirm.dialog_text = "确定删除选中的 %d 个节点？（可撤销）" % _bp_selected_ids.size()
+					confirm.confirmed.connect(func():
+						_bp_delete_selected(graph, canvas))
+					host_node.add_child(confirm)
+					confirm.popup_centered()
+				else:
+					_bp_delete_selected(graph, canvas)
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
 		elif event.keycode == KEY_C and not event.ctrl_pressed:
