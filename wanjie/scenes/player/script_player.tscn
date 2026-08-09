@@ -389,6 +389,7 @@ text = "📜 世界日志"
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 text = "😴 休息（回满状态）"
+tooltip_text = "推进 8 小时并回满 HP/MP，30% 概率触发随机事件"
 
 [node name="HelpBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
