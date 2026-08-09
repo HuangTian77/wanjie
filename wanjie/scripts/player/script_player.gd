@@ -137,6 +137,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
 		_on_menu_help_pressed()
 		get_viewport().set_input_as_handled()
+	# T: 打开酒馆
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_T:
+		if not tavern_panel.visible:
+			_on_tavern_pressed()
+		else:
+			_on_tavern_close_pressed()
+		get_viewport().set_input_as_handled()
 	# 酒馆中：左/右方向键切换角色
 	elif event is InputEventKey and event.pressed and not event.echo and tavern_panel.visible \
 			and (event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT):
