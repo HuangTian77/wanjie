@@ -1302,6 +1302,13 @@ func _on_menu_shop_pressed() -> void:
 		list.append_text("[color=#999]当前市场暂无商品…[/color]")
 	dialog.popup_centered()
 
+## 清空当前角色对话历史
+func _on_tavern_clear_pressed() -> void:
+	TavernManager.dialog_history.clear()
+	TavernManager.save_history()
+	tavern_msgs.clear()
+	ToastManager.info("对话历史已清空")
+
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
