@@ -1403,7 +1403,12 @@ func _on_menu_log_pressed() -> void:
 		stat_str = " · 因果 %d" % event_engine.causal_marks.size()
 	if world_state and not world_state.active_effects.is_empty():
 		stat_str += " · 效果 %d" % world_state.active_effects.size()
-	dialog.title = "世界日志%s%s" % [time_str, stat_str]
+	# 当前地图/区域
+	var region_txt := ""
+	var cur_region: String = str(world_state.get_variable("current_region", "")) if world_state else ""
+	if not cur_region.is_empty():
+		region_txt = " · 📍%s" % cur_region
+	dialog.title = "世界日志%s%s%s" % [time_str, stat_str, region_txt]
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
 	var box := VBoxContainer.new()
