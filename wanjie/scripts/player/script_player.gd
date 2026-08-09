@@ -1268,6 +1268,11 @@ func _on_menu_log_pressed() -> void:
 				has_any = true
 	if not has_any:
 		list.append_text("[color=#999]暂无世界事件记录…[/color]")
+	# 经济状态
+	if economy_engine:
+		var gold: int = int(economy_engine.player_currencies.get("gold", 0))
+		list.append_text("\n[b]【经济】[/b]\n")
+		list.append_text("• 💰 金币 %d · 🎒 物品 %d\n" % [gold, economy_engine.player_inventory.size()])
 	# 世界变量（关键剧情标记）
 	if world_state and not world_state.world_variables.is_empty():
 		list.append_text("\n[b]【世界变量】[/b]\n")
