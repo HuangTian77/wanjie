@@ -403,6 +403,14 @@ func _update_ui() -> void:
 		current_hp = clampi(current_hp, 0, max_hp)
 		hp_bar.max_value = max_hp
 		hp_bar.value = current_hp
+		# 低血量警示色（<30% 变红）
+		var hp_ratio := float(current_hp) / float(max_hp) if max_hp > 0 else 0.0
+		if hp_ratio <= 0.3:
+			hp_bar.add_theme_stylebox_override("fill", _hp_style(0.9, 0.25, 0.25))
+		elif hp_ratio <= 0.6:
+			hp_bar.add_theme_stylebox_override("fill", _hp_style(0.9, 0.65, 0.25))
+		else:
+			hp_bar.add_theme_stylebox_override("fill", _hp_style(0.35, 0.85, 0.4))
 		hp_label.text = "HP: %d/%d" % [current_hp, max_hp]
 		# 经济状态（金币/物品）
 		if economy_engine != null:
@@ -451,6 +459,16 @@ func _update_ui() -> void:
 		player_gold_label.text = "金币: %d" % inv.get("gold", 0)
 	if world_state:
 		time_label.text = "🗓 " + world_state.get_time_display()
+
+## HP 条填充样式（按血量百分比配色）
+func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(r, g, b, 0.9)
+	sb.corner_radius_top_left = 4
+	sb.corner_radius_top_right = 4
+	sb.corner_radius_bottom_right = 4
+	sb.corner_radius_bottom_left = 4
+	return sb
 
 ## === 事件回调 ===
 func _on_event_triggered(event: Dictionary) -> void:
