@@ -592,7 +592,12 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_show_bp_node_properties(hit_id)
 				canvas.queue_redraw()
 				return
-			# 空白处: 框选
+			# 空白处: 双击打开添加节点菜单，单击框选
+			if event.double_click:
+				_bp_ctx_from_pin_drag = false
+				_bp_ctx_drag_data_type = int(-1)
+				_show_bp_context_menu(canvas, event.position)
+				return
 			_bp_selected_ids.clear()
 			_bp_box_selecting = true
 			_bp_box_start = event.position
