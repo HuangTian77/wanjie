@@ -600,6 +600,7 @@ const TAVERN_CHARS: Array = [
 	{
 		"id": "innkeeper",
 		"name": "旅店老板娘·艾琳",
+		"icon": "🏮",
 		"personality": "热情健谈，消息灵通",
 		"background": "开了三十年旅店，认识镇上每个人",
 		"greeting": "欢迎光临！客官打尖还是住店？最近镇上可不太平…"
@@ -618,7 +619,7 @@ func _on_tavern_pressed() -> void:
 	menu_panel.visible = false
 	tavern_char_select.clear()
 	for i in TAVERN_CHARS.size():
-		tavern_char_select.add_item(TAVERN_CHARS[i]["name"], i)
+		tavern_char_select.add_item("%s %s" % [TAVERN_CHARS[i].get("icon", ""), TAVERN_CHARS[i]["name"]], i)
 	tavern_char_select.item_selected.connect(_on_tavern_char_selected)
 	_enter_tavern_char(0)
 	tavern_input.grab_focus()
