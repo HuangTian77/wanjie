@@ -984,6 +984,12 @@ func _show_bp_node_properties(node_id: String) -> void:
 	if not graph["nodes"].has(node_id):
 		return
 	var node: Dictionary = graph["nodes"][node_id]
+	# 节点分类颜色条（顶部视觉对应画布节点色）
+	var node_color: Color = node.get("color", Color(0.4, 0.4, 0.4, 0.8))
+	var color_bar := ColorRect.new()
+	color_bar.color = node_color
+	color_bar.custom_minimum_size.y = 4
+	detail.add_child(color_bar)
 	# 获取注册表定义
 	var reg_def: Dictionary = BlueprintNodeRegistry.get_definition(node["node_type"])
 	if reg_def.is_empty():
