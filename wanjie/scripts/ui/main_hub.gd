@@ -418,6 +418,12 @@ func _refresh_script_grid() -> void:
 		card.edit_requested.connect(_on_edit_script_pressed)
 		card.delete_requested.connect(_on_delete_script_pressed)
 		card.favorite_requested.connect(_on_favorite_pressed)
+		# 入场淡入动画（尊重全局动效）
+		if ThemeManager.animations_enabled:
+			card.modulate.a = 0.0
+			var tw := create_tween()
+			tw.tween_interval(float(script_cards.size()) * 0.03)
+			tw.tween_property(card, "modulate:a", 1.0, 0.25).set_ease(Tween.EASE_OUT)
 		script_cards.append(card)
 
 func _search_scripts(query: String) -> Array[WorldScriptData]:
