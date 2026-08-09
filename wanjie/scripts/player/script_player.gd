@@ -1347,6 +1347,9 @@ func _on_menu_log_pressed() -> void:
 				has_any = true
 		if not event_engine.choices_history.is_empty():
 			list.append_text("\n[b]【选择历史】[/b]\n")
+			# 分支点统计
+			if not event_engine.branch_points.is_empty():
+				list.append_text("[color=#888]（共 %d 个剧情分支点）[/color]\n" % event_engine.branch_points.size())
 			for ch in event_engine.choices_history:
 				var cid: String = str(ch.get("choice_id", ch.get("choice", "")))
 				var eid: String = str(ch.get("event_id", ""))
