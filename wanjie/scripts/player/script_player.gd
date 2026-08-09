@@ -634,6 +634,8 @@ func _enter_tavern_char(index: int) -> void:
 	tavern_msgs.clear()
 	var char: Dictionary = TAVERN_CHARS[index]
 	TavernManager.start_dialog(char)
+	# 输入框占位提示当前角色
+	tavern_input.placeholder_text = "对%s说话…" % char.get("name", "角色")
 	# 恢复历史对话
 	var history: Array = TavernManager.load_history(char["id"])
 	if not history.is_empty():
