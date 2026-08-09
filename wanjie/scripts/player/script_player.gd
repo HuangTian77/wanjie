@@ -904,6 +904,8 @@ func _on_retry_from_save() -> void:
 
 func _battle_log_line(line: String) -> void:
 	battle_log.append_text(line + "\n")
+	# 滚动到底 + 新行淡入高亮
+	battle_log.scroll_to_line(battle_log.get_line_count() - 1)
 	# 行数上限（防长战斗日志无限增长卡顿）
 	if battle_log.get_line_count() > 120:
 		var excess: int = battle_log.get_line_count() - 80
