@@ -908,14 +908,18 @@ func _on_battle_attack_pressed() -> void:
 
 ## 伤害飘字（战斗手感：上浮淡出）
 func _spawn_damage_popup(amount: int) -> void:
-	if enemy_info == null or not enemy_info.is_visible_in_tree():
-		return
+	var popup_pos := Vector2.ZERO
+	if enemy_info != null and enemy_info.is_visible_in_tree():
+		popup_pos = enemy_info.global_position + Vector2(randf_range(20, 120), -10)
+	else:
+		# fallback：屏幕中心（商店等非战斗场景）
+		popup_pos = get_viewport().get_visible_rect().size / 2 + Vector2(randf_range(-80, 80), -40)
 	var lbl := Label.new()
 	var color := Color(0.95, 0.4, 0.35) if amount < 0 else Color(0.35, 0.9, 0.45)
 	lbl.text = ("-%d" % absi(amount)) if amount < 0 else ("+%d" % amount)
 	lbl.add_theme_color_override("font_color", color)
 	lbl.add_theme_font_size_override("font_size", 22)
-	lbl.position = enemy_info.global_position + Vector2(randf_range(20, 120), -10)
+	lbl.position = popup_pos
 	lbl.z_index = 100
 	add_child(lbl)
 	var tw := create_tween()
@@ -1109,6 +1113,7 @@ func _on_menu_shop_pressed() -> void:
 				btn.pressed.connect(func():
 					if economy_engine.buy(mid, item_id):
 						ToastManager.success("已购买 %s" % item_id)
+						_spawn_damage_popup(int(price))  # 购买 +金币飘字
 						_sync_save_state()
 						_on_menu_shop_pressed()  # 刷新商店
 						dialog.queue_free()
