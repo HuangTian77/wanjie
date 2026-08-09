@@ -365,6 +365,20 @@ func _draw_node(scene: Dictionary, dimmed: bool) -> void:
 	var name: String = str(scene.get("name", ""))
 	if name.strip_edges() == "":
 		name = "#%d" % id
+	# 类型图标（scene 表 noun 字段映射 emoji）
+	var noun: String = str(scene.get("noun", ""))
+	var noun_icon := ""
+	match noun:
+		"castle": noun_icon = "🏰"
+		"town": noun_icon = "🏘"
+		"shop": noun_icon = "🏪"
+		"inn": noun_icon = "🏮"
+		"forest": noun_icon = "🌲"
+		"mountain": noun_icon = "⛰"
+		"sea": noun_icon = "🌊"
+		"dungeon": noun_icon = "🗻"
+		_: noun_icon = "📍"
+	name = noun_icon + " " + name
 	var font: Font = ThemeDB.fallback_font
 	var fs: int = 12
 	var max_w: float = rect.size.x - 10.0
