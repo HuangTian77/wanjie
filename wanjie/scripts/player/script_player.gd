@@ -784,9 +784,9 @@ func _on_battle_skill_pressed() -> void:
 	menu.name = "BattleSkillMenu"
 	for s in skills:
 		var sid: String = s.get("id", "")
-		# 显示 MP 消耗
+		# 显示 MP 消耗 + 数字键提示
 		var mana_cost: int = int((s.get("cost", {}) as Dictionary).get("mana", 0))
-		var label: String = s.get("name", sid)
+		var label: String = "%d. %s" % [skills.find(s) + 1, s.get("name", sid)]
 		if mana_cost > 0:
 			label += "（MP %d）" % mana_cost
 		menu.add_item(label, skills.find(s))
