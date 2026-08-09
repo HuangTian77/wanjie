@@ -64,6 +64,10 @@ var _play_start_time: int = 0
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
 var _best_combo: int = 0
+## 战斗统计（世界日志）
+var _battle_wins: int = 0
+var _battle_defeats: int = 0
+var _battle_flees: int = 0
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -683,6 +687,11 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
 	_sync_save_state()
+	# 战斗统计
+	match result:
+		"victory": _battle_wins += 1
+		"defeat": _battle_defeats += 1
+		_: _battle_flees += 1
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
 	# 结算统计：回合数
 	if combat_engine != null:
@@ -1273,6 +1282,10 @@ func _on_menu_log_pressed() -> void:
 		var gold: int = int(economy_engine.player_currencies.get("gold", 0))
 		list.append_text("\n[b]【经济】[/b]\n")
 		list.append_text("• 💰 金币 %d · 🎒 物品 %d\n" % [gold, economy_engine.player_inventory.size()])
+	# 战斗统计
+	if _battle_wins + _battle_defeats + _battle_flees > 0:
+		list.append_text("\n[b]【战斗】[/b]\n")
+		list.append_text("• ⚔️ 胜 %d · 败 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
 	# 世界变量（关键剧情标记）
 	if world_state and not world_state.world_variables.is_empty():
 		list.append_text("\n[b]【世界变量】[/b]\n")
