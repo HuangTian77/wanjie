@@ -633,6 +633,34 @@ func _on_tavern_clear_pressed() -> void:
 	_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
 	ToastManager.info("已清空 %s 的对话历史" % char.get("name", "角色"))
 
+## 导出当前角色对话记录
+func _on_tavern_export_pressed() -> void:
+	var cur: int = tavern_char_select.selected
+	var char: Dictionary = TAVERN_CHARS[cur]
+	var history: Array = TavernManager.load_history(char["id"])
+	if history.is_empty():
+		ToastManager.warning("暂无对话记录")
+		return
+	var fd := FileDialog.new()
+	fd.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	fd.title = "导出对话记录"
+	fd.add_filter("*.txt ; 文本文件")
+	fd.current_path = "酒馆对话_%s.txt" % char.get("name", "角色")
+	fd.min_size = Vector2i(600, 400)
+	add_child(fd)
+	fd.file_selected.connect(func(path: String):
+		var f := FileAccess.open(path, FileAccess.WRITE)
+		if f:
+			f.store_string("%s 的对话记录（%s 剧本）\n%s\n" % [char.get("name", "角色"), script_data.name if script_data else "", "=".repeat(24)])
+			for msg in history:
+				f.store_string("[%s] %s\n" % [msg.get("role", "?"), msg.get("content", "")])
+			f.close()
+			ToastManager.success("对话已导出")
+		else:
+			ToastManager.warning("导出失败")
+		fd.queue_free())
+	fd.popup_centered()
+
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
 	tavern_panel.visible = false
