@@ -72,6 +72,21 @@ func save_data() -> void:
 	if world_script == null:
 		return
 	world_script.metadata["mud_data"] = _data.to_dict()
+	# 连接目标校验提示（linkpath 引用的场景不存在）
+	_validate_links()
+
+## 校验连接：linkpath 引用的场景是否存在于 room 表
+func _validate_links() -> void:
+	var missing: Array[String] = []
+	for row in _data.rows.get("linkpath", []):
+		var sp: Variant = row.get("startpot", null)
+		var ep: Variant = row.get("endpot", null)
+		if sp != null and not _data.rows.get("room", []).any(func(r): return r.get("id") == sp):
+			missing.append("起点 %s" % str(sp))
+		if ep != null and not _data.rows.get("room", []).any(func(r): return r.get("id") == ep):
+			missing.append("终点 %s" % str(ep))
+	if not missing.is_empty():
+		ToastManager.warning("MUD 连接引用缺失：%s" % "、".join(missing))
 
 ## 数据层可能被替换（导入/新建），同步到构建器并刷新全部标签
 func _sync_builder_data() -> void:
