@@ -10,6 +10,8 @@ var ability_data: AbilitySystemData = null
 var player_combat_stats: Dictionary = {}
 var enemies: Array[Dictionary] = []
 var current_round: int = 0
+## 最近一次逃跑成功率（UI 显示用）
+var last_flee_chance: float = 0.5
 var is_active: bool = false
 var combat_log: Array[String] = []
 
@@ -207,6 +209,7 @@ func _check_combat_end() -> bool:
 ## 逃跑
 func try_flee() -> bool:
 	var chance: float = 0.5 + float(player_combat_stats.get("agility", 10)) * 0.02
+	last_flee_chance = chance
 	if randf() < chance:
 		is_active = false
 		combat_log.append("成功逃跑！")

@@ -781,7 +781,9 @@ func _on_battle_skill_pressed() -> void:
 
 func _on_battle_flee_pressed() -> void:
 	if combat_engine != null:
+		# 提示当前成功率
 		combat_engine.try_flee()
+		ToastManager.info("逃跑成功率 %.0f%%" % (combat_engine.last_flee_chance * 100.0))
 
 ## 自动战斗开关
 func _on_battle_auto_pressed() -> void:
