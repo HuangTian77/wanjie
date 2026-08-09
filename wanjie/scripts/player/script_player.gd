@@ -974,6 +974,10 @@ func _on_battle_skill_pressed() -> void:
 					ToastManager.success("🔥 连击 x%d！" % _combo_count)
 				if sres.get("critical", false):
 					ToastManager.info("💥 技能暴击！")
+			var healed := int(sres.get("healed", 0))
+			if healed > 0:
+				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed])
+				_spawn_damage_popup(healed)  # 治疗 +绿字飘字
 		_refresh_battle_ui())
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
