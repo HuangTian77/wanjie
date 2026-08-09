@@ -71,15 +71,25 @@ func _ready() -> void:
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
 	ToastManager.info("已消耗 1 点灵感进入剧本")
-	# 定时自动存档（每 5 分钟）
+	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
-	auto_save_timer.wait_time = 300.0
+	auto_save_timer.name = "AutoSaveTimer"
+	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
 	auto_save_timer.autostart = true
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
 		SaveManager.autosave()
 		ToastManager.success("已自动存档"))
 	add_child(auto_save_timer)
+
+## 自动存档间隔（分钟，读设置，默认 5）
+func settings_auto_save_interval_min() -> float:
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm != null and gm.user_data != null:
+		var ud: Resource = gm.user_data
+		var v: float = float(ud.get("editor_auto_save_interval", 60.0))
+		return clampf(v / 60.0, 1.0, 60.0)
+	return 5.0
 
 func _process(delta: float) -> void:
 	# 自动战斗：定时攻击（间隔可调速）
