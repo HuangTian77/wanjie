@@ -44,7 +44,22 @@ func setup(data: WorldScriptData) -> void:
 			cover_texture.visible = true
 	else:
 		cover_texture.texture = null
-		cover_texture.visible = false
+		# 无封面占位：显示渐变底色 + 剧本首字符
+		cover_texture.visible = true
+		var ph := Label.new()
+		ph.name = "CoverPlaceholder"
+		ph.text = str(data.name.substr(0, 1)) if not data.name.is_empty() else "📜"
+		ph.add_theme_font_size_override("font_size", 48)
+		ph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		ph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		ph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var bg := StyleBoxFlat.new()
+		bg.bg_color = Color(0.16, 0.14, 0.12, 0.9)
+		bg.corner_radius_top_left = 6
+		bg.corner_radius_top_right = 6
+		ph.add_theme_stylebox_override("normal", bg)
+		cover_texture.add_child(ph)
 	# 标签
 	for child in tags_container.get_children():
 		child.queue_free()

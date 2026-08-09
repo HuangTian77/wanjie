@@ -1315,7 +1315,7 @@
 - signal `edit_requested`
 - signal `delete_requested`
 - func `setup` (L28)
-- func `_ready` (L66)
+- func `_ready` (L81)
 
 ### scripts/ui/components/section_header.gd (`SectionHeader`)
 
