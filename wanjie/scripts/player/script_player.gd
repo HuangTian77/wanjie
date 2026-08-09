@@ -122,7 +122,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	# 战斗时：数字键 1-9 释放对应技能
 	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
-		var skill_idx := event.keycode - KEY_1
+		var skill_idx: int = event.keycode - KEY_1
 		if combat_engine != null and combat_engine.ability_data != null:
 			var skills: Array = combat_engine.ability_data.skills
 			if skill_idx < skills.size():
