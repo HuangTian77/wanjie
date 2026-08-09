@@ -189,6 +189,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# 战斗时：数字键 1-9 释放对应技能
 	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
+			and event.keycode == KEY_TAB:
+		# Tab 切换攻击目标（模拟点击敌人栏）
+		if combat_engine != null and combat_engine.enemies.size() > 1:
+			var fake := InputEventMouseButton.new()
+			fake.button_index = MOUSE_BUTTON_LEFT
+			fake.pressed = true
+			_on_enemy_info_clicked(fake)
+			get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
 		var skill_idx: int = event.keycode - KEY_1
 		if combat_engine != null and combat_engine.ability_data != null:
