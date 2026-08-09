@@ -1356,7 +1356,10 @@ func _on_menu_log_pressed() -> void:
 		for fx in world_state.active_effects:
 			var fxt := str(fx.get("id", "?"))
 			var fxr: int = int(fx.get("remaining", 0))
-			list.append_text("• %s %s（剩 %d 小时）\n" % [fx_icons.get(fxt, "🌀"), fxt, fxr])
+			var fx_dur := "%d 小时" % fxr
+			if fxr >= 24:
+				fx_dur = "%d 天 %d 小时" % [fxr / 24, fxr % 24]
+			list.append_text("• %s %s（剩 %s）\n" % [fx_icons.get(fxt, "🌀"), fxt, fx_dur])
 	# 战斗统计
 	if _battle_wins + _battle_defeats + _battle_flees > 0:
 		list.append_text("\n[b]【战斗】[/b]\n")
