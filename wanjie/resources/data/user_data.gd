@@ -47,6 +47,8 @@ extends Resource
 @export var editor_auto_save_interval: float = 60.0
 ## 大厅排序模式（0默认/1名称/2更新/3评分）
 @export var hub_sort_mode: int = 0
+## 搜索历史（最多 8 条）
+@export var recent_searches: Array[String] = []
 ## 设置：字体大小 (small/medium/large/xlarge)
 @export var font_size_preset: String = "medium"
 ## 上次资源恢复时间戳（unix 秒, 用于离线恢复灵感/精力）
@@ -60,6 +62,7 @@ func reset_to_defaults() -> void:
 	font_size_preset = "medium"
 	editor_auto_save_interval = 60.0
 	hub_sort_mode = 0
+	recent_searches = []
 	animations_enabled = true
 	ai_enabled = false
 	ai_npc_enabled = false
@@ -88,6 +91,7 @@ func to_dict() -> Dictionary:
 		"fullscreen": fullscreen,
 		"editor_auto_save_interval": editor_auto_save_interval,
 		"hub_sort_mode": hub_sort_mode,
+		"recent_searches": recent_searches,
 		"text_speed_preset": text_speed_preset,
 		"font_size_preset": font_size_preset,
 		"last_recovery_time": last_recovery_time,

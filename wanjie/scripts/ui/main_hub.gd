@@ -17,7 +17,7 @@ extends Control
 @onready var version_label: Label = %VersionLabel
 ## 列表视图模式（单列紧凑）
 var _list_view: bool = false
-## 搜索历史（最近 8 条，内存级）
+## 搜索历史（最近 8 条，持久化到 user_data）
 var _search_history: Array[String] = []
 ## 排序模式（0 默认/1 名称/2 更新时间/3 评分）
 var _sort_mode: int = 0
@@ -476,11 +476,13 @@ func _search_scripts(query: String) -> Array[WorldScriptData]:
 		for s in GameManager.scripts.values():
 			all.append(s)
 		return all
-	# 记录搜索历史（去重+置顶，保留 8 条）
+	# 记录搜索历史（去重+置顶，保留 8 条，持久化）
 	_search_history.erase(q)
 	_search_history.push_front(q)
 	if _search_history.size() > 8:
 		_search_history.resize(8)
+	GameManager.user_data.recent_searches = _search_history.duplicate()
+	GameManager.save_user_data()
 	var result: Array[WorldScriptData] = []
 	var ql := q.to_lower()
 	for s in GameManager.scripts.values():
