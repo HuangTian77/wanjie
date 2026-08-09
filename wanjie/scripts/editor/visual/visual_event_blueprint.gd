@@ -1302,3 +1302,13 @@ func _bp_prop_add_text(parent: Control, label: String, current: String, on_chang
 		on_change.call(edit.text)
 	)
 	vbox.add_child(edit)
+	# 复制值到剪贴板
+	var copy_btn := Button.new()
+	copy_btn.text = "⧉"
+	copy_btn.flat = true
+	copy_btn.custom_minimum_size = Vector2(24, 20)
+	copy_btn.tooltip_text = "复制参数值"
+	copy_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(edit.text)
+		_host._log_output("[已复制] %s = %s" % [label, edit.text]))
+	vbox.add_child(copy_btn)
