@@ -1004,6 +1004,9 @@ func _on_battle_attack_pressed() -> void:
 			if res.get("critical", false):
 				ToastManager.info("💥 暴击！")
 		else:
+			# 未命中：连击中断提示
+			if _combo_count >= 3:
+				ToastManager.info("连击中断…（x%d）" % _combo_count)
 			_combo_count = 0
 	_refresh_battle_ui()
 
