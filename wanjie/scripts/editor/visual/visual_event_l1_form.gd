@@ -294,8 +294,15 @@ func _add_l1_trigger_type_field(form_vbox: VBoxContainer, event: Dictionary) -> 
 		["condition", "条件触发 (满足下方条件后)"],
 		["player_action", "玩家行为触发"],
 	]
+	var trigger_tips := {
+		"chain": "依赖前置事件完成，按剧情顺序推进",
+		"time": "到达指定游戏天数/时刻后自动触发",
+		"condition": "满足设置的变量条件后触发",
+		"player_action": "玩家做出特定行为（探索/对话等）时触发",
+	}
 	for t in trigger_map:
 		opt.add_item(t[1])
+		opt.set_item_tooltip(opt.item_count - 1, trigger_tips.get(t[0], ""))
 	var cur: String = event.get("trigger_type", "chain")
 	var sel := 0
 	for i in trigger_map.size():

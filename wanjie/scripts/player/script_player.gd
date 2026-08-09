@@ -729,6 +729,10 @@ func _on_battle_skill_pressed() -> void:
 		if mana_cost > 0:
 			label += "（MP %d）" % mana_cost
 		menu.add_item(label, skills.find(s))
+		# tooltip：技能描述
+		var desc: String = str(s.get("description", ""))
+		if not desc.is_empty():
+			menu.set_item_tooltip(skills.find(s), desc)
 	menu.id_pressed.connect(func(id: int):
 		combat_engine.player_use_skill(skills[id].get("id", ""), 0)
 		_refresh_battle_ui())
