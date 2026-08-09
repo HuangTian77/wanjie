@@ -865,7 +865,7 @@ func _on_combat_ended(result: String) -> void:
 				stats["def"] = int(stats.get("def", 10)) + 1
 				stats["hp"] = stats.get("max_hp", 100)
 				stats["mp"] = stats.get("max_mp", 50)
-				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满）" % int(stats.get("level", 1)))
+				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满，攻+2 防+1）" % int(stats.get("level", 1)))
 				msg += " 🎉 升级 Lv.%d！" % int(stats.get("level", 1))
 			_sync_save_state()
 	_add_history(msg)
