@@ -987,6 +987,13 @@ func _on_battle_attack_pressed() -> void:
 	if not res.is_empty():
 		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
 		_spawn_damage_popup(-int(res.get("damage", 0)), bool(res.get("critical", false)))
+		# 敌人受击闪红（命中反馈）
+		if int(res.get("damage", 0)) > 0:
+			enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
+			var etw := create_tween()
+			etw.tween_interval(0.2)
+			etw.tween_callback(func():
+				enemy_info.remove_theme_color_override("font_color"))
 		# 连击计数（造成伤害 +1，≥3 提示）
 		if int(res.get("damage", 0)) > 0:
 			_combo_count += 1
