@@ -14,6 +14,7 @@ extends Control
 @onready var tab_container: HBoxContainer = %TabContainer
 @onready var script_grid: GridContainer = %ScriptGrid
 @onready var stats_label: Label = %StatsLabel
+@onready var version_label: Label = %VersionLabel
 ## 列表视图模式（单列紧凑）
 var _list_view: bool = false
 ## 搜索历史（最近 8 条，内存级）
@@ -59,6 +60,8 @@ var _search_timer: Timer = null
 const CARD_MIN_WIDTH := 240
 
 func _ready() -> void:
+	if version_label != null:
+		version_label.text = "v1.2.0"
 	_refresh_personal_stats()
 	GameManager.scripts_changed.connect(func(_i): _refresh_personal_stats())
 	# 首次启动欢迎引导
