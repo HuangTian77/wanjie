@@ -203,6 +203,15 @@ func get_script_root_id() -> String:
 func refresh() -> void:
 	_scan_dirs()
 	_show_dir_files(_current_dir)
+	# 文件计数标题（剧本库模式显示剧本总数）
+	if _script_root_id.is_empty():
+		var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+		var total := 0
+		if gm != null and gm.scripts != null:
+			total = gm.scripts.size()
+		_title_label.text = "剧本库（%d）" % total
+	else:
+		_title_label.text = "剧本文件"
 
 func _get_root_path() -> String:
 	if _script_root_id.is_empty():
