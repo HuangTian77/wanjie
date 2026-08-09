@@ -661,11 +661,20 @@ func _on_tavern_send_pressed() -> void:
 	tavern_input.text = ""
 	_tavern_append("user", text)
 	TavernManager.dialog_history.append({"role": "user", "content": text})
-	# 本地演示回复（真实 LLM 接入可替换为 LLMClient 调用）
+	# 角色"思考中…"提示，延迟模拟回复
+	_tavern_append("assistant", "…")
+	TavernManager.dialog_history.append({"role": "assistant", "content": ""})
+	await get_tree().create_timer(0.45).timeout
 	var reply := _tavern_mock_reply(text)
-	TavernManager.dialog_history.append({"role": "assistant", "content": reply})
-	_tavern_append("assistant", reply)
+	TavernManager.dialog_history[TavernManager.dialog_history.size() - 1]["content"] = reply
 	TavernManager.save_history()
+	# 重建最后一条为实际回复
+	var rt: RichTextLabel = tavern_msgs
+	var all_text := rt.text
+	var last_idx := all_text.rfind("\n\n")
+	if last_idx >= 0:
+		rt.text = all_text.substr(0, last_idx) + "\n\n"
+	_tavern_append("assistant", reply)
 
 func _tavern_append(role: String, content: String) -> void:
 	var prefix := "[color=#c9a06a][b]%s[/b][/color] " % ("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")
