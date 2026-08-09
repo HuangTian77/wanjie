@@ -356,10 +356,44 @@ func _setup_tabs() -> void:
 		tab_container.add_child(btn)
 		tab_buttons.append(btn)
 	search_input.visible = false
+	# 热门标签 chips（搜索 tab 显示）
+	_setup_hot_tags()
 	search_input.placeholder_text = "搜索剧本名称、标签、作者..."
+
+## 热门标签 chips（搜索 tab 下显示，点击直接搜索）
+func _setup_hot_tags() -> void:
+	var row := get_node_or_null("MainMargin/VBox/HotTagRow")
+	if row == null:
+		row = HBoxContainer.new()
+		row.name = "HotTagRow"
+		row.add_theme_constant_override("separation", 8)
+		(get_node("MainMargin/VBox") as VBoxContainer).add_child(row)
+		(get_node("MainMargin/VBox") as VBoxContainer).move_child(row, (get_node("MainMargin/VBox") as VBoxContainer).get_child_count() - 1)
+	for c in row.get_children():
+		(c as Control).queue_free()
+	var label := Label.new()
+	label.text = "热门："
+	label.add_theme_color_override("font_color", Color(0.42, 0.373, 0.322, 0.7))
+	label.add_theme_font_size_override("font_size", 12)
+	row.add_child(label)
+	var hot_tags := ["冒险", "经营", "解谜", "战斗", "剧情", "策略"]
+	for t in hot_tags:
+		var chip := Button.new()
+		chip.text = t
+		chip.flat = true
+		chip.add_theme_font_size_override("font_size", 12)
+		chip.add_theme_color_override("font_color", Color(0.7, 0.55, 0.35))
+		chip.pressed.connect(func():
+			search_input.text = t
+			_on_tab_pressed(6))
+		row.add_child(chip)
+	row.visible = false
 
 func _on_tab_pressed(tab_index: int) -> void:
 	search_input.visible = (tab_index == 6)
+	var hot_row := get_node_or_null("MainMargin/VBox/HotTagRow")
+	if hot_row:
+		hot_row.visible = (tab_index == 6)
 	GameManager.set_current_tab(tab_index)
 	_refresh_script_grid()
 	# 切到搜索标签时自动聚焦搜索框
