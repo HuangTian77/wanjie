@@ -876,6 +876,7 @@ func _on_save_as() -> void:
 	dialog.popup_centered(Vector2i(640, 480))
 
 func _on_export() -> void:
+	_validate_links()
 	var exp := MudExport.new(_data)
 	var count: int = exp.write_all(MudExport.DEFAULT_OUT_DIR)
 	_set_status("已导出 %d 个文件到 %s" % [count, MudExport.DEFAULT_OUT_DIR])
