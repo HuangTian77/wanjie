@@ -702,6 +702,24 @@ func _on_tavern_pressed() -> void:
 		TAVERN_CHARS[0].get("name", "角色"),
 		"· 历史 %d 条" % hist_count if hist_count > 0 else ""])
 
+## 导出酒馆对话历史为 txt
+func _on_export_chat_pressed() -> void:
+	if TavernManager.dialog_history.is_empty():
+		ToastManager.warning("暂无对话可导出")
+		return
+	var lines: PackedStringArray = []
+	for m in TavernManager.dialog_history:
+		var role_txt := "玩家" if str(m.get("role", "")) == "user" else TavernManager.current_character.get("name", "角色")
+		lines.append("[%s] %s" % [role_txt, str(m.get("content", ""))])
+	var path := "user://tavern_export_%s.txt" % Time.get_datetime_string_from_system().replace(":", "").replace(" ", "_")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f:
+		f.store_string("\n".join(lines))
+		f.close()
+		ToastManager.success("已导出 %d 条对话 → %s" % [lines.size(), path])
+	else:
+		ToastManager.warning("导出失败")
+
 ## 清空当前角色对话历史
 func _on_tavern_clear_pressed() -> void:
 	var cur: int = tavern_char_select.selected
