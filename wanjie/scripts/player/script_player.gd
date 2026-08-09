@@ -87,7 +87,7 @@ func settings_auto_save_interval_min() -> float:
 	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
 	if gm != null and gm.user_data != null:
 		var ud: Resource = gm.user_data
-		var v: float = float(ud.get("editor_auto_save_interval", 60.0))
+		var v: float = float(ud.get("editor_auto_save_interval")) if ud.get("editor_auto_save_interval") != null else 60.0
 		return clampf(v / 60.0, 1.0, 60.0)
 	return 5.0
 
