@@ -1785,6 +1785,7 @@ func _on_mode_visual_pressed() -> void:
 	_build_module_tree()
 	_update_validation()
 	mode_label.text = "可视化模式"
+	mode_label.tooltip_text = "可视化（表单）模式：按子系统编辑世界观/事件/经济等，支持蓝图编排"
 	mode_label.add_theme_color_override("font_color", Color(0.55, 0.85, 0.55, 1))
 	_log_output("切换到可视化模式")
 
@@ -1811,6 +1812,7 @@ func _on_mode_code_pressed() -> void:
 	if code_editor and current_script:
 		code_editor.load_data(current_script)
 	mode_label.text = "代码模式"
+	mode_label.tooltip_text = "代码（IDE）模式：GDScript 脚本编辑，支持查找/替换/校验"
 	mode_label.add_theme_color_override("font_color", Color(0.55, 0.65, 0.85, 1))
 	_log_output("切换到代码模式 (GDScript)")
 
@@ -1837,6 +1839,7 @@ func _on_mode_mud_pressed() -> void:
 	if mud_editor and current_script:
 		mud_editor.load_data(current_script)
 	mode_label.text = "MUD模式"
+	mode_label.tooltip_text = "MUD 数据表模式：15 类数据表 + 地图编辑，支持导入导出"
 	mode_label.add_theme_color_override("font_color", Color(0.95, 0.75, 0.35, 1))
 	_log_output("切换到MUD编辑器模式")
 
