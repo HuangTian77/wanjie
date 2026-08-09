@@ -243,6 +243,20 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 theme_override_constants/separation = 4
 
+[node name="SearchHistoryBtn" type="Button" parent="MainMargin/VBox"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -76.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = 30.0
+grow_horizontal = 0
+text = "🕘 历史"
+flat = true
+theme_override_font_sizes/font_size = 11
+
 [node name="SearchInput" type="LineEdit" parent="MainMargin/VBox" unique_id=1959023852]
 clear_button_enabled = true
 unique_name_in_owner = true
@@ -322,6 +336,7 @@ text = "+ 导入剧本"
 [connection signal="pressed" from="MainMargin/VBox/CarouselContainer/CarouselPrev" to="." method="_on_carousel_prev_pressed"]
 [connection signal="pressed" from="MainMargin/VBox/CarouselContainer/CarouselNext" to="." method="_on_carousel_next_pressed"]
 [connection signal="timeout" from="MainMargin/VBox/CarouselContainer/CarouselTimer" to="." method="_on_carousel_timer_timeout"]
+[connection signal="pressed" from="MainMargin/VBox/SearchHistoryBtn" to="." method="_on_search_history_pressed"]
 [connection signal="text_changed" from="MainMargin/VBox/SearchInput" to="." method="_on_search_text_changed"]
 [connection signal="pressed" from="MainMargin/VBox/BottomBar/CreateBtn" to="." method="_on_create_script_pressed"]
 [connection signal="pressed" from="MainMargin/VBox/BottomBar/ImportBtn" to="." method="_on_import_script_pressed"]

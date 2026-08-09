@@ -16,6 +16,8 @@ extends Control
 @onready var stats_label: Label = %StatsLabel
 ## 列表视图模式（单列紧凑）
 var _list_view: bool = false
+## 搜索历史（最近 8 条，内存级）
+var _search_history: Array[String] = []
 ## 排序模式（0 默认/1 名称/2 更新时间/3 评分）
 var _sort_mode: int = 0
 @onready var recent_container: HBoxContainer = %RecentContainer
@@ -381,15 +383,21 @@ func _refresh_script_grid() -> void:
 		script_cards.append(card)
 
 func _search_scripts(query: String) -> Array[WorldScriptData]:
-	if query.is_empty():
+	var q := query.strip_edges()
+	if q.is_empty():
 		var all: Array[WorldScriptData] = []
 		for s in GameManager.scripts.values():
 			all.append(s)
 		return all
+	# 记录搜索历史（去重+置顶，保留 8 条）
+	_search_history.erase(q)
+	_search_history.push_front(q)
+	if _search_history.size() > 8:
+		_search_history.resize(8)
 	var result: Array[WorldScriptData] = []
-	var q := query.to_lower()
+	var ql := q.to_lower()
 	for s in GameManager.scripts.values():
-		if q in s.name.to_lower() or q in s.description.to_lower() or s.tags.any(func(t): return q in t.to_lower()):
+		if ql in s.name.to_lower() or ql in s.description.to_lower() or s.tags.any(func(t): return ql in t.to_lower()):
 			result.append(s)
 	return result
 
@@ -497,6 +505,22 @@ func _on_create_script_pressed() -> void:
 		return
 	GameManager.save_user_data()
 	setup_dialog.show_dialog()
+
+## 搜索历史弹窗（最近 8 词，点击填入搜索）
+func _on_search_history_pressed() -> void:
+	if _search_history.is_empty():
+		ToastManager.info("暂无搜索历史")
+		return
+	var menu := PopupMenu.new()
+	add_child(menu)
+	for w in _search_history:
+		menu.add_item(w)
+	menu.id_pressed.connect(func(id: int):
+		search_input.text = _search_history[id]
+		_on_tab_pressed(6)
+		menu.queue_free())
+	menu.popup(Rect2i(0, 0, 0, 0))
+	menu.position = Vector2i(0, 0)
 
 ## 剧本设置对话框确认回调
 func _on_script_setup_completed(config: Dictionary) -> void:
