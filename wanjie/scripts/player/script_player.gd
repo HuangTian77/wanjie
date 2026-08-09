@@ -1221,7 +1221,10 @@ func _on_menu_log_pressed() -> void:
 		if not event_engine.causal_marks.is_empty():
 			list.append_text("[b]【因果标记】[/b]\n")
 			for cm in event_engine.causal_marks:
-				list.append_text("• %s\n" % str(cm.get("mark", cm)))
+				var cm_day := ""
+				if world_state:
+					cm_day = "（第 %d 天）" % world_state.get_current_day()
+				list.append_text("• %s%s\n" % [str(cm.get("mark", cm)), cm_day])
 				has_any = true
 		if not event_engine.choices_history.is_empty():
 			list.append_text("\n[b]【选择历史】[/b]\n")
