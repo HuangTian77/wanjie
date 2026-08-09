@@ -961,7 +961,12 @@ func _on_battle_skill_pressed() -> void:
 			menu.set_item_disabled(skills.find(s), true)
 			menu.set_item_tooltip(skills.find(s), "魔力不足（需要 %d MP）" % mana_cost)
 	menu.id_pressed.connect(func(id: int):
-		combat_engine.player_use_skill(skills[id].get("id", ""), 0)
+		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), 0)
+		if not sres.is_empty():
+			var dmg := int(sres.get("damage", 0))
+			if dmg > 0:
+				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg])
+				_spawn_damage_popup(-dmg)
 		_refresh_battle_ui())
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
