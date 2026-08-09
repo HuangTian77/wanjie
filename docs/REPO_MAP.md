@@ -1201,15 +1201,15 @@
 - signal `event_triggered`
 - signal `choices_presented`
 - signal `choice_made`
-- func `init` (L33)
-- func `load_history` (L39)
-- func `to_dict` (L47)
-- func `check_triggerable_events` (L56)
-- func `trigger_event` (L70)
-- func `mark_triggered` (L85)
-- func `make_choice` (L95)
-- func `tick_cooldowns` (L269)
-- func `check_random_events` (L279)
+- func `init` (L35)
+- func `load_history` (L41)
+- func `to_dict` (L49)
+- func `check_triggerable_events` (L58)
+- func `trigger_event` (L72)
+- func `mark_triggered` (L87)
+- func `make_choice` (L97)
+- func `tick_cooldowns` (L271)
+- func `check_random_events` (L281)
 
 ### scripts/player/graph_store.gd (`GraphStore`)
 

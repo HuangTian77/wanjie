@@ -17,6 +17,8 @@ var triggered_events: Array[Dictionary] = []
 var choices_history: Array[Dictionary] = []
 ## 因果标记
 var causal_marks: Array[Dictionary] = []
+## 剧情分支点（选择时记录，最多 50 条）
+var branch_points: Array[Dictionary] = []
 ## 当前等待选择的事件
 var pending_event: Dictionary = {}
 ## 已触发事件ID集合（防止重复）
