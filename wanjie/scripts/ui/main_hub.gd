@@ -252,6 +252,9 @@ func _refresh_resource_labels() -> void:
 	shimo_label.text = str(GameManager.user_data.shimo)
 	jieshi_label.text = str(GameManager.user_data.jieshi)
 	inspiration_label.text = GameManager.user_data.get_inspiration_display()
+	# 灵感恢复时间提示（tooltip）
+	var next_secs: int = maxi(0, 60 - int(Time.get_unix_time_from_system()) % 60)
+	inspiration_label.tooltip_text = "灵感每 60 秒恢复 1 点\n下次恢复：%d 秒后" % next_secs
 	if has_node("%EnergyLabel"):
 		var energy_label: Label = %EnergyLabel
 		energy_label.text = GameManager.user_data.get_creation_energy_display()
