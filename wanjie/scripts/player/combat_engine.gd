@@ -183,6 +183,8 @@ func _enemy_turn() -> void:
 		var result := _calculate_physical_damage(enemy, player_combat_stats)
 		player_combat_stats["hp"] -= result["damage"]
 		combat_log.append("%s 攻击 %s，造成 %d 点伤害" % [enemy["name"], player_combat_stats["name"], result["damage"]])
+		# 玩家受击信号（飘字用）
+		action_taken.emit(enemy, {"type": "enemy_attack", "damage": result["damage"], "target": player_combat_stats["name"]})
 		if player_combat_stats["hp"] <= 0:
 			player_combat_stats["hp"] = 0
 			break

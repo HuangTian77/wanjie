@@ -638,6 +638,9 @@ func _on_combat_round_started(round_num: int) -> void:
 	_refresh_battle_ui()
 
 func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
+	# 玩家受击飘字（敌人攻击时）
+	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
+		_spawn_damage_popup(-int(_action.get("damage", 0)))
 	_refresh_battle_ui()
 
 func _on_combat_ended(result: String) -> void:
