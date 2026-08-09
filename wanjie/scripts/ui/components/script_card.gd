@@ -35,6 +35,8 @@ func setup(data: WorldScriptData) -> void:
 	desc_label.text = data.description if not data.description.is_empty() else "暂无简介"
 	rating_label.text = "★ %.1f" % data.rating
 	play_label.text = "%d人体验" % data.play_count
+	# 更新时间（tooltip 显示）
+	rating_label.tooltip_text = "评分 %.1f（%d人评分）\n更新：%s" % [data.rating, data.rating_count, data.updated_at]
 	# 封面（thumbnail_path 指向 assets/cover.png，存在则显示）
 	var cover_path := ""
 	if not data.thumbnail_path.is_empty():
