@@ -112,9 +112,16 @@ func _show_achievements() -> void:
 	dialog.title = "成就"
 	dialog.min_size = Vector2i(380, 320)
 	add_child(dialog)
-	var list := RichTextLabel.new()
-	dialog.add_child(list)
+	var box := VBoxContainer.new()
+	dialog.add_child(box)
 	var unlocked: Array = GameManager.user_data.achievements
+	var total: int = GameManager.ACHIEVEMENTS.size()
+	var head := Label.new()
+	head.text = "已解锁 %d/%d 个成就" % [unlocked.size(), total]
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(head)
+	var list := RichTextLabel.new()
+	box.add_child(list)
 	var count := 0
 	for aid in GameManager.ACHIEVEMENTS:
 		var name: String = GameManager.ACHIEVEMENTS[aid]

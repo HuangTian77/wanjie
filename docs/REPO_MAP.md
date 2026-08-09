@@ -210,7 +210,7 @@
 
 - class_name **ScriptTemplates**
 - func `get_template_defs` (L8)
-- func `apply_template` (L27)
+- func `apply_template` (L29)
 
 ### scripts/autoload/tavern_manager.gd (tavern_manager.gd)
 

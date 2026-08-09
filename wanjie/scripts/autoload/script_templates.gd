@@ -19,6 +19,8 @@ static func get_template_defs() -> Array[Dictionary]:
 			"description": "竞技场挑战：丰富技能组合、敌人轮换、段位晋升任务。"},
 		{"id": "explore_puzzle", "name": "探索解谜", "icon": "🗺️", "tags": ["探索", "解谜", "遗迹"],
 			"description": "遗迹探索与谜题分支：区域解锁、线索收集、隐藏结局。"},
+		{"id": "mystery_detective", "name": "侦探悬疑", "icon": "🕵️", "tags": ["悬疑", "推理", "都市"],
+			"description": "一桩离奇命案，三条线索，一个真相。收集证据、审问嫌疑人、还原案发经过。"},
 		{"id": "dragonflame_worldview", "name": "龙焰纪元·世界观蓝图", "icon": "🐉", "tags": ["奇幻", "世界观", "蓝图模板"],
 			"description": "以《龙焰纪元》世界观为示范：四大王国/龙脉/时代/核心规则全部以蓝图节点表达, 展示子页蓝图化编辑方式。"},
 	]
@@ -41,6 +43,8 @@ static func apply_template(ws: WorldScriptData, template_id: String) -> bool:
 			_apply_combat_arena(ws)
 		"explore_puzzle":
 			_apply_explore_puzzle(ws)
+		"mystery_detective":
+			_apply_mystery_detective(ws)
 		"dragonflame_worldview":
 			_apply_dragonflame_worldview(ws)
 		_:
@@ -354,6 +358,32 @@ static func _apply_combat_arena(ws: WorldScriptData) -> void:
 	GraphStore.set_graph(ws, "sys:combat", g)
 
 ## === 6. 探索解谜 ===
+
+static func _apply_mystery_detective(ws: WorldScriptData) -> void:
+	_set_meta(ws, "雾都疑案", ["悬疑", "推理", "都市"], 15.0)
+	var wv: WorldviewData = ws.worldview
+	wv.background_story = "雨夜的雾都，富豪离奇死于上锁的书房。你是新来的侦探，只有三天时间查明真相。"
+	wv.add_faction("police", "警署", "neutral", 50)
+	wv.add_faction("underground", "地下帮会", "hostile", 30)
+	wv.geography = {"regions": [
+		{"id": "mansion", "name": "富豪宅邸", "description": "案发现场，雨声不断"},
+		{"id": "station", "name": "警署", "description": "卷宗与证物室"},
+		{"id": "alley", "name": "后巷", "description": "地下线人的据点"},
+	]}
+	var es: EventSystemData = ws.event_system
+	es.add_story_event("first_clue", "第一份证词", "chain")
+	es.story_events[0]["description"] = "管家声称案发时在厨房，但鞋底的泥土却来自后巷。"
+	es.story_events[0]["choices"] = [
+		{"id": "c1", "text": "盘问管家", "consequences": [{"target": "world", "effect": "clue_butler"}]},
+		{"id": "c2", "text": "搜查后巷", "consequences": [{"target": "world", "effect": "clue_alley"}]},
+	]
+	es.add_story_event("confront", "当面对质", "chain")
+	es.story_events[1]["prerequisite"] = "first_clue"
+	es.story_events[1]["description"] = "证据指向管家，但真正的幕后另有其人……"
+	es.story_events[1]["choices"] = [
+		{"id": "c1", "text": "逮捕管家", "consequences": [{"target": "world", "effect": "case_closed_quick"}]},
+		{"id": "c2", "text": "继续深挖", "consequences": [{"target": "world", "effect": "true_culprit"}]},
+	]
 
 static func _apply_explore_puzzle(ws: WorldScriptData) -> void:
 	_set_meta(ws, "失落遗迹", ["探索", "解谜", "遗迹"], 12.0)
