@@ -884,7 +884,10 @@ func _update_validation() -> void:
 	var validator := ScriptValidator.new()
 	var report := validator.validate(current_script)
 	error_list.clear()
-	for e in report.get("errors", []):
+	var errors: Array = report.get("errors", [])
+	if errors.is_empty():
+		error_list.add_item("✅ 校验通过：未发现问题（%d 个事件）" % current_script.event_system.story_events.size())
+	for e in errors:
 		error_list.add_item(str(e))
 	# 点击错误条目：有定位则跳转事件，否则复制全文
 	var err_report: Dictionary = report
