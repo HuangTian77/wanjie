@@ -708,6 +708,20 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
+		elif event.keycode == KEY_C and not event.ctrl_pressed:
+			# C 键：选中节点画布居中
+			if not _bp_selected_ids.is_empty():
+				var center := Vector2.ZERO
+				var count := 0
+				for nid in _bp_selected_ids:
+					var nd: Dictionary = graph["nodes"].get(nid, {})
+					if not nd.is_empty():
+						center += Vector2(nd.get("x", 0.0), nd.get("y", 0.0))
+						count += 1
+				if count > 0:
+					center /= count
+					_bp_offset = canvas.size / 2.0 - center * _bp_zoom
+					canvas.queue_redraw()
 		elif event.keycode == KEY_EQUAL or event.keycode == KEY_KP_ADD:
 			_bp_zoom = clampf(_bp_zoom * 1.15, 0.2, 3.0)
 			canvas.queue_redraw()
