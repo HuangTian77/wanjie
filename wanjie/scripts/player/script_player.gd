@@ -51,6 +51,7 @@ var _auto_timer: float = 0.0
 @onready var item_label: Label = %ItemLabel
 @onready var quest_label: Label = %QuestLabel
 @onready var progress_label: Label = %ProgressLabel
+@onready var difficulty_option: OptionButton = %DifficultyOption
 ## 通关提示是否已显示（防重复）
 var _ending_shown: bool = false
 @onready var chain_label: Label = %ChainLabel
@@ -755,6 +756,8 @@ func _on_history_toggle_pressed() -> void:
 
 ## === 菜单 ===
 func _on_menu_pressed() -> void:
+	_refresh_difficulty_option()
+	_refresh_menu_title()
 	menu_panel.visible = true
 
 func _on_menu_save_pressed() -> void:
@@ -965,6 +968,43 @@ func _get_progress() -> Array:
 	return [done, total]
 
 ## 关闭菜单（仅隐藏面板，不退出游戏）
+## 初始化/刷新难度选项（菜单打开时同步设置页选择）
+## 菜单打开时刷新标题（天数/进度）
+func _refresh_menu_title() -> void:
+	var title_node := menu_panel.find_child("MenuTitle", true, false)
+	if title_node == null:
+		return
+	var p := _get_progress()
+	var day := 1
+	if world_state:
+		day = world_state.get_current_day()
+	var progress_txt := ""
+	if p[1] > 0:
+		progress_txt = " · %d%%" % int(float(p[0]) / float(p[1]) * 100.0)
+	title_node.text = "游戏菜单 · 第 %d 天%s" % [day, progress_txt]
+
+func _refresh_difficulty_option() -> void:
+	if difficulty_option == null:
+		return
+	difficulty_option.clear()
+	difficulty_option.add_item("自适应", 0)
+	difficulty_option.add_item("简单", 1)
+	difficulty_option.add_item("普通", 2)
+	difficulty_option.add_item("困难", 3)
+	var mode := "adaptive"
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm != null and gm.user_data != null:
+		mode = gm.user_data.difficulty_mode
+	difficulty_option.selected = ["adaptive", "easy", "normal", "hard"].find(mode)
+	if difficulty_option.get_signal_connection_list("item_selected").is_empty():
+		difficulty_option.item_selected.connect(func(idx: int):
+			var modes := ["adaptive", "easy", "normal", "hard"]
+			var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+			if gm2 != null and gm2.user_data != null:
+				gm2.user_data.difficulty_mode = modes[idx]
+				gm2.save_user_data()
+				ToastManager.info("难度已切换: %s" % modes[idx]))
+
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
 
