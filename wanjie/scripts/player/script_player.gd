@@ -1053,6 +1053,11 @@ func _on_menu_log_pressed() -> void:
 	var list := RichTextLabel.new()
 	dialog.add_child(list)
 	var has_any := false
+	# 已探索区域
+	if world_state and not world_state.explored_regions.is_empty():
+		list.append_text("[b]【已探索区域】[/b]\n")
+		list.append_text("• %s\n" % "、".join(PackedStringArray(world_state.explored_regions)))
+		has_any = true
 	# 势力关系
 	if world_state and not world_state.faction_states.is_empty():
 		list.append_text("[b]【势力关系】[/b]\n")
