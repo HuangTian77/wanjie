@@ -925,13 +925,17 @@ func _on_menu_shop_pressed() -> void:
 			var sell_btn := Button.new()
 			sell_btn.text = "出售 %s ×%d（+%d 金币）" % [item_id, qty, int(price)]
 			sell_btn.pressed.connect(func():
-				if economy_engine.sell("market_1", item_id):
-					ToastManager.success("已出售 %s +%d 金币" % [item_id, int(price)])
-					_sync_save_state()
-					_on_menu_shop_pressed()
-					dialog.queue_free()
-				else:
-					ToastManager.warning("出售失败"))
+				# 出售确认（防误卖）
+				var confirm := ConfirmationDialog.new()
+				confirm.dialog_text = "出售 %s ×%d，获得 %d 金币？" % [item_id, qty, int(price)]
+				confirm.confirmed.connect(func():
+					if economy_engine.sell("market_1", item_id):
+						ToastManager.success("已出售 %s +%d 金币" % [item_id, int(price)])
+						_sync_save_state()
+						_on_menu_shop_pressed()
+						dialog.queue_free())
+				add_child(confirm)
+				confirm.popup_centered())
 			box.add_child(sell_btn)
 			sold_any = true
 	if not sold_any:
