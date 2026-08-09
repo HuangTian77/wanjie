@@ -101,7 +101,18 @@ func _process(delta: float) -> void:
 		_auto_timer += delta
 		if _auto_timer >= _auto_interval:
 			_auto_timer = 0.0
-			_on_battle_attack_pressed()
+			# 25% 概率释放第一个可用技能（MP 足够时）
+			var used_skill := false
+			if combat_engine.ability_data != null and randf() < 0.25:
+				for sk in combat_engine.ability_data.skills:
+					var mcost: int = int((sk.get("cost", {}) as Dictionary).get("mana", 0))
+					if mcost <= int(combat_engine.player_combat_stats.get("mp", 0)):
+						combat_engine.player_use_skill(str(sk.get("id", "")), -1)
+						_refresh_battle_ui()
+						used_skill = true
+						break
+			if not used_skill:
+				_on_battle_attack_pressed()
 	# 打字机效果
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
 		_typewriter_timer += delta

@@ -122,9 +122,11 @@ func _first_alive_enemy_index() -> int:
 	return -1
 
 ## 玩家使用技能
-func player_use_skill(skill_id: String, target_idx: int = 0) -> Dictionary:
+func player_use_skill(skill_id: String, target_idx: int = -1) -> Dictionary:
 	if not is_active or ability_data == null:
 		return {}
+	if target_idx < 0:
+		target_idx = _first_alive_enemy_index()
 	var skill := ability_data.get_skill(skill_id)
 	if skill.is_empty():
 		return {}
