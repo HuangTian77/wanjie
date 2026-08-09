@@ -893,7 +893,11 @@ func _on_menu_shop_pressed() -> void:
 		for m in economy_engine.economy_data.markets:
 			var mid: String = m.get("id", "")
 			list.append_text("[b]%s[/b]\n" % m.get("name", mid))
-			for g in m.get("goods", []):
+			# 商品按价格升序显示（性价比在前）
+			var goods: Array = m.get("goods", [])
+			goods.sort_custom(func(a, b):
+				return economy_engine.get_price(mid, str(a.get("item", ""))) < economy_engine.get_price(mid, str(b.get("item", ""))))
+			for g in goods:
 				var item_id: String = g.get("item", "")
 				var price: float = economy_engine.get_price(mid, item_id)
 				var btn := Button.new()
