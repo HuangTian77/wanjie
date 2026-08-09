@@ -1540,8 +1540,7 @@ func _on_menu_rest_pressed() -> void:
 		stats["mp"] = stats.get("max_mp", 50)
 	_update_ui()
 	_sync_save_state()
-	ToastManager.info("⛺ 休息完毕：HP/MP 已回满，时间推进 8 小时")
-	ToastManager.success("休息片刻，HP/MP 已回满")
+	ToastManager.success("⛺ 休息 8 小时：HP/MP 已回满")
 	_add_history("在营地休息了 8 小时，状态恢复")
 	# 休息后概率触发随机事件（30%）
 	if event_engine != null and randf() < 0.3:
