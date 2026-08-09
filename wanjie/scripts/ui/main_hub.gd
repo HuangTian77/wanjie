@@ -257,6 +257,10 @@ func _setup_carousel() -> void:
 	featured_scripts = GameManager.get_featured_scripts()
 	_update_carousel()
 	carousel_timer.start(5.0)
+	# 悬停暂停自动轮播（仅绑定一次）
+	if carousel_container.get_signal_connection_list("mouse_entered").is_empty():
+		carousel_container.mouse_entered.connect(func(): carousel_timer.stop())
+		carousel_container.mouse_exited.connect(func(): carousel_timer.start(5.0))
 
 func _update_carousel() -> void:
 	if featured_scripts.is_empty():
