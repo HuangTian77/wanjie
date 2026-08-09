@@ -1269,6 +1269,8 @@ func _on_menu_log_pressed() -> void:
 		time_str = " · " + world_state.get_time_display()
 	if event_engine:
 		stat_str = " · 因果 %d" % event_engine.causal_marks.size()
+	if world_state and not world_state.active_effects.is_empty():
+		stat_str += " · 效果 %d" % world_state.active_effects.size()
 	dialog.title = "世界日志%s%s" % [time_str, stat_str]
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
