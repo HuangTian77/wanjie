@@ -967,6 +967,11 @@ func _on_battle_skill_pressed() -> void:
 			if dmg > 0:
 				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg])
 				_spawn_damage_popup(-dmg)
+				# 技能伤害计入连击
+				_combo_count += 1
+				_best_combo = maxi(_best_combo, _combo_count)
+				if _combo_count >= 3 and _combo_count % 3 == 0:
+					ToastManager.success("🔥 连击 x%d！" % _combo_count)
 		_refresh_battle_ui())
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
