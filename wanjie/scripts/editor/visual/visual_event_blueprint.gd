@@ -1003,6 +1003,32 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 坐标编辑（X/Y）
+	var pos_box := HBoxContainer.new()
+	pos_box.add_theme_constant_override("separation", 8)
+	detail.add_child(pos_box)
+	var pos_lbl := Label.new()
+	pos_lbl.text = "坐标"
+	pos_lbl.custom_minimum_size.x = 60
+	pos_lbl.add_theme_color_override("font_color", EditorUIFactory.C_LABEL)
+	pos_lbl.add_theme_font_size_override("font_size", 12)
+	pos_box.add_child(pos_lbl)
+	var pos_x := SpinBox.new()
+	pos_x.min_value = -20000
+	pos_x.max_value = 20000
+	pos_x.value = node.get("pos", Vector2.ZERO).x
+	pos_x.value_changed.connect(func(v: float):
+		node["pos"] = Vector2(v, node.get("pos", Vector2.ZERO).y)
+		_bp_redraw_canvas())
+	pos_box.add_child(pos_x)
+	var pos_y := SpinBox.new()
+	pos_y.min_value = -20000
+	pos_y.max_value = 20000
+	pos_y.value = node.get("pos", Vector2.ZERO).y
+	pos_y.value_changed.connect(func(v: float):
+		node["pos"] = Vector2(node.get("pos", Vector2.ZERO).x, v)
+		_bp_redraw_canvas())
+	pos_box.add_child(pos_y)
 	# 分类+优先级标签
 	var cat_info: Dictionary = BlueprintNodeRegistry.CATEGORIES.get(reg_def.get("category", ""), {})
 	if not cat_info.is_empty():
