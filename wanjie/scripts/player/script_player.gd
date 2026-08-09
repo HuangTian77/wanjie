@@ -1234,6 +1234,9 @@ func _on_menu_log_pressed() -> void:
 				var ch_day := ""
 				if world_state and ch.has("day"):
 					ch_day = "（第 %d 天）" % int(ch.get("day", 1))
+				var ch_ts: String = str(ch.get("timestamp", ""))
+				if not ch_ts.is_empty():
+					ch_day += " %s" % ch_ts
 				list.append_text("• %s（%s）%s\n" % [cid, eid, ch_day])
 				has_any = true
 	if not has_any:
