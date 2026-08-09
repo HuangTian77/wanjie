@@ -966,6 +966,7 @@ func _on_enemy_info_clicked(event: InputEvent) -> void:
 			_battle_target = (_battle_target + 1) % count
 			if combat_engine.enemies[_battle_target].get("is_alive", true):
 				break
+		ToastManager.info("🎯 目标：%s" % str(combat_engine.enemies[_battle_target].get("name", "?")))
 		_refresh_battle_ui()
 
 func _on_battle_attack_pressed() -> void:
