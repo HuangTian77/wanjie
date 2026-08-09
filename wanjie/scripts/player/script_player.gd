@@ -622,6 +622,7 @@ func _on_tavern_pressed() -> void:
 	tavern_char_select.item_selected.connect(_on_tavern_char_selected)
 	_enter_tavern_char(0)
 	tavern_input.grab_focus()
+	ToastManager.info("🏮 与 %s 对话（←→切换角色）" % TAVERN_CHARS[0].get("name", "角色"))
 
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
