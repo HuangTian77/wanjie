@@ -674,6 +674,11 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			_bp_copy()
 		elif event.ctrl_pressed and event.keycode == KEY_V:
 			_bp_paste()
+		elif event.ctrl_pressed and event.keycode == KEY_D:
+			# 就地复制选中节点（复制+粘贴，粘贴带偏移）
+			if not _bp_selected_ids.is_empty():
+				_bp_copy()
+				_bp_paste()
 		elif event.keycode == KEY_DELETE:
 			if not _bp_selected_ids.is_empty():
 				_bp_push_undo()
