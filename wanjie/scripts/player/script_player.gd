@@ -760,6 +760,11 @@ func _on_battle_skill_pressed() -> void:
 		var desc: String = str(s.get("description", ""))
 		if not desc.is_empty():
 			menu.set_item_tooltip(skills.find(s), desc)
+		# MP 不足：置灰禁用
+		var cur_mp: int = int(combat_engine.player_combat_stats.get("mp", 0))
+		if mana_cost > cur_mp:
+			menu.set_item_disabled(skills.find(s), true)
+			menu.set_item_tooltip(skills.find(s), "魔力不足（需要 %d MP）" % mana_cost)
 	menu.id_pressed.connect(func(id: int):
 		combat_engine.player_use_skill(skills[id].get("id", ""), 0)
 		_refresh_battle_ui())
