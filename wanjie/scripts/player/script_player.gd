@@ -788,6 +788,9 @@ func _enter_tavern_char(index: int) -> void:
 		(sb as Button).disabled = true
 		tavern_input.text_changed.connect(func(t: String):
 			(sb as Button).disabled = t.strip_edges().is_empty())
+	# 回车直接发送
+	if not tavern_input.text_submitted.is_connected(_on_tavern_send_pressed):
+		tavern_input.text_submitted.connect(_on_tavern_send_pressed)
 	# 恢复历史对话
 	var history: Array = TavernManager.load_history(char["id"])
 	if not history.is_empty():
