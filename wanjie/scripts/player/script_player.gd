@@ -764,10 +764,18 @@ func _on_tavern_send_pressed() -> void:
 	tavern_input.text = ""
 	_tavern_append("user", text)
 	TavernManager.dialog_history.append({"role": "user", "content": text})
-	# 角色"思考中…"提示，延迟模拟回复
+	# 角色"思考中…"提示（省略号循环动效），延迟模拟回复
 	_tavern_append("assistant", "…")
 	TavernManager.dialog_history.append({"role": "assistant", "content": ""})
-	await get_tree().create_timer(0.45).timeout
+	var dots := 0
+	var think_timer := create_tween().set_loops()
+	think_timer.tween_interval(0.25)
+	think_timer.tween_callback(func():
+		dots = (dots % 3) + 1
+		if tavern_msgs.get_line_count() > 0:
+			tavern_msgs.text = tavern_msgs.text.substr(0, tavern_msgs.text.rfind("…")) + "".repeat(dots))
+	await get_tree().create_timer(0.6).timeout
+	think_timer.kill()
 	var reply := _tavern_mock_reply(text)
 	TavernManager.dialog_history[TavernManager.dialog_history.size() - 1]["content"] = reply
 	TavernManager.save_history()
