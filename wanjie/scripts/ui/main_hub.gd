@@ -255,6 +255,12 @@ func _refresh_resource_labels() -> void:
 	if has_node("%EnergyLabel"):
 		var energy_label: Label = %EnergyLabel
 		energy_label.text = GameManager.user_data.get_creation_energy_display()
+	# 创建按钮：灵感不足置灰
+	var create_btn := get_node_or_null("MainMargin/VBox/BottomBar/CreateBtn")
+	if create_btn is Button:
+		var can_create: bool = GameManager.user_data.inspiration > 0
+		(create_btn as Button).disabled = not can_create
+		(create_btn as Button).tooltip_text = "需要 1 点灵感" if not can_create else "创建新剧本（消耗 1 点灵感）"
 
 ## === 轮播设置 ===
 func _setup_carousel() -> void:
