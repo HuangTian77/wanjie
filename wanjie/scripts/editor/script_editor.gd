@@ -678,7 +678,7 @@ func _on_assets_changed() -> void:
 func _count_blueprint_nodes(ws: WorldScriptData) -> int:
 	var total := 0
 	if ws.event_system:
-		for g in ws.event_system.event_blueprint_graphs.values():
+		for g in ws.event_system.blueprint_graphs.values():
 			total += (g as Dictionary).get("nodes", {}).size()
 	return total
 
@@ -686,7 +686,7 @@ func _count_blueprint_nodes(ws: WorldScriptData) -> int:
 func _count_blueprint_connections(ws: WorldScriptData) -> int:
 	var total := 0
 	if ws.event_system:
-		for g in ws.event_system.event_blueprint_graphs.values():
+		for g in ws.event_system.blueprint_graphs.values():
 			total += (g as Dictionary).get("connections", []).size()
 	return total
 
