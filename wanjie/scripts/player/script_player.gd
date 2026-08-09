@@ -958,7 +958,7 @@ func _on_enemy_info_clicked(event: InputEvent) -> void:
 		if combat_engine == null:
 			return
 		# 循环选择下一个存活敌人
-		var count := combat_engine.enemies.size()
+		var count: int = combat_engine.enemies.size()
 		if count <= 1:
 			_battle_target = -1
 			return
