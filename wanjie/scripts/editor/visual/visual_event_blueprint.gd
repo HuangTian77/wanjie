@@ -740,6 +740,10 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 					confirm.popup_centered()
 				else:
 					_bp_delete_selected(graph, canvas)
+		elif event.keycode == KEY_G and not event.ctrl_pressed and not event.shift_pressed:
+			# G 键切换网格吸附
+			_bp_grid_snap = not _bp_grid_snap
+			_log_output("[网格吸附] %s" % ("开" if _bp_grid_snap else "关"))
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
 		elif event.keycode == KEY_C and not event.ctrl_pressed:
