@@ -696,6 +696,16 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			if not _bp_selected_ids.is_empty():
 				_bp_copy()
 				_bp_paste()
+		elif event.ctrl_pressed and event.shift_pressed and event.keycode == KEY_X:
+			# 清空当前图所有连线（可撤销）
+			var conns: Array = graph.get("connections", [])
+			if not conns.is_empty():
+				_bp_push_undo()
+				graph["connections"] = []
+				_save_active_graph()
+				_host._sync_to_code_editor()
+				canvas.queue_redraw()
+				_log_output("[清除连线] 已移除 %d 条连线" % conns.size())
 		elif event.keycode == KEY_DELETE:
 			if not _bp_selected_ids.is_empty():
 				_bp_push_undo()
