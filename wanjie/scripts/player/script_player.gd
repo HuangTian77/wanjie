@@ -54,6 +54,8 @@ var _auto_timer: float = 0.0
 @onready var difficulty_option: OptionButton = %DifficultyOption
 ## 通关提示是否已显示（防重复）
 var _ending_shown: bool = false
+## 首次操作提示是否已显示
+var _help_shown: bool = false
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -129,6 +131,12 @@ func _init_engines() -> void:
 	# 记录一次体验（体验数+1、最近体验前置）
 	GameManager.record_play(sid)
 	GameManager.unlock_achievement("first_play", "首次游玩剧本")
+	# 首次体验：弹出操作提示
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm != null and gm.user_data != null and not gm.user_data.played_script_ids.is_empty():
+		if gm.user_data.played_script_ids.size() <= 1 and not _help_shown:
+			_help_shown = true
+			_on_menu_help_pressed()
 
 	world_state = load("res://scripts/player/world_state.gd").new()
 	if script_data.worldview:
