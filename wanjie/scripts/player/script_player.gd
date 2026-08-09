@@ -697,7 +697,10 @@ func _on_tavern_pressed() -> void:
 	tavern_char_select.item_selected.connect(_on_tavern_char_selected)
 	_enter_tavern_char(0)
 	tavern_input.grab_focus()
-	ToastManager.info("🏮 与 %s 对话（←→切换角色）" % TAVERN_CHARS[0].get("name", "角色"))
+	var hist_count: int = TavernManager.dialog_history.size()
+	ToastManager.info("🏮 与 %s 对话（←→切换角色）%s" % [
+		TAVERN_CHARS[0].get("name", "角色"),
+		"· 历史 %d 条" % hist_count if hist_count > 0 else ""])
 
 ## 清空当前角色对话历史
 func _on_tavern_clear_pressed() -> void:
