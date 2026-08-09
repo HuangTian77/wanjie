@@ -686,6 +686,11 @@ const TAVERN_CHARS: Array = [
 func _on_tavern_pressed() -> void:
 	tavern_panel.visible = true
 	menu_panel.visible = false
+	# 打开后清除新消息高亮
+	var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
+	if tb is Button:
+		(tb as Button).remove_theme_color_override("font_color")
+		(tb as Button).text = "🏮 酒馆"
 	tavern_char_select.clear()
 	for i in TAVERN_CHARS.size():
 		tavern_char_select.add_item("%s %s" % [TAVERN_CHARS[i].get("icon", ""), TAVERN_CHARS[i]["name"]], i)
@@ -773,6 +778,12 @@ func _on_tavern_send_pressed() -> void:
 	if last_idx >= 0:
 		rt.text = all_text.substr(0, last_idx) + "\n\n"
 	_tavern_append("assistant", reply)
+	# 若酒馆面板未打开：顶栏按钮金色高亮提示新消息
+	if not tavern_panel.visible:
+		var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
+		if tb is Button:
+			(tb as Button).add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
+			(tb as Button).text = "🏮 酒馆 ·"
 
 func _tavern_append(role: String, content: String) -> void:
 	var prefix := "[color=#c9a06a][b]%s[/b][/color] " % ("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")
