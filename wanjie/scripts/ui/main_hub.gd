@@ -376,7 +376,14 @@ func _refresh_script_grid() -> void:
 			# 搜索无结果：区分文案，不显示创建按钮
 			var empty_search: EmptyState = EMPTY_STATE_SCENE.instantiate()
 			script_grid.add_child(empty_search)
-			empty_search.setup("未找到匹配的剧本", "🔍", "", false)
+			var suggestion := ""
+			# 无结果建议词（基于常见标签）
+			var ql: String = search_input.text.strip_edges().to_lower()
+			for cand in ["冒险", "经营", "解谜", "战斗", "剧情", "策略"]:
+				if cand.to_lower() not in ql:
+					suggestion = "试试：%s" % cand
+					break
+			empty_search.setup("未找到匹配的剧本\n%s" % suggestion, "🔍", "", false)
 			script_cards.append(empty_search)
 		else:
 			_show_empty_state()
