@@ -1030,6 +1030,18 @@ func _show_bp_node_properties(node_id: String) -> void:
 			_show_bp_node_properties(node_id)
 			_bp_redraw_canvas())
 		detail.add_child(reset_btn)
+		# 删除节点按钮
+		var del_btn := Button.new()
+		del_btn.text = "🗑 删除节点"
+		del_btn.flat = true
+		del_btn.add_theme_color_override("font_color", Color(0.9, 0.4, 0.35))
+		del_btn.pressed.connect(func():
+			var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
+			_bp_selected_ids = [node_id]
+			if canvas:
+				_bp_delete_selected(graph, canvas)
+			_hide_bp_node_properties())
+		detail.add_child(del_btn)
 		var props: Dictionary = node.get("properties", {})
 		for param in params:
 			var key: String = param["key"]
