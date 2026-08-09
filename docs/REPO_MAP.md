@@ -577,9 +577,9 @@
 - signal `node_selected`
 - signal `node_modified`
 - func `_ready` (L58)
-- func `set_scene_data` (L166)
-- func `get_selected_nodes` (L170)
-- func `clear_selection` (L173)
+- func `set_scene_data` (L167)
+- func `get_selected_nodes` (L171)
+- func `clear_selection` (L174)
 
 ### scripts/editor/ide/ide_script_panel.gd (ide_script_panel.gd)
 

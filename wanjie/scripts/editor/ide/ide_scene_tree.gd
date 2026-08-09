@@ -79,6 +79,7 @@ func _build_ui() -> void:
 	add_child(header_panel)
 
 	var title := Label.new()
+	title.name = "SceneTitle"
 	title.text = "场景"
 	title.add_theme_font_size_override("font_size", IDETheme.FONT_SIZE_UI)
 	title.add_theme_color_override("font_color", IDETheme.C_TEXT)
@@ -180,9 +181,23 @@ func _refresh_tree() -> void:
 	if _tree == null:
 		return  # UI尚未构建
 	_tree.clear()
+	# 对象计数标题
+	var title_lbl := get_node_or_null("HeaderPanel/Header/SceneTitle")
+	if title_lbl is Label:
+		var count := 0
+		if not _scene_root.is_empty():
+			count = _count_nodes(_scene_root)
+		(title_lbl as Label).text = "场景（%d）" % count if not _scene_root.is_empty() else "场景"
 	if _scene_root.is_empty():
 		return
 	_build_tree_item(_scene_root, null)
+
+## 递归统计节点数
+func _count_nodes(node: Dictionary) -> int:
+	var total := 1
+	for c in node.get("children", []):
+		total += _count_nodes(c)
+	return total
 
 func _build_tree_item(node: Dictionary, parent_item: TreeItem) -> TreeItem:
 	var item: TreeItem
