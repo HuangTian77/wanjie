@@ -207,6 +207,7 @@ const ACHIEVEMENTS := {
 	"first_play": "首次游玩剧本",
 	"first_publish": "首次发布剧本",
 	"first_favorite": "收藏第一个剧本",
+	"finish_any_script": "通关任意剧本",
 }
 
 ## 解锁成就（首次触发才解锁；返回是否新解锁）

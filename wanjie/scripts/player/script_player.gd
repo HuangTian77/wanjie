@@ -50,6 +50,9 @@ var _auto_timer: float = 0.0
 @onready var econ_label: Label = %EconLabel
 @onready var item_label: Label = %ItemLabel
 @onready var quest_label: Label = %QuestLabel
+@onready var progress_label: Label = %ProgressLabel
+## 通关提示是否已显示（防重复）
+var _ending_shown: bool = false
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -394,6 +397,16 @@ func _update_ui() -> void:
 			if not chain.is_empty():
 				chain_label.text = "🔗 %s" % chain
 				chain_label.visible = true
+		# 剧情进度（基于事件完成度）
+		var p := _get_progress()
+		if p[1] > 0:
+			progress_label.text = "📊 %d%%" % int(float(p[0]) / float(p[1]) * 100.0)
+			progress_label.visible = true
+			# 通关提示（全部事件触发一次）
+			if p[0] >= p[1] and not _ending_shown:
+				_ending_shown = true
+				ToastManager.success("🎉 剧情全部体验完毕！")
+				GameManager.unlock_achievement("finish_any_script")
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
 		mp_bar.max_value = max_mp
@@ -928,17 +941,24 @@ func _on_menu_back_pressed() -> void:
 
 ## 按事件完成度回写剧本进度（大厅卡片进度条可见）
 func _write_progress() -> void:
-	if script_data == null or script_data.event_system == null:
+	var p := _get_progress()
+	if p[1] <= 0:
 		return
+	script_data.progress = clampf(float(p[0]) / float(p[1]), 0.0, 1.0)
+	ScriptDataManager.update_script(script_data, ["progress"])
+
+## 计算剧情进度 [done, total]
+func _get_progress() -> Array:
+	if script_data == null or script_data.event_system == null:
+		return [0, 0]
 	var total := script_data.event_system.story_events.size()
 	if total <= 0:
-		return
+		return [0, 0]
 	var done := 0
 	for e in script_data.event_system.story_events:
 		if event_engine != null and event_engine.triggered_ids.has(e.get("id", "")):
 			done += 1
-	script_data.progress = clampf(float(done) / float(total), 0.0, 1.0)
-	ScriptDataManager.update_script(script_data, ["progress"])
+	return [done, total]
 
 ## 关闭菜单（仅隐藏面板，不退出游戏）
 func _on_menu_close_pressed() -> void:
