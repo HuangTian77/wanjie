@@ -1015,6 +1015,21 @@ func _show_bp_node_properties(node_id: String) -> void:
 	if params.is_empty():
 		_host._ui().add_info_label(detail, "此节点无可配置参数")
 	else:
+		# 重置全部参数为默认值
+		var reset_btn := Button.new()
+		reset_btn.text = "↺ 重置参数"
+		reset_btn.flat = true
+		reset_btn.add_theme_color_override("font_color", Color(0.9, 0.7, 0.4))
+		reset_btn.pressed.connect(func():
+			var defs: Array = reg_def.get("params", [])
+			for p_def in defs:
+				node["properties"][p_def["key"]] = p_def.get("default", null)
+			_host._mark_dirty()
+			_save_active_graph()
+			_host._sync_to_code_editor()
+			_show_bp_node_properties(node_id)
+			_bp_redraw_canvas())
+		detail.add_child(reset_btn)
 		var props: Dictionary = node.get("properties", {})
 		for param in params:
 			var key: String = param["key"]
