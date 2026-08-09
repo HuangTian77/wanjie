@@ -638,7 +638,11 @@ func _on_combat_ended(result: String) -> void:
 	_clear_choices()
 	if result == "defeat":
 		# 失败：提供重试（读自动存档恢复状态）
+		ToastManager.warning("你已阵亡… 进度已保存，可读档重试")
 		_add_choice_button("🔄 重试（读档）", "_on_retry_from_save")
+	elif result == "fled":
+		ToastManager.info("成功逃离战场")
+		_add_choice_button("继续", "_on_continue_pressed")
 	else:
 		# 战斗结束后提供"继续"推进剧情
 		_add_choice_button("继续", "_on_continue_pressed")
