@@ -950,6 +950,11 @@ func _on_menu_shop_pressed() -> void:
 				var price: float = economy_engine.get_price(mid, item_id)
 				var btn := Button.new()
 				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				# 金币不足：置灰禁用
+				var gold_now: int = int(economy_engine.player_currencies.get("gold", 0))
+				if gold_now < int(price):
+					btn.disabled = true
+					btn.tooltip_text = "金币不足（需要 %d）" % int(price)
 				btn.pressed.connect(func():
 					if economy_engine.buy(mid, item_id):
 						ToastManager.success("已购买 %s" % item_id)
