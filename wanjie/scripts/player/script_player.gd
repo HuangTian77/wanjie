@@ -416,6 +416,7 @@ func _update_ui() -> void:
 				_ending_shown = true
 				ToastManager.success("🎉 剧情全部体验完毕！")
 				GameManager.unlock_achievement("finish_any_script")
+				_show_finish_stats()
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
 		mp_bar.max_value = max_mp
@@ -1102,6 +1103,32 @@ func _on_menu_rest_pressed() -> void:
 	_sync_save_state()
 	ToastManager.success("休息片刻，HP/MP 已回满")
 	_add_history("在营地休息了 8 小时，状态恢复")
+
+## 通关统计弹窗（天数/等级/金币/事件数）
+func _show_finish_stats() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "🎉 通关！"
+	dialog.min_size = Vector2i(380, 260)
+	add_child(dialog)
+	var list := RichTextLabel.new()
+	dialog.add_child(list)
+	var day := 1
+	if world_state:
+		day = world_state.get_current_day()
+	var lv := 1
+	var gold := 0
+	if combat_engine and not combat_engine.player_combat_stats.is_empty():
+		lv = int(combat_engine.player_combat_stats.get("level", 1))
+	if economy_engine:
+		gold = int(economy_engine.player_currencies.get("gold", 0))
+	var p := _get_progress()
+	list.append_text("[color=#c9a06a][b]%s[/b][/color]\n\n" % script_data.name)
+	list.append_text("🗓 通关天数：%d 天\n" % day)
+	list.append_text("🎖 等级：Lv.%d\n" % lv)
+	list.append_text("💰 持有金币：%d\n" % gold)
+	list.append_text("📖 触发事件：%d 个\n" % p[0])
+	list.append_text("\n[color=#888]感谢体验！可返回大厅查看成就与进度。[/color]")
+	dialog.popup_centered()
 
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
