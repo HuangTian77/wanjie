@@ -1226,8 +1226,8 @@
 
 ### scripts/player/script_player.gd (script_player.gd)
 
-- func `_ready` (L63)
-- func `_process` (L78)
+- func `_ready` (L65)
+- func `_process` (L80)
 
 ### scripts/player/world_state.gd (world_state.gd)
 

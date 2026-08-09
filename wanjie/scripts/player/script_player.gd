@@ -23,6 +23,8 @@ var _typewriter_timer: float = 0.0
 var _typewriter_done: bool = true
 ## 自动战斗标记与计时
 var _auto_battle: bool = false
+## 自动战斗间隔（秒，点击自动按钮循环 0.6/0.3/0.15）
+var _auto_interval: float = 0.6
 var _auto_timer: float = 0.0
 
 ## UI节点
@@ -76,10 +78,10 @@ func _ready() -> void:
 	add_child(auto_save_timer)
 
 func _process(delta: float) -> void:
-	# 自动战斗：定时攻击（0.6s 间隔）
+	# 自动战斗：定时攻击（间隔可调速）
 	if _auto_battle and battle_panel.visible and combat_engine != null and combat_engine.is_active:
 		_auto_timer += delta
-		if _auto_timer >= 0.6:
+		if _auto_timer >= _auto_interval:
 			_auto_timer = 0.0
 			_on_battle_attack_pressed()
 	# 打字机效果
@@ -801,13 +803,21 @@ func _on_battle_flee_pressed() -> void:
 		combat_engine.try_flee()
 		ToastManager.info("逃跑成功率 %.0f%%" % (combat_engine.last_flee_chance * 100.0))
 
-## 自动战斗开关
+## 自动战斗开关（连续点击循环 1x→2x→4x→关）
 func _on_battle_auto_pressed() -> void:
-	_auto_battle = not _auto_battle
-	if _auto_battle:
+	if not _auto_battle:
+		_auto_battle = true
+		_auto_interval = 0.6
 		_auto_timer = 0.0
-		ToastManager.info("自动战斗开启")
+		ToastManager.info("自动战斗开启（1x）")
+	elif _auto_interval == 0.6:
+		_auto_interval = 0.3
+		ToastManager.info("自动战斗加速（2x）")
+	elif _auto_interval == 0.3:
+		_auto_interval = 0.15
+		ToastManager.info("自动战斗加速（4x）")
 	else:
+		_auto_battle = false
 		ToastManager.info("自动战斗关闭")
 
 ## === 历史记录折叠 ===
