@@ -219,7 +219,7 @@ func _setup_top_bar() -> void:
 	# 刷新按钮
 	var refresh_btn := Button.new()
 	refresh_btn.text = "↻"
-	refresh_btn.tooltip_text = "刷新剧本库"
+	refresh_btn.tooltip_text = "刷新剧本库（当前 %d 个）" % GameManager.scripts.size()
 	refresh_btn.flat = true
 	refresh_btn.pressed.connect(func():
 		# 刷新旋转动画（尊重全局动效）
