@@ -340,6 +340,8 @@ func _should_skip(entry_name: String) -> bool:
 		return true
 	if entry_name.ends_with(".uid"):
 		return true
+	if entry_name.ends_with(".uid"):
+		return true
 	return false
 
 func _is_text_file(path: String) -> bool:
