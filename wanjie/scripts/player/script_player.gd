@@ -1404,6 +1404,17 @@ func _on_menu_log_pressed() -> void:
 		var gold: int = int(economy_engine.player_currencies.get("gold", 0))
 		list.append_text("\n[b]【经济】[/b]\n")
 		list.append_text("• 💰 金币 %d · 🎒 物品 %d\n" % [gold, economy_engine.player_inventory.size()])
+	# 玩家状态
+	if combat_engine and not combat_engine.player_combat_stats.is_empty():
+		var pstats: Dictionary = combat_engine.player_combat_stats
+		list.append_text("\n[b]【玩家】[/b]\n")
+		list.append_text("• 🎖 Lv.%d · ❤️ %d/%d · ⚡ %d/%d\n" % [
+			int(pstats.get("level", 1)),
+			int(pstats.get("hp", 0)), int(pstats.get("max_hp", 1)),
+			int(pstats.get("mp", 0)), int(pstats.get("max_mp", 1))])
+		var shd: int = int(pstats.get("shield", 0))
+		if shd > 0:
+			list.append_text("• 🛡 护盾 %d\n" % shd)
 	# 世界效果（进行中）
 	if world_state and not world_state.active_effects.is_empty():
 		list.append_text("\n[b]【世界效果】[/b]\n")
