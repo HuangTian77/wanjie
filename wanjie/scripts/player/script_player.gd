@@ -749,6 +749,13 @@ func _enter_tavern_char(index: int) -> void:
 	TavernManager.start_dialog(char)
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…" % char.get("name", "角色")
+	# 首次进入该角色：显示一句问候
+	if TavernManager.dialog_history.is_empty():
+		var greeting := "（%s%s抬头看向你）欢迎光临%s，旅行者。有什么想问的？" % [
+			char.get("icon", "🗨"), char.get("name", "角色"), char.get("locale", "小店")]
+		TavernManager.dialog_history.append({"role": "assistant", "content": greeting})
+		TavernManager.save_history()
+		_tavern_append("assistant", greeting)
 	# 空输入禁用发送按钮
 	var sb := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/TavernSend")
 	if sb is Button:
