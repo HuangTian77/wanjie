@@ -329,6 +329,14 @@ theme_override_constants/separation = 8
 layout_mode = 2
 text = "游戏菜单"
 
+[node name="MenuStatus" type="Label" parent="MenuPanel/MenuVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(0.75, 0.7, 0.62, 0.85)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 2
+
 [node name="DifficultyRow" type="HBoxContainer" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 theme_override_constants/separation = 8

@@ -1367,13 +1367,21 @@ func _refresh_menu_title() -> void:
 	if ast is Timer and (ast as Timer).is_stopped() == false:
 		var remain: int = int((ast as Timer).time_left / 60.0)
 		save_txt = " · 💾 %d分" % remain if remain >= 1 else ""
-	var stat_txt := ""
+	title_node.text = "游戏菜单 · 第 %d 天%s%s" % [day, progress_txt, time_txt]
+	# 副状态行（成就/存档/玩家）
+	var status_txt := ""
+	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm2 != null and gm2.user_data != null:
+		status_txt += "🏆 %d/%d" % [gm2.user_data.achievements.size(), gm2.ACHIEVEMENTS.size()]
+	status_txt += save_txt
 	if combat_engine and not combat_engine.player_combat_stats.is_empty():
 		var pst: Dictionary = combat_engine.player_combat_stats
-		stat_txt = " · Lv.%d ❤️%d/%d ⚡%d/%d" % [
+		status_txt += " · Lv.%d ❤️%d/%d ⚡%d/%d" % [
 			int(pst.get("level", 1)), int(pst.get("hp", 0)), int(pst.get("max_hp", 1)),
 			int(pst.get("mp", 0)), int(pst.get("max_mp", 1))]
-	title_node.text = "游戏菜单 · 第 %d 天%s%s%s%s%s" % [day, progress_txt, time_txt, ach_txt, save_txt, stat_txt]
+	var status_lbl := menu_panel.find_child("MenuStatus", true, false)
+	if status_lbl is Label:
+		(status_lbl as Label).text = status_txt.strip_edges()
 
 func _refresh_difficulty_option() -> void:
 	if difficulty_option == null:
