@@ -1084,7 +1084,16 @@ func _bp_redraw_canvas() -> void:
 
 ## 旧基础节点属性编辑
 func _build_basic_node_props(detail: Control, node: Dictionary) -> void:
-	_host._ui().add_section_label(detail, "▶ %s" % node.get("title", node["node_type"]))
+	# 标题可编辑（对齐注册表节点）
+	_host._ui().add_text_field(detail, "节点标题", node.get("title", ""), func(v):
+		var t2 := str(v).strip_edges()
+		if t2.is_empty():
+			t2 = BlueprintData.get_node_type_label(node.get("node_type", ""))
+		node["title"] = t2
+		_host._mark_dirty()
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas())
 	_host._ui().add_info_label(detail, "ID: %s" % node["id"])
 	var props: Dictionary = node.get("properties", {})
 	match node["node_type"]:
