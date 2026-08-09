@@ -45,10 +45,10 @@ func _build_ui() -> void:
 	tab_bar_panel.add_child(tab_hbox)
 
 	# 标签按钮
-	_add_tab_button(tab_hbox, "输出", 0)
-	_add_tab_button(tab_hbox, "调试器", 1)
-	_add_tab_button(tab_hbox, "音频", 2)
-	_add_tab_button(tab_hbox, "动画", 3)
+	_add_tab_button(tab_hbox, "📄 输出", 0)
+	_add_tab_button(tab_hbox, "🐞 调试器", 1)
+	_add_tab_button(tab_hbox, "🔊 音频", 2)
+	_add_tab_button(tab_hbox, "🎞 动画", 3)
 
 	# 弹性间隔
 	var spacer := Control.new()
