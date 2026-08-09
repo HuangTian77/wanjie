@@ -1424,6 +1424,9 @@ func _on_menu_log_pressed() -> void:
 	var cur_region: String = str(world_state.get_variable("current_region", "")) if world_state else ""
 	if not cur_region.is_empty():
 		region_txt = " · 📍%s" % cur_region
+	# 标题精简（统计信息放内容区，避免标题溢出）
+	if stat_str.length() > 18:
+		stat_str = " · 标记 %d" % (event_engine.causal_marks.size() if event_engine else 0)
 	dialog.title = "世界日志%s%s%s" % [time_str, stat_str, region_txt]
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
