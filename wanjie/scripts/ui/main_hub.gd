@@ -642,6 +642,14 @@ func _on_edit_script_pressed(script_id: String) -> void:
 ## 删除剧本
 func _on_delete_script_pressed(script_id: String, script_name: String) -> void:
 	_delete_callback = func():
+		# 删除前淡出（动效）
+		if ThemeManager.animations_enabled:
+			for card in script_cards:
+				if card is ScriptCard and card.script_id == script_id:
+					var tw := create_tween()
+					tw.tween_property(card, "modulate:a", 0.0, 0.2)
+					tw.tween_property(card, "scale", Vector2(0.9, 0.9), 0.2)
+					break
 		ScriptDataManager.delete_script(script_id)
 		ToastManager.success("已删除剧本: %s" % script_name)
 	confirm_dialog.show_dialog("确认删除", "确定要删除剧本 \"%s\" 吗？\n此操作不可撤销。" % script_name)
