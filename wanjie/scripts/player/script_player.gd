@@ -1169,9 +1169,12 @@ func _on_menu_close_pressed() -> void:
 func _on_menu_log_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	var time_str := ""
+	var stat_str := ""
 	if world_state:
 		time_str = " · " + world_state.get_time_display()
-	dialog.title = "世界日志%s" % time_str
+	if event_engine:
+		stat_str = " · 因果 %d" % event_engine.causal_marks.size()
+	dialog.title = "世界日志%s%s" % [time_str, stat_str]
 	dialog.min_size = Vector2i(400, 360)
 	add_child(dialog)
 	var box := VBoxContainer.new()
