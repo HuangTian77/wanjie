@@ -349,6 +349,9 @@ func _setup_tabs() -> void:
 		# 收藏标签显示数量 badge
 		if i == 4:
 			btn.text = "收藏(%d)" % GameManager.user_data.favorites_script_ids.size()
+		# 我的剧本显示数量 badge
+		elif i == 0:
+			btn.text = "我的剧本(%d)" % GameManager.user_data.created_script_ids.size()
 		btn.toggle_mode = true
 		btn.button_pressed = (i == 0)
 		btn.add_theme_font_size_override("font_size", 14)
