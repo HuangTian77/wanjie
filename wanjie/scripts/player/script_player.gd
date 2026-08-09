@@ -113,6 +113,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		menu_panel.visible = not menu_panel.visible
 		get_viewport().set_input_as_handled()
+	# H: 打开操作帮助
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
+		_on_menu_help_pressed()
+		get_viewport().set_input_as_handled()
 	# 战斗时：数字键 1-9 释放对应技能
 	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
