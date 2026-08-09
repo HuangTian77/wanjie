@@ -1023,6 +1023,7 @@ func _on_battle_flee_pressed() -> void:
 
 ## 自动战斗开关（连续点击循环 1x→2x→4x→关）
 func _on_battle_auto_pressed() -> void:
+	var auto_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
 	if not _auto_battle:
 		_auto_battle = true
 		_auto_interval = 0.6
@@ -1037,6 +1038,14 @@ func _on_battle_auto_pressed() -> void:
 	else:
 		_auto_battle = false
 		ToastManager.info("自动战斗关闭")
+	# 状态色：开启金色，关闭还原
+	if auto_btn is Button:
+		if _auto_battle:
+			(auto_btn as Button).add_theme_color_override("font_color", Color(0.95, 0.8, 0.3))
+			(auto_btn as Button).text = "⚡ 自动 x%d" % int(0.6 / _auto_interval)
+		else:
+			(auto_btn as Button).remove_theme_override("font_color")
+			(auto_btn as Button).text = "⚡ 自动"
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
