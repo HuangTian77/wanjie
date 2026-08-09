@@ -119,6 +119,8 @@ func _process(delta: float) -> void:
 			_typewriter_done = true
 			main_text.text = _typewriter_text
 			main_text.visible_characters = -1
+			# 打字完成：选择按钮浮现
+			choice_container.visible = true
 		else:
 			# 打字中光标闪烁（交替显示 ▌）
 			var cursor := "▌" if int(_typewriter_index / 3) % 2 == 0 else ""
@@ -177,6 +179,7 @@ func _skip_typewriter() -> void:
 	_typewriter_done = true
 	main_text.text = _typewriter_text
 	main_text.visible_characters = -1
+	choice_container.visible = true
 
 ## 初始化引擎
 func _init_engines() -> void:
@@ -391,6 +394,8 @@ func _set_main_text(text: String) -> void:
 	_typewriter_done = false
 	main_text.text = text
 	main_text.visible_characters = 0
+	# 打字期间隐藏选择按钮（打字完成后浮现）
+	choice_container.visible = false
 	if not ThemeManager.animations_enabled:
 		_skip_typewriter()
 
