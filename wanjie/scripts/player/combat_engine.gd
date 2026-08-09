@@ -40,22 +40,37 @@ func set_player_stats(stats: Dictionary) -> void:
 		"element": ""
 	}
 
-## 添加敌人
+## 添加敌人（按全局难度缩放数值）
 func add_enemy(enemy: Dictionary) -> void:
+	var scale := _difficulty_scale()
+	var max_hp: int = maxi(1, int(enemy.get("max_hp", 50) * scale))
 	enemies.append({
 		"name": enemy.get("name", "未知敌人"),
-		"hp": enemy.get("hp", 50),
-		"max_hp": enemy.get("max_hp", 50),
-		"atk": enemy.get("atk", 10),
-		"def": enemy.get("def", 5),
-		"matk": enemy.get("matk", 8),
-		"mdef": enemy.get("mdef", 5),
-		"speed": enemy.get("speed", 8),
+		"hp": max_hp,
+		"max_hp": max_hp,
+		"atk": maxi(1, int(enemy.get("atk", 10) * scale)),
+		"def": maxi(0, int(enemy.get("def", 5) * scale)),
+		"matk": maxi(1, int(enemy.get("matk", 8) * scale)),
+		"mdef": maxi(0, int(enemy.get("mdef", 5) * scale)),
+		"speed": maxi(1, int(enemy.get("speed", 8) * scale)),
 		"element": enemy.get("element", ""),
 		"skills": enemy.get("skills", []),
 		"status_effects": [],
 		"is_alive": true
 	})
+
+## 全局难度系数（normal 1.0 / hard 1.35 / easy 0.8 / adaptive 1.0）
+func _difficulty_scale() -> float:
+	var mode := "adaptive"
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	if gm != null and gm.user_data != null:
+		mode = gm.user_data.difficulty_mode
+	match mode:
+		"easy":
+			return 0.8
+		"hard":
+			return 1.35
+	return 1.0
 
 ## 开始战斗
 func start_combat() -> void:

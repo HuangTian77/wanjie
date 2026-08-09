@@ -1175,12 +1175,12 @@
 - func `init` (L20)
 - func `set_player_stats` (L24)
 - func `add_enemy` (L44)
-- func `start_combat` (L61)
-- func `player_attack` (L80)
-- func `player_use_skill` (L97)
-- func `try_flee` (L193)
-- func `get_log` (L300)
-- func `get_rewards` (L304)
+- func `start_combat` (L76)
+- func `player_attack` (L95)
+- func `player_use_skill` (L112)
+- func `try_flee` (L208)
+- func `get_log` (L315)
+- func `get_rewards` (L319)
 
 ### scripts/player/economy_engine.gd (economy_engine.gd)
 
