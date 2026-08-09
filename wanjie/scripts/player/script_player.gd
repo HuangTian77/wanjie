@@ -1028,7 +1028,7 @@ func _on_battle_skill_pressed() -> void:
 			menu.set_item_disabled(skills.find(s), true)
 			menu.set_item_tooltip(skills.find(s), "魔力不足（需要 %d MP）" % mana_cost)
 	menu.id_pressed.connect(func(id: int):
-		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), 0)
+		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), _battle_target)
 		if not sres.is_empty():
 			var dmg := int(sres.get("damage", 0))
 			if dmg > 0:
