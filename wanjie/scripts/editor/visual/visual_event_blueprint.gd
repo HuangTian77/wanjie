@@ -1056,7 +1056,7 @@ func _show_bp_node_properties(node_id: String) -> void:
 						_save_active_graph()
 						_host._sync_to_code_editor()
 						_bp_redraw_canvas()
-					)
+					, str(param.get("description", "")))
 
 ## 隐藏属性面板(恢复概览)
 func _hide_bp_node_properties() -> void:
@@ -1217,7 +1217,7 @@ func _bp_prop_add_check(parent: Control, label: String, current: bool, on_change
 	parent.add_child(check)
 
 ## 添加文本输入框
-func _bp_prop_add_text(parent: Control, label: String, current: String, on_change: Callable) -> void:
+func _bp_prop_add_text(parent: Control, label: String, current: String, on_change: Callable, hint: String = "") -> void:
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
 	parent.add_child(vbox)
@@ -1225,6 +1225,8 @@ func _bp_prop_add_text(parent: Control, label: String, current: String, on_chang
 	lbl.text = label + ":"
 	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", EditorUIFactory.C_LABEL)
+	if not hint.is_empty():
+		lbl.tooltip_text = hint
 	vbox.add_child(lbl)
 	var edit := LineEdit.new()
 	edit.text = current
