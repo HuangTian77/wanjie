@@ -62,6 +62,8 @@ var _help_shown: bool = false
 var _play_start_time: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
+## 本次战斗最高连击（结算显示）
+var _best_combo: int = 0
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -650,6 +652,11 @@ func _on_combat_ended(result: String) -> void:
 	# 结算统计：回合数
 	if combat_engine != null:
 		msg += "（共 %d 回合）" % combat_engine.current_round
+	# 最高连击结算
+	if _best_combo >= 2:
+		msg += " · 最高连击 x%d" % _best_combo
+	_best_combo = 0
+	_combo_count = 0
 	# 胜利奖励（经验/金币）——奖励应用并提示
 	if result == "victory" and combat_engine != null:
 		var rewards: Dictionary = combat_engine.get_rewards()
@@ -756,6 +763,7 @@ func _on_battle_attack_pressed() -> void:
 		# 连击计数（造成伤害 +1，≥3 提示）
 		if int(res.get("damage", 0)) > 0:
 			_combo_count += 1
+			_best_combo = maxi(_best_combo, _combo_count)
 			if _combo_count >= 3 and _combo_count % 3 == 0:
 				ToastManager.success("🔥 连击 x%d！" % _combo_count)
 			# 暴击提示
