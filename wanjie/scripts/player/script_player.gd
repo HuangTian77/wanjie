@@ -113,6 +113,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 		menu_panel.visible = not menu_panel.visible
 		get_viewport().set_input_as_handled()
+	# 战斗时：数字键 1-9 释放对应技能
+	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
+			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
+		var skill_idx := event.keycode - KEY_1
+		if combat_engine != null and combat_engine.ability_data != null:
+			var skills: Array = combat_engine.ability_data.skills
+			if skill_idx < skills.size():
+				var sid: String = str(skills[skill_idx].get("id", ""))
+				if not sid.is_empty():
+					combat_engine.player_use_skill(sid, 0)
+					_refresh_battle_ui()
+					get_viewport().set_input_as_handled()
 
 func _skip_typewriter() -> void:
 	_typewriter_index = _typewriter_text.length()
