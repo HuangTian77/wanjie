@@ -68,6 +68,16 @@ func _make_code_edit() -> CodeEdit:
 	ce.gutters_draw_fold_gutter = true
 	ce.highlight_current_line = true
 	ce.highlight_all_occurrences = true
+	# Ctrl+滚轮 缩放代码字号（12~28）
+	ce.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.ctrl_pressed and ev.pressed:
+			var cur: int = ce.get_theme_font_size("font_size")
+			if ev.button_index == MOUSE_BUTTON_WHEEL_UP:
+				ce.add_theme_font_size_override("font_size", clampi(cur + 1, 12, 28))
+				ce.accept_event()
+			elif ev.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				ce.add_theme_font_size_override("font_size", clampi(cur - 1, 12, 28))
+				ce.accept_event())
 	ce.code_completion_enabled = true
 	ce.auto_brace_completion_enabled = true
 	ce.auto_brace_completion_highlight_matching = true
