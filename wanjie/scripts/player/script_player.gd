@@ -1231,7 +1231,10 @@ func _on_menu_log_pressed() -> void:
 			for ch in event_engine.choices_history:
 				var cid: String = str(ch.get("choice_id", ch.get("choice", "")))
 				var eid: String = str(ch.get("event_id", ""))
-				list.append_text("• %s（%s）\n" % [cid, eid])
+				var ch_day := ""
+				if world_state and ch.has("day"):
+					ch_day = "（第 %d 天）" % int(ch.get("day", 1))
+				list.append_text("• %s（%s）%s\n" % [cid, eid, ch_day])
 				has_any = true
 	if not has_any:
 		list.append_text("[color=#999]暂无世界事件记录…[/color]")

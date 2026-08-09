@@ -105,7 +105,8 @@ func make_choice(choice_id: String) -> Array[Dictionary]:
 	choices_history.append({
 		"event_id": pending_event["id"],
 		"choice_id": choice_id,
-		"timestamp": world_state.get_time_display() if world_state else ""
+		"timestamp": world_state.get_time_display() if world_state else "",
+		"day": world_state.get_current_day() if world_state else 1
 	})
 
 	# 添加因果标记

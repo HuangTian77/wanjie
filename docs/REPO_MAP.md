@@ -1208,8 +1208,8 @@
 - func `trigger_event` (L70)
 - func `mark_triggered` (L85)
 - func `make_choice` (L95)
-- func `tick_cooldowns` (L258)
-- func `check_random_events` (L268)
+- func `tick_cooldowns` (L259)
+- func `check_random_events` (L269)
 
 ### scripts/player/graph_store.gd (`GraphStore`)
 
