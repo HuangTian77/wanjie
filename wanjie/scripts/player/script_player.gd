@@ -1349,6 +1349,13 @@ func _on_menu_log_pressed() -> void:
 		var gold: int = int(economy_engine.player_currencies.get("gold", 0))
 		list.append_text("\n[b]【经济】[/b]\n")
 		list.append_text("• 💰 金币 %d · 🎒 物品 %d\n" % [gold, economy_engine.player_inventory.size()])
+	# 世界效果（进行中）
+	if world_state and not world_state.active_effects.is_empty():
+		list.append_text("\n[b]【世界效果】[/b]\n")
+		for fx in world_state.active_effects:
+			var fxt := str(fx.get("id", "?"))
+			var fxr: int = int(fx.get("remaining", 0))
+			list.append_text("• %s（剩 %d 小时）\n" % [fxt, fxr])
 	# 战斗统计
 	if _battle_wins + _battle_defeats + _battle_flees > 0:
 		list.append_text("\n[b]【战斗】[/b]\n")
