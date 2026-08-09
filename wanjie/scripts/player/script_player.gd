@@ -972,6 +972,8 @@ func _on_battle_skill_pressed() -> void:
 				_best_combo = maxi(_best_combo, _combo_count)
 				if _combo_count >= 3 and _combo_count % 3 == 0:
 					ToastManager.success("🔥 连击 x%d！" % _combo_count)
+				if sres.get("critical", false):
+					ToastManager.info("💥 技能暴击！")
 		_refresh_battle_ui())
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
