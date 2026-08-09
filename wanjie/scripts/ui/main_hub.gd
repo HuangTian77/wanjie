@@ -328,9 +328,11 @@ func _on_carousel_next_pressed() -> void:
 ## === 标签页设置 ===
 func _setup_tabs() -> void:
 	var tab_names := ["我的剧本", "热门剧本", "最新剧本", "精选剧本", "收藏", "市场", "搜索"]
+	var tab_tips := ["我创建与管理的剧本", "按体验次数排序的热门剧本", "最新创建的剧本", "高评分精选", "收藏的剧本", "已发布的本地市场剧本", "按名称/标签/作者搜索"]
 	for i in tab_names.size():
 		var btn := Button.new()
 		btn.text = tab_names[i]
+		btn.tooltip_text = tab_tips[i] if i < tab_tips.size() else ""
 		# 收藏标签显示数量 badge
 		if i == 4:
 			btn.text = "收藏(%d)" % GameManager.user_data.favorites_script_ids.size()
