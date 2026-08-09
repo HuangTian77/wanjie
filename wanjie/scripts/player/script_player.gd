@@ -397,12 +397,18 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	btn.text = text
 	btn.custom_minimum_size = Vector2(0, 44)
 	btn.add_theme_font_size_override("font_size", 15)
-	# hover 反馈: 文字加深金色（主题已有 hover 背景, 这里强化文字对比）
+	# hover 反馈: 文字加深金色 + 轻微上浮（主题已有 hover 背景, 这里强化反馈）
 	btn.mouse_entered.connect(func():
 		btn.add_theme_color_override("font_color", ThemeManager.C_ACCENT_DARK)
+		if ThemeManager.animations_enabled:
+			var tw := create_tween()
+			tw.tween_property(btn, "scale", Vector2(1.02, 1.02), 0.12)
 	)
 	btn.mouse_exited.connect(func():
 		btn.remove_theme_override("font_color")
+		if ThemeManager.animations_enabled:
+			var tw := create_tween()
+			tw.tween_property(btn, "scale", Vector2.ONE, 0.12)
 	)
 	if not method.is_empty():
 		btn.pressed.connect(Callable(self, method))
