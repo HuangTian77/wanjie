@@ -56,6 +56,8 @@ var _auto_timer: float = 0.0
 var _ending_shown: bool = false
 ## 首次操作提示是否已显示
 var _help_shown: bool = false
+## 本次体验开始时间（毫秒，菜单显示时长）
+var _play_start_time: int = 0
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
@@ -185,6 +187,7 @@ func _start_experience() -> void:
 	if script_data == null:
 		main_text.text = "无法加载剧本数据"
 		return
+	_play_start_time = Time.get_ticks_msec()
 	script_title.text = script_data.name
 	# 有存档 → 从存档继续；否则新开
 	if SaveManager.has_save(script_data.id):
@@ -1022,10 +1025,17 @@ func _refresh_menu_title() -> void:
 	var day := 1
 	if world_state:
 		day = world_state.get_current_day()
+	# 已体验时长
+	var mins := 0
+	if _play_start_time > 0:
+		mins = int((Time.get_ticks_msec() - _play_start_time) / 60000)
 	var progress_txt := ""
 	if p[1] > 0:
 		progress_txt = " · %d%%" % int(float(p[0]) / float(p[1]) * 100.0)
-	title_node.text = "游戏菜单 · 第 %d 天%s" % [day, progress_txt]
+	var time_txt := ""
+	if mins > 0:
+		time_txt = " · ⏱ %d 分" % mins
+	title_node.text = "游戏菜单 · 第 %d 天%s%s" % [day, progress_txt, time_txt]
 
 func _refresh_difficulty_option() -> void:
 	if difficulty_option == null:
