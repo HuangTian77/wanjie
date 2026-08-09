@@ -1435,6 +1435,18 @@ func _on_menu_log_pressed() -> void:
 	var list := RichTextLabel.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(list)
+	# 内容区顶部完整统计（标题精简后的补充信息）
+	var stat_line := ""
+	if world_state:
+		stat_line = "🗓 %s" % world_state.get_time_display()
+	if event_engine:
+		var causal_count: int = event_engine.causal_marks.size()
+		stat_line += " · 因果标记 %d" % causal_count
+		stat_line += " · 选择历史 %d" % event_engine.choices_history.size()
+	if world_state and not world_state.active_effects.is_empty():
+		stat_line += " · 世界效果 %d" % world_state.active_effects.size()
+	if not stat_line.is_empty():
+		list.append_text("[color=#9a8f7a]%s[/color]\n\n" % stat_line)
 	# 复制日志按钮
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
