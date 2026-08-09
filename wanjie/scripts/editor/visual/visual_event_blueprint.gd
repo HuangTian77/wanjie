@@ -1312,3 +1312,16 @@ func _bp_prop_add_text(parent: Control, label: String, current: String, on_chang
 		DisplayServer.clipboard_set(edit.text)
 		_host._log_output("[已复制] %s = %s" % [label, edit.text]))
 	vbox.add_child(copy_btn)
+	# 粘贴剪贴板值
+	var paste_btn := Button.new()
+	paste_btn.text = "📋"
+	paste_btn.flat = true
+	paste_btn.custom_minimum_size = Vector2(24, 20)
+	paste_btn.tooltip_text = "粘贴到参数"
+	paste_btn.pressed.connect(func():
+		var cb: String = DisplayServer.clipboard_get()
+		if not cb.is_empty():
+			edit.text = cb
+			on_change.call(cb)
+			_host._log_output("[已粘贴] %s = %s" % [label, cb]))
+	vbox.add_child(paste_btn)
