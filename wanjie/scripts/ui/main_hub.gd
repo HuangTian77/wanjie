@@ -352,6 +352,13 @@ func _setup_tabs() -> void:
 		# 我的剧本显示数量 badge
 		elif i == 0:
 			btn.text = "我的剧本(%d)" % GameManager.user_data.created_script_ids.size()
+		# 市场显示已发布数 badge
+		elif i == 5:
+			var pub_count := 0
+			for s2 in GameManager.scripts.values():
+				if s2.status == "published":
+					pub_count += 1
+			btn.text = "市场(%d)" % pub_count
 		btn.toggle_mode = true
 		btn.button_pressed = (i == 0)
 		btn.add_theme_font_size_override("font_size", 14)
