@@ -1093,12 +1093,18 @@ func _on_menu_rating_pressed() -> void:
 	stars.position = Vector2(120, 70)
 
 func _on_menu_back_pressed() -> void:
-	_sync_save_state()
-	_write_progress()
-	SaveManager.autosave()
-	menu_panel.visible = false
-	ToastManager.success("已自动保存")
-	SceneManager.go_back_to_hub()
+	# 返回确认（防误点丢失当前阅读位置）
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "返回大厅？将自动保存当前进度。"
+	confirm.confirmed.connect(func():
+		_sync_save_state()
+		_write_progress()
+		SaveManager.autosave()
+		menu_panel.visible = false
+		ToastManager.success("已自动保存")
+		SceneManager.go_back_to_hub())
+	add_child(confirm)
+	confirm.popup_centered()
 
 ## 按事件完成度回写剧本进度（大厅卡片进度条可见）
 func _write_progress() -> void:
