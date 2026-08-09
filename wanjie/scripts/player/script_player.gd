@@ -718,7 +718,26 @@ func _on_battle_attack_pressed() -> void:
 	var res: Dictionary = combat_engine.player_attack(0)
 	if not res.is_empty():
 		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
+		_spawn_damage_popup(-int(res.get("damage", 0)))
 	_refresh_battle_ui()
+
+## 伤害飘字（战斗手感：上浮淡出）
+func _spawn_damage_popup(amount: int) -> void:
+	if enemy_info == null or not enemy_info.is_visible_in_tree():
+		return
+	var lbl := Label.new()
+	var color := Color(0.95, 0.4, 0.35) if amount < 0 else Color(0.35, 0.9, 0.45)
+	lbl.text = ("-%d" % absi(amount)) if amount < 0 else ("+%d" % amount)
+	lbl.add_theme_color_override("font_color", color)
+	lbl.add_theme_font_size_override("font_size", 22)
+	lbl.position = enemy_info.global_position + Vector2(randf_range(20, 120), -10)
+	lbl.z_index = 100
+	add_child(lbl)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(lbl, "position:y", lbl.position.y - 46, 0.8).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tw.tween_property(lbl, "modulate:a", 0.0, 0.8).set_ease(Tween.EASE_IN)
+	tw.chain().tween_callback(lbl.queue_free)
 
 func _on_battle_skill_pressed() -> void:
 	if combat_engine == null or combat_engine.ability_data == null:
