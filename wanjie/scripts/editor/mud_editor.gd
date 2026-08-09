@@ -524,6 +524,8 @@ func _on_csv_import(table: String, noun: String) -> void:
 			if _tab_builder:
 				_tab_builder.refresh_table(table)
 			_set_status("已导入 %s 条记录 ← %s" % [str(cnt), path])
+			# 导入后校验连接引用
+			_validate_links()
 	)
 	fd.popup_centered()
 
