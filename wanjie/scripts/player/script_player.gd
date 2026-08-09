@@ -137,6 +137,14 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
 		_on_menu_help_pressed()
 		get_viewport().set_input_as_handled()
+	# 酒馆中：左/右方向键切换角色
+	elif event is InputEventKey and event.pressed and not event.echo and tavern_panel.visible \
+			and (event.keycode == KEY_LEFT or event.keycode == KEY_RIGHT):
+		var cur: int = tavern_char_select.selected
+		var next_idx: int = (cur + 1) % TAVERN_CHARS.size() if event.keycode == KEY_RIGHT else (cur - 1 + TAVERN_CHARS.size()) % TAVERN_CHARS.size()
+		tavern_char_select.select(next_idx)
+		_enter_tavern_char(next_idx)
+		get_viewport().set_input_as_handled()
 	# 战斗时：数字键 1-9 释放对应技能
 	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
