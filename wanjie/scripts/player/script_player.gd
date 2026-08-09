@@ -1392,6 +1392,13 @@ func _on_menu_log_pressed() -> void:
 				list.append_text("• %s: %s\n" % [k, "是" if v else "否"])
 			else:
 				list.append_text("• %s: %s\n" % [k, str(v)])
+	# 日志行数上限（防长剧情卡顿，截断保留 280 行）
+	if list.get_line_count() > 280:
+		var keep_txt := ""
+		var start_line: int = list.get_line_count() - 240
+		for li in range(start_line, list.get_line_count()):
+			keep_txt += list.get_line(li) + "\n"
+		list.text = "[color=#888]（较早记录已折叠）[/color]\n" + keep_txt
 	dialog.popup_centered()
 
 ## 休息：时间推进 + 回满状态
