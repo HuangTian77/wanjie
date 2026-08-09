@@ -1054,7 +1054,7 @@ func _on_battle_skill_pressed() -> void:
 			var dmg := int(sres.get("damage", 0))
 			if dmg > 0:
 				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg])
-				_spawn_damage_popup(-dmg)
+				_spawn_damage_popup(-dmg, bool(sres.get("critical", false)))
 				# 技能伤害计入连击
 				_combo_count += 1
 				_best_combo = maxi(_best_combo, _combo_count)
