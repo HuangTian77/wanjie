@@ -2414,6 +2414,7 @@ func _refresh_menu_title() -> void:
 	var title_node := menu_panel.find_child("MenuTitle", true, false)
 	if title_node == null:
 		return
+	var script_name: String = script_data.name if script_data != null else "剧本"
 	var p := _get_progress()
 	var day := 1
 	if world_state:
@@ -2445,7 +2446,7 @@ func _refresh_menu_title() -> void:
 	var day_full := ""
 	if world_state:
 		day_full = world_state.get_time_display().get_slice(" ", 1) + " " + world_state.get_time_display().get_slice(" ", 2)
-	title_node.text = "游戏菜单 · %s%s%s%s" % [day_full if day_full != "" else "第 %d 天" % day, region_menu, progress_txt, time_txt]
+	title_node.text = "%s · %s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, progress_txt, time_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
