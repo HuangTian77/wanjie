@@ -2153,6 +2153,33 @@ func _show_slot_selector(mode: String) -> void:
 				btn.pressed.connect(_on_slot_delete_selected.bind(slot))
 		vbox.add_child(btn)
 
+	# 自动存档槽位（独立第 4 项）
+	if mode != "delete":
+		var auto_info := SaveManager.get_slot_info(0, true)
+		var auto_txt := "(空)" if auto_info.is_empty() else "%s | Lv.%d | %s" % [
+			auto_info.get("player_name", "?"), auto_info.get("level", 1), auto_info.get("play_time", "0:00")]
+		var auto_btn := Button.new()
+		auto_btn.text = "自动存档: %s" % auto_txt
+		auto_btn.custom_minimum_size = Vector2(0, 40)
+		match mode:
+			"save":
+				auto_btn.pressed.connect(func():
+					SaveManager.autosave()
+					_add_history("已保存到自动存档")
+					selector.queue_free()
+					menu_panel.visible = false
+					ToastManager.success("已自动保存"))
+			"load":
+				auto_btn.pressed.connect(func():
+					var sd2: SaveData = SaveManager.load_game(0, true)
+					if sd2 == null:
+						ToastManager.warning("自动存档不存在")
+						return
+					_on_save_loaded(sd2)
+					selector.queue_free()
+					menu_panel.visible = false)
+		vbox.add_child(auto_btn)
+
 	var cancel_btn := Button.new()
 	cancel_btn.text = "取消"
 	cancel_btn.pressed.connect(func(): selector.queue_free())
