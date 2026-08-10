@@ -1035,6 +1035,9 @@ func _on_combat_ended(result: String) -> void:
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
+			# 胜利奖励金币飘字（金色 +）
+			if gold > 0:
+				_spawn_damage_popup(gold)
 			if _best_combo >= 2:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
