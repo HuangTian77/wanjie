@@ -1336,7 +1336,7 @@ func _on_combat_started(enemies: Array) -> void:
 	# 战斗快捷键提示（替换底部常驻提示）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint:
-		hint.text = "技能：按 1-9 直接释放 · Tab 切换目标 · Esc 菜单 · H 帮助 · 自动可调速"
+		hint.text = "技能：按 1-9 直接释放 · Tab 切换目标 · Q 用药 · Esc 菜单 · H 帮助 · 自动可调速"
 
 func _on_combat_round_started(round_num: int) -> void:
 	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
