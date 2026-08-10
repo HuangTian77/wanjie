@@ -2099,6 +2099,10 @@ func _on_menu_shop_pressed() -> void:
 				var price: float = economy_engine.get_price(mid, item_id)
 				var btn := Button.new()
 				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				# 商品描述 tooltip
+				var item_desc: String = str(g.get("description", ""))
+				if not item_desc.is_empty():
+					btn.tooltip_text = item_desc
 				# 价格波动标记（相对基础价）
 				var base_p: float = float(g.get("price", price))
 				if price < base_p * 0.95:
