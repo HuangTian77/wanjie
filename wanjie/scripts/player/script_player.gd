@@ -1334,7 +1334,7 @@ func _on_combat_started(enemies: Array) -> void:
 		hint.text = "技能：按 1-9 直接释放 · Tab 切换目标 · Esc 菜单 · H 帮助 · 自动可调速"
 
 func _on_combat_round_started(round_num: int) -> void:
-	_battle_log_line("[color=#c9a06a]第 %d 回合[/color]" % round_num)
+	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
 	_refresh_battle_ui()
 
 func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
