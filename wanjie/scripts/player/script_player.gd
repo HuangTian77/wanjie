@@ -2170,9 +2170,14 @@ func _get_slot_info(slot: int) -> String:
 	var save_info := SaveManager.get_slot_info(slot)
 	if save_info.is_empty():
 		return "(空)"
-	return "%s | Lv.%d | %s" % [
+	var prog_pct := ""
+	var pp: float = float(save_info.get("progress", 0.0))
+	if pp > 0.0:
+		prog_pct = " | %d%%" % int(pp * 100.0)
+	return "%s | Lv.%d%s | %s" % [
 		save_info.get("player_name", "?"),
 		save_info.get("level", 1),
+		prog_pct,
 		save_info.get("play_time", "0:00")
 	]
 
