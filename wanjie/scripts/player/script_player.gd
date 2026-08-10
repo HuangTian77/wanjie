@@ -1380,6 +1380,13 @@ func _on_battle_auto_pressed() -> void:
 			(auto_btn as Button).add_theme_color_override("font_color", Color(0.95, 0.8, 0.3))
 			(auto_btn as Button).text = "⚡ 自动 x%d" % int(0.6 / _auto_interval)
 			(auto_btn as Button).tooltip_text = "自动战斗开启（x%d）：再次点击加速，长按 Esc 关闭" % int(0.6 / _auto_interval)
+			# 自动开启脉冲（攻击按钮金色呼吸）
+			if ThemeManager.animations_enabled:
+				var atk_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AttackBtn")
+				if atk_btn is Button:
+					var atw := create_tween()
+					atw.tween_property(atk_btn, "modulate", Color(1.0, 0.9, 0.5), 0.3)
+					atw.tween_property(atk_btn, "modulate", Color.WHITE, 0.3)
 		else:
 			(auto_btn as Button).remove_theme_override("font_color")
 			(auto_btn as Button).text = "⚡ 自动"
