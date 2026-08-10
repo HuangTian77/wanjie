@@ -545,6 +545,14 @@ func _update_ui() -> void:
 		var ps: Dictionary = SaveManager.current_save.player_state
 		player_name_label.text = ps.get("name", "旅者")
 		player_level_label.text = "Lv.%d" % ps.get("level", 1)
+		# 等级旁经验条（每 100 经验升 1 级）
+		var exp_cur: int = int(ps.get("exp", 0))
+		var exp_filled := clampi(int(exp_cur / 10.0), 0, 10)
+		var exp_bar := ""
+		for ei in 10:
+			exp_bar += "▰" if ei < exp_filled else "▱"
+		player_level_label.text += "  %s %d/100" % [exp_bar, exp_cur]
+		player_level_label.tooltip_text = "经验 %d/100（每 100 经验升 1 级）" % exp_cur
 		# HP 进度条（优先真实战斗状态, 回退事件数推算）
 		var max_hp: int = ps.get("max_hp", 100)
 		var current_hp: int = max_hp
