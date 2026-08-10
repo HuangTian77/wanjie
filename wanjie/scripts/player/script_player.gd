@@ -222,6 +222,15 @@ func _unhandled_input(event: InputEvent) -> void:
 					combat_engine.player_use_skill(sid, 0)
 					_refresh_battle_ui()
 					get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and not event.echo and not battle_panel.visible \
+			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
+		# 非战斗：数字键快速选择剧情选项（1-9）
+		var choice_idx: int = event.keycode - KEY_1
+		if choice_idx < choice_container.get_child_count():
+			var cb: Control = choice_container.get_child(choice_idx)
+			if cb is Button:
+				(cb as Button).pressed.emit()
+				get_viewport().set_input_as_handled()
 
 func _skip_typewriter() -> void:
 	_typewriter_index = _typewriter_text.length()
@@ -519,6 +528,10 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	if not method.is_empty():
 		btn.pressed.connect(Callable(self, method))
 	choice_container.add_child(btn)
+	# 键盘序号提示（数字键 1-9 快速选择）
+	var idx: int = choice_container.get_child_count()
+	if idx <= 9:
+		btn.tooltip_text = "快捷键 %d" % idx
 	# 进入动画（容器内 position 会被布局覆盖, 改用 scale + alpha）
 	if ThemeManager.animations_enabled:
 		btn.modulate.a = 0.0
