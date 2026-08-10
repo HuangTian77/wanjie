@@ -1983,9 +1983,10 @@ func _do_rest() -> void:
 func _show_finish_stats() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🎉 通关！"
-	dialog.min_size = Vector2i(380, 260)
+	dialog.min_size = Vector2i(420, 320)
 	add_child(dialog)
 	var list := RichTextLabel.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(list)
 	var day := 1
 	if world_state:
