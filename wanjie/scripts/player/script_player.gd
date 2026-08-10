@@ -545,6 +545,8 @@ func _handle_blueprint_result(result: Dictionary) -> void:
 		err_detail.popup_centered()
 	elif result.get("success", false):
 		_add_history("📌 事件推进完成（%d 步）" % int(result.get("steps", 0)))
+		if int(result.get("steps", 0)) > 50:
+			ToastManager.info("⚡ 蓝图执行 %d 步完成" % int(result.get("steps", 0)))
 	_clear_choices()
 	_add_choice_button("继续", "_on_continue_pressed")
 
