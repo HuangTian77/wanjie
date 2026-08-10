@@ -2104,6 +2104,37 @@ func _on_menu_bag_pressed() -> void:
 						_on_menu_bag_pressed()
 						dialog.queue_free())
 				use_row.add_child(use_btn)
+	# 出售行（所有物品半价卖出，获取金币）
+	if economy_engine != null and not economy_engine.player_inventory.is_empty():
+		var sell_row := HBoxContainer.new()
+		box.add_child(sell_row)
+		var sell_lbl := Label.new()
+		sell_lbl.text = "出售："
+		sell_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
+		sell_row.add_child(sell_lbl)
+		for item_id2 in economy_engine.player_inventory:
+			if int(economy_engine.player_inventory[item_id2]) <= 0:
+				continue
+			# 计算估值（价格×数量/2）
+			var unit_price := 10
+			if economy_engine.economy_data != null:
+				for m in economy_engine.economy_data.markets:
+					for g in m.get("goods", []):
+						if str(g.get("item", "")) == str(item_id2):
+							unit_price = int(economy_engine.get_price(str(m.get("id", "")), str(item_id2)))
+			var sell_btn := Button.new()
+			sell_btn.text = "%s ×%d（+%d💰）" % [item_id2, int(economy_engine.player_inventory[item_id2]), maxi(1, unit_price / 2)]
+			sell_btn.flat = true
+			sell_btn.pressed.connect(func():
+				var gain := maxi(1, unit_price / 2)
+				economy_engine.add_currency("gold", gain)
+				economy_engine.player_inventory[item_id2] = int(economy_engine.player_inventory[item_id2]) - 1
+				ToastManager.success("💰 卖出 %s +%d 金币" % [item_id2, gain])
+				_add_history("💰 卖出 %s +%d 金币" % [item_id2, gain])
+				_sync_save_state()
+				_on_menu_bag_pressed()
+				dialog.queue_free())
+			sell_row.add_child(sell_btn)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(scroll)
