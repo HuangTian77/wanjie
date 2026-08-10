@@ -1508,6 +1508,11 @@ func _battle_log_line(line: String, color: String = "") -> void:
 		battle_log.append_text(prefix + line + "\n")
 	# 滚动到底 + 新行淡入高亮
 	battle_log.scroll_to_line(battle_log.get_line_count() - 1)
+	# 行数上限（防长战斗日志膨胀卡顿）
+	if battle_log.get_line_count() > 150:
+		var lines_text := battle_log.text.split("\n")
+		if lines_text.size() > 120:
+			battle_log.text = "\n".join(lines_text.slice(lines_text.size() - 120))
 	# 行数上限（防长战斗日志无限增长卡顿）
 	if battle_log.get_line_count() > 120:
 		var excess: int = battle_log.get_line_count() - 80
