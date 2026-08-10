@@ -2138,6 +2138,7 @@ func _show_slot_selector(mode: String) -> void:
 		var btn := Button.new()
 		var slot_info := _get_slot_info(slot)
 		btn.text = "槽位 %d: %s" % [slot + 1, slot_info]
+		btn.tooltip_text = "槽位 %d 详情：%s" % [slot + 1, slot_info]
 		btn.custom_minimum_size = Vector2(0, 40)
 		match mode:
 			"save":
