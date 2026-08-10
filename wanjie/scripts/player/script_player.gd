@@ -1686,6 +1686,8 @@ func _on_battle_flee_pressed() -> void:
 		# 若仍在战斗（未逃跑成功）提示成功率
 		if battle_panel.visible:
 			ToastManager.warning("逃跑失败…成功率 %.0f%%（敏捷越高越易逃脱）" % (chance * 100.0))
+		else:
+			_add_history("🏃 成功逃离战斗")
 
 ## 自动战斗开关（连续点击循环 1x→2x→4x→关）
 func _on_battle_auto_pressed() -> void:
