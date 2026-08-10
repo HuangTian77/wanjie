@@ -92,7 +92,8 @@ func _ready() -> void:
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
 		SaveManager.autosave()
-		ToastManager.success("已自动存档"))
+		var time_txt3: String = world_state.get_time_display() if world_state != null else ""
+		ToastManager.success("⏱ 已自动存档 · %s" % time_txt3))
 	add_child(auto_save_timer)
 
 ## 自动存档间隔（分钟，读设置，默认 5）
