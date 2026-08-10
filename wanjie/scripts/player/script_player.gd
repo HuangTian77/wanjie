@@ -960,7 +960,7 @@ func _tavern_mock_reply(text: String) -> String:
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
 	_refresh_battle_ui()
-	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size())
+	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
 	menu_panel.visible = false
 	# 战斗标题显示回合（每次动作后刷新）
 	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
@@ -1130,8 +1130,11 @@ func _on_retry_from_save() -> void:
 	_add_history("重新振作，继续冒险…")
 	_advance_to_next_event()
 
-func _battle_log_line(line: String) -> void:
-	battle_log.append_text(line + "\n")
+func _battle_log_line(line: String, color: String = "") -> void:
+	if not color.is_empty():
+		battle_log.append_text("[color=%s]%s[/color]\n" % [color, line])
+	else:
+		battle_log.append_text(line + "\n")
 	# 滚动到底 + 新行淡入高亮
 	battle_log.scroll_to_line(battle_log.get_line_count() - 1)
 	# 行数上限（防长战斗日志无限增长卡顿）
@@ -1229,7 +1232,7 @@ func _on_battle_attack_pressed() -> void:
 		return
 	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
 	if not res.is_empty():
-		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)])
+		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)], "#e0665a")
 		_spawn_damage_popup(-int(res.get("damage", 0)), bool(res.get("critical", false)))
 		# 敌人受击闪红（命中反馈）
 		if int(res.get("damage", 0)) > 0:
@@ -1313,7 +1316,7 @@ func _on_battle_skill_pressed() -> void:
 		if not sres.is_empty():
 			var dmg := int(sres.get("damage", 0))
 			if dmg > 0:
-				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg])
+				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg], "#e0665a")
 				_spawn_damage_popup(-dmg, bool(sres.get("critical", false)))
 				# 技能命中闪红
 				enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
@@ -1330,7 +1333,7 @@ func _on_battle_skill_pressed() -> void:
 					ToastManager.info("💥 技能暴击！")
 			var healed := int(sres.get("healed", 0))
 			if healed > 0:
-				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed])
+				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed], "#7cc47c")
 				_spawn_damage_popup(healed)  # 治疗 +绿字飘字
 			if sres.get("buffed", false):
 				ToastManager.success("🛡 %s 获得增益！" % skills[id].get("name", "技能"))
