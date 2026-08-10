@@ -532,6 +532,7 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	var idx: int = choice_container.get_child_count()
 	if idx <= 9:
 		btn.tooltip_text = "快捷键 %d" % idx
+		btn.text = "%d. %s" % [idx, btn.text]
 	# 进入动画（容器内 position 会被布局覆盖, 改用 scale + alpha）
 	if ThemeManager.animations_enabled:
 		btn.modulate.a = 0.0
