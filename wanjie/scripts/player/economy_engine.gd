@@ -43,6 +43,12 @@ func get_price(market_id: String, item_id: String) -> float:
 		return market_prices[market_id].get(item_id, 0.0)
 	return 0.0
 
+## 设置市场价（刷新/波动用）
+func set_price(market_id: String, item_id: String, price: float) -> void:
+	if not market_prices.has(market_id):
+		market_prices[market_id] = {}
+	market_prices[market_id][item_id] = price
+
 ## 购买物品
 func buy(market_id: String, item_id: String, quantity: int = 1, currency_id: String = "gold") -> bool:
 	var price := get_price(market_id, item_id) * quantity

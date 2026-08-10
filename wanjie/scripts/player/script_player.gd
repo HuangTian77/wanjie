@@ -1986,6 +1986,31 @@ func _on_menu_shop_pressed() -> void:
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
+	# 刷新价格按钮（随机波动 ±20%）
+	var refresh_row := HBoxContainer.new()
+	box.add_child(refresh_row)
+	var refresh_btn := Button.new()
+	refresh_btn.text = "🔄 刷新价格"
+	refresh_btn.flat = true
+	refresh_btn.tooltip_text = "商人重新报价（±20% 波动）"
+	refresh_btn.pressed.connect(func():
+		if economy_engine != null and economy_engine.economy_data != null:
+			for m in economy_engine.economy_data.markets:
+				var mid3: String = str(m.get("id", ""))
+				for g in m.get("goods", []):
+					var item_id3: String = str(g.get("item", ""))
+					var base: float = float(g.get("price", 10))
+					var new_price := base * (0.8 + randf() * 0.4)
+					economy_engine.set_price(mid3, item_id3, new_price)
+			ToastManager.info("💰 商人重新报价")
+		dialog.queue_free()
+		_on_menu_shop_pressed())
+	refresh_row.add_child(refresh_btn)
+	var refresh_lbl := Label.new()
+	refresh_lbl.text = "（可反复刷新比价）"
+	refresh_lbl.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+	refresh_lbl.add_theme_font_size_override("font_size", 11)
+	refresh_row.add_child(refresh_lbl)
 	# 商品区可滚动（物品多时防溢出）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
