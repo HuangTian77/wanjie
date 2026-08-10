@@ -1803,13 +1803,18 @@ func _on_menu_rest_pressed() -> void:
 func _do_rest() -> void:
 	if world_state:
 		world_state.advance_time(8)
+	var recovered_hp := 0
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
 		var stats: Dictionary = combat_engine.player_combat_stats
+		recovered_hp = int(stats.get("max_hp", 100)) - int(stats.get("hp", 0))
 		stats["hp"] = stats.get("max_hp", 100)
 		stats["mp"] = stats.get("max_mp", 50)
 	_update_ui()
 	_sync_save_state()
 	ToastManager.success("⛺ 休息 8 小时：HP/MP 已回满")
+	# 恢复飘字（绿色 +）
+	if recovered_hp > 0:
+		_spawn_damage_popup(recovered_hp)
 	_add_history("在营地休息了 8 小时，状态恢复")
 	# 休息后概率触发随机事件（30%）
 	if event_engine != null and randf() < 0.3:
