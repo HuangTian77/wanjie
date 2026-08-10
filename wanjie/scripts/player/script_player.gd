@@ -441,6 +441,11 @@ func _set_main_text(text: String) -> void:
 		main_text.modulate.a = 0.0
 		var ftw := create_tween()
 		ftw.tween_property(main_text, "modulate:a", 1.0, 0.18)
+		# 轻微缩放脉冲（事件到达反馈）
+		main_text.pivot_offset = main_text.size / 2.0
+		var ptw := create_tween()
+		ptw.tween_property(main_text, "scale", Vector2(1.02, 1.02), 0.12)
+		ptw.tween_property(main_text, "scale", Vector2.ONE, 0.2)
 	_typewriter_text = text
 	_typewriter_index = 0
 	_typewriter_timer = 0.0
