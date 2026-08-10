@@ -1073,6 +1073,18 @@ func _on_combat_ended(result: String) -> void:
 	if result == "defeat":
 		# 失败：提供重试（读自动存档恢复状态）
 		ToastManager.warning("你已阵亡… 进度已保存，可读档重试")
+		# 阵亡红色屏幕闪烁（视觉反馈）
+		if ThemeManager.animations_enabled:
+			var veil := ColorRect.new()
+			veil.color = Color(0.7, 0.1, 0.1, 0.0)
+			veil.set_anchors_preset(Control.PRESET_FULL_RECT)
+			veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			veil.z_index = 90
+			add_child(veil)
+			var dtw := create_tween()
+			dtw.tween_property(veil, "color:a", 0.35, 0.15)
+			dtw.tween_property(veil, "color:a", 0.0, 0.6)
+			dtw.tween_callback(veil.queue_free)
 		_add_choice_button("🔄 重试（读档）", "_on_retry_from_save")
 	elif result == "fled":
 		ToastManager.success("💨 成功逃离战场！")
