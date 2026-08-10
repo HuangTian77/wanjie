@@ -713,7 +713,7 @@ func _on_event_triggered(event: Dictionary) -> void:
 	# 主线事件标记（有 chain_id 的显示 📌）
 	var chain_mark := "📌 " if not str(event.get("chain_id", "")).is_empty() else ""
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [chain_mark, event_name, desc])
-	_add_history("事件%s: %s" % (chain_mark, event_name))
+	_add_history("事件%s: %s" % [chain_mark, event_name])
 
 func _on_choices_presented(choices: Array) -> void:
 	_clear_choices()
