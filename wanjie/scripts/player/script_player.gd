@@ -1928,6 +1928,10 @@ func _on_menu_char_pressed() -> void:
 				shown += 1
 			if world_state.world_variables.size() > 8:
 				list.append_text("…等 %d 项\n" % world_state.world_variables.size())
+		# 探索区域
+		if world_state and not world_state.explored_regions.is_empty():
+			list.append_text("\n[color=#c9a06a]已探索区域（%d）[/color]\n" % world_state.explored_regions.size())
+			list.append_text("%s\n" % "、".join(PackedStringArray(world_state.explored_regions)))
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
