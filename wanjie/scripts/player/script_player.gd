@@ -2160,8 +2160,14 @@ func _show_slot_selector(mode: String) -> void:
 	# 自动存档槽位（独立第 4 项）
 	if mode != "delete":
 		var auto_info := SaveManager.get_slot_info(0, true)
-		var auto_txt := "(空)" if auto_info.is_empty() else "%s | Lv.%d | %s" % [
-			auto_info.get("player_name", "?"), auto_info.get("level", 1), auto_info.get("play_time", "0:00")]
+		var auto_txt := "(空)"
+		if not auto_info.is_empty():
+			var apct := ""
+			var ap: float = float(auto_info.get("progress", 0.0))
+			if ap > 0.0:
+				apct = " | %d%%" % int(ap * 100.0)
+			auto_txt = "%s | Lv.%d%s | %s" % [
+				auto_info.get("player_name", "?"), auto_info.get("level", 1), apct, auto_info.get("play_time", "0:00")]
 		var auto_btn := Button.new()
 		auto_btn.text = "自动存档: %s" % auto_txt
 		auto_btn.custom_minimum_size = Vector2(0, 40)
