@@ -2776,6 +2776,16 @@ func _show_finish_stats() -> void:
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("统计已复制"))
 	dialog.add_child(copy_stats_btn)
+	# 返回大厅按钮（自动保存）
+	var back_stats_btn := Button.new()
+	back_stats_btn.text = "🏠 返回大厅"
+	back_stats_btn.pressed.connect(func():
+		_sync_save_state()
+		_write_progress()
+		SaveManager.autosave()
+		dialog.queue_free()
+		SceneManager.go_back_to_hub())
+	dialog.add_child(back_stats_btn)
 	dialog.popup_centered()
 
 ## 属性详情弹窗（完整战斗属性/经验/效果）
