@@ -2082,6 +2082,14 @@ func _on_menu_shop_pressed() -> void:
 				var price: float = economy_engine.get_price(mid, item_id)
 				var btn := Button.new()
 				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				# 价格波动标记（相对基础价）
+				var base_p: float = float(g.get("price", price))
+				if price < base_p * 0.95:
+					btn.text += " ↓"
+					btn.tooltip_text = "低于基础价，划算！"
+				elif price > base_p * 1.05:
+					btn.text += " ↑"
+					btn.tooltip_text = "高于基础价，可等刷新降价"
 				# 金币不足：置灰禁用
 				var gold_now: int = int(economy_engine.player_currencies.get("gold", 0))
 				if gold_now < int(price):
