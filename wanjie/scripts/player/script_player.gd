@@ -1483,7 +1483,7 @@ func _on_menu_shop_pressed() -> void:
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "背包"
-	dialog.min_size = Vector2i(360, 300)
+	dialog.min_size = Vector2i(360, 320)
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
@@ -1491,9 +1491,13 @@ func _on_menu_bag_pressed() -> void:
 	title.text = "持有物品"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(scroll)
 	var list := RichTextLabel.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(list)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	scroll.add_child(list)
 	if economy_engine == null or economy_engine.player_inventory.is_empty():
 		list.append_text("[color=#999]背包空空如也…[/color]")
 	else:
