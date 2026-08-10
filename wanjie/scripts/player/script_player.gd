@@ -395,6 +395,15 @@ func _run_event(event: Dictionary) -> void:
 	if not graph.is_empty():
 		_run_blueprint_event(event, graph)
 	else:
+		# 事件类型提示（chain/random/player_action）
+		var ttype: String = str(event.get("trigger_type", ""))
+		match ttype:
+			"chain":
+				pass  # 主线推进无需强调
+			"random":
+				ToastManager.info("🎲 随机遭遇")
+			"player_action":
+				ToastManager.info("🔍 探索发现")
 		event_engine.trigger_event(event)
 
 ## 获取事件关联的蓝图图（无图返回空字典）
