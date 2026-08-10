@@ -1337,9 +1337,14 @@ func _on_menu_char_pressed() -> void:
 	dialog.title = "角色状态"
 	dialog.min_size = Vector2i(420, 460)
 	add_child(dialog)
+	# 内容可滚动（区块多时防溢出）
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(scroll)
 	var list := RichTextLabel.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dialog.add_child(list)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	scroll.add_child(list)
 	var ps: Dictionary = {}
 	if SaveManager.current_save:
 		ps = SaveManager.current_save.player_state
