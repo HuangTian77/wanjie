@@ -1091,6 +1091,18 @@ func _on_combat_ended(result: String) -> void:
 		_add_choice_button("继续", "_on_continue_pressed")
 	else:
 		# 战斗结束后提供"继续"推进剧情
+		if result == "victory" and ThemeManager.animations_enabled:
+			# 胜利金色屏幕闪烁（正反馈）
+			var vveil := ColorRect.new()
+			vveil.color = Color(1.0, 0.85, 0.3, 0.0)
+			vveil.set_anchors_preset(Control.PRESET_FULL_RECT)
+			vveil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			vveil.z_index = 90
+			add_child(vveil)
+			var vtw := create_tween()
+			vtw.tween_property(vveil, "color:a", 0.12, 0.12)
+			vtw.tween_property(vveil, "color:a", 0.0, 0.5)
+			vtw.tween_callback(vveil.queue_free)
 		_add_choice_button("继续", "_on_continue_pressed")
 
 ## 战斗失败重试：读自动存档恢复
