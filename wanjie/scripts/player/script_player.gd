@@ -730,6 +730,9 @@ func _update_ui() -> void:
 		var region_prefix := " 📍%s" % region_hud if not region_hud.is_empty() else ""
 		time_label.text = "🗓 " + world_state.get_time_display() + region_prefix
 		time_label.tooltip_text = "世界时间 · 当前区域"
+		# tooltip 补充探索进度
+		if world_state and not world_state.explored_regions.is_empty():
+			time_label.tooltip_text += "\n已探索 %d 个区域" % world_state.explored_regions.size()
 
 ## HP 条填充样式（按血量百分比配色）
 func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
