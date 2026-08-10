@@ -1999,6 +1999,8 @@ func _on_menu_shop_pressed() -> void:
 	dialog.title = "商店"
 	dialog.min_size = Vector2i(440, 460)
 	add_child(dialog)
+	# 打开商店时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
 	# 刷新价格按钮（随机波动 ±20%）
@@ -2205,6 +2207,8 @@ func _on_menu_bag_pressed() -> void:
 	dialog.title = "背包"
 	dialog.min_size = Vector2i(360, 320)
 	add_child(dialog)
+	# 打开背包时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
 	var title := Label.new()
