@@ -2763,6 +2763,13 @@ func _show_finish_stats() -> void:
 	list.append_text("📖 触发事件：%d 个\n" % p[0])
 	list.append_text("⚔ 战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
 	list.append_text("\n[color=#888]感谢体验！可返回大厅查看成就与进度。[/color]")
+	# 复制统计按钮
+	var copy_stats_btn := Button.new()
+	copy_stats_btn.text = "⧉ 复制统计"
+	copy_stats_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(list.text)
+		ToastManager.success("统计已复制"))
+	dialog.add_child(copy_stats_btn)
 	dialog.popup_centered()
 
 ## 属性详情弹窗（完整战斗属性/经验/效果）
