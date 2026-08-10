@@ -768,7 +768,10 @@ func _on_choice_selected(choice_id: String) -> void:
 	for c in consequences:
 		var target: String = c.get("target", "")
 		var effect: String = c.get("effect", "")
+		# 后果历史记录（含效果描述）
 		consequence_text += "→ %s: %s\n" % [target, effect]
+		if not effect.is_empty():
+			_add_history("后果: %s（%s）" % [target, effect])
 		_apply_consequence(c)
 
 	if consequence_text.is_empty():
