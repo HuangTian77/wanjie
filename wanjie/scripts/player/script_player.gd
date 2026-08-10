@@ -1229,6 +1229,12 @@ func _tavern_mock_reply(text: String) -> String:
 		return "（%s指向窗外）北边山路最近不太平，商队都改走西边河谷了。" % char_name
 	if "战斗" in text or "敌" in text:
 		return "（%s提醒道）荒野的狼群越来越凶，出门记得带够药草。" % char_name
+	if "酒" in text or "吃" in text:
+		return "（%s端上一杯热茶）本店的招牌是蜜酿果酒，改天请你尝尝。" % char_name
+	if "你好" in text or "嗨" in text:
+		return "（%s点头致意）你好，旅行者。需要什么尽管开口。" % char_name
+	if "谢谢" in text or "多谢" in text:
+		return "（%s摆摆手）客气什么，都是街坊邻居。" % char_name
 	# 心情影响回复热情度
 	var mood: int = _tavern_moods.get(str(TavernManager.current_character.get("id", "")), 0)
 	var warm_prefix := ""
