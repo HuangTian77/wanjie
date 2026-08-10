@@ -1793,6 +1793,14 @@ func _on_menu_log_pressed() -> void:
 
 ## 休息：时间推进 + 回满状态
 func _on_menu_rest_pressed() -> void:
+	# 休息确认（推进 8 小时，可能触发随机事件）
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "⛺ 休息 8 小时？\\nHP/MP 将回满，时间推进，30% 概率遭遇随机事件。"
+	confirm.confirmed.connect(func(): _do_rest())
+	add_child(confirm)
+	confirm.popup_centered()
+
+func _do_rest() -> void:
 	if world_state:
 		world_state.advance_time(8)
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
