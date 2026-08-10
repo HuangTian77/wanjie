@@ -334,9 +334,15 @@ func _continue_from_save() -> void:
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	_advance_to_next_event()
 
+## 推进中标志（防连点/防事件嵌套）
+var _advancing: bool = false
 ## 推进到下一个事件
 func _advance_to_next_event() -> void:
+	if _advancing:
+		return
+	_advancing = true
 	if event_engine == null:
+		_advancing = false
 		return
 	if world_state:
 		world_state.advance_time(1)
@@ -359,6 +365,7 @@ func _advance_to_next_event() -> void:
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
 		_run_event(triggerable[0])
+	_advancing = false
 
 ## 统一事件入口: 事件带蓝图图则蓝图驱动, 否则回退传统 event_engine 流程
 func _run_event(event: Dictionary) -> void:
@@ -616,10 +623,15 @@ func _on_choice_selected(choice_id: String) -> void:
 func _on_continue_pressed() -> void:
 	_clear_choices()
 	_sync_save_state()
+	# 防连点：忙碌时忽略（避免连点跳过多个事件）
+	if _advancing:
+		return
 	_advance_to_next_event()
 
 func _on_continue_exploring() -> void:
 	_sync_save_state()
+	if _advancing:
+		return
 	_advance_to_next_event()
 
 ## 应用后果
