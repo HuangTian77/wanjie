@@ -1471,10 +1471,21 @@ func _on_menu_bag_pressed() -> void:
 	if economy_engine == null or economy_engine.player_inventory.is_empty():
 		list.append_text("[color=#999]背包空空如也…[/color]")
 	else:
+		var total_items := 0
+		var total_value := 0
 		for item_id in economy_engine.player_inventory:
 			var qty: int = int(economy_engine.player_inventory[item_id])
 			if qty > 0:
 				list.append_text("• %s × %d\n" % [item_id, qty])
+				total_items += qty
+				# 用市场价估值（找不到则跳过）
+				if economy_engine.economy_data:
+					for m in economy_engine.economy_data.markets:
+						var price: float = economy_engine.get_price(str(m.get("id", "")), item_id)
+						if price > 0:
+							total_value += int(price) * qty
+							break
+		list.append_text("\n[color=#8a7a68]合计 %d 件 · 预估价值 %d 金币[/color]" % [total_items, total_value])
 	dialog.popup_centered()
 
 ## 评分：1-5 星（平均后写入剧本）
