@@ -95,8 +95,7 @@ func _ready() -> void:
 	ToastManager.info("已消耗 1 点灵感进入剧本")
 	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
-	auto_save_timer.name = "AutoSaveTimer"
-	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
+	auto_save_timer.name = "AutoSaveTimer"	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
 	auto_save_timer.autostart = true
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
@@ -104,6 +103,11 @@ func _ready() -> void:
 		var time_txt3: String = world_state.get_time_display() if world_state != null else ""
 		ToastManager.success("⏱ 已自动存档 · %s" % time_txt3))
 	add_child(auto_save_timer)
+	# 自动推进计时器
+	_auto_continue_timer = Timer.new()
+	_auto_continue_timer.one_shot = true
+	_auto_continue_timer.timeout.connect(_auto_continue)
+	add_child(_auto_continue_timer)
 
 ## 自动存档间隔（分钟，读设置，默认 5）
 func settings_auto_save_interval_min() -> float:
@@ -164,6 +168,9 @@ func _process(delta: float) -> void:
 			main_text.visible_characters = -1
 			# 打字完成：选择按钮浮现
 			choice_container.visible = true
+			# 自动模式：短暂延迟后自动继续
+			if _auto_advance_mode and not _advancing:
+				_auto_continue_timer.start(0.5)
 			# 无选择按钮时显示"继续"提示闪烁（有事件后由事件流程添加按钮）
 			if choice_container.get_child_count() == 0:
 				_show_continue_blink(true)
@@ -197,6 +204,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			menu_panel.visible = not menu_panel.visible
 		else:
 			menu_panel.visible = not menu_panel.visible
+		get_viewport().set_input_as_handled()
+	# A: 自动推进开关
+	elif event is InputEventKey and event.pressed and not event.echo \
+			and event.keycode == KEY_A and not menu_panel.visible \
+			and not battle_panel.visible and _no_dialog_open():
+		_auto_advance_mode = not _auto_advance_mode
+		if _auto_advance_mode:
+			ToastManager.success("▶ 自动推进开启（A 关闭）")
+			# 若当前文本已完成则立即继续
+			if _typewriter_done and choice_container.get_child_count() == 0:
+				_auto_continue_timer.start(0.5)
+		else:
+			ToastManager.info("⏸ 自动推进关闭")
 		get_viewport().set_input_as_handled()
 	# B: 快速返回大厅（触发确认）
 	elif event is InputEventKey and event.pressed and not event.echo \
@@ -405,6 +425,10 @@ func _show_continue_blink(show: bool) -> void:
 
 ## 推进中标志（防连点/防事件嵌套）
 var _advancing: bool = false
+## 自动推进模式开关（A 键切换）
+var _auto_advance_mode: bool = false
+## 自动模式延迟推进计时器
+var _auto_continue_timer: Timer
 ## 当前显示的任务（切换提示用）
 var _last_quest_shown: String = ""
 ## 当前区域（切换提示用）
@@ -952,6 +976,13 @@ func _on_continue_pressed() -> void:
 	if _advancing:
 		return
 	_advance_to_next_event()
+
+## 自动模式推进（打字机完成后自动继续）
+func _auto_continue() -> void:
+	if _advancing or not _typewriter_done:
+		return
+	if _auto_advance_mode:
+		_on_continue_pressed()
 
 func _on_continue_exploring() -> void:
 	_sync_save_state()
