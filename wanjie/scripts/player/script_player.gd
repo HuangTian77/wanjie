@@ -1405,7 +1405,7 @@ func _on_menu_shop_pressed() -> void:
 				confirm.dialog_text = "出售 %s ×%d，获得 %d 金币？" % [item_id, qty, int(price)]
 				confirm.confirmed.connect(func():
 					if economy_engine.sell("market_1", item_id):
-						ToastManager.success("已出售 %s +%d 金币" % [item_id, int(price)])
+						ToastManager.success("已出售 %s +%d 金币（剩余 %d 金币）" % [item_id, int(price), int(economy_engine.player_currencies.get("gold", 0))])
 						_spawn_damage_popup(int(price))  # 出售 +金币飘字
 						_sync_save_state()
 						_on_menu_shop_pressed()
