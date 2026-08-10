@@ -554,6 +554,7 @@ func _on_blueprint_choice_pressed(index: int) -> void:
 	if blueprint_executor == null or _blueprint_active_graph.is_empty():
 		return
 	_blueprint_choices = []
+	_add_history("📌 做出选择（#%d）" % (index + 1))
 	var result: Dictionary = blueprint_executor.resume_choice(_blueprint_active_graph, index)
 	_handle_blueprint_result(result)
 
