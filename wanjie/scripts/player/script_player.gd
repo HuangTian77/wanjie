@@ -1293,6 +1293,9 @@ func _on_battle_auto_pressed() -> void:
 func _on_history_toggle_pressed() -> void:
 	history_panel.visible = not history_panel.visible
 	history_toggle.text = "▲ 收起记录" if history_panel.visible else "▼ 展开记录"
+	# 展开时滚动到底（看最新记录）
+	if history_panel.visible and history_text.get_line_count() > 0:
+		history_text.scroll_to_line(history_text.get_line_count() - 1)
 
 ## === 菜单 ===
 func _on_menu_pressed() -> void:
