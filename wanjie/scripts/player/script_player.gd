@@ -2087,6 +2087,17 @@ func _setup_menu_tooltips() -> void:
 				slots_txt += "\n"
 			slots_txt += "槽位 %d: %s" % [si + 1, si2]
 		(sb2 as Button).tooltip_text = "保存到槽位（当前：\n%s）" % slots_txt
+	# 读档按钮 tooltip 同（非空槽位）
+	var lb2 := get_node_or_null("MenuPanel/MenuVBox/LoadBtn")
+	if lb2 is Button:
+		var load_txt := ""
+		for si in 3:
+			var li := _get_slot_info(si)
+			if li != "(空)":
+				if load_txt != "":
+					load_txt += "\n"
+				load_txt += "槽位 %d: %s" % [si + 1, li]
+		(lb2 as Button).tooltip_text = "读取存档（%s）" % (load_txt if load_txt != "" else "暂无存档")
 
 ## 通关结算（可重复查看）
 func _on_menu_finish_stats_pressed() -> void:
