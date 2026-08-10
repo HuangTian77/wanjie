@@ -612,6 +612,9 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	btn.text = text
 	btn.custom_minimum_size = Vector2(0, 44)
 	btn.add_theme_font_size_override("font_size", 15)
+	# 蓝图选项标记（📌 前缀提示来自蓝图）
+	if method == "_on_blueprint_choice_pressed":
+		btn.text = "📌 " + btn.text
 	# 键盘可达（Tab/方向键导航）
 	btn.focus_mode = Control.FOCUS_ALL
 	# 选项多时紧凑（>4 个用 36px 防溢出）
