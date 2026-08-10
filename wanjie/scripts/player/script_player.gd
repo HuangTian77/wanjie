@@ -2876,7 +2876,7 @@ func _on_player_stats_pressed() -> void:
 ## 菜单按钮 tooltip 统一补全
 func _setup_menu_tooltips() -> void:
 	var tips := {
-		"SaveBtn": "保存当前进度到存档槽",
+		"SaveBtn": "保存当前进度到存档槽（S）",
 		"LoadBtn": "读取已保存的进度",
 		"DeleteBtn": "删除当前存档",
 		"CharBtn": "查看角色状态与装备",
