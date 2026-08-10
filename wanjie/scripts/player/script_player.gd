@@ -2998,7 +2998,8 @@ func _on_slot_load_selected(slot: int) -> void:
 		ToastManager.warning("该槽位为空")
 		return
 	var confirm := ConfirmationDialog.new()
-	confirm.dialog_text = "从槽位 %d 加载？当前未保存进度将被覆盖。" % (slot + 1)
+	var battle_note := "（当前战斗中的进度将被放弃）" if battle_panel.visible else ""
+	confirm.dialog_text = "从槽位 %d 加载？当前未保存进度将被覆盖。%s" % [slot + 1, battle_note]
 	confirm.confirmed.connect(func():
 		var sd3: SaveData = SaveManager.load_game(slot)
 		if sd3 == null:
