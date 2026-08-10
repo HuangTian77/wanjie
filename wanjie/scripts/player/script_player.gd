@@ -2326,6 +2326,8 @@ func _on_menu_rating_pressed() -> void:
 	var old := get_node_or_null("RatingDialog")
 	if old:
 		old.queue_free()
+	# 打开评分时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	var dialog := ConfirmationDialog.new()
 	dialog.name = "RatingDialog"
 	dialog.title = "评分"
