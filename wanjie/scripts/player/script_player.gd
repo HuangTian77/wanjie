@@ -983,6 +983,9 @@ func _on_continue_pressed() -> void:
 func _auto_continue() -> void:
 	if _advancing or not _typewriter_done:
 		return
+	# 有选择按钮时暂停自动（等待玩家决策）
+	if choice_container.get_child_count() > 0:
+		return
 	if _auto_advance_mode:
 		_on_continue_pressed()
 
