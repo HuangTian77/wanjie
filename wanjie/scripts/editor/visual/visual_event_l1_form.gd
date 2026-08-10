@@ -345,6 +345,7 @@ func _add_l1_trigger_type_field(form_vbox: VBoxContainer, event: Dictionary) -> 
 			break
 	period_opt.selected = period_sel
 	period_opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	period_opt.tooltip_text = "随机事件仅在此时段触发（如「夜晚」限制夜间遭遇）"
 	period_opt.item_selected.connect(func(pi):
 		if period_map[pi][0] == "":
 			event.erase("period")
