@@ -1099,6 +1099,10 @@ func _on_retry_from_save() -> void:
 	_update_ui()
 	_sync_save_state()
 	ToastManager.success("已从自动存档恢复")
+	# 复活飘字（绿色 +HP 显示恢复量）
+	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
+		var st3: Dictionary = combat_engine.player_combat_stats
+		_spawn_damage_popup(int(st3.get("max_hp", 100)))
 	_add_history("重新振作，继续冒险…")
 	_advance_to_next_event()
 
