@@ -1427,6 +1427,10 @@ func _on_menu_pressed() -> void:
 	# 刷新动态 tooltip（槽位概要随存档变化）
 	_setup_menu_tooltips()
 	menu_panel.visible = true
+	# 焦点到保存按钮（键盘可操作）
+	var fb := get_node_or_null("MenuPanel/MenuVBox/SaveBtn")
+	if fb is Button:
+		(fb as Button).grab_focus()
 
 func _on_menu_save_pressed() -> void:
 	_show_slot_selector("save")
