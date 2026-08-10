@@ -2787,6 +2787,7 @@ func _on_player_stats_pressed() -> void:
 	var list := RichTextLabel.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	list.context_menu_enabled = true  # 右键复制
 	scroll.add_child(list)
 	if combat_engine == null or combat_engine.player_combat_stats.is_empty():
 		list.append_text("[color=#999]暂无战斗属性[/color]")
