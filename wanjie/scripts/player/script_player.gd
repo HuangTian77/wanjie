@@ -1660,7 +1660,11 @@ func _on_menu_rating_pressed() -> void:
 func _on_menu_back_pressed() -> void:
 	# 返回确认（防误点丢失当前阅读位置）
 	var confirm := ConfirmationDialog.new()
-	confirm.dialog_text = "返回大厅？将自动保存当前进度。"
+	var pnow := _get_progress()
+	var prog_txt := ""
+	if pnow[1] > 0:
+		prog_txt = "（当前进度 %d%%）" % int(float(pnow[0]) / float(pnow[1]) * 100.0)
+	confirm.dialog_text = "返回大厅？将自动保存当前进度%s。" % prog_txt
 	confirm.confirmed.connect(func():
 		_sync_save_state()
 		_write_progress()
