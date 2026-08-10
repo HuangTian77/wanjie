@@ -536,6 +536,13 @@ func _handle_blueprint_result(result: Dictionary) -> void:
 	if err != "":
 		_add_history("[错误] %s" % err)
 		ToastManager.warning("⚠ 蓝图执行出错：%s" % err)
+		# 错误详情可复制（含执行日志）
+		var err_detail := AcceptDialog.new()
+		err_detail.title = "蓝图错误详情"
+		err_detail.dialog_text = "%s\n\n%s" % [err, "、".join(PackedStringArray(result.get("log", [])))]
+		err_detail.min_size = Vector2i(480, 300)
+		add_child(err_detail)
+		err_detail.popup_centered()
 	elif result.get("success", false):
 		_add_history("📌 事件推进完成（%d 步）" % int(result.get("steps", 0)))
 	_clear_choices()
