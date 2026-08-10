@@ -95,6 +95,9 @@ func _ready() -> void:
 	if hcopy is Button:
 		(hcopy as Button).pressed.connect(_on_history_copy_pressed)
 	ToastManager.info("已消耗 1 点灵感进入剧本")
+	# 自动推进已开启提示（偏好恢复）
+	if _auto_advance_mode:
+		ToastManager.info("▶ 自动推进已开启（A 可关闭）")
 	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
 	auto_save_timer.name = "AutoSaveTimer"	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
