@@ -754,8 +754,15 @@ func _on_choices_presented(choices: Array) -> void:
 func _on_choice_selected(choice_id: String) -> void:
 	if event_engine == null:
 		return
+	# 记录选择文本（查当前选项）
+	var choice_text := choice_id
+	if event_engine.current_choices:
+		for c in event_engine.current_choices:
+			if str(c.get("id", "")) == choice_id:
+				choice_text = str(c.get("text", choice_id))
+				break
 	var consequences: Array = event_engine.make_choice(choice_id)
-	_add_history("选择: %s" % choice_id)
+	_add_history("选择: %s" % choice_text)
 
 	var consequence_text := ""
 	for c in consequences:
