@@ -1120,13 +1120,19 @@ func _tavern_append(role: String, content: String) -> void:
 
 func _tavern_mock_reply(text: String) -> String:
 	var char_name: String = TavernManager.current_character.get("name", "角色")
+	# 心情影响回复热情度
+	var mood: int = _tavern_moods.get(str(TavernManager.current_character.get("id", "")), 0)
+	var warm_prefix := ""
+	match mood:
+		1: warm_prefix = "（%s语气温和了几分）" % char_name
+		2: warm_prefix = "（%s笑着凑近了些）" % char_name
 	var replies := [
 		"（%s若有所思地点点头）嗯，你说得对，继续说下去。" % char_name,
 		"（%s压低声音）这事说来话长…改天细聊。" % char_name,
 		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。" % char_name,
 		"（%s认真打量你）你这话，倒是提醒了我一件事。" % char_name,
 	]
-	return replies[abs(text.hash()) % replies.size()]
+	return warm_prefix + replies[abs(text.hash()) % replies.size()]
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
 	# 新战斗清空上一场日志
