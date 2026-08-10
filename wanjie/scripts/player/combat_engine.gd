@@ -10,6 +10,8 @@ var ability_data: AbilitySystemData = null
 var player_combat_stats: Dictionary = {}
 var enemies: Array[Dictionary] = []
 
+## 战斗进行中标志（读档重置用）
+var _battle_active: bool = false
 ## 重置战斗状态（读档/离开用）
 func reset_battle() -> void:
 	enemies.clear()
