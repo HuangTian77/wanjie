@@ -541,11 +541,16 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	if idx <= 9:
 		btn.tooltip_text = "快捷键 %d" % idx
 		btn.text = "%d. %s" % [idx, btn.text]
-	# 进入动画（容器内 position 会被布局覆盖, 改用 scale + alpha）
+	# 进入动画（容器内 position 会被布局覆盖, 改用 scale + alpha，逐个延迟浮现）
 	if ThemeManager.animations_enabled:
 		btn.modulate.a = 0.0
 		btn.scale = Vector2(0.96, 0.96)
+		var delay := 0.0
+		var ch_count: int = choice_container.get_child_count()
+		if ch_count > 1:
+			delay = (ch_count - 1) * 0.06
 		var tween := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_interval(delay)
 		tween.set_parallel(true)
 		tween.tween_property(btn, "modulate:a", 1.0, 0.2)
 		tween.tween_property(btn, "scale", Vector2.ONE, 0.2)
