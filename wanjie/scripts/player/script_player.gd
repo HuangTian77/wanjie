@@ -1126,6 +1126,9 @@ func _on_tavern_send_pressed() -> void:
 	think_timer.kill()
 	var reply := _tavern_mock_reply(text)
 	TavernManager.dialog_history[TavernManager.dialog_history.size() - 1]["content"] = reply
+	# 历史长度上限（保留最近 200 条，防膨胀）
+	if TavernManager.dialog_history.size() > 200:
+		TavernManager.dialog_history = TavernManager.dialog_history.slice(-200)
 	TavernManager.save_history()
 	# 重建最后一条为实际回复
 	var rt: RichTextLabel = tavern_msgs
