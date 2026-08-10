@@ -551,6 +551,12 @@ func _show_blueprint_choices() -> void:
 		btn.add_theme_font_size_override("font_size", 15)
 		btn.tooltip_text = "选择此选项（快捷键 %d）" % (i + 1)
 		btn.pressed.connect(_on_blueprint_choice_pressed.bind(i))
+		# 渐入动画（可关闭）
+		if ThemeManager.animations_enabled:
+			btn.modulate.a = 0.0
+			var btn_tw := create_tween()
+			btn_tw.tween_interval(0.05 * i)
+			btn_tw.tween_property(btn, "modulate:a", 1.0, 0.15)
 		choice_container.add_child(btn)
 
 ## 蓝图选择回调: resume_choice 从选择输出端口继续执行
