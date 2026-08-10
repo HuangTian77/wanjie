@@ -395,6 +395,8 @@ var _tavern_moods: Dictionary = {}
 var _tavern_unread: int = 0
 ## 历史记录上次所在天（跨天分节）
 var _history_last_day: int = 0
+## 历史折叠时新增条数（未读提示）
+var _history_unread: int = 0
 ## 当前酒馆角色索引
 var tavern_char_index: int = 0
 
@@ -634,6 +636,8 @@ func _add_history(text: String) -> void:
 	# 折叠时提示有新记录（HistoryToggle 金色，展开后清除）
 	if not history_panel.visible:
 		history_toggle.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
+		_history_unread += 1
+		history_toggle.text = "▼ 展开记录(%d)" % (history_text.get_line_count() + _history_unread)
 	# 行数上限（防长局历史无限增长卡顿）
 	if history_text.get_line_count() > 200:
 		var excess2: int = history_text.get_line_count() - 150
@@ -1782,6 +1786,7 @@ func _on_history_clear_pressed() -> void:
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
 	history_panel.visible = not history_panel.visible
+	_history_unread = 0
 	history_toggle.text = "▲ 收起记录(%d)" % history_text.get_line_count() if history_panel.visible else "▼ 展开记录(%d)" % history_text.get_line_count()
 	# 持久化折叠状态
 	GameManager.user_data.history_collapsed = not history_panel.visible
