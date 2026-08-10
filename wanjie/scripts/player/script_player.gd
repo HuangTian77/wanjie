@@ -853,6 +853,10 @@ func _on_combat_started(enemies: Array) -> void:
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size())
 	menu_panel.visible = false
+	# 战斗标题显示回合（每次动作后刷新）
+	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
+	if btitle is Label and combat_engine != null:
+		(btitle as Label).text = "⚔ 战斗 · 第 %d 回合" % combat_engine.current_round
 	# 战斗开始 Toast：敌人数量与目标提示
 	if enemies.size() > 1:
 		ToastManager.warning("⚔ 遭遇 %d 个敌人！Tab 切换目标" % enemies.size())
@@ -872,6 +876,10 @@ func _on_combat_round_started(round_num: int) -> void:
 	_refresh_battle_ui()
 
 func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
+	# 每回合刷新标题
+	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
+	if btitle is Label and combat_engine != null:
+		(btitle as Label).text = "⚔ 战斗 · 第 %d 回合" % combat_engine.current_round
 	# 玩家受击飘字（敌人攻击时）+ HP 红闪反馈
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
