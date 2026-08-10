@@ -1385,6 +1385,7 @@ func _on_combat_ended(result: String) -> void:
 				stats["hp"] = stats.get("max_hp", 100)
 				stats["mp"] = stats.get("max_mp", 50)
 				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满，攻+2 防+1）" % int(stats.get("level", 1)))
+				_add_history("🎉 升级至 Lv.%d" % int(stats.get("level", 1)))
 				# 升级 HUD 脉冲（等级标签放大回弹）
 				if ThemeManager.animations_enabled:
 					player_level_label.pivot_offset = player_level_label.size / 2.0
