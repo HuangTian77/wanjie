@@ -374,6 +374,8 @@ func _show_continue_blink(show: bool) -> void:
 var _advancing: bool = false
 ## 当前显示的任务（切换提示用）
 var _last_quest_shown: String = ""
+## 当前区域（切换提示用）
+var _last_region: String = ""
 ## 推进到下一个事件
 func _advance_to_next_event() -> void:
 	if _advancing:
@@ -727,6 +729,12 @@ func _update_ui() -> void:
 		player_gold_label.text = "金币: %d" % inv.get("gold", 0)
 	if world_state:
 		var region_hud: String = str(world_state.get_variable("current_region", ""))
+		# 新区域探索提示（首次进入）
+		if not region_hud.is_empty() and region_hud != _last_region:
+			_last_region = region_hud
+			if not world_state.explored_regions.has(region_hud):
+				world_state.explored_regions.append(region_hud)
+				ToastManager.info("📍 进入新区域：%s" % region_hud)
 		var region_prefix := " 📍%s" % region_hud if not region_hud.is_empty() else ""
 		time_label.text = "🗓 " + world_state.get_time_display() + region_prefix
 		time_label.tooltip_text = "世界时间 · 当前区域"
