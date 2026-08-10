@@ -384,6 +384,8 @@ var _last_region: String = ""
 var _tavern_moods: Dictionary = {}
 ## 酒馆未读消息数（顶栏角标）
 var _tavern_unread: int = 0
+## 历史记录上次所在天（跨天分节）
+var _history_last_day: int = 0
 ## 当前酒馆角色索引
 var tavern_char_index: int = 0
 
@@ -607,6 +609,11 @@ func _add_choice_button(text: String, method: String = "") -> void:
 func _add_history(text: String) -> void:
 	var ts := ""
 	if world_state:
+		# 跨天分节标题
+		var cur_day: int = world_state.get_current_day()
+		if _history_last_day != 0 and cur_day != _history_last_day:
+			history_text.text += "[color=#c9a06a]── 第 %d 天 ──[/color]\n" % cur_day
+		_history_last_day = cur_day
 		ts = "[color=#8a7a68][%d月%d日 %s][/color] " % [
 			world_state.get_current_day(),
 			world_state.get_current_hour(),
