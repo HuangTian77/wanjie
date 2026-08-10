@@ -1939,6 +1939,11 @@ func _on_menu_char_pressed() -> void:
 				var fx_id: String = str(fx.get("id", "?")) if fx is Dictionary else str(fx)
 				var fx_remain: int = int(fx.get("remaining", 0)) if fx is Dictionary else 0
 				list.append_text("• %s（剩 %d 小时）\n" % [fx_id, fx_remain])
+		# 成就
+		if GameManager.user_data.achievements.size() > 0:
+			list.append_text("\n[color=#c9a06a]成就（%d）[/color]\n" % GameManager.user_data.achievements.size())
+			for ach in GameManager.user_data.achievements:
+				list.append_text("• 🏆 %s\n" % str(ach))
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
