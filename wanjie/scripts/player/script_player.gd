@@ -1383,13 +1383,21 @@ func _on_menu_char_pressed() -> void:
 func _on_menu_shop_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "商店"
-	dialog.min_size = Vector2i(420, 360)
+	dialog.min_size = Vector2i(440, 460)
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
+	# 商品区可滚动（物品多时防溢出）
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	inner.add_child(scroll)
+	var inner := VBoxContainer.new()
+	inner.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(inner)
 	var list := RichTextLabel.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(list)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	inner.add_child(list)
 	var gold := 0
 	if economy_engine:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
@@ -1400,7 +1408,7 @@ func _on_menu_shop_pressed() -> void:
 	var sell_title := Label.new()
 	sell_title.text = "【出售】"
 	sell_title.add_theme_color_override("font_color", Color(0.55, 0.65, 0.85))
-	box.add_child(sell_title)
+	inner.add_child(sell_title)
 	var sold_any := false
 	if economy_engine and not economy_engine.player_inventory.is_empty():
 		for item_id in economy_engine.player_inventory:
@@ -1429,14 +1437,14 @@ func _on_menu_shop_pressed() -> void:
 						dialog.queue_free())
 				add_child(confirm)
 				confirm.popup_centered())
-			box.add_child(sell_btn)
+			inner.add_child(sell_btn)
 			sold_any = true
 	if not sold_any:
 		var no_sell := Label.new()
 		no_sell.text = "（背包为空，无可出售物品）"
 		no_sell.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 		no_sell.add_theme_font_size_override("font_size", 11)
-		box.add_child(no_sell)
+		inner.add_child(no_sell)
 	if economy_engine and economy_engine.economy_data:
 		for m in economy_engine.economy_data.markets:
 			var mid: String = m.get("id", "")
@@ -1464,7 +1472,7 @@ func _on_menu_shop_pressed() -> void:
 						dialog.queue_free()
 					else:
 						ToastManager.warning("金币不足！"))
-				box.add_child(btn)
+				inner.add_child(btn)
 				bought_any = true
 	if not bought_any:
 		list.append_text("[color=#999]当前市场暂无商品…[/color]")
