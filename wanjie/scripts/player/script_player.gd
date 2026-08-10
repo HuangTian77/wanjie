@@ -1089,6 +1089,22 @@ func _on_tavern_send_pressed() -> void:
 	if text.is_empty():
 		return
 	tavern_input.text = ""
+	# 斜杠命令：/h 历史 /c 清空
+	if text.begins_with("/"):
+		match text:
+			"/h":
+				_tavern_append("assistant", "（翻看旧账）这是之前的对话记录——\n%s" % (
+					"\n".join(PackedStringArray(TavernManager.dialog_history.map(func(m): return "%s: %s" % [m.get("role", "?"), str(m.get("content", "")).substr(0, 40)]))))
+				return
+			"/c":
+				TavernManager.dialog_history.clear()
+				TavernManager.save_history()
+				tavern_msgs.clear()
+				_tavern_append("assistant", "（记录已清空）")
+				return
+			_:
+				_tavern_append("assistant", "（疑惑）你说的我听不懂…试试 /h 或 /c")
+				return
 	_tavern_append("user", text)
 	TavernManager.dialog_history.append({"role": "user", "content": text})
 	# 角色"思考中…"提示（省略号循环动效），延迟模拟回复
