@@ -1383,6 +1383,17 @@ func _on_battle_auto_pressed() -> void:
 		else:
 			(auto_btn as Button).remove_theme_override("font_color")
 			(auto_btn as Button).text = "⚡ 自动"
+	# 自动战斗时禁用手动操作按钮（防冲突）
+	for bn in ["FleeBtn", "SkillBtn"]:
+		var bb := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/%s" % bn)
+		if bb is Button:
+			(bb as Button).disabled = _auto_battle
+			if _auto_battle:
+				(bb as Button).tooltip_text = "自动战斗进行中，先关闭自动"
+			elif bn == "SkillBtn":
+				(bb as Button).tooltip_text = "释放技能（消耗 MP，快捷键 1-9）"
+			else:
+				(bb as Button).tooltip_text = "尝试逃跑（成功率受敏捷影响）"
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
