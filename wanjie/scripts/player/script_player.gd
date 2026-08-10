@@ -1377,6 +1377,7 @@ func _on_menu_shop_pressed() -> void:
 	if economy_engine:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
 	list.append_text("[color=#c9a06a]持有金币: %d[/color]\n\n" % gold)
+	# 购买按钮 tooltip 提示
 	var bought_any := false
 	# === 出售区（背包物品半价卖出） ===
 	var sell_title := Label.new()
@@ -1439,7 +1440,7 @@ func _on_menu_shop_pressed() -> void:
 					btn.tooltip_text = "金币不足（需要 %d）" % int(price)
 				btn.pressed.connect(func():
 					if economy_engine.buy(mid, item_id):
-						ToastManager.success("已购买 %s" % item_id)
+						ToastManager.success("已购买 %s（剩余 %d 金币）" % [item_id, int(economy_engine.player_currencies.get("gold", 0))])
 						_spawn_damage_popup(int(price))  # 购买 +金币飘字
 						_sync_save_state()
 						_on_menu_shop_pressed()  # 刷新商店
