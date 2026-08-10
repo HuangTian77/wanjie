@@ -527,6 +527,13 @@ func _add_history(text: String) -> void:
 	if world_state:
 		ts = "[color=#8a7a68][%s][/color] " % world_state.get_time_display()
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
+	# 行数上限（防长局历史无限增长卡顿）
+	if history_text.get_line_count() > 200:
+		var excess2: int = history_text.get_line_count() - 150
+		var keep2 := ""
+		for i in range(excess2, history_text.get_line_count()):
+			keep2 += history_text.get_line(i) + "\n"
+		history_text.text = keep2
 
 ## 更新UI
 func _update_ui() -> void:
