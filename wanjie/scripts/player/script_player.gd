@@ -646,6 +646,11 @@ func _update_ui() -> void:
 				quest_label.tooltip_text = "当前任务：%s" % active_q
 				if not active_desc.is_empty():
 					quest_label.tooltip_text += "\n%s" % active_desc
+			else:
+				# 全部任务完成
+				quest_label.text = "✅ 任务完成"
+				quest_label.visible = true
+				quest_label.tooltip_text = "所有任务已完成"
 		# 当前事件链
 		if world_state:
 			var chain: String = str(world_state.get_variable("current_chain", ""))
