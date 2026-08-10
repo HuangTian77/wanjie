@@ -2368,7 +2368,8 @@ func _on_menu_back_pressed() -> void:
 		_write_progress()
 		SaveManager.autosave()
 		menu_panel.visible = false
-		ToastManager.success("已自动保存")
+		var back_time: String = world_state.get_time_display() if world_state != null else ""
+		ToastManager.success("已自动保存 · %s" % back_time)
 		SceneManager.go_back_to_hub())
 	add_child(confirm)
 	confirm.popup_centered()
