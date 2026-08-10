@@ -2803,7 +2803,16 @@ func _on_player_stats_pressed() -> void:
 		list.append_text("（无）\n")
 	else:
 		for f in fx:
-			list.append_text("• %s（剩 %d 回合）\n" % [f.get("name", "?"), int(f.get("remaining_turns", 0))])
+			var fname: String = str(f.get("name", "?"))
+			var ficon := ""
+			match fname:
+				"中毒": ficon = "🤢 "
+				"虚弱": ficon = "😵 "
+				"护盾": ficon = "🛡 "
+				"狂暴": ficon = "😤 "
+				"恢复": ficon = "💚 "
+				"眩晕": ficon = "💫 "
+			list.append_text("• %s%s（剩 %d 回合）\n" % [ficon, fname, int(f.get("remaining_turns", 0))])
 	list.append_text("\n[b]【金币】[/b] %d" % (int(economy_engine.player_currencies.get("gold", 0)) if economy_engine else 0))
 	# 经验进度条
 	var exp_bar := ProgressBar.new()
