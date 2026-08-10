@@ -1682,6 +1682,15 @@ func _on_menu_log_pressed() -> void:
 			var c: Dictionary = ch[i]
 			list.append_text("• %s → %s\n" % [c.get("event_id", "?"), c.get("choice_id", "?")])
 		list.append_text("\n")
+	# 因果标记详情（最近 5 条）
+	if event_engine != null and not event_engine.causal_marks.is_empty():
+		list.append_text("[b]【因果标记】[/b]\n")
+		var cm: Array = event_engine.causal_marks
+		var start_cm := maxi(0, cm.size() - 5)
+		for i in range(start_cm, cm.size()):
+			var c2: Dictionary = cm[i]
+			list.append_text("• %s = %s\n" % [c2.get("key", c2.get("id", "?")), str(c2.get("value", c2.get("state", "?")))])
+		list.append_text("\n")
 	# 复制日志按钮
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
