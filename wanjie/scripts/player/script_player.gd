@@ -549,6 +549,7 @@ func _show_blueprint_choices() -> void:
 		btn.text = "%d. %s" % [i + 1, _blueprint_choices[i]]
 		btn.custom_minimum_size = Vector2(0, 44)
 		btn.add_theme_font_size_override("font_size", 15)
+		btn.tooltip_text = "选择此选项（快捷键 %d）" % (i + 1)
 		btn.pressed.connect(_on_blueprint_choice_pressed.bind(i))
 		choice_container.add_child(btn)
 
