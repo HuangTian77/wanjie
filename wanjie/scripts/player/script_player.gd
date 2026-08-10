@@ -611,6 +611,9 @@ func _update_ui() -> void:
 				_ending_shown = true
 				ToastManager.success("🎉 剧情全部体验完毕！")
 				GameManager.unlock_achievement("finish_any_script")
+				# 通关徽章：进度条金色
+				progress_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
+				progress_label.text = "🏆 通关！%s" % progress_label.text
 				_show_finish_stats()
 		# MP 进度条
 		var max_mp: int = ps.get("max_mp", 50)
