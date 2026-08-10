@@ -1424,6 +1424,8 @@ func _on_history_toggle_pressed() -> void:
 func _on_menu_pressed() -> void:
 	_refresh_difficulty_option()
 	_refresh_menu_title()
+	# 刷新动态 tooltip（槽位概要随存档变化）
+	_setup_menu_tooltips()
 	menu_panel.visible = true
 
 func _on_menu_save_pressed() -> void:
