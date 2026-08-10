@@ -727,6 +727,8 @@ func _on_choices_presented(choices: Array) -> void:
 		btn.focus_mode = Control.FOCUS_ALL
 		if choice_container.get_child_count() >= 4:
 			btn.custom_minimum_size = Vector2(0, 36)
+		if i < 9:
+			btn.tooltip_text = "快捷键 %d" % (i + 1)
 		var choice_id: String = choice.get("id", "")
 		btn.pressed.connect(func():
 			if ThemeManager.animations_enabled:
