@@ -81,6 +81,8 @@ func _ready() -> void:
 	if GameManager.user_data.history_collapsed:
 		history_panel.visible = false
 		history_toggle.text = "▼ 展开记录"
+	# 历史右键复制菜单
+	history_text.context_menu_enabled = true
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
