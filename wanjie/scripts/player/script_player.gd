@@ -2128,7 +2128,9 @@ func _on_menu_bag_pressed() -> void:
 				continue
 			# 计算估值（价格×数量/2）
 			var unit_price := 10
-			if economy_engine.economy_data != null:
+			if str(item_id2) == "rare_relic":
+				unit_price = 100
+			elif economy_engine.economy_data != null:
 				for m in economy_engine.economy_data.markets:
 					for g in m.get("goods", []):
 						if str(g.get("item", "")) == str(item_id2):
