@@ -185,10 +185,10 @@ func has_save(script_id: String) -> bool:
 	return DirAccess.dir_exists_absolute(dir_path)
 
 ## 获取指定槽位的存档信息
-func get_slot_info(slot: int) -> Dictionary:
+func get_slot_info(slot: int, is_autosave: bool = false) -> Dictionary:
 	if current_script_id.is_empty():
 		return {}
-	var file_path := _get_save_path(current_script_id, slot, false)
+	var file_path := _get_save_path(current_script_id, slot, is_autosave)
 	if not FileAccess.file_exists(file_path):
 		return {}
 	return _read_save_info(file_path)

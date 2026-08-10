@@ -1119,6 +1119,17 @@ func _on_retry_from_save() -> void:
 	if sd == null:
 		ToastManager.warning("无自动存档，无法重试")
 		return
+	_restore_save_state(sd)
+	ToastManager.success("已从自动存档恢复")
+	# 复活飘字（绿色 +HP 显示恢复量）
+	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
+		var st3: Dictionary = combat_engine.player_combat_stats
+		_spawn_damage_popup(int(st3.get("max_hp", 100)))
+	_add_history("重新振作，继续冒险…")
+	_advance_to_next_event()
+
+## 统一恢复存档状态（读档/重试共用）
+func _restore_save_state(sd: SaveData) -> void:
 	SaveManager.current_save = sd
 	if event_engine:
 		event_engine.load_history(sd.event_history)
@@ -1130,13 +1141,6 @@ func _on_retry_from_save() -> void:
 		combat_engine.set_player_stats(sd.player_state)
 	_update_ui()
 	_sync_save_state()
-	ToastManager.success("已从自动存档恢复")
-	# 复活飘字（绿色 +HP 显示恢复量）
-	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
-		var st3: Dictionary = combat_engine.player_combat_stats
-		_spawn_damage_popup(int(st3.get("max_hp", 100)))
-	_add_history("重新振作，继续冒险…")
-	_advance_to_next_event()
 
 func _battle_log_line(line: String, color: String = "") -> void:
 	if not color.is_empty():
@@ -2175,7 +2179,7 @@ func _show_slot_selector(mode: String) -> void:
 					if sd2 == null:
 						ToastManager.warning("自动存档不存在")
 						return
-					_on_save_loaded(sd2)
+					_restore_save_state(sd2)
 					selector.queue_free()
 					menu_panel.visible = false)
 		vbox.add_child(auto_btn)
@@ -2251,7 +2255,7 @@ func _on_slot_load_selected(slot: int) -> void:
 		if sd3 == null:
 			ToastManager.warning("读取失败")
 			return
-		_on_save_loaded(sd3)
+		_restore_save_state(sd3)
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
