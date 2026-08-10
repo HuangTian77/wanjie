@@ -989,9 +989,10 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
 	if btitle is Label and combat_engine != null:
 		(btitle as Label).text = "⚔ 战斗 · 第 %d 回合" % combat_engine.current_round
-	# 玩家受击飘字（敌人攻击时）+ HP 红闪反馈
+	# 玩家受击飘字（敌人攻击时）+ HP 红闪反馈 + 日志蓝色
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
+		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
 		hp_label.add_theme_color_override("font_color", Color(0.95, 0.3, 0.3))
 		var tween := create_tween()
 		tween.tween_interval(0.25)
