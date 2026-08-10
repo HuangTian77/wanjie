@@ -114,3 +114,7 @@ func get_time_display() -> String:
 	return "第%d年 %d月 %d日 %d:00" % [
 		game_time["year"], game_time["month"], game_time["day"], game_time["hour"]
 	]
+
+## 当前天数（1-30 循环）
+func get_current_day() -> int:
+	return int(game_time.get("day", 1))

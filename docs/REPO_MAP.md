@@ -1244,6 +1244,7 @@
 - func `add_effect` (L98)
 - func `tick_effects` (L102)
 - func `get_time_display` (L113)
+- func `get_current_day` (L119)
 
 ## scripts/ui/
 
