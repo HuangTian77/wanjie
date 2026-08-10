@@ -527,6 +527,9 @@ func _add_history(text: String) -> void:
 	if world_state:
 		ts = "[color=#8a7a68][%s][/color] " % world_state.get_time_display()
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
+	# 折叠时提示有新记录（HistoryToggle 金色，展开后清除）
+	if not history_panel.visible:
+		history_toggle.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 	# 行数上限（防长局历史无限增长卡顿）
 	if history_text.get_line_count() > 200:
 		var excess2: int = history_text.get_line_count() - 150
@@ -1296,6 +1299,8 @@ func _on_history_toggle_pressed() -> void:
 	# 展开时滚动到底（看最新记录）
 	if history_panel.visible and history_text.get_line_count() > 0:
 		history_text.scroll_to_line(history_text.get_line_count() - 1)
+	# 展开后清除新记录高亮
+	history_toggle.remove_theme_color_override("font_color")
 
 ## === 菜单 ===
 func _on_menu_pressed() -> void:
