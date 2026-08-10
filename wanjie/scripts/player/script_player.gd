@@ -2059,6 +2059,13 @@ func _setup_menu_tooltips() -> void:
 		if b is Button:
 			(b as Button).tooltip_text = tips[n]
 
+## 通关结算（可重复查看）
+func _on_menu_finish_stats_pressed() -> void:
+	if _get_progress()[0] <= 0:
+		ToastManager.info("尚未体验任何事件，暂无可结算内容")
+		return
+	_show_finish_stats()
+
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
 	var dialog := AcceptDialog.new()
