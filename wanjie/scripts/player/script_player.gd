@@ -754,7 +754,7 @@ func _update_ui() -> void:
 			"傍晚": period_icon = "🌆"
 			"夜晚": period_icon = "🌙"
 		time_label.text += " · %s %s" % [period_icon, world_state.get_period_name()]
-		time_label.tooltip_text = "世界时间 · 当前区域"
+		time_label.tooltip_text = "世界时间 · 当前区域 · %s" % world_state.get_period_name()
 		# tooltip 补充探索进度
 		if world_state and not world_state.explored_regions.is_empty():
 			time_label.tooltip_text += "\n已探索 %d 个区域：%s" % [
