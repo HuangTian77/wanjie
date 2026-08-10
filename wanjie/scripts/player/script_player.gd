@@ -1050,7 +1050,7 @@ func _enter_tavern_char(index: int) -> void:
 	tavern_input.placeholder_text = "对%s说话…" % char.get("name", "角色")
 	# 首次进入该角色：显示一句问候（夜晚特殊台词）
 	if TavernManager.dialog_history.is_empty():
-		var is_night := world_state != null and world_state.get_period_name() == "夜晚"
+		var is_night: bool = world_state != null and world_state.get_period_name() == "夜晚"
 		var greeting := ""
 		if is_night and index == 0:
 			greeting = "（艾琳打了个哈欠）这么晚还来？也罢，坐吧，夜里的小道消息往往更值钱…"
