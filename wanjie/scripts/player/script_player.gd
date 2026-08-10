@@ -1355,6 +1355,13 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 敌人状态摘要（存活/阵亡）
+	if combat_engine != null and not combat_engine.enemies.is_empty():
+		var status_parts: Array[String] = []
+		for e in combat_engine.enemies:
+			var ename: String = str(e.get("name", "?"))
+			status_parts.append(("%s ✅" % ename) if e.get("is_alive", false) else ("%s 💀" % ename))
+		_battle_log_line("敌人状态：%s" % "，".join(status_parts), "#8a8278")
 	# 恢复常驻操作提示（战斗时被快捷键提示替换）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint is Label and (hint as Label).text.begins_with("⚔"):
