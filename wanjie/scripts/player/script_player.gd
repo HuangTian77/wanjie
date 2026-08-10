@@ -2745,6 +2745,7 @@ func _show_finish_stats() -> void:
 	add_child(dialog)
 	var list := RichTextLabel.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	list.context_menu_enabled = true  # 右键复制
 	dialog.add_child(list)
 	var day := 1
 	if world_state:
