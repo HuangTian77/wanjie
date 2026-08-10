@@ -1903,6 +1903,7 @@ func _on_menu_char_pressed() -> void:
 			["魔防", str(ps.get("mdef", 0))],
 			["速度", str(ps.get("speed", 0))],
 			["敏捷", str(ps.get("agility", 0))],
+			["经验", "%d/100" % int(ps.get("exp", 0))],
 		]
 		for row in rows:
 			list.append_text("[color=#c9a06a]%s[/color]  %s\n" % [row[0], row[1]])
