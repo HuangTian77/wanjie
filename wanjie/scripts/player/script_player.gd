@@ -2542,7 +2542,8 @@ func _show_slot_selector(mode: String) -> void:
 					_add_history("已保存到自动存档")
 					selector.queue_free()
 					menu_panel.visible = false
-					ToastManager.success("已自动保存"))
+					var time_txt2: String = world_state.get_time_display() if world_state != null else ""
+					ToastManager.success("已自动保存 · %s" % time_txt2))
 			"load":
 				auto_btn.pressed.connect(func():
 					var sd2: SaveData = SaveManager.load_game(0, true)
