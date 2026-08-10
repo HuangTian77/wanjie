@@ -529,7 +529,12 @@ func _add_choice_button(text: String, method: String = "") -> void:
 			tw.tween_property(btn, "scale", Vector2.ONE, 0.12)
 	)
 	if not method.is_empty():
-		btn.pressed.connect(Callable(self, method))
+		btn.pressed.connect(func():
+			# 按压反馈（快速闪暗后执行选择）
+			if ThemeManager.animations_enabled:
+				btn.modulate = Color(0.6, 0.6, 0.6)
+				btn.scale = Vector2(0.98, 0.98)
+			Callable(self, method).call())
 	choice_container.add_child(btn)
 	# 键盘序号提示（数字键 1-9 快速选择）
 	var idx: int = choice_container.get_child_count()
