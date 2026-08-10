@@ -1894,9 +1894,13 @@ func _on_player_stats_pressed() -> void:
 	dialog.title = "属性详情"
 	dialog.min_size = Vector2i(420, 380)
 	add_child(dialog)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(scroll)
 	var list := RichTextLabel.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dialog.add_child(list)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	scroll.add_child(list)
 	if combat_engine == null or combat_engine.player_combat_stats.is_empty():
 		list.append_text("[color=#999]暂无战斗属性[/color]")
 		dialog.popup_centered()
