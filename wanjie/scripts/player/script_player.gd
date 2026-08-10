@@ -1747,8 +1747,17 @@ func _on_battle_auto_pressed() -> void:
 
 ## 清空剧情历史
 func _on_history_clear_pressed() -> void:
-	history_text.clear()
-	ToastManager.info("剧情历史已清空")
+	if history_text.text.is_empty():
+		ToastManager.info("历史记录为空")
+		return
+	var confirm := ConfirmationDialog.new()
+	confirm.dialog_text = "确定清空全部剧情历史？（不可恢复）"
+	confirm.confirmed.connect(func():
+		history_text.clear()
+		_history_last_day = 0
+		ToastManager.info("剧情历史已清空"))
+	add_child(confirm)
+	confirm.popup_centered()
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
