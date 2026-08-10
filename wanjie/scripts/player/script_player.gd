@@ -2803,6 +2803,19 @@ func _on_player_stats_pressed() -> void:
 	exp_bar.custom_minimum_size = Vector2(0, 14)
 	exp_bar.tooltip_text = "经验 %d/100（每 100 升 1 级）" % int(st.get("exp", 0))
 	dialog.add_child(exp_bar)
+	# HP/MP 条
+	var hp_bar := ProgressBar.new()
+	hp_bar.max_value = maxf(1.0, float(int(st.get("max_hp", 1))))
+	hp_bar.value = float(int(st.get("hp", 0)))
+	hp_bar.custom_minimum_size = Vector2(0, 12)
+	hp_bar.tooltip_text = "HP %d/%d" % [int(st.get("hp", 0)), int(st.get("max_hp", 1))]
+	dialog.add_child(hp_bar)
+	var mp_bar := ProgressBar.new()
+	mp_bar.max_value = maxf(1.0, float(int(st.get("max_mp", 1))))
+	mp_bar.value = float(int(st.get("mp", 0)))
+	mp_bar.custom_minimum_size = Vector2(0, 12)
+	mp_bar.tooltip_text = "MP %d/%d" % [int(st.get("mp", 0)), int(st.get("max_mp", 1))]
+	dialog.add_child(mp_bar)
 	dialog.popup_centered()
 
 ## 菜单按钮 tooltip 统一补全
