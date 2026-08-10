@@ -411,6 +411,11 @@ custom_minimum_size = Vector2(0, 38)
 text = "😴 休息（回满状态）"
 tooltip_text = "推进 8 小时并回满 HP/MP，30% 概率触发随机事件"
 
+[node name="PlayerStatsBtn" type="Button" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+text = "📊 属性详情"
+
 [node name="HelpBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
@@ -499,6 +504,7 @@ text = "🏃 逃跑"
 [connection signal="pressed" from="MenuPanel/MenuVBox/RatingBtn" to="." method="_on_menu_rating_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/LogBtn" to="." method="_on_menu_log_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/RestBtn" to="." method="_on_menu_rest_pressed"]
+[connection signal="pressed" from="MenuPanel/MenuVBox/PlayerStatsBtn" to="." method="_on_player_stats_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/HelpBtn" to="." method="_on_menu_help_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/BackBtn" to="." method="_on_menu_back_pressed"]
 [connection signal="pressed" from="MenuPanel/MenuVBox/CloseMenuBtn" to="." method="_on_menu_close_pressed"]

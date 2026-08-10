@@ -1736,6 +1736,33 @@ func _show_finish_stats() -> void:
 	list.append_text("\n[color=#888]感谢体验！可返回大厅查看成就与进度。[/color]")
 	dialog.popup_centered()
 
+## 属性详情弹窗（完整战斗属性/经验/效果）
+func _on_player_stats_pressed() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "属性详情"
+	dialog.min_size = Vector2i(420, 380)
+	add_child(dialog)
+	var list := RichTextLabel.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(list)
+	if combat_engine == null or combat_engine.player_combat_stats.is_empty():
+		list.append_text("[color=#999]暂无战斗属性[/color]")
+		dialog.popup_centered()
+		return
+	var st: Dictionary = combat_engine.player_combat_stats
+	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
+	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
+	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
+	list.append_text("[b]【状态效果】[/b]\n")
+	var fx: Array = st.get("status_effects", [])
+	if fx.is_empty():
+		list.append_text("（无）\n")
+	else:
+		for f in fx:
+			list.append_text("• %s（剩 %d 回合）\n" % [f.get("name", "?"), int(f.get("remaining_turns", 0))])
+	list.append_text("\n[b]【金币】[/b] %d" % (int(economy_engine.player_currencies.get("gold", 0)) if economy_engine else 0))
+	dialog.popup_centered()
+
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
 	var dialog := AcceptDialog.new()
