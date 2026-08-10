@@ -709,7 +709,7 @@ func _on_export_chat_pressed() -> void:
 		return
 	var lines: PackedStringArray = []
 	for m in TavernManager.dialog_history:
-		var role_txt := "玩家" if str(m.get("role", "")) == "user" else TavernManager.current_character.get("name", "角色")
+		var role_txt: String = "玩家" if str(m.get("role", "")) == "user" else str(TavernManager.current_character.get("name", "角色"))
 		lines.append("[%s] %s" % [role_txt, str(m.get("content", ""))])
 	var path := "user://tavern_export_%s.txt" % Time.get_datetime_string_from_system().replace(":", "").replace(" ", "_")
 	var f := FileAccess.open(path, FileAccess.WRITE)
