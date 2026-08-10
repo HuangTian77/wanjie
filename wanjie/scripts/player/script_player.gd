@@ -1654,7 +1654,7 @@ func _on_menu_log_pressed() -> void:
 	if stat_str.length() > 18:
 		stat_str = " · 标记 %d" % (event_engine.causal_marks.size() if event_engine else 0)
 	dialog.title = "世界日志%s%s%s" % [time_str, stat_str, region_txt]
-	dialog.min_size = Vector2i(400, 360)
+	dialog.min_size = Vector2i(480, 420)
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
