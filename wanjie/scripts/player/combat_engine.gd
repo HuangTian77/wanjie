@@ -335,4 +335,14 @@ func get_log() -> Array[String]:
 
 ## 获取战斗结果奖励
 func get_rewards() -> Dictionary:
-	return {"experience": 50 * enemies.size(), "gold": randi_range(10, 50) * enemies.size()}
+	# 金币/经验 + 概率掉落物品（loot）
+	var loot_items: Array = []
+	if randf() < 0.35:
+		loot_items.append("herb")
+	if randf() < 0.15:
+		loot_items.append("potion")
+	return {
+		"experience": 50 * enemies.size(),
+		"gold": randi_range(10, 50) * enemies.size(),
+		"loot": loot_items,
+	}

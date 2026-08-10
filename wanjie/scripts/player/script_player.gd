@@ -1417,6 +1417,13 @@ func _on_combat_ended(result: String) -> void:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_add_history("⚔ 战斗胜利：+%d 金币 +%d 经验" % [gold, exp])
+			# 掉落物品入背包
+			var loot: Array = rewards.get("loot", [])
+			for li in loot:
+				var litem: String = str(li)
+				economy_engine.player_inventory[litem] = int(economy_engine.player_inventory.get(litem, 0)) + 1
+				ToastManager.success("🎁 获得掉落物品：%s" % litem)
+				_add_history("🎁 掉落物品：%s" % litem)
 			_sync_save_state()
 		# 经验升级（每 100 经验升 1 级，属性成长）
 		var stats: Dictionary = combat_engine.player_combat_stats
