@@ -465,6 +465,7 @@ text = "❓ 操作帮助"
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
 text = "返回大厅"
+tooltip_text = "返回大厅（B 键）"
 
 [node name="CloseMenuBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
