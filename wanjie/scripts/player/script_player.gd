@@ -988,7 +988,9 @@ func _refresh_battle_ui() -> void:
 		total_enemies += 1
 		if e.get("is_alive", true):
 			alive += 1
-			parts.append("%s HP:%d/%d" % [e.get("name", "?"), int(e.get("hp", 0)), int(e.get("max_hp", 1))])
+			# 当前目标敌人加 🎯 高亮标记
+			var mark := "🎯 " if (total_enemies > 1 and _battle_target == total_enemies - 1) else ""
+			parts.append("%s%s HP:%d/%d" % [mark, e.get("name", "?"), int(e.get("hp", 0)), int(e.get("max_hp", 1))])
 	var count_txt := ""
 	if total_enemies > 1:
 		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
