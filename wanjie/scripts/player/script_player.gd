@@ -719,13 +719,30 @@ func _on_choices_presented(choices: Array) -> void:
 	_clear_choices()
 	for i in choices.size():
 		var choice: Dictionary = choices[i]
+		# 复用统一选择按钮（序号/动画/键盘）
 		var btn := Button.new()
 		btn.text = "%d. %s" % [i + 1, choice.get("text", "选择")]
 		btn.custom_minimum_size = Vector2(0, 44)
 		btn.add_theme_font_size_override("font_size", 15)
+		btn.focus_mode = Control.FOCUS_ALL
+		if choice_container.get_child_count() >= 4:
+			btn.custom_minimum_size = Vector2(0, 36)
 		var choice_id: String = choice.get("id", "")
-		btn.pressed.connect(_on_choice_selected.bind(choice_id))
+		btn.pressed.connect(func():
+			if ThemeManager.animations_enabled:
+				btn.modulate = Color(0.6, 0.6, 0.6)
+				btn.scale = Vector2(0.98, 0.98)
+			_on_choice_selected(choice_id))
 		choice_container.add_child(btn)
+		# 逐个延迟浮现
+		if ThemeManager.animations_enabled:
+			btn.modulate.a = 0.0
+			btn.scale = Vector2(0.96, 0.96)
+			var t2 := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			t2.tween_interval(i * 0.06)
+			t2.set_parallel(true)
+			t2.tween_property(btn, "modulate:a", 1.0, 0.2)
+			t2.tween_property(btn, "scale", Vector2.ONE, 0.2)
 		# 进入动画
 		if ThemeManager.animations_enabled:
 			btn.modulate.a = 0.0
