@@ -1686,9 +1686,13 @@ func _on_menu_log_pressed() -> void:
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(scroll)
 	var list := RichTextLabel.new()
-	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_child(list)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	scroll.add_child(list)
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
 	if world_state:
