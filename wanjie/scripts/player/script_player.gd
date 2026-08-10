@@ -73,6 +73,7 @@ var _battle_flees: int = 0
 @onready var chain_label: Label = %ChainLabel
 
 func _ready() -> void:
+	_setup_menu_tooltips()
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
@@ -1876,6 +1877,27 @@ func _on_player_stats_pressed() -> void:
 			list.append_text("• %s（剩 %d 回合）\n" % [f.get("name", "?"), int(f.get("remaining_turns", 0))])
 	list.append_text("\n[b]【金币】[/b] %d" % (int(economy_engine.player_currencies.get("gold", 0)) if economy_engine else 0))
 	dialog.popup_centered()
+
+## 菜单按钮 tooltip 统一补全
+func _setup_menu_tooltips() -> void:
+	var tips := {
+		"SaveBtn": "保存当前进度到存档槽",
+		"LoadBtn": "读取已保存的进度",
+		"DeleteBtn": "删除当前存档",
+		"CharBtn": "查看角色状态与装备",
+		"ShopBtn": "购买/出售物品（金币交易）",
+		"ExportChatBtn": "导出酒馆对话历史为 txt",
+		"BagBtn": "查看背包物品与价值",
+		"RatingBtn": "为本剧本评分（1-5 星）",
+		"LogBtn": "查看世界事件日志",
+		"RestBtn": "推进 8 小时并回满 HP/MP",
+		"PlayerStatsBtn": "查看完整战斗属性与经验",
+		"HelpBtn": "查看操作帮助与快捷键",
+	}
+	for n in tips:
+		var b := get_node_or_null("MenuPanel/MenuVBox/%s" % n)
+		if b is Button:
+			(b as Button).tooltip_text = tips[n]
 
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
