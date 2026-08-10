@@ -200,17 +200,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# B: 快速返回大厅（触发确认）
 	elif event is InputEventKey and event.pressed and not event.echo \
-			and event.keycode == KEY_B and menu_panel.visible:
+			and event.keycode == KEY_B and menu_panel.visible and _no_dialog_open():
 		_on_menu_back_pressed()
 		get_viewport().set_input_as_handled()
 	# S: 快速保存（菜单打开时）
 	elif event is InputEventKey and event.pressed and not event.echo \
-			and event.keycode == KEY_S and menu_panel.visible:
+			and event.keycode == KEY_S and menu_panel.visible and _no_dialog_open():
 		_on_menu_save_pressed()
 		get_viewport().set_input_as_handled()
 	# L: 快速读档（菜单打开时）
 	elif event is InputEventKey and event.pressed and not event.echo \
-			and event.keycode == KEY_L and menu_panel.visible:
+			and event.keycode == KEY_L and menu_panel.visible and _no_dialog_open():
 		_on_menu_load_pressed()
 		get_viewport().set_input_as_handled()
 	# H: 打开操作帮助
@@ -2422,6 +2422,15 @@ func _get_progress() -> Array:
 		if event_engine != null and event_engine.triggered_ids.has(e.get("id", "")):
 			done += 1
 	return [done, total]
+
+## 是否有对话框/槽位选择器打开（菜单快捷键防护）
+func _no_dialog_open() -> bool:
+	if get_node_or_null("SlotSelector") != null:
+		return false
+	for c in get_children():
+		if c is AcceptDialog and (c as AcceptDialog).visible:
+			return false
+	return true
 
 ## 关闭菜单（仅隐藏面板，不退出游戏）
 ## 初始化/刷新难度选项（菜单打开时同步设置页选择）
