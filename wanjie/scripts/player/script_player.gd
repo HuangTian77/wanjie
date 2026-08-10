@@ -626,6 +626,9 @@ func _add_history(text: String) -> void:
 			world_state.get_current_hour(),
 			world_state.get_period_name()]
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
+	# 展开时自动滚动到底（新记录可见）
+	if history_panel.visible and history_text.get_line_count() > 0:
+		history_text.scroll_to_line(history_text.get_line_count() - 1)
 	# 折叠时提示有新记录（HistoryToggle 金色，展开后清除）
 	if not history_panel.visible:
 		history_toggle.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
