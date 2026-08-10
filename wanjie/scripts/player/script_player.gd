@@ -931,6 +931,9 @@ const TAVERN_CHARS: Array = [
 func _on_tavern_pressed() -> void:
 	tavern_panel.visible = true
 	menu_panel.visible = false
+	# 时段氛围提示（夜晚酒馆）
+	if world_state != null and world_state.get_period_name() == "夜晚":
+		ToastManager.info("🌙 夜色中，酒馆灯火通明…")
 	# 打开后清除新消息高亮
 	var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
 	if tb is Button:
