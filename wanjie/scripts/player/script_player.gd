@@ -598,7 +598,13 @@ func _update_ui() -> void:
 		# 剧情进度（基于事件完成度）
 		var p := _get_progress()
 		if p[1] > 0:
-			progress_label.text = "📊 %d%%" % int(float(p[0]) / float(p[1]) * 100.0)
+			var pct := int(float(p[0]) / float(p[1]) * 100.0)
+			# 字符进度条（10 格）
+			var filled := int(pct / 10.0)
+			var bar := ""
+			for i in 10:
+				bar += "█" if i < filled else "░"
+			progress_label.text = "📊 %s %d%%" % [bar, pct]
 			progress_label.visible = true
 			# 通关提示（全部事件触发一次）
 			if p[0] >= p[1] and not _ending_shown:
