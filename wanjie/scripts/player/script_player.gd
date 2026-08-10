@@ -2229,6 +2229,7 @@ func _on_slot_save_selected(slot: int) -> void:
 func _on_slot_delete_selected(slot: int) -> void:
 	var slot_info := _get_slot_info(slot)
 	if slot_info == "(空)":
+		ToastManager.info("该槽位为空，无需删除")
 		return
 	var confirm := ConfirmationDialog.new()
 	confirm.dialog_text = "确定删除槽位 %d 的存档（%s）吗？此操作不可恢复。" % [slot + 1, slot_info]
