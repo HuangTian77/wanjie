@@ -1392,6 +1392,9 @@ func _on_combat_started(enemies: Array) -> void:
 	battle_log.context_menu_enabled = true
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
+	# 自动推进在战斗中暂停（需玩家手动战斗）
+	if _auto_advance_mode:
+		_battle_log_line("⏸ 自动推进已暂停（战斗进行中）", "#8a8278")
 	# 遗物加成提示（持有 rare_relic 时攻击 +5）
 	if economy_engine != null and int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
 		_battle_log_line("✨ 遗物共鸣：攻击力 +5", "#e6c84c")
