@@ -2948,6 +2948,19 @@ func _get_slot_info(slot: int) -> String:
 
 ## 槽位保存
 func _on_slot_save_selected(slot: int) -> void:
+	# 覆盖已有存档确认
+	if _get_slot_info(slot) != "(空)":
+		var confirm_ov := ConfirmationDialog.new()
+		confirm_ov.dialog_text = "槽位 %d 已有存档（%s），确定覆盖？" % [slot + 1, _get_slot_info(slot)]
+		confirm_ov.confirmed.connect(func():
+			_do_save_slot(slot))
+		add_child(confirm_ov)
+		confirm_ov.popup_centered()
+		return
+	_do_save_slot(slot)
+
+## 槽位保存执行
+func _do_save_slot(slot: int) -> void:
 	var ok := SaveManager.save_game(slot)
 	if ok:
 		_add_history("游戏已保存到槽位 %d（第 %d 天）" % [slot + 1, world_state.get_current_day() if world_state else 1])
