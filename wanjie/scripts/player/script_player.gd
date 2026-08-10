@@ -535,6 +535,8 @@ func _handle_blueprint_result(result: Dictionary) -> void:
 	var err: String = result.get("error", "")
 	if err != "":
 		_add_history("[错误] %s" % err)
+	elif result.get("success", false):
+		_add_history("📌 事件推进完成（%d 步）" % int(result.get("steps", 0)))
 	_clear_choices()
 	_add_choice_button("继续", "_on_continue_pressed")
 
