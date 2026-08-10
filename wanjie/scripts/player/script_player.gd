@@ -943,7 +943,7 @@ func _on_combat_ended(result: String) -> void:
 		ToastManager.warning("你已阵亡… 进度已保存，可读档重试")
 		_add_choice_button("🔄 重试（读档）", "_on_retry_from_save")
 	elif result == "fled":
-		ToastManager.info("成功逃离战场")
+		ToastManager.success("💨 成功逃离战场！")
 		_add_choice_button("继续", "_on_continue_pressed")
 	else:
 		# 战斗结束后提供"继续"推进剧情
