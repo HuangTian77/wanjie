@@ -1445,6 +1445,11 @@ func _on_battle_auto_pressed() -> void:
 			else:
 				(bb as Button).tooltip_text = "尝试逃跑（成功率受敏捷影响）"
 
+## 清空剧情历史
+func _on_history_clear_pressed() -> void:
+	history_text.clear()
+	ToastManager.info("剧情历史已清空")
+
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
 	history_panel.visible = not history_panel.visible
