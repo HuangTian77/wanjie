@@ -2761,6 +2761,10 @@ func _show_finish_stats() -> void:
 	list.append_text("🎖 等级：Lv.%d\n" % lv)
 	list.append_text("💰 持有金币：%d\n" % gold)
 	list.append_text("📖 触发事件：%d 个\n" % p[0])
+	# 本次游玩时长
+	if _play_start_time > 0:
+		var played_sec: int = int((Time.get_ticks_msec() - _play_start_time) / 1000)
+		list.append_text("⏱ 游玩时长：%s\n" % _fmt_play_time(float(played_sec)))
 	list.append_text("⚔ 战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
 	list.append_text("🔥 最高连击：x%d\n" % _best_combo)
 	list.append_text("\n[color=#888]感谢体验！可返回大厅查看成就与进度。[/color]")
