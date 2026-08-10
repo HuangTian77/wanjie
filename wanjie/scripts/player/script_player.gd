@@ -44,7 +44,8 @@ var _auto_timer: float = 0.0
 @onready var history_toggle: Button = %HistoryToggle
 @onready var battle_panel: PanelContainer = %BattlePanel
 @onready var enemy_info: Label = %EnemyInfo
-@onready var battle_log: RichTextLabel = %BattleLog@onready var tavern_panel: PanelContainer = %TavernPanel
+@onready var battle_log: RichTextLabel = %BattleLog
+@onready var tavern_panel: PanelContainer = %TavernPanel
 @onready var tavern_char_select: OptionButton = %TavernCharSelect
 @onready var tavern_msgs: RichTextLabel = %TavernMsgs
 @onready var tavern_input: LineEdit = %TavernInput
