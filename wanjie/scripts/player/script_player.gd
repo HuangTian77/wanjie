@@ -2882,7 +2882,7 @@ func _on_player_stats_pressed() -> void:
 func _setup_menu_tooltips() -> void:
 	var tips := {
 		"SaveBtn": "保存当前进度到存档槽（S）",
-		"LoadBtn": "读取已保存的进度",
+		"LoadBtn": "读取已保存的进度（L）",
 		"DeleteBtn": "删除当前存档",
 		"CharBtn": "查看角色状态与装备",
 		"ShopBtn": "购买/出售物品（金币交易）",
