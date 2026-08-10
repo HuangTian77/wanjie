@@ -1101,8 +1101,10 @@ func _on_tavern_send_pressed() -> void:
 	if text.begins_with("/"):
 		match text:
 			"/h":
-				_tavern_append("assistant", "（翻看旧账）这是之前的对话记录——\n%s" % (
-					"\n".join(PackedStringArray(TavernManager.dialog_history.map(func(m): return "%s: %s" % [m.get("role", "?"), str(m.get("content", "")).substr(0, 40)]))))
+				var lines: Array[String] = []
+				for m in TavernManager.dialog_history:
+					lines.append(_tavern_history_line(m))
+				_tavern_append("assistant", "（翻看旧账）这是之前的对话记录——\n%s" % "\n".join(lines))
 				return
 			"/c":
 				TavernManager.dialog_history.clear()
@@ -1168,6 +1170,14 @@ func _on_tavern_send_pressed() -> void:
 			(tb as Button).add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 			_tavern_unread += 1
 			(tb as Button).text = "🏮 酒馆(%d)" % _tavern_unread
+
+## 酒馆历史行（/h 命令用）
+func _tavern_history_line(m: Variant) -> String:
+	var role: String = str((m as Dictionary).get("role", "?")) if m is Dictionary else "?"
+	var content: String = str((m as Dictionary).get("content", "")) if m is Dictionary else ""
+	if content.length() > 40:
+		content = content.substr(0, 40) + "…"
+	return "%s: %s" % [role, content]
 
 func _tavern_append(role: String, content: String) -> void:
 	var ts := Time.get_time_string_from_system().substr(0, 5)
