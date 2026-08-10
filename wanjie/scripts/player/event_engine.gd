@@ -284,6 +284,11 @@ func check_random_events() -> Dictionary:
 	for re in event_system.random_events:
 		if cooldowns.has(re["id"]):
 			continue
+		# 时段约束：事件可指定 period（如"夜晚"），不匹配则不触发
+		var period_required: String = str(re.get("period", ""))
+		if not period_required.is_empty() and world_state != null \
+				and world_state.get_period_name() != period_required:
+			continue
 		if randf() < re.get("probability", 0.05):
 			cooldowns[re["id"]] = 3  # 3回合冷却
 			return re
