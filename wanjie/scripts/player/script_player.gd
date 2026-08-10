@@ -1095,6 +1095,9 @@ func _on_combat_started(enemies: Array) -> void:
 	battle_log.clear()
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
+	# 时段提示（夜晚战斗可辨识）
+	if world_state != null and world_state.get_period_name() == "夜晚":
+		_battle_log_line("夜色中战斗…（视野受限）", "#7fa8d9")
 	menu_panel.visible = false
 	# 战斗标题显示回合（每次动作后刷新）
 	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
