@@ -1053,6 +1053,12 @@ func _on_combat_ended(result: String) -> void:
 				stats["hp"] = stats.get("max_hp", 100)
 				stats["mp"] = stats.get("max_mp", 50)
 				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满，攻+2 防+1）" % int(stats.get("level", 1)))
+				# 升级 HUD 脉冲（等级标签放大回弹）
+				if ThemeManager.animations_enabled:
+					player_level_label.pivot_offset = player_level_label.size / 2.0
+					var ltw := create_tween()
+					ltw.tween_property(player_level_label, "scale", Vector2(1.15, 1.15), 0.12)
+					ltw.tween_property(player_level_label, "scale", Vector2.ONE, 0.25)
 				msg += " 🎉 升级 Lv.%d！" % int(stats.get("level", 1))
 			_sync_save_state()
 	_add_history(msg)
