@@ -959,6 +959,8 @@ func _tavern_mock_reply(text: String) -> String:
 	return replies[abs(text.hash()) % replies.size()]
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
+	# 新战斗清空上一场日志
+	battle_log.clear()
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
 	menu_panel.visible = false
