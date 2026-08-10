@@ -1766,7 +1766,7 @@ func _on_history_clear_pressed() -> void:
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
 	history_panel.visible = not history_panel.visible
-	history_toggle.text = "▲ 收起记录" if history_panel.visible else "▼ 展开记录"
+	history_toggle.text = "▲ 收起记录(%d)" % history_text.get_line_count() if history_panel.visible else "▼ 展开记录(%d)" % history_text.get_line_count()
 	# 持久化折叠状态
 	GameManager.user_data.history_collapsed = not history_panel.visible
 	GameManager.user_data.save_user_data()
