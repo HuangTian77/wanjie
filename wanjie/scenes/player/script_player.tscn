@@ -330,7 +330,7 @@ grow_vertical = 2
 
 [node name="MenuVBox" type="VBoxContainer" parent="MenuPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 6
 
 [node name="MenuTitle" type="Label" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
@@ -362,73 +362,73 @@ horizontal_alignment = 1
 
 [node name="SaveBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "保存游戏"
 
 [node name="LoadBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "加载存档"
 
 [node name="DeleteBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "删除存档"
 
 [node name="CharBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "👤 角色"
 
 [node name="ShopBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "🏪 商店"
 
 [node name="ExportChatBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "📄 导出对话"
 
 [node name="BagBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "🎒 背包"
 
 [node name="RatingBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "★ 评分"
 
 [node name="LogBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "📜 世界日志"
 
 [node name="RestBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "😴 休息（回满状态）"
 tooltip_text = "推进 8 小时并回满 HP/MP，30% 概率触发随机事件"
 
 [node name="PlayerStatsBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "📊 属性详情"
 
 [node name="HelpBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "❓ 操作帮助"
 
 [node name="BackBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "返回大厅"
 
 [node name="CloseMenuBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 34)
 text = "关闭菜单"
 
 [node name="BattlePanel" type="PanelContainer" parent="."]
