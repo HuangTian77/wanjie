@@ -2144,6 +2144,7 @@ func _on_menu_bag_pressed() -> void:
 			var sell_btn := Button.new()
 			sell_btn.text = "%s ×%d（+%d💰）" % [item_id2, int(economy_engine.player_inventory[item_id2]), maxi(1, unit_price / 2)]
 			sell_btn.flat = true
+			sell_btn.tooltip_text = "按半价卖出（单价 %d）" % unit_price
 			sell_btn.pressed.connect(func():
 				var gain := maxi(1, unit_price / 2)
 				economy_engine.add_currency("gold", gain)
