@@ -2758,7 +2758,8 @@ func _show_finish_stats() -> void:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
 	var p := _get_progress()
 	list.append_text("[color=#c9a06a][b]%s[/b][/color]\n\n" % script_data.name)
-	list.append_text("🗓 通关天数：%d 天\n" % day)
+	var finish_time_txt: String = world_state.get_time_display() if world_state != null else ""
+	list.append_text("🗓 通关时刻：%s\n" % finish_time_txt)
 	list.append_text("🎖 等级：Lv.%d\n" % lv)
 	list.append_text("💰 持有金币：%d\n" % gold)
 	list.append_text("📖 触发事件：%d 个\n" % p[0])
