@@ -2513,6 +2513,10 @@ func _refresh_difficulty_option() -> void:
 
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
+	# 关闭槽位选择器（若打开）
+	var sel := get_node_or_null("SlotSelector")
+	if sel:
+		sel.queue_free()
 	# 还原焦点到主界面（键盘 Esc 可继续操作）
 	main_text.grab_focus()
 
