@@ -375,6 +375,9 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
 text = "删除存档"
 
+[node name="Sep1" type="HSeparator" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+
 [node name="CharBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
@@ -394,6 +397,9 @@ text = "📄 导出对话"
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
 text = "🎒 背包"
+
+[node name="Sep2" type="HSeparator" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
 
 [node name="RatingBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
