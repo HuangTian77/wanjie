@@ -2494,6 +2494,8 @@ func _on_menu_close_pressed() -> void:
 ## 世界日志（因果标记/选择历史）
 func _on_menu_log_pressed() -> void:
 	var dialog := AcceptDialog.new()
+	# 打开日志时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	var time_str := ""
 	var stat_str := ""
 	if world_state:
