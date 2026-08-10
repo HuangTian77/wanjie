@@ -1981,7 +1981,7 @@ func _on_menu_help_pressed() -> void:
 【提示】
 - 每 5 分钟自动存档，退出前建议手动保存
 - 剧本进度会同步到大厅卡片进度条"""
-	dialog.min_size = Vector2i(480, 360)
+	dialog.min_size = Vector2i(520, 480)
 	add_child(dialog)
 	dialog.popup_centered()
 
