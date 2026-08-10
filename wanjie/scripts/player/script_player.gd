@@ -2598,7 +2598,8 @@ func _on_slot_save_selected(slot: int) -> void:
 	var ok := SaveManager.save_game(slot)
 	if ok:
 		_add_history("游戏已保存到槽位 %d（第 %d 天）" % [slot + 1, world_state.get_current_day() if world_state else 1])
-		ToastManager.success("已保存到槽位 %d" % (slot + 1))
+		var time_txt: String = world_state.get_time_display() if world_state != null else ""
+		ToastManager.success("已保存到槽位 %d · %s" % [slot + 1, time_txt])
 	else:
 		ToastManager.warning("保存失败")
 	var sel := get_node_or_null("SlotSelector")
