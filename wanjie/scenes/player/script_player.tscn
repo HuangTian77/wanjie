@@ -473,14 +473,17 @@ layout_mode = 2
 [node name="AutoBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 layout_mode = 2
 text = "⚡ 自动"
+tooltip_text = "自动战斗：点击循环 1x→2x→4x→关"
 
 [node name="AttackBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 layout_mode = 2
 text = "⚔ 攻击"
+tooltip_text = "普通攻击当前目标（命中率受敏捷影响）"
 
 [node name="SkillBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 layout_mode = 2
 text = "✦ 技能"
+tooltip_text = "释放技能（消耗 MP，快捷键 1-9）"
 
 [node name="FleeBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 layout_mode = 2
