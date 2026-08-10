@@ -2559,6 +2559,13 @@ func _on_menu_log_pressed() -> void:
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("日志已复制"))
 	box.add_child(copy_btn)
+	# 刷新按钮（重新打开获取最新数据）
+	var refresh_log_btn := Button.new()
+	refresh_log_btn.text = "↻ 刷新"
+	refresh_log_btn.pressed.connect(func():
+		dialog.queue_free()
+		_on_menu_log_pressed())
+	box.add_child(refresh_log_btn)
 	# 导出日志按钮
 	var export_btn := Button.new()
 	export_btn.text = "💾 导出日志"
