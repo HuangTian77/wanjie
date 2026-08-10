@@ -381,6 +381,8 @@ var _last_quest_shown: String = ""
 var _last_region: String = ""
 ## 酒馆角色心情（char_id → 0/1/2 档）
 var _tavern_moods: Dictionary = {}
+## 酒馆未读消息数（顶栏角标）
+var _tavern_unread: int = 0
 ## 当前酒馆角色索引
 var tavern_char_index: int = 0
 
@@ -966,6 +968,7 @@ func _on_tavern_pressed() -> void:
 	if tb is Button:
 		(tb as Button).remove_theme_color_override("font_color")
 		(tb as Button).text = "🏮 酒馆"
+	_tavern_unread = 0
 	tavern_char_select.clear()
 	for i in TAVERN_CHARS.size():
 		tavern_char_select.add_item("%s %s" % [TAVERN_CHARS[i].get("icon", ""), TAVERN_CHARS[i]["name"]], i)
@@ -1157,7 +1160,8 @@ func _on_tavern_send_pressed() -> void:
 		var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
 		if tb is Button:
 			(tb as Button).add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
-			(tb as Button).text = "🏮 酒馆 ·"
+			_tavern_unread += 1
+			(tb as Button).text = "🏮 酒馆(%d)" % _tavern_unread
 
 func _tavern_append(role: String, content: String) -> void:
 	var ts := Time.get_time_string_from_system().substr(0, 5)
