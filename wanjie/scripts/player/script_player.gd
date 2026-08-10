@@ -2155,6 +2155,35 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 		var have: int = int(economy_engine.player_currencies.get("gold", 0))
 		ToastManager.warning("金币不足！需要 %d，当前 %d（差 %d）" % [need, have, maxi(0, need - have)])
 
+## 全部卖出普通物品（遗物除外）
+func _do_sell_all(dialog: AcceptDialog) -> void:
+	var total_gain := 0
+	var sold_any := false
+	for si in economy_engine.player_inventory.keys():
+		if str(si) == "rare_relic":
+			continue
+		var qty: int = int(economy_engine.player_inventory[si])
+		if qty <= 0:
+			continue
+		var up := 10
+		if economy_engine.economy_data != null:
+			for m in economy_engine.economy_data.markets:
+				for g in m.get("goods", []):
+					if str(g.get("item", "")) == str(si):
+						up = int(economy_engine.get_price(str(m.get("id", "")), str(si)))
+		total_gain += maxi(1, up / 2) * qty
+		economy_engine.player_inventory[si] = 0
+		sold_any = true
+	if sold_any:
+		economy_engine.add_currency("gold", total_gain)
+		ToastManager.success("💰 全部卖出 +%d 金币" % total_gain)
+		_add_history("💰 全部卖出 +%d 金币" % total_gain)
+		_sync_save_state()
+		_on_menu_bag_pressed()
+		dialog.queue_free()
+	else:
+		ToastManager.info("没有可卖出的物品")
+
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
@@ -2212,32 +2241,13 @@ func _on_menu_bag_pressed() -> void:
 		sell_all.flat = true
 		sell_all.tooltip_text = "卖出所有普通物品（遗物除外）"
 		sell_all.pressed.connect(func():
-			var total_gain := 0
-			var sold_any := false
-			for si in economy_engine.player_inventory.keys():
-				if str(si) == "rare_relic":
-					continue
-				var qty: int = int(economy_engine.player_inventory[si])
-				if qty <= 0:
-					continue
-				var up := 10
-				if economy_engine.economy_data != null:
-					for m in economy_engine.economy_data.markets:
-						for g in m.get("goods", []):
-							if str(g.get("item", "")) == str(si):
-								up = int(economy_engine.get_price(str(m.get("id", "")), str(si)))
-				total_gain += maxi(1, up / 2) * qty
-				economy_engine.player_inventory[si] = 0
-				sold_any = true
-			if sold_any:
-				economy_engine.add_currency("gold", total_gain)
-				ToastManager.success("💰 全部卖出 +%d 金币" % total_gain)
-				_add_history("💰 全部卖出 +%d 金币" % total_gain)
-				_sync_save_state()
-				_on_menu_bag_pressed()
-				dialog.queue_free()
-			else:
-				ToastManager.info("没有可卖出的物品"))
+			# 全部卖出确认（防误点）
+			var confirm_sell_all := ConfirmationDialog.new()
+			confirm_sell_all.dialog_text = "确定卖出所有普通物品？"
+			confirm_sell_all.confirmed.connect(func():
+				_do_sell_all(dialog))
+			add_child(confirm_sell_all)
+			confirm_sell_all.popup_centered())
 		sell_row.add_child(sell_all)
 		for item_id2 in economy_engine.player_inventory:
 			if int(economy_engine.player_inventory[item_id2]) <= 0:
