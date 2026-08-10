@@ -376,6 +376,22 @@ var _advancing: bool = false
 var _last_quest_shown: String = ""
 ## 当前区域（切换提示用）
 var _last_region: String = ""
+## 酒馆角色心情（char_id → 0/1/2 档）
+var _tavern_moods: Dictionary = {}
+## 当前酒馆角色索引
+var tavern_char_index: int = 0
+
+## 更新酒馆角色下拉（显示心情标记）
+func _tavern_update_char_label() -> void:
+	var sel := get_node_or_null("TavernPanel/TavernVBox/TavernHeader/TavernCharSelect")
+	if sel is OptionButton:
+		for i in TAVERN_CHARS.size():
+			var name: String = str(TAVERN_CHARS[i].get("name", "角色"))
+			var mood_icon := ""
+			match _tavern_moods.get(str(TAVERN_CHARS[i].get("id", "")), 0):
+				1: mood_icon = " 🙂"
+				2: mood_icon = " 😊"
+			(sel as OptionButton).set_item_text(i, name + mood_icon)
 ## 推进到下一个事件
 func _advance_to_next_event() -> void:
 	if _advancing:
@@ -1015,6 +1031,7 @@ func _on_tavern_char_selected(index: int) -> void:
 	_enter_tavern_char(index)
 
 func _enter_tavern_char(index: int) -> void:
+	tavern_char_index = index
 	tavern_msgs.clear()
 	var char: Dictionary = TAVERN_CHARS[index]
 	TavernManager.start_dialog(char)
@@ -1085,6 +1102,11 @@ func _on_tavern_send_pressed() -> void:
 	if last_idx >= 0:
 		rt.text = all_text.substr(0, last_idx) + "\n\n"
 	_tavern_append("assistant", reply)
+	# 角色心情升温（每 3 次对话 +1 档，最多 😊）
+	var char_id: String = str(TAVERN_CHARS[tavern_char_index].get("id", "innkeeper")) if tavern_char_index >= 0 and tavern_char_index < TAVERN_CHARS.size() else "innkeeper"
+	var mood: int = _tavern_moods.get(char_id, 0)
+	_tavern_moods[char_id] = mini(mood + 1, 2)
+	_tavern_update_char_label()
 	# 若酒馆面板未打开：顶栏按钮金色高亮提示新消息
 	if not tavern_panel.visible:
 		var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
