@@ -521,6 +521,7 @@ func _run_blueprint_event(event: Dictionary, graph: Dictionary) -> void:
 	_blueprint_active_graph = graph
 	_blueprint_choices = []
 	_clear_choices()
+	ToastManager.info("📌 蓝图事件执行中…")
 	var result: Dictionary = blueprint_executor.execute_graph(graph)
 	_sync_save_state()
 	_handle_blueprint_result(result)
