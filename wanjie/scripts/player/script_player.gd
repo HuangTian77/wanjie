@@ -2704,7 +2704,9 @@ func _on_menu_rest_pressed() -> void:
 	# 休息确认（推进 8 小时，可能触发随机事件）
 	var confirm := ConfirmationDialog.new()
 	confirm.dialog_text = "⛺ 休息 8 小时？\\nHP/MP 将回满，时间推进，30% 概率遭遇随机事件。"
-	confirm.confirmed.connect(func(): _do_rest())
+	confirm.confirmed.connect(func():
+		menu_panel.visible = false
+		_do_rest())
 	add_child(confirm)
 	confirm.popup_centered()
 
@@ -2723,7 +2725,8 @@ func _do_rest() -> void:
 		stats["mp"] = stats.get("max_mp", 50)
 	_update_ui()
 	_sync_save_state()
-	ToastManager.success("⛺ 休息 8 小时：HP +%d / MP +%d" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0)])
+	var rest_time_txt: String = world_state.get_time_display() if world_state != null else ""
+	ToastManager.success("⛺ 休息 8 小时：HP +%d / MP +%d · %s" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0), rest_time_txt])
 	# 恢复飘字（绿色 +）
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
