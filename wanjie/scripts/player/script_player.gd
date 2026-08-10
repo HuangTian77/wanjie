@@ -991,6 +991,7 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
 	if btitle is Label and combat_engine != null:
 		(btitle as Label).text = "⚔ 战斗 · 第 %d 回合" % combat_engine.current_round
+		(btitle as Label).tooltip_text = "回合数 = 玩家与敌人轮流行动的轮次"
 	# 玩家受击飘字（敌人攻击时）+ HP 红闪反馈 + 日志蓝色
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
