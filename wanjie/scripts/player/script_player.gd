@@ -2953,7 +2953,7 @@ func _get_slot_info(slot: int) -> String:
 		prog_pct,
 		_fmt_play_time(save_info.get("play_time", 0)),
 		(" | 第 %d 天" % int(save_info.get("day", 1))) if save_info.has("day") else "",
-		(" | %s" % str(save_info.get("saved_at", "")).substr(0, 16)) if str(save_info.get("saved_at", "")) != "" else ""
+		(" | 💰%d" % int(save_info.get("gold", 0))) if save_info.has("gold") else ""
 	]
 
 ## 槽位保存

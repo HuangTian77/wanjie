@@ -250,7 +250,8 @@ func _read_save_info(file_path: String) -> Dictionary:
 		"player_name": d.get("player_state", {}).get("name", "未知"),
 		"level": d.get("player_state", {}).get("level", 1),
 		"progress": d.get("progress", 0.0),
-		"day": d.get("world_state", {}).get("game_time", {}).get("day", 1)
+		"day": d.get("world_state", {}).get("game_time", {}).get("day", 1),
+		"gold": d.get("economy_state", {}).get("currencies", {}).get("gold", 0)
 	}
 
 ## === 差分存档内部方法 ===
