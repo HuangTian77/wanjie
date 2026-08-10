@@ -477,6 +477,8 @@ func _build_event_detail(detail: Control, event_id: String) -> void:
 		_ui().add_info_label(detail, "前置: %s" % event["prerequisite"])
 	if event.has("probability"):
 		_ui().add_info_label(detail, "概率: %.0f%%" % (event["probability"] * 100.0))
+	if event.has("period") and str(event["period"]) != "":
+		_ui().add_info_label(detail, "时段: %s" % event["period"])
 	var choices: Array = event.get("choices", [])
 	if not choices.is_empty():
 		_ui().add_section_label(detail, "选项 (%d)" % choices.size(), 2)
