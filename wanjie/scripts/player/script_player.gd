@@ -2088,14 +2088,16 @@ func _on_menu_shop_pressed() -> void:
 					btn.disabled = true
 					btn.tooltip_text = "金币不足（需要 %d）" % int(price)
 				btn.pressed.connect(func():
-					if economy_engine.buy(mid, item_id):
-						ToastManager.success("已购买 %s（剩余 %d 金币）" % [item_id, int(economy_engine.player_currencies.get("gold", 0))])
-						_spawn_damage_popup(int(price), false, true)  # 购买 +金币飘字
-						_sync_save_state()
-						_on_menu_shop_pressed()  # 刷新商店
-						dialog.queue_free()
-					else:
-						ToastManager.warning("金币不足！"))
+					# 大额购买确认（≥100 金币）
+					if int(price) >= 100:
+						var confirm_buy := ConfirmationDialog.new()
+						confirm_buy.dialog_text = "确定花费 %d 金币购买 %s？" % [int(price), item_id]
+						confirm_buy.confirmed.connect(func():
+							_do_shop_buy(mid, item_id, int(price), dialog))
+						add_child(confirm_buy)
+						confirm_buy.popup_centered()
+						return
+					_do_shop_buy(mid, item_id, int(price), dialog))
 				inner.add_child(btn)
 				bought_any = true
 	if not bought_any:
@@ -2103,6 +2105,17 @@ func _on_menu_shop_pressed() -> void:
 	dialog.popup_centered()
 
 ## 清空当前角色对话历史
+## 商店购买执行（普通购买与大额确认共用）
+func _do_shop_buy(market_id: String, item_id: String, price: int, dialog: AcceptDialog) -> void:
+	if economy_engine.buy(market_id, item_id):
+		ToastManager.success("已购买 %s（剩余 %d 金币）" % [item_id, int(economy_engine.player_currencies.get("gold", 0))])
+		_spawn_damage_popup(price, false, true)  # 购买 +金币飘字
+		_sync_save_state()
+		_on_menu_shop_pressed()  # 刷新商店
+		dialog.queue_free()
+	else:
+		ToastManager.warning("金币不足！")
+
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
