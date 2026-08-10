@@ -3009,6 +3009,7 @@ func _on_menu_help_pressed() -> void:
 	menu_panel.visible = false
 	dialog.dialog_text = """【基本操作】
 - 点击 / 空格 / 回车：继续剧情、跳过打字机
+- A：切换自动推进（打字完成后自动继续，遇选择暂停）
 - H：随时打开本帮助
 - T：快捷打开 / 关闭酒馆
 - Esc：打开 / 关闭菜单
