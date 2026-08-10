@@ -1064,11 +1064,19 @@ func _enter_tavern_char(index: int) -> void:
 	# 话题快捷按钮（点击即发送）
 	var topics_bar := get_node_or_null("%TavernTopics")
 	if topics_bar is HBoxContainer and (topics_bar as HBoxContainer).get_child_count() == 0:
+		var topic_tips := {
+			"🗡 剑术": "询问剑术与战斗心得",
+			"🏺 传说": "打听古代传说与遗迹",
+			"💰 物价": "了解当前物价行情",
+			"🗺 地形": "询问周边地形与路线",
+			"⚔ 战斗": "请教战斗技巧与敌人弱点",
+		}
 		for tp in ["🗡 剑术", "🏺 传说", "💰 物价", "🗺 地形", "⚔ 战斗"]:
 			var tbtn := Button.new()
 			tbtn.text = tp
 			tbtn.flat = true
 			tbtn.add_theme_font_size_override("font_size", 12)
+			tbtn.tooltip_text = topic_tips.get(tp, "")
 			tbtn.pressed.connect(func():
 				tavern_input.text = tp
 				_on_tavern_send_pressed())
