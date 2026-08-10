@@ -392,6 +392,11 @@ func _tavern_update_char_label() -> void:
 				1: mood_icon = " 🙂"
 				2: mood_icon = " 😊"
 			(sel as OptionButton).set_item_text(i, name + mood_icon)
+			var mood_tip := "普通关系"
+			match _tavern_moods.get(str(TAVERN_CHARS[i].get("id", "")), 0):
+				1: mood_tip = "友好（多聊聊会更好）"
+				2: mood_tip = "亲密（对方敞开心扉）"
+			(sel as OptionButton).set_item_tooltip(i, "好感度：%s" % mood_tip)
 ## 推进到下一个事件
 func _advance_to_next_event() -> void:
 	if _advancing:
