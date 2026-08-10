@@ -436,6 +436,11 @@ func _on_blueprint_choice_pressed(index: int) -> void:
 
 ## 设置主文本（带打字机效果 + BBCode）
 func _set_main_text(text: String) -> void:
+	# 事件切换淡入（视觉过渡，不启用动画时跳过）
+	if ThemeManager.animations_enabled and not _typewriter_done:
+		main_text.modulate.a = 0.0
+		var ftw := create_tween()
+		ftw.tween_property(main_text, "modulate:a", 1.0, 0.18)
 	_typewriter_text = text
 	_typewriter_index = 0
 	_typewriter_timer = 0.0
