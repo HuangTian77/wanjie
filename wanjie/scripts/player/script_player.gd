@@ -2769,7 +2769,7 @@ func _show_finish_stats() -> void:
 func _on_player_stats_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "属性详情"
-	dialog.min_size = Vector2i(420, 380)
+	dialog.min_size = Vector2i(420, 440)
 	add_child(dialog)
 	# 打开属性面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
