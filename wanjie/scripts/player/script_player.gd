@@ -1218,6 +1218,12 @@ func _tavern_append(role: String, content: String) -> void:
 
 func _tavern_mock_reply(text: String) -> String:
 	var char_name: String = TavernManager.current_character.get("name", "角色")
+	var char_id: String = str(TavernManager.current_character.get("id", ""))
+	# 角色专属台词
+	if char_id == "old_scholar" and ("书" in text or "古籍" in text or "遗迹" in text):
+		return "（费恩推了推眼镜）说到古籍，我书房里有一卷残页，讲的是失落的铸城之术…"
+	if char_id == "innkeeper" and ("镇" in text or "消息" in text):
+		return "（艾琳压低声音）镇上最近来了些奇怪的人，总在打听城北的古井…"
 	# 关键词针对性回复
 	if "剑" in text or "武" in text:
 		return "（%s眼中一亮）说到剑术，我年轻时也练过两手…不过现在更擅长泡茶。" % char_name
