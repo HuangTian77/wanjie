@@ -1361,6 +1361,16 @@ func _on_menu_char_pressed() -> void:
 		]
 		for row in rows:
 			list.append_text("[color=#c9a06a]%s[/color]  %s\n" % [row[0], row[1]])
+		# 货币
+		if economy_engine:
+			list.append_text("\n[color=#c9a06a]货币[/color]\n")
+			for cid in economy_engine.player_currencies:
+				list.append_text("• %s × %d\n" % [cid, int(economy_engine.player_currencies[cid])])
+		# 势力关系
+		if world_state and not world_state.faction_states.is_empty():
+			list.append_text("\n[color=#c9a06a]势力关系[/color]\n")
+			for fid in world_state.faction_states:
+				list.append_text("• %s：%d\n" % [fid, int(world_state.faction_states[fid])])
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
