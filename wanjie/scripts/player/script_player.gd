@@ -74,6 +74,9 @@ var _battle_flees: int = 0
 
 func _ready() -> void:
 	_setup_menu_tooltips()
+	# 加载酒馆好感度
+	if GameManager.user_data.tavern_moods is Dictionary:
+		_tavern_moods = (GameManager.user_data.tavern_moods as Dictionary).duplicate()
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
@@ -1108,10 +1111,14 @@ func _on_tavern_send_pressed() -> void:
 		rt.text = all_text.substr(0, last_idx) + "\n\n"
 	_tavern_append("assistant", reply)
 	# 角色心情升温（每 3 次对话 +1 档，最多 😊）
-	var char_id: String = str(TAVERN_CHARS[tavern_char_index].get("id", "innkeeper")) if tavern_char_index >= 0 and tavern_char_index < TAVERN_CHARS.size() else "innkeeper"
-	var mood: int = _tavern_moods.get(char_id, 0)
-	_tavern_moods[char_id] = mini(mood + 1, 2)
+	# 酒馆角色心情（对话升温 🙂/😊）
+	var char_id2: String = str(TavernManager.current_character.get("id", "innkeeper")) if TavernManager.current_character != null and not TavernManager.current_character.is_empty() else "innkeeper"
+	var mood: int = _tavern_moods.get(char_id2, 0)
+	_tavern_moods[char_id2] = mini(mood + 1, 2)
 	_tavern_update_char_label()
+	# 持久化好感度
+	GameManager.user_data.tavern_moods = _tavern_moods.duplicate()
+	GameManager.user_data.save_user_data()
 	# 若酒馆面板未打开：顶栏按钮金色高亮提示新消息
 	if not tavern_panel.visible:
 		var tb := get_node_or_null("MainVBox/TopBar/TopHBox/TavernBtn")
