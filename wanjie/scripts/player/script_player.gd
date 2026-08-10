@@ -633,15 +633,19 @@ func _update_ui() -> void:
 		# 任务追踪（当前进行中的任务）
 		if script_data != null and script_data.quest_system != null and script_data.quest_system.quests.size() > 0:
 			var active_q := ""
+			var active_desc := ""
 			for q in script_data.quest_system.quests:
 				var qstatus: String = str(q.get("status", ""))
 				if qstatus.is_empty() or qstatus == "active":
 					active_q = str(q.get("name", q.get("id", "")))
+					active_desc = str(q.get("description", ""))
 					break
 			if not active_q.is_empty():
 				quest_label.text = "📋 %s" % active_q
 				quest_label.visible = true
 				quest_label.tooltip_text = "当前任务：%s" % active_q
+				if not active_desc.is_empty():
+					quest_label.tooltip_text += "\n%s" % active_desc
 		# 当前事件链
 		if world_state:
 			var chain: String = str(world_state.get_variable("current_chain", ""))
