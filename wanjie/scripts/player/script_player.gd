@@ -1047,7 +1047,7 @@ func _enter_tavern_char(index: int) -> void:
 	var char: Dictionary = TAVERN_CHARS[index]
 	TavernManager.start_dialog(char)
 	# 输入框占位提示当前角色
-	tavern_input.placeholder_text = "对%s说话…" % char.get("name", "角色")
+	tavern_input.placeholder_text = "对%s说话…（/h 历史 · /c 清空）" % char.get("name", "角色")
 	# 首次进入该角色：显示一句问候（夜晚特殊台词）
 	if TavernManager.dialog_history.is_empty():
 		var is_night: bool = world_state != null and world_state.get_period_name() == "夜晚"
