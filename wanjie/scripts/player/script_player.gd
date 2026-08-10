@@ -2640,6 +2640,8 @@ func _on_slot_load_selected(slot: int) -> void:
 			return
 		_restore_save_state(sd3)
 		_add_history("已从槽位 %d 加载" % (slot + 1))
+		var day_loaded: int = world_state.get_current_day() if world_state else 1
+		ToastManager.success("已从槽位 %d 加载（第 %d 天）" % [slot + 1, day_loaded])
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
 			sel.queue_free()
