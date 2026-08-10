@@ -975,6 +975,10 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 恢复常驻操作提示（战斗时被快捷键提示替换）
+	var hint := get_node_or_null("MainVBox/HintLabel")
+	if hint is Label and (hint as Label).text.begins_with("⚔"):
+		(hint as Label).text = ""
 	# 自动战斗重置
 	if _auto_battle:
 		_auto_battle = false
