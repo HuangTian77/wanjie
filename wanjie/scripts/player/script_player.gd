@@ -1917,6 +1917,17 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("\n[color=#c9a06a]势力关系[/color]\n")
 			for fid in world_state.faction_states:
 				list.append_text("• %s：%d\n" % [fid, int(world_state.faction_states[fid])])
+		# 世界标记（变量）
+		if world_state and not world_state.world_variables.is_empty():
+			list.append_text("\n[color=#c9a06a]世界标记（%d）[/color]\n" % world_state.world_variables.size())
+			var shown := 0
+			for vk in world_state.world_variables:
+				if shown >= 8:
+					break
+				list.append_text("• %s = %s\n" % [vk, str(world_state.world_variables[vk])])
+				shown += 1
+			if world_state.world_variables.size() > 8:
+				list.append_text("…等 %d 项\n" % world_state.world_variables.size())
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
