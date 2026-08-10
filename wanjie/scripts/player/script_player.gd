@@ -1452,6 +1452,9 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 战斗结束：自动推进恢复提示
+	if _auto_advance_mode:
+		ToastManager.info("▶ 战斗结束，自动推进已恢复")
 	# 敌人状态摘要（存活/阵亡）
 	if combat_engine != null and not combat_engine.enemies.is_empty():
 		var status_parts: Array[String] = []
