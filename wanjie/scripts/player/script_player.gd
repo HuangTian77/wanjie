@@ -1275,7 +1275,7 @@ func _tavern_mock_reply(text: String) -> String:
 			"对了，听说%s那边的旧矿洞最近有异响。" % region_hint if not region_hint.is_empty() else "对了，城西集市明天有集会，或许有你要找的东西。",
 			"（压低声音）我在%s见过穿黑斗篷的人，鬼鬼祟祟的。" % region_hint if not region_hint.is_empty() else "（压低声音）城北钟楼半夜会自己响，没人知道为什么。",
 		]
-		reply += "\n" + clues[randi() % clues.size()]
+		reply += "\n[color=#9ad0e0]（线索）[/color]" + clues[randi() % clues.size()]
 	return reply
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
