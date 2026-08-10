@@ -1180,6 +1180,17 @@ func _tavern_append(role: String, content: String) -> void:
 
 func _tavern_mock_reply(text: String) -> String:
 	var char_name: String = TavernManager.current_character.get("name", "角色")
+	# 关键词针对性回复
+	if "剑" in text or "武" in text:
+		return "（%s眼中一亮）说到剑术，我年轻时也练过两手…不过现在更擅长泡茶。" % char_name
+	if "传说" in text or "古籍" in text or "遗迹" in text:
+		return "（%s压低声音）传说东边荒原下有座古城，每逢月圆会有灯火浮现——真假难说。" % char_name
+	if "价" in text or "钱" in text or "金" in text:
+		return "（%s掰着手指）最近粮价涨了三成，铁器倒是便宜。想倒卖得趁早。" % char_name
+	if "地形" in text or "地图" in text or "路" in text:
+		return "（%s指向窗外）北边山路最近不太平，商队都改走西边河谷了。" % char_name
+	if "战斗" in text or "敌" in text:
+		return "（%s提醒道）荒野的狼群越来越凶，出门记得带够药草。" % char_name
 	# 心情影响回复热情度
 	var mood: int = _tavern_moods.get(str(TavernManager.current_character.get("id", "")), 0)
 	var warm_prefix := ""
