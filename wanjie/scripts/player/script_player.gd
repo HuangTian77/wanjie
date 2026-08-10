@@ -1944,6 +1944,12 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("\n[color=#c9a06a]成就（%d）[/color]\n" % GameManager.user_data.achievements.size())
 			for ach in GameManager.user_data.achievements:
 				list.append_text("• 🏆 %s\n" % str(ach))
+		# 本次游玩统计
+		list.append_text("\n[color=#c9a06a]本次游玩[/color]\n")
+		list.append_text("• 天数：第 %d 天\n" % (world_state.get_current_day() if world_state else 1))
+		list.append_text("• 触发事件：%d 个\n" % (event_engine.triggered_ids.size() if event_engine != null else 0))
+		list.append_text("• 历史记录：%d 条\n" % history_text.get_line_count())
+		list.append_text("• 当前进度：%d%%\n" % (int(_get_progress()[0] * 100.0 / maxf(1.0, float(_get_progress()[1])))))
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
