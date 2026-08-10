@@ -553,6 +553,11 @@ func _update_ui() -> void:
 			exp_bar += "▰" if ei < exp_filled else "▱"
 		player_level_label.text += "  %s %d/100" % [exp_bar, exp_cur]
 		player_level_label.tooltip_text = "经验 %d/100（每 100 经验升 1 级）" % exp_cur
+		# 经验将满（≥90）金色高亮提示即将升级
+		if exp_cur >= 90:
+			player_level_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+		else:
+			player_level_label.remove_theme_color_override("font_color")
 		# HP 进度条（优先真实战斗状态, 回退事件数推算）
 		var max_hp: int = ps.get("max_hp", 100)
 		var current_hp: int = max_hp
