@@ -2026,6 +2026,9 @@ func _on_menu_shop_pressed() -> void:
 	if economy_engine:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
 	list.append_text("[color=#c9a06a]持有金币: %d[/color]\n\n" % gold)
+	# 金币不足整体提示（<50）
+	if gold < 50:
+		list.append_text("[color=#e05a4e]金币紧张，先出售背包物品换钱！[/color]\n\n")
 	# 购买数量选择（1-9）
 	var qty_row := HBoxContainer.new()
 	inner.add_child(qty_row)
