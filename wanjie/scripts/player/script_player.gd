@@ -2773,6 +2773,14 @@ func _on_player_stats_pressed() -> void:
 	add_child(dialog)
 	# 打开属性面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 刷新按钮（重建面板）
+	var refresh_stats_btn := Button.new()
+	refresh_stats_btn.text = "↻ 刷新"
+	refresh_stats_btn.flat = true
+	dialog.add_child(refresh_stats_btn)
+	refresh_stats_btn.pressed.connect(func():
+		dialog.queue_free()
+		_on_player_stats_pressed())
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(scroll)
