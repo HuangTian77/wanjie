@@ -147,6 +147,9 @@ func _process(delta: float) -> void:
 			main_text.visible_characters = -1
 			# 打字完成：选择按钮浮现
 			choice_container.visible = true
+			# 无选择按钮时显示"继续"提示闪烁（有事件后由事件流程添加按钮）
+			if choice_container.get_child_count() == 0:
+				_show_continue_blink(true)
 		else:
 			# 打字中光标闪烁（交替显示 ▌）
 			var cursor := "▌" if int(_typewriter_index / 3) % 2 == 0 else ""
@@ -333,6 +336,22 @@ func _continue_from_save() -> void:
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	_advance_to_next_event()
+
+## 继续提示闪烁（无选择按钮时显示 ▸ 继续，有限闪烁后自动清除）
+func _show_continue_blink(show: bool) -> void:
+	var hint := get_node_or_null("MainVBox/HintLabel")
+	if hint is Label:
+		if show:
+			(hint as Label).text = "▸ 点击继续"
+			var btw := create_tween()
+			btw.set_loops(3)
+			btw.tween_property(hint, "modulate:a", 0.3, 0.35)
+			btw.tween_property(hint, "modulate:a", 1.0, 0.35)
+			btw.finished.connect(func():
+				if (hint as Label).text == "▸ 点击继续":
+					(hint as Label).text = "")
+		else:
+			(hint as Label).text = ""
 
 ## 推进中标志（防连点/防事件嵌套）
 var _advancing: bool = false
