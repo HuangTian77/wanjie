@@ -1044,6 +1044,8 @@ func _on_tavern_char_selected(index: int) -> void:
 func _enter_tavern_char(index: int) -> void:
 	tavern_char_index = index
 	tavern_msgs.clear()
+	# 右键复制菜单（选中文本可复制）
+	tavern_msgs.context_menu_enabled = true
 	var char: Dictionary = TAVERN_CHARS[index]
 	TavernManager.start_dialog(char)
 	# 输入框占位提示当前角色
