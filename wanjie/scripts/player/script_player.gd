@@ -2083,6 +2083,10 @@ func _on_menu_shop_pressed() -> void:
 		no_sell.add_theme_font_size_override("font_size", 11)
 		inner.add_child(no_sell)
 	if economy_engine and economy_engine.economy_data:
+		var buy_title2 := Label.new()
+		buy_title2.text = "【购买】"
+		buy_title2.add_theme_color_override("font_color", Color(0.75, 0.65, 0.45))
+		inner.add_child(buy_title2)
 		for m in economy_engine.economy_data.markets:
 			var mid: String = m.get("id", "")
 			list.append_text("[b]%s[/b]\n" % m.get("name", mid))
