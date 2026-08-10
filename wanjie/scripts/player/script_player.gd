@@ -1061,6 +1061,18 @@ func _enter_tavern_char(index: int) -> void:
 	TavernManager.start_dialog(char)
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…（/h 历史 · /c 清空）" % char.get("name", "角色")
+	# 话题快捷按钮（点击即发送）
+	var topics_bar := get_node_or_null("%TavernTopics")
+	if topics_bar is HBoxContainer and (topics_bar as HBoxContainer).get_child_count() == 0:
+		for tp in ["🗡 剑术", "🏺 传说", "💰 物价", "🗺 地形", "⚔ 战斗"]:
+			var tbtn := Button.new()
+			tbtn.text = tp
+			tbtn.flat = true
+			tbtn.add_theme_font_size_override("font_size", 12)
+			tbtn.pressed.connect(func():
+				tavern_input.text = tp
+				_on_tavern_send_pressed())
+			(topics_bar as HBoxContainer).add_child(tbtn)
 	# 首次进入该角色：显示一句问候（夜晚特殊台词）
 	if TavernManager.dialog_history.is_empty():
 		var is_night: bool = world_state != null and world_state.get_period_name() == "夜晚"
