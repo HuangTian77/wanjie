@@ -2890,8 +2890,9 @@ func _show_slot_selector(mode: String) -> void:
 			var ap: float = float(auto_info.get("progress", 0.0))
 			if ap > 0.0:
 				apct = " | %d%%" % int(ap * 100.0)
-			auto_txt = "%s | Lv.%d%s | %s" % [
-				auto_info.get("player_name", "?"), auto_info.get("level", 1), apct, _fmt_play_time(auto_info.get("play_time", 0))]
+			auto_txt = "%s | Lv.%d%s | %s%s" % [
+				auto_info.get("player_name", "?"), auto_info.get("level", 1), apct, _fmt_play_time(auto_info.get("play_time", 0)),
+				(" | 第 %d 天" % int(auto_info.get("day", 1))) if auto_info.has("day") else ""]
 		var auto_btn := Button.new()
 		auto_btn.text = "自动存档: %s" % auto_txt
 		auto_btn.custom_minimum_size = Vector2(0, 40)
