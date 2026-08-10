@@ -118,3 +118,18 @@ func get_time_display() -> String:
 ## 当前天数（1-30 循环）
 func get_current_day() -> int:
 	return int(game_time.get("day", 1))
+
+## 当前小时（0-23）
+func get_current_hour() -> int:
+	return int(game_time.get("hour", 8))
+
+## 时段名称（早晨/白天/傍晚/夜晚）
+func get_period_name() -> String:
+	var h := get_current_hour()
+	if h >= 5 and h < 9:
+		return "清晨"
+	if h >= 9 and h < 17:
+		return "白天"
+	if h >= 17 and h < 20:
+		return "傍晚"
+	return "夜晚"
