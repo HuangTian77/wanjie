@@ -1787,6 +1787,8 @@ func _refresh_difficulty_option() -> void:
 
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
+	# 还原焦点到主界面（键盘 Esc 可继续操作）
+	main_text.grab_focus()
 
 ## 世界日志（因果标记/选择历史）
 func _on_menu_log_pressed() -> void:
