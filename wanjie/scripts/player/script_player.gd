@@ -2077,6 +2077,16 @@ func _setup_menu_tooltips() -> void:
 		var b := get_node_or_null("MenuPanel/MenuVBox/%s" % n)
 		if b is Button:
 			(b as Button).tooltip_text = tips[n]
+	# 保存按钮 tooltip 显示各槽位概要（动态）
+	var sb2 := get_node_or_null("MenuPanel/MenuVBox/SaveBtn")
+	if sb2 is Button:
+		var slots_txt := ""
+		for si in 3:
+			var si2 := _get_slot_info(si)
+			if slots_txt != "":
+				slots_txt += "\n"
+			slots_txt += "槽位 %d: %s" % [si + 1, si2]
+		(sb2 as Button).tooltip_text = "保存到槽位（当前：\n%s）" % slots_txt
 
 ## 通关结算（可重复查看）
 func _on_menu_finish_stats_pressed() -> void:
