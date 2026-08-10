@@ -198,6 +198,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			menu_panel.visible = not menu_panel.visible
 		get_viewport().set_input_as_handled()
+	# B: 快速返回大厅（触发确认）
+	elif event is InputEventKey and event.pressed and not event.echo \
+			and event.keycode == KEY_B and menu_panel.visible:
+		_on_menu_back_pressed()
+		get_viewport().set_input_as_handled()
 	# H: 打开操作帮助
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
 		_on_menu_help_pressed()
