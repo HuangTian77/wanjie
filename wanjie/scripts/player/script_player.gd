@@ -441,7 +441,7 @@ func _run_blueprint_event(event: Dictionary, graph: Dictionary) -> void:
 	# 蓝图事件标记（随机/主线）
 	var bchain_mark := "📌 " if not str(event.get("chain_id", "")).is_empty() else ("🎲 " if str(event.get("trigger_type", "")) == "random" else "")
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [bchain_mark, event_name, desc])
-	_add_history("事件(蓝图)%s: %s" % (bchain_mark, event_name))
+	_add_history("事件(蓝图)%s: %s" % [bchain_mark, event_name])
 	_blueprint_active_graph = graph
 	_blueprint_choices = []
 	_clear_choices()
