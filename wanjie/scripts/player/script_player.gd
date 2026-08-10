@@ -1037,7 +1037,7 @@ func _on_combat_ended(result: String) -> void:
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
 			# 胜利奖励金币飘字（金色 +）
 			if gold > 0:
-				_spawn_damage_popup(gold)
+				_spawn_damage_popup(gold, false, true)  # 胜利金币金色
 			if _best_combo >= 2:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
@@ -1225,7 +1225,7 @@ func _on_battle_attack_pressed() -> void:
 	_refresh_battle_ui()
 
 ## 伤害飘字（战斗手感：上浮淡出）
-func _spawn_damage_popup(amount: int, critical: bool = false) -> void:
+func _spawn_damage_popup(amount: int, critical: bool = false, is_gold: bool = false) -> void:
 	var popup_pos := Vector2.ZERO
 	if enemy_info != null and enemy_info.is_visible_in_tree():
 		popup_pos = enemy_info.global_position + Vector2(randf_range(20, 120), -10)
@@ -1233,8 +1233,10 @@ func _spawn_damage_popup(amount: int, critical: bool = false) -> void:
 		# fallback：屏幕中心（商店等非战斗场景）
 		popup_pos = get_viewport().get_visible_rect().size / 2 + Vector2(randf_range(-80, 80), -40)
 	var lbl := Label.new()
-	var color := Color(0.95, 0.4, 0.35) if amount < 0 else Color(0.35, 0.9, 0.45)
+	var color := Color(0.95, 0.4, 0.35) if amount < 0 else (Color(1.0, 0.8, 0.3) if is_gold else Color(0.35, 0.9, 0.45))
 	lbl.text = ("-%d" % absi(amount)) if amount < 0 else ("+%d" % amount)
+	if is_gold:
+		lbl.text = "🪙 +%d" % amount
 	# 暴击：金色大字 + 更大上浮
 	if critical:
 		color = Color(1.0, 0.75, 0.25)
@@ -1470,7 +1472,7 @@ func _on_menu_shop_pressed() -> void:
 				confirm.confirmed.connect(func():
 					if economy_engine.sell("market_1", item_id):
 						ToastManager.success("已出售 %s +%d 金币（剩余 %d 金币）" % [item_id, int(price), int(economy_engine.player_currencies.get("gold", 0))])
-						_spawn_damage_popup(int(price))  # 出售 +金币飘字
+						_spawn_damage_popup(int(price), false, true)  # 出售 +金币飘字
 						_sync_save_state()
 						_on_menu_shop_pressed()
 						dialog.queue_free())
@@ -1505,7 +1507,7 @@ func _on_menu_shop_pressed() -> void:
 				btn.pressed.connect(func():
 					if economy_engine.buy(mid, item_id):
 						ToastManager.success("已购买 %s（剩余 %d 金币）" % [item_id, int(economy_engine.player_currencies.get("gold", 0))])
-						_spawn_damage_popup(int(price))  # 购买 +金币飘字
+						_spawn_damage_popup(int(price), false, true)  # 购买 +金币飘字
 						_sync_save_state()
 						_on_menu_shop_pressed()  # 刷新商店
 						dialog.queue_free()
