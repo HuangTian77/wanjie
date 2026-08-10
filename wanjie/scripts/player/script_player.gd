@@ -501,6 +501,8 @@ func _add_choice_button(text: String, method: String = "") -> void:
 	btn.text = text
 	btn.custom_minimum_size = Vector2(0, 44)
 	btn.add_theme_font_size_override("font_size", 15)
+	# 键盘可达（Tab/方向键导航）
+	btn.focus_mode = Control.FOCUS_ALL
 	# hover 反馈: 文字加深金色 + 轻微上浮（主题已有 hover 背景, 这里强化反馈）
 	btn.mouse_entered.connect(func():
 		btn.add_theme_color_override("font_color", ThemeManager.C_ACCENT_DARK)
