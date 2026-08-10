@@ -1267,7 +1267,7 @@ func _tavern_mock_reply(text: String) -> String:
 		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。" % char_name,
 		"（%s认真打量你）你这话，倒是提醒了我一件事。" % char_name,
 	]
-	var reply := warm_prefix + replies[abs(text.hash()) % replies.size()]
+	var reply: String = warm_prefix + str(replies[abs(text.hash()) % replies.size()])
 	# 30% 概率追加世界观线索（当前区域/任务相关）
 	if randf() < 0.3 and world_state != null:
 		var region_hint: String = str(world_state.get_variable("current_region", ""))
