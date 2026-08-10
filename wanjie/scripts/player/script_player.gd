@@ -87,6 +87,9 @@ func _ready() -> void:
 	var hclear := get_node_or_null("%HistoryClear")
 	if hclear is Button:
 		(hclear as Button).pressed.connect(_on_history_clear_pressed)
+	var hcopy := get_node_or_null("%HistoryCopy")
+	if hcopy is Button:
+		(hcopy as Button).pressed.connect(_on_history_copy_pressed)
 	ToastManager.info("已消耗 1 点灵感进入剧本")
 	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
@@ -1750,6 +1753,14 @@ func _on_battle_auto_pressed() -> void:
 				(bb as Button).tooltip_text = "尝试逃跑（成功率受敏捷影响）"
 
 ## 清空剧情历史
+## 历史记录复制到剪贴板
+func _on_history_copy_pressed() -> void:
+	if history_text.text.is_empty():
+		ToastManager.info("历史记录为空")
+		return
+	DisplayServer.clipboard_set(history_text.text)
+	ToastManager.success("历史记录已复制到剪贴板")
+
 func _on_history_clear_pressed() -> void:
 	if history_text.text.is_empty():
 		ToastManager.info("历史记录为空")

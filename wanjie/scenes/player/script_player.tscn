@@ -296,6 +296,14 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
 tooltip_text = "清空剧情历史记录"
 
+[node name="HistoryCopy" type="Button" parent="MainVBox/HSplit/RightPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "📋 复制"
+flat = true
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
+
 [node name="HistoryToggle" type="Button" parent="MainVBox/HSplit/RightPanel"]
 unique_name_in_owner = true
 layout_mode = 2
