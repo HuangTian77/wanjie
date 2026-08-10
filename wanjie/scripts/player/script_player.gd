@@ -2167,7 +2167,7 @@ func _show_slot_selector(mode: String) -> void:
 			if ap > 0.0:
 				apct = " | %d%%" % int(ap * 100.0)
 			auto_txt = "%s | Lv.%d%s | %s" % [
-				auto_info.get("player_name", "?"), auto_info.get("level", 1), apct, auto_info.get("play_time", "0:00")]
+				auto_info.get("player_name", "?"), auto_info.get("level", 1), apct, _fmt_play_time(auto_info.get("play_time", 0))]
 		var auto_btn := Button.new()
 		auto_btn.text = "自动存档: %s" % auto_txt
 		auto_btn.custom_minimum_size = Vector2(0, 40)
@@ -2202,6 +2202,17 @@ func _show_slot_selector(mode: String) -> void:
 		var stw := create_tween()
 		stw.tween_property(selector, "modulate:a", 1.0, 0.15)
 
+## 格式化游玩时长（秒 → Xh Ym / Ym / Xs）
+func _fmt_play_time(sec_val: Variant) -> String:
+	var total := int(float(sec_val))
+	if total <= 0:
+		return "0:00"
+	var h := total / 3600
+	var m := (total % 3600) / 60
+	if h > 0:
+		return "%dh %02dm" % [h, m]
+	return "%dm" % m
+
 ## 获取槽位信息
 func _get_slot_info(slot: int) -> String:
 	var save_info := SaveManager.get_slot_info(slot)
@@ -2215,7 +2226,7 @@ func _get_slot_info(slot: int) -> String:
 		save_info.get("player_name", "?"),
 		save_info.get("level", 1),
 		prog_pct,
-		save_info.get("play_time", "0:00")
+		_fmt_play_time(save_info.get("play_time", 0))
 	]
 
 ## 槽位保存
