@@ -1726,7 +1726,12 @@ func _refresh_menu_title() -> void:
 	if ast is Timer and (ast as Timer).is_stopped() == false:
 		var remain: int = int((ast as Timer).time_left / 60.0)
 		save_txt = " · 💾 %d分" % remain if remain >= 1 else ""
-	title_node.text = "游戏菜单 · 第 %d 天%s%s" % [day, progress_txt, time_txt]
+	var region_menu := ""
+	if world_state:
+		var rm2: String = str(world_state.get_variable("current_region", ""))
+		if not rm2.is_empty():
+			region_menu = " · 📍%s" % rm2
+	title_node.text = "游戏菜单 · 第 %d 天%s%s%s" % [day, region_menu, progress_txt, time_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
