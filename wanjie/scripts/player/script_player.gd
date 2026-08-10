@@ -595,6 +595,7 @@ func _update_ui() -> void:
 			if not chain.is_empty():
 				chain_label.text = "🔗 %s" % chain
 				chain_label.visible = true
+				chain_label.tooltip_text = "当前剧情线：%s" % chain
 		# 剧情进度（基于事件完成度）
 		var p := _get_progress()
 		if p[1] > 0:
