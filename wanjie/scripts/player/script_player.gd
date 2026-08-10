@@ -1232,6 +1232,10 @@ func _tavern_mock_reply(text: String) -> String:
 	# 角色专属台词
 	if char_id == "old_scholar" and ("书" in text or "古籍" in text or "遗迹" in text):
 		return "（费恩推了推眼镜）说到古籍，我书房里有一卷残页，讲的是失落的铸城之术…"
+	if char_id == "old_scholar" and ("历史" in text or "时代" in text):
+		return "（费恩捋着胡须）这座城的历史比你以为的古老得多——传说它建在一座更古老的都城废墟之上。"
+	if char_id == "old_scholar" and ("文字" in text or "铭文" in text):
+		return "（费恩摊开一张拓片）你看这行铭文，是失传的旧体文字，大意是『城门之下，另有城门』…"
 	if char_id == "innkeeper" and ("镇" in text or "消息" in text):
 		return "（艾琳压低声音）镇上最近来了些奇怪的人，总在打听城北的古井…"
 	# 关键词针对性回复
