@@ -2150,7 +2150,9 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 		_on_menu_shop_pressed()  # 刷新商店
 		dialog.queue_free()
 	else:
-		ToastManager.warning("金币不足！")
+		var need: int = unit_price * qty
+		var have: int = int(economy_engine.player_currencies.get("gold", 0))
+		ToastManager.warning("金币不足！需要 %d，当前 %d（差 %d）" % [need, have, maxi(0, need - have)])
 
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
