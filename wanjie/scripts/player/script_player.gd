@@ -77,6 +77,10 @@ func _ready() -> void:
 	# 加载酒馆好感度
 	if GameManager.user_data.tavern_moods is Dictionary:
 		_tavern_moods = (GameManager.user_data.tavern_moods as Dictionary).duplicate()
+	# 恢复历史折叠状态
+	if GameManager.user_data.history_collapsed:
+		history_panel.visible = false
+		history_toggle.text = "▼ 展开记录"
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
@@ -1763,6 +1767,9 @@ func _on_history_clear_pressed() -> void:
 func _on_history_toggle_pressed() -> void:
 	history_panel.visible = not history_panel.visible
 	history_toggle.text = "▲ 收起记录" if history_panel.visible else "▼ 展开记录"
+	# 持久化折叠状态
+	GameManager.user_data.history_collapsed = not history_panel.visible
+	GameManager.user_data.save_user_data()
 	# 展开时滚动到底（看最新记录）
 	if history_panel.visible and history_text.get_line_count() > 0:
 		history_text.scroll_to_line(history_text.get_line_count() - 1)
