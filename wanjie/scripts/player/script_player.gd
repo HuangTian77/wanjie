@@ -1539,7 +1539,12 @@ func _on_menu_rating_pressed() -> void:
 		b.modulate = Color(0.8, 0.65, 0.2)
 		b.toggle_mode = true
 		b.button_group = ButtonGroup.new()
-		b.pressed.connect(func(): chosen[0] = i + 1)
+		b.pressed.connect(func():
+			chosen[0] = i + 1
+			# 选中星标亮度反馈（≤当前全亮，> 当前变暗）
+			for si in 5:
+				var sb: Button = stars.get_child(si)
+				sb.modulate = Color(1.0, 0.85, 0.3) if si < chosen[0] else Color(0.5, 0.4, 0.15))
 		stars.add_child(b)
 	dialog.add_child(stars)
 	dialog.confirmed.connect(func():
