@@ -804,9 +804,11 @@ func _apply_consequence(consequence: Dictionary) -> void:
 			if "gold" in effect or "receive" in effect:
 				if economy_engine:
 					economy_engine.add_currency("gold", 50)
+					ToastManager.success("🪙 获得 50 金币")
 		"world":
 			if world_state:
 				world_state.set_variable(effect, true)
+				ToastManager.info("🌍 世界标记：%s" % effect)
 		_:
 			if world_state and target.begins_with("faction"):
 				var delta := 10.0
