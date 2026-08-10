@@ -1808,11 +1808,17 @@ func _write_progress() -> void:
 func _get_progress() -> Array:
 	if script_data == null or script_data.event_system == null:
 		return [0, 0]
+	# 主线 + 随机事件合并统计
 	var total := script_data.event_system.story_events.size()
+	var rand_events: Array = script_data.event_system.random_events if script_data.event_system.get("random_events") != null else []
+	total += rand_events.size()
 	if total <= 0:
 		return [0, 0]
 	var done := 0
 	for e in script_data.event_system.story_events:
+		if event_engine != null and event_engine.triggered_ids.has(e.get("id", "")):
+			done += 1
+	for e in rand_events:
 		if event_engine != null and event_engine.triggered_ids.has(e.get("id", "")):
 			done += 1
 	return [done, total]
