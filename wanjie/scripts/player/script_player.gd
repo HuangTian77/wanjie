@@ -2741,7 +2741,7 @@ func _do_rest() -> void:
 func _show_finish_stats() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🎉 通关！"
-	dialog.min_size = Vector2i(420, 320)
+	dialog.min_size = Vector2i(420, 340)
 	add_child(dialog)
 	var list := RichTextLabel.new()
 	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
