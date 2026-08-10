@@ -1401,6 +1401,7 @@ func _on_combat_ended(result: String) -> void:
 	if result == "defeat":
 		# 失败：提供重试（读自动存档恢复状态）
 		ToastManager.warning("你已阵亡… 进度已保存，可读档重试")
+		_add_history("⚰ 战斗中阵亡（第 %d 天）" % (world_state.get_current_day() if world_state else 1))
 		# 阵亡红色屏幕闪烁（视觉反馈）
 		if ThemeManager.animations_enabled:
 			var veil := ColorRect.new()
