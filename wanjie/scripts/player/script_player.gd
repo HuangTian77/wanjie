@@ -2223,7 +2223,7 @@ func _on_slot_delete_selected(slot: int) -> void:
 	if slot_info == "(空)":
 		return
 	var confirm := ConfirmationDialog.new()
-	confirm.dialog_text = "确定删除槽位 %d 的存档吗？此操作不可恢复。" % (slot + 1)
+	confirm.dialog_text = "确定删除槽位 %d 的存档（%s）吗？此操作不可恢复。" % [slot + 1, slot_info]
 	confirm.confirmed.connect(func():
 		SaveManager.delete_save(script_data.id if script_data else "", slot)
 		ToastManager.success("存档已删除")
