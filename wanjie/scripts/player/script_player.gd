@@ -2796,6 +2796,13 @@ func _on_player_stats_pressed() -> void:
 		for f in fx:
 			list.append_text("• %s（剩 %d 回合）\n" % [f.get("name", "?"), int(f.get("remaining_turns", 0))])
 	list.append_text("\n[b]【金币】[/b] %d" % (int(economy_engine.player_currencies.get("gold", 0)) if economy_engine else 0))
+	# 经验进度条
+	var exp_bar := ProgressBar.new()
+	exp_bar.max_value = 100.0
+	exp_bar.value = float(int(st.get("exp", 0)))
+	exp_bar.custom_minimum_size = Vector2(0, 14)
+	exp_bar.tooltip_text = "经验 %d/100（每 100 升 1 级）" % int(st.get("exp", 0))
+	dialog.add_child(exp_bar)
 	dialog.popup_centered()
 
 ## 菜单按钮 tooltip 统一补全
