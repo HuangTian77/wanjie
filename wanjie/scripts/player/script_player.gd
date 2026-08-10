@@ -606,6 +606,7 @@ func _update_ui() -> void:
 				bar += "█" if i < filled else "░"
 			progress_label.text = "📊 %s %d%%" % [bar, pct]
 			progress_label.visible = true
+			progress_label.tooltip_text = "已完成 %d/%d 个事件" % [p[0], p[1]]
 			# 通关提示（全部事件触发一次）
 			if p[0] >= p[1] and not _ending_shown:
 				_ending_shown = true
