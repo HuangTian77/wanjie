@@ -873,6 +873,8 @@ func _on_tavern_export_pressed() -> void:
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
 	tavern_panel.visible = false
+	# 焦点还原（键盘可继续操作）
+	main_text.grab_focus()
 
 func _on_tavern_char_selected(index: int) -> void:
 	_enter_tavern_char(index)
