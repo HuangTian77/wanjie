@@ -2129,6 +2129,39 @@ func _on_menu_bag_pressed() -> void:
 		sell_lbl.text = "出售："
 		sell_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
 		sell_row.add_child(sell_lbl)
+		# 一键全部卖出（稀有遗物除外）
+		var sell_all := Button.new()
+		sell_all.text = "全部卖出"
+		sell_all.flat = true
+		sell_all.tooltip_text = "卖出所有普通物品（遗物除外）"
+		sell_all.pressed.connect(func():
+			var total_gain := 0
+			var sold_any := false
+			for si in economy_engine.player_inventory.keys():
+				if str(si) == "rare_relic":
+					continue
+				var qty: int = int(economy_engine.player_inventory[si])
+				if qty <= 0:
+					continue
+				var up := 10
+				if economy_engine.economy_data != null:
+					for m in economy_engine.economy_data.markets:
+						for g in m.get("goods", []):
+							if str(g.get("item", "")) == str(si):
+								up = int(economy_engine.get_price(str(m.get("id", "")), str(si)))
+				total_gain += maxi(1, up / 2) * qty
+				economy_engine.player_inventory[si] = 0
+				sold_any = true
+			if sold_any:
+				economy_engine.add_currency("gold", total_gain)
+				ToastManager.success("💰 全部卖出 +%d 金币" % total_gain)
+				_add_history("💰 全部卖出 +%d 金币" % total_gain)
+				_sync_save_state()
+				_on_menu_bag_pressed()
+				dialog.queue_free()
+			else:
+				ToastManager.info("没有可卖出的物品"))
+		sell_row.add_child(sell_all)
 		for item_id2 in economy_engine.player_inventory:
 			if int(economy_engine.player_inventory[item_id2]) <= 0:
 				continue
