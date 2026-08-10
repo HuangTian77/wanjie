@@ -1335,9 +1335,10 @@ func _on_menu_delete_pressed() -> void:
 func _on_menu_char_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "角色状态"
-	dialog.min_size = Vector2i(360, 340)
+	dialog.min_size = Vector2i(420, 460)
 	add_child(dialog)
 	var list := RichTextLabel.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(list)
 	var ps: Dictionary = {}
 	if SaveManager.current_save:
