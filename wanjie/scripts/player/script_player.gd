@@ -1876,6 +1876,14 @@ func _on_menu_char_pressed() -> void:
 	dialog.title = "角色状态"
 	dialog.min_size = Vector2i(420, 460)
 	add_child(dialog)
+	# 刷新按钮（重新构建面板）
+	var refresh_btn := Button.new()
+	refresh_btn.text = "↻ 刷新"
+	refresh_btn.flat = true
+	dialog.add_child(refresh_btn)
+	refresh_btn.pressed.connect(func():
+		dialog.queue_free()
+		_on_menu_char_pressed())
 	# 内容可滚动（区块多时防溢出）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
