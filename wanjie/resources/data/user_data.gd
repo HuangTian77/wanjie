@@ -33,6 +33,8 @@ extends Resource
 @export var tavern_moods: Dictionary = {}
 ## 体验器历史记录是否折叠
 @export var history_collapsed: bool = false
+## 体验器自动推进偏好（A 键切换）
+@export var auto_advance: bool = false
 ## 成就列表
 @export var achievements: Array[String] = []
 ## 设置：AI功能是否开启
@@ -89,6 +91,7 @@ func to_dict() -> Dictionary:
 		"favorites_script_ids": favorites_script_ids,
 		"tavern_moods": tavern_moods,
 		"history_collapsed": history_collapsed,
+		"auto_advance": auto_advance,
 		"achievements": achievements,
 		"ai_enabled": ai_enabled,
 		"ai_npc_enabled": ai_npc_enabled,
@@ -119,6 +122,7 @@ static func from_dict(d: Dictionary) -> UserData:
 	u.favorites_script_ids = _to_string_array(d.get("favorites_script_ids", []))
 	u.tavern_moods = d.get("tavern_moods", {}) if d.get("tavern_moods", {}) is Dictionary else {}
 	u.history_collapsed = bool(d.get("history_collapsed", false))
+	u.auto_advance = bool(d.get("auto_advance", false))
 	u.achievements = _to_string_array(d.get("achievements", []))
 	u.ai_enabled = bool(d.get("ai_enabled", u.ai_enabled))
 	u.ai_npc_enabled = bool(d.get("ai_npc_enabled", u.ai_npc_enabled))

@@ -81,6 +81,8 @@ func _ready() -> void:
 	if GameManager.user_data.history_collapsed:
 		history_panel.visible = false
 		history_toggle.text = "▼ 展开记录"
+	# 恢复自动推进偏好
+	_auto_advance_mode = GameManager.user_data.auto_advance
 	# 历史右键复制菜单
 	history_text.context_menu_enabled = true
 	_init_engines()
@@ -210,6 +212,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			and event.keycode == KEY_A and not menu_panel.visible \
 			and not battle_panel.visible and _no_dialog_open():
 		_auto_advance_mode = not _auto_advance_mode
+		# 持久化自动推进偏好
+		GameManager.user_data.auto_advance = _auto_advance_mode
+		GameManager.user_data.save_user_data()
 		if _auto_advance_mode:
 			ToastManager.success("▶ 自动推进开启（A 关闭）")
 			# 若当前文本已完成则立即继续

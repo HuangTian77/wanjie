@@ -86,15 +86,15 @@
 ### resources/data/user_data.gd (`UserData`)
 
 - class_name **UserData**
-- func `reset_to_defaults` (L63)
-- func `to_dict` (L75)
-- func `from_dict` (L107)
-- func `get_inspiration_display` (L140)
-- func `get_creation_energy_display` (L144)
-- func `can_enter_script` (L148)
-- func `consume_inspiration` (L152)
-- func `can_create_script` (L159)
-- func `consume_creation_energy` (L163)
+- func `reset_to_defaults` (L65)
+- func `to_dict` (L77)
+- func `from_dict` (L110)
+- func `get_inspiration_display` (L144)
+- func `get_creation_energy_display` (L148)
+- func `can_enter_script` (L152)
+- func `consume_inspiration` (L156)
+- func `can_create_script` (L163)
+- func `consume_creation_energy` (L167)
 
 ### resources/data/world_script_data.gd (`WorldScriptData`)
 
@@ -1230,8 +1230,8 @@
 ### scripts/player/script_player.gd (script_player.gd)
 
 - func `_ready` (L75)
-- func `settings_auto_save_interval_min` (L113)
-- func `_process` (L121)
+- func `settings_auto_save_interval_min` (L115)
+- func `_process` (L123)
 
 ### scripts/player/world_state.gd (world_state.gd)
 
