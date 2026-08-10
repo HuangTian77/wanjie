@@ -2523,6 +2523,7 @@ func _on_menu_log_pressed() -> void:
 	var list := RichTextLabel.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	list.context_menu_enabled = true  # 右键复制
 	scroll.add_child(list)
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
