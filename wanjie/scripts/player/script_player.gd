@@ -2003,6 +2003,7 @@ func _on_menu_shop_pressed() -> void:
 					var new_price := base * (0.8 + randf() * 0.4)
 					economy_engine.set_price(mid3, item_id3, new_price)
 			ToastManager.info("💰 商人重新报价")
+			_add_history("💰 商人重新报价（价格波动）")
 		dialog.queue_free()
 		_on_menu_shop_pressed())
 	refresh_row.add_child(refresh_btn)
