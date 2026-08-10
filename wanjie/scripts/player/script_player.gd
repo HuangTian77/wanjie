@@ -1347,6 +1347,13 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
 		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
+		# 低血警告（HP ≤ 25%）
+		if combat_engine != null:
+			var ps2: Dictionary = combat_engine.player_combat_stats
+			var cur_hp2: int = int(ps2.get("hp", 0))
+			var max_hp2: int = int(ps2.get("max_hp", 100))
+			if max_hp2 > 0 and cur_hp2 <= max_hp2 * 0.25:
+				ToastManager.warning("⚠️ 生命垂危！剩余 %d/%d" % [cur_hp2, max_hp2])
 		hp_label.add_theme_color_override("font_color", Color(0.95, 0.3, 0.3))
 		var tween := create_tween()
 		tween.tween_interval(0.25)
