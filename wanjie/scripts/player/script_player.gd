@@ -523,7 +523,10 @@ func _add_choice_button(text: String, method: String = "") -> void:
 
 ## 添加历史记录
 func _add_history(text: String) -> void:
-	history_text.text += "[color=#6b5e52]%s[/color]\n" % text
+	var ts := ""
+	if world_state:
+		ts = "[color=#8a7a68][%s][/color] " % world_state.get_time_display()
+	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
 
 ## 更新UI
 func _update_ui() -> void:
