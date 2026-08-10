@@ -746,8 +746,14 @@ func _update_ui() -> void:
 				ToastManager.info("📍 进入新区域：%s" % region_hud)
 		var region_prefix := " 📍%s" % region_hud if not region_hud.is_empty() else ""
 		time_label.text = "🗓 " + world_state.get_time_display() + region_prefix
-		# 时段图标
-		time_label.text += " · %s" % world_state.get_period_name()
+		# 时段图标（🌅/☀️/🌆/🌙）
+		var period_icon := "🌙"
+		match world_state.get_period_name():
+			"清晨": period_icon = "🌅"
+			"白天": period_icon = "☀️"
+			"傍晚": period_icon = "🌆"
+			"夜晚": period_icon = "🌙"
+		time_label.text += " · %s %s" % [period_icon, world_state.get_period_name()]
 		time_label.tooltip_text = "世界时间 · 当前区域"
 		# tooltip 补充探索进度
 		if world_state and not world_state.explored_regions.is_empty():
