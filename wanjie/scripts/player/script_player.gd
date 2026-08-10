@@ -1020,10 +1020,17 @@ func _enter_tavern_char(index: int) -> void:
 	TavernManager.start_dialog(char)
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…" % char.get("name", "角色")
-	# 首次进入该角色：显示一句问候
+	# 首次进入该角色：显示一句问候（夜晚特殊台词）
 	if TavernManager.dialog_history.is_empty():
-		var greeting := "（%s%s抬头看向你）欢迎光临%s，旅行者。有什么想问的？" % [
-			char.get("icon", "🗨"), char.get("name", "角色"), char.get("locale", "小店")]
+		var is_night := world_state != null and world_state.get_period_name() == "夜晚"
+		var greeting := ""
+		if is_night and index == 0:
+			greeting = "（艾琳打了个哈欠）这么晚还来？也罢，坐吧，夜里的小道消息往往更值钱…"
+		elif is_night:
+			greeting = "（费恩合上书本）深夜造访，想必是有要紧事？"
+		else:
+			greeting = "（%s%s抬头看向你）欢迎光临%s，旅行者。有什么想问的？" % [
+				char.get("icon", "🗨"), char.get("name", "角色"), char.get("locale", "小店")]
 		TavernManager.dialog_history.append({"role": "assistant", "content": greeting})
 		TavernManager.save_history()
 		_tavern_append("assistant", greeting)
