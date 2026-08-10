@@ -2853,7 +2853,7 @@ func _show_slot_selector(mode: String) -> void:
 	style.shadow_color = Color(0.29, 0.216, 0.157, 0.2)
 	style.shadow_size = 10
 	selector.add_theme_stylebox_override("panel", style)
-	selector.custom_minimum_size = Vector2(340, 300)
+	selector.custom_minimum_size = Vector2(360, 320)
 	selector.set_anchors_preset(Control.PRESET_CENTER)
 
 	var vbox := VBoxContainer.new()
