@@ -693,8 +693,10 @@ func _update_ui() -> void:
 				bar += "█" if i < filled else "░"
 			progress_label.text = "📊 %s %d%%" % [bar, pct]
 			progress_label.visible = true
-			progress_label.tooltip_text = "已完成 %d/%d 个事件" % [p[0], p[1]]
-			# 进度条颜色渐变（低=灰黄 中=金 高=绿）
+			progress_label.tooltip_text = "已完成 %d/%d 个事件（主线 %d + 随机 %d）" % [
+				p[0], p[1],
+				(script_data.event_system.story_events.size() if script_data and script_data.event_system else 0),
+				(script_data.event_system.random_events.size() if script_data and script_data.event_system and script_data.event_system.get("random_events") != null else 0)]			# 进度条颜色渐变（低=灰黄 中=金 高=绿）
 			if pct >= 100:
 				progress_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
 			elif pct >= 50:
