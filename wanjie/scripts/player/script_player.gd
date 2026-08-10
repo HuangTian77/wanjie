@@ -2542,6 +2542,8 @@ func _on_menu_log_pressed() -> void:
 		for i in range(start_idx, ch.size()):
 			var c: Dictionary = ch[i]
 			list.append_text("• %s → %s\n" % [c.get("event_id", "?"), c.get("choice_id", "?")])
+		if ch.size() > 5:
+			list.append_text("[color=#8a8278]…共 %d 条选择[/color]\n" % ch.size())
 		list.append_text("\n")
 	# 因果标记详情（默认 5 条，多时显示"查看全部"）
 	if event_engine != null and not event_engine.causal_marks.is_empty():
