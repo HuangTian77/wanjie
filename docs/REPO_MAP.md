@@ -1173,15 +1173,16 @@
 - signal `combat_round_started`
 - signal `action_taken`
 - signal `combat_ended`
-- func `init` (L22)
-- func `set_player_stats` (L26)
-- func `add_enemy` (L46)
-- func `start_combat` (L78)
-- func `player_attack` (L97)
-- func `player_use_skill` (L125)
-- func `try_flee` (L225)
-- func `get_log` (L333)
-- func `get_rewards` (L337)
+- func `reset_battle` (L14)
+- func `init` (L28)
+- func `set_player_stats` (L32)
+- func `add_enemy` (L52)
+- func `start_combat` (L84)
+- func `player_attack` (L103)
+- func `player_use_skill` (L131)
+- func `try_flee` (L231)
+- func `get_log` (L339)
+- func `get_rewards` (L343)
 
 ### scripts/player/economy_engine.gd (economy_engine.gd)
 

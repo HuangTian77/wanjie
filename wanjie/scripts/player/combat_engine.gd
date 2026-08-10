@@ -9,6 +9,12 @@ signal combat_ended(result: String)  # "victory" / "defeat" / "flee"
 var ability_data: AbilitySystemData = null
 var player_combat_stats: Dictionary = {}
 var enemies: Array[Dictionary] = []
+
+## 重置战斗状态（读档/离开用）
+func reset_battle() -> void:
+	enemies.clear()
+	current_round = 0
+	_battle_active = false
 var current_round: int = 0
 ## 最近一次逃跑成功率（UI 显示用）
 var last_flee_chance: float = 0.5

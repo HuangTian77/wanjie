@@ -1517,6 +1517,11 @@ func _on_retry_from_save() -> void:
 ## 统一恢复存档状态（读档/重试共用）
 func _restore_save_state(sd: SaveData) -> void:
 	SaveManager.current_save = sd
+	# 读档重置战斗状态（若之前处于战斗）
+	if battle_panel != null:
+		battle_panel.visible = false
+	if combat_engine != null:
+		combat_engine.reset_battle()
 	if event_engine:
 		event_engine.load_history(sd.event_history)
 	if world_state:
