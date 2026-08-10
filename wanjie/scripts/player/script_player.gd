@@ -385,7 +385,11 @@ func _advance_to_next_event() -> void:
 		_advancing = false
 		return
 	if world_state:
+		var day_before: int = world_state.get_current_day()
 		world_state.advance_time(1)
+		# 跨天提示
+		if world_state.get_current_day() > day_before:
+			ToastManager.info("🌅 新的一天（第 %d 天）" % world_state.get_current_day())
 		var expired: Array = world_state.tick_effects()
 		if not expired.is_empty():
 			var expired_names: PackedStringArray = []
