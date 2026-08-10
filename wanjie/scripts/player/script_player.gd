@@ -995,6 +995,22 @@ func _refresh_battle_ui() -> void:
 	if total_enemies > 1:
 		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
 	enemy_info.text = "敌人%s：%s" % [count_txt, "；".join(parts) if parts.is_empty() == false else "（无）"]
+	# 敌人栏 tooltip：各敌人详情（HP/MP/攻防/状态效果）
+	var tip_lines: Array[String] = []
+	for e2 in combat_engine.enemies:
+		if e2.get("is_alive", true):
+			var tline := "%s | HP %d/%d · MP %d/%d · 攻 %d 防 %d" % [
+				e2.get("name", "?"), int(e2.get("hp", 0)), int(e2.get("max_hp", 1)),
+				int(e2.get("mp", 0)), int(e2.get("max_mp", 0)),
+				int(e2.get("atk", 0)), int(e2.get("def", 0))]
+			var fx2: Array = e2.get("status_effects", [])
+			if not fx2.is_empty():
+				var fnames: PackedStringArray = []
+				for f in fx2:
+					fnames.append(str(f.get("name", "?")))
+				tline += " · [效果] %s" % "、".join(fnames)
+			tip_lines.append(tline)
+	enemy_info.tooltip_text = "\n".join(tip_lines)
 	# 目标提示（点击敌人栏循环切换目标）
 	if total_enemies > 1:
 		var target_name := "自动"
