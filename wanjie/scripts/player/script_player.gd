@@ -2026,6 +2026,19 @@ func _on_menu_shop_pressed() -> void:
 	if economy_engine:
 		gold = int(economy_engine.player_currencies.get("gold", 0))
 	list.append_text("[color=#c9a06a]持有金币: %d[/color]\n\n" % gold)
+	# 购买数量选择（1-9）
+	var qty_row := HBoxContainer.new()
+	inner.add_child(qty_row)
+	var qty_lbl := Label.new()
+	qty_lbl.text = "购买数量："
+	qty_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	qty_row.add_child(qty_lbl)
+	var qty_spin := SpinBox.new()
+	qty_spin.min_value = 1
+	qty_spin.max_value = 9
+	qty_spin.value = 1
+	qty_spin.custom_minimum_size.x = 70
+	qty_row.add_child(qty_spin)
 	# 购买按钮 tooltip 提示
 	var bought_any := false
 	# === 出售区（背包物品半价卖出） ===
@@ -2090,22 +2103,25 @@ func _on_menu_shop_pressed() -> void:
 				elif price > base_p * 1.05:
 					btn.text += " ↑"
 					btn.tooltip_text = "高于基础价，可等刷新降价"
+				# 批量购买（数量 × 单价）
+				btn.pressed.connect(func():
+					var qty_buy: int = int(qty_spin.value)
+					var total_price: int = int(price) * qty_buy
+					# 大额购买确认（≥100 金币）
+					if total_price >= 100:
+						var confirm_buy := ConfirmationDialog.new()
+						confirm_buy.dialog_text = "确定花费 %d 金币购买 %d 个 %s？" % [total_price, qty_buy, item_id]
+						confirm_buy.confirmed.connect(func():
+							_do_shop_buy_qty(mid, item_id, int(price), qty_buy, dialog))
+						add_child(confirm_buy)
+						confirm_buy.popup_centered()
+						return
+					_do_shop_buy_qty(mid, item_id, int(price), qty_buy, dialog))
 				# 金币不足：置灰禁用
 				var gold_now: int = int(economy_engine.player_currencies.get("gold", 0))
 				if gold_now < int(price):
 					btn.disabled = true
 					btn.tooltip_text = "金币不足（需要 %d）" % int(price)
-				btn.pressed.connect(func():
-					# 大额购买确认（≥100 金币）
-					if int(price) >= 100:
-						var confirm_buy := ConfirmationDialog.new()
-						confirm_buy.dialog_text = "确定花费 %d 金币购买 %s？" % [int(price), item_id]
-						confirm_buy.confirmed.connect(func():
-							_do_shop_buy(mid, item_id, int(price), dialog))
-						add_child(confirm_buy)
-						confirm_buy.popup_centered()
-						return
-					_do_shop_buy(mid, item_id, int(price), dialog))
 				inner.add_child(btn)
 				bought_any = true
 	if not bought_any:
@@ -2113,11 +2129,12 @@ func _on_menu_shop_pressed() -> void:
 	dialog.popup_centered()
 
 ## 清空当前角色对话历史
-## 商店购买执行（普通购买与大额确认共用）
-func _do_shop_buy(market_id: String, item_id: String, price: int, dialog: AcceptDialog) -> void:
-	if economy_engine.buy(market_id, item_id):
-		ToastManager.success("已购买 %s（剩余 %d 金币）" % [item_id, int(economy_engine.player_currencies.get("gold", 0))])
-		_spawn_damage_popup(price, false, true)  # 购买 +金币飘字
+## 商店购买执行（支持数量；普通购买与大额确认共用）
+func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: int, dialog: AcceptDialog) -> void:
+	if economy_engine.buy(market_id, item_id, qty):
+		ToastManager.success("已购买 %d 个 %s（剩余 %d 金币）" % [qty, item_id, int(economy_engine.player_currencies.get("gold", 0))])
+		_spawn_damage_popup(unit_price * qty, false, true)  # 购买 +金币飘字
+		_add_history("💰 购买 %d 个 %s（-%d 金币）" % [qty, item_id, unit_price * qty])
 		_sync_save_state()
 		_on_menu_shop_pressed()  # 刷新商店
 		dialog.queue_free()
