@@ -2771,6 +2771,8 @@ func _on_player_stats_pressed() -> void:
 	dialog.title = "属性详情"
 	dialog.min_size = Vector2i(420, 380)
 	add_child(dialog)
+	# 打开属性面板时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(scroll)
