@@ -413,6 +413,8 @@ func _show_continue_blink(show: bool) -> void:
 	if hint is Label:
 		if show:
 			(hint as Label).text = "▸ 点击继续"
+			if _auto_advance_mode:
+				(hint as Label).text = "▶ 自动推进中（A 停止）"
 			var btw := create_tween()
 			btw.set_loops(3)
 			btw.tween_property(hint, "modulate:a", 0.3, 0.35)
