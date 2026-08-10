@@ -1064,6 +1064,8 @@ func _on_combat_ended(result: String) -> void:
 					ltw.tween_property(player_level_label, "scale", Vector2.ONE, 0.25)
 				msg += " 🎉 升级 Lv.%d！" % int(stats.get("level", 1))
 			_sync_save_state()
+	# 战斗结算后立即刷新 HUD（经验/等级/金币即时可见）
+	_update_ui()
 	_add_history(msg)
 	var result_color := "[color=#4caf50]" if result == "victory" else ("[color=#e05a4e]" if result == "defeat" else "[color=#c9a06a]")
 	_set_main_text("%s战斗结束：%s[/color][/b]" % [result_color, msg])
