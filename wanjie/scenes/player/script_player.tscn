@@ -388,6 +388,13 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
+[node name="MenuGroup存档管理" type="Label" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+text = "── 存档管理 ──"
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.55)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+
 [node name="SaveBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
@@ -405,6 +412,13 @@ text = "🗑 删除"
 
 [node name="Sep1" type="HSeparator" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
+
+[node name="MenuGroup角色与状态" type="Label" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+text = "── 角色与状态 ──"
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.55)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
 
 [node name="CharBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
@@ -428,6 +442,13 @@ text = "🎒 背包"
 
 [node name="Sep2" type="HSeparator" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
+
+[node name="MenuGroup游玩与评价" type="Label" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+text = "── 游玩与评价 ──"
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.55)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
 
 [node name="RatingBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
@@ -455,6 +476,13 @@ tooltip_text = "查看通关统计（天数/等级/战斗）"
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
 text = "📊 属性详情"
+
+[node name="MenuGroup帮助" type="Label" parent="MenuPanel/MenuVBox"]
+layout_mode = 2
+text = "── 帮助 ──"
+theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.55)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
 
 [node name="HelpBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
