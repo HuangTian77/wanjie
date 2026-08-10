@@ -626,10 +626,16 @@ func _update_ui() -> void:
 				progress_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 				progress_label.text = "🏆 通关！%s" % progress_label.text
 				_show_finish_stats()
-		# MP 进度条
+		# MP 进度条（显示当前 MP，低 MP 变暗蓝）
 		var max_mp: int = ps.get("max_mp", 50)
+		var cur_mp: int = ps.get("mp", max_mp)
 		mp_bar.max_value = max_mp
-		mp_bar.value = max_mp
+		mp_bar.value = cur_mp
+		var mp_ratio: float = float(cur_mp) / float(max_mp) if max_mp > 0 else 1.0
+		if mp_ratio < 0.3:
+			mp_bar.add_theme_stylebox_override("fill", _hp_style(0.35, 0.5, 0.85))
+		else:
+			mp_bar.add_theme_stylebox_override("fill", _hp_style(0.4, 0.62, 0.95))
 		# 金币
 		var inv: Dictionary = ps.get("inventory", {})
 		player_gold_label.text = "金币: %d" % inv.get("gold", 0)
