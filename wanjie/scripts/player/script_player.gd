@@ -853,6 +853,11 @@ func _on_combat_started(enemies: Array) -> void:
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size())
 	menu_panel.visible = false
+	# 战斗开始 Toast：敌人数量与目标提示
+	if enemies.size() > 1:
+		ToastManager.warning("⚔ 遭遇 %d 个敌人！Tab 切换目标" % enemies.size())
+	else:
+		ToastManager.warning("⚔ 遭遇敌人！")
 	# 逃跑按钮 tooltip：当前成功率
 	var flee_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/FleeBtn")
 	if flee_btn is Button and combat_engine != null:
