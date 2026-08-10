@@ -2925,8 +2925,12 @@ func _show_slot_selector(mode: String) -> void:
 	# 淡入动画（可关闭）
 	if ThemeManager.animations_enabled:
 		selector.modulate.a = 0.0
+		selector.scale = Vector2(0.95, 0.95)
+		selector.pivot_offset = selector.size / 2.0
 		var stw := create_tween()
+		stw.set_parallel(true)
 		stw.tween_property(selector, "modulate:a", 1.0, 0.15)
+		stw.tween_property(selector, "scale", Vector2.ONE, 0.15)
 
 ## 格式化游玩时长（秒 → Xh Ym / Ym / Xs）
 func _fmt_play_time(sec_val: Variant) -> String:
