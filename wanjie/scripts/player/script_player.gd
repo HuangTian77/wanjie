@@ -1817,7 +1817,7 @@ func _do_rest() -> void:
 	# 恢复飘字（绿色 +）
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
-	_add_history("在营地休息了 8 小时，状态恢复")
+	_add_history("在营地休息了 8 小时，状态恢复（HP +%d / MP +%d）" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0)])
 	# 休息后概率触发随机事件（30%）
 	if event_engine != null and randf() < 0.3:
 		var random_event: Dictionary = event_engine.check_random_events()
