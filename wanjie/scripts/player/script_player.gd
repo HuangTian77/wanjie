@@ -1115,6 +1115,12 @@ func _on_tavern_send_pressed() -> void:
 	var char_id2: String = str(TavernManager.current_character.get("id", "innkeeper")) if TavernManager.current_character != null and not TavernManager.current_character.is_empty() else "innkeeper"
 	var mood: int = _tavern_moods.get(char_id2, 0)
 	_tavern_moods[char_id2] = mini(mood + 1, 2)
+	# 好感档位提升提示
+	if _tavern_moods[char_id2] > mood:
+		if _tavern_moods[char_id2] == 1:
+			ToastManager.success("💛 %s 对你更友善了" % TavernManager.current_character.get("name", "角色"))
+		else:
+			ToastManager.success("💖 %s 与你亲密无间！" % TavernManager.current_character.get("name", "角色"))
 	_tavern_update_char_label()
 	# 持久化好感度
 	GameManager.user_data.tavern_moods = _tavern_moods.duplicate()
