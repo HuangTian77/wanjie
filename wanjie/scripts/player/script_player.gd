@@ -1144,6 +1144,8 @@ func _on_tavern_send_pressed() -> void:
 func _tavern_append(role: String, content: String) -> void:
 	var prefix := "[color=#c9a06a][b]%s[/b][/color] " % ("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")
 	tavern_msgs.append_text(prefix + content.replace("[", "［").replace("]", "］") + "\n\n")
+	# 自动滚动到底部（新消息可见）
+	tavern_msgs.scroll_to_line(tavern_msgs.get_line_count())
 
 func _tavern_mock_reply(text: String) -> String:
 	var char_name: String = TavernManager.current_character.get("name", "角色")
