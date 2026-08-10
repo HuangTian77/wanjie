@@ -2247,7 +2247,11 @@ func _on_slot_load_selected(slot: int) -> void:
 	var confirm := ConfirmationDialog.new()
 	confirm.dialog_text = "从槽位 %d 加载？当前未保存进度将被覆盖。" % (slot + 1)
 	confirm.confirmed.connect(func():
-		SaveManager.load_game(slot)
+		var sd3: SaveData = SaveManager.load_game(slot)
+		if sd3 == null:
+			ToastManager.warning("读取失败")
+			return
+		_on_save_loaded(sd3)
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
