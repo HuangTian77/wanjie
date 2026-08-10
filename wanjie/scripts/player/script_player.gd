@@ -44,8 +44,7 @@ var _auto_timer: float = 0.0
 @onready var history_toggle: Button = %HistoryToggle
 @onready var battle_panel: PanelContainer = %BattlePanel
 @onready var enemy_info: Label = %EnemyInfo
-@onready var battle_log: RichTextLabel = %BattleLog
-@onready var tavern_panel: PanelContainer = %TavernPanel
+@onready var battle_log: RichTextLabel = %BattleLog@onready var tavern_panel: PanelContainer = %TavernPanel
 @onready var tavern_char_select: OptionButton = %TavernCharSelect
 @onready var tavern_msgs: RichTextLabel = %TavernMsgs
 @onready var tavern_input: LineEdit = %TavernInput
@@ -1308,6 +1307,8 @@ func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
 	# 新战斗清空上一场日志
 	battle_log.clear()
+	# 右键复制菜单（选中文本可复制）
+	battle_log.context_menu_enabled = true
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
 	# 时段提示（夜晚战斗可辨识）
