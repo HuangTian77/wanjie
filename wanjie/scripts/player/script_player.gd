@@ -1142,7 +1142,10 @@ func _on_tavern_send_pressed() -> void:
 			(tb as Button).text = "🏮 酒馆 ·"
 
 func _tavern_append(role: String, content: String) -> void:
-	var prefix := "[color=#c9a06a][b]%s[/b][/color] " % ("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")
+	var ts := Time.get_time_string_from_system().substr(0, 5)
+	var prefix := "[color=#8a8278]%s[/color] [color=#c9a06a][b]%s[/b][/color] " % [
+		ts,
+		("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")]
 	tavern_msgs.append_text(prefix + content.replace("[", "［").replace("]", "］") + "\n\n")
 	# 自动滚动到底部（新消息可见）
 	tavern_msgs.scroll_to_line(tavern_msgs.get_line_count())
