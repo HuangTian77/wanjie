@@ -166,7 +166,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# Esc: 切换菜单（菜单已开则关闭）
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		menu_panel.visible = not menu_panel.visible
+		# Esc 优先级：酒馆 > 菜单
+		if tavern_panel.visible:
+			tavern_panel.visible = false
+		elif battle_panel.visible:
+			menu_panel.visible = not menu_panel.visible
+		else:
+			menu_panel.visible = not menu_panel.visible
 		get_viewport().set_input_as_handled()
 	# H: 打开操作帮助
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
