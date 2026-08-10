@@ -1522,6 +1522,11 @@ func _restore_save_state(sd: SaveData) -> void:
 		battle_panel.visible = false
 	if combat_engine != null:
 		combat_engine.reset_battle()
+	# 恢复 Toast（天数/等级/金币）
+	if world_state != null:
+		ToastManager.success("进度恢复：第 %d 天 · Lv.%d" % [
+			world_state.get_current_day(),
+			int(sd.player_state.get("level", 1))])
 	if event_engine:
 		event_engine.load_history(sd.event_history)
 	if world_state:
