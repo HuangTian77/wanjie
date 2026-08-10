@@ -227,6 +227,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_on_enemy_info_clicked(fake)
 			get_viewport().set_input_as_handled()
 	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
+			and event.keycode == KEY_Q:
+		# Q 键：使用第一个药水/草药恢复 HP
+		_use_first_potion()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and not event.echo and battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
 		var skill_idx: int = event.keycode - KEY_1
 		if combat_engine != null and combat_engine.ability_data != null:
@@ -1737,6 +1742,30 @@ func _on_battle_flee_pressed() -> void:
 			ToastManager.warning("逃跑失败…成功率 %.0f%%（敏捷越高越易逃脱）" % (chance * 100.0))
 		else:
 			_add_history("🏃 成功逃离战斗")
+
+## 使用背包中第一个药水/草药（Q 键/按钮共用）
+func _use_first_potion() -> void:
+	if economy_engine == null or economy_engine.player_inventory.is_empty():
+		ToastManager.warning("背包里没有药水")
+		return
+	for item_id in economy_engine.player_inventory:
+		if int(economy_engine.player_inventory[item_id]) <= 0:
+			continue
+		if "potion" in str(item_id) or "herb" in str(item_id) or "药" in str(item_id):
+			if combat_engine != null:
+				var ps4: Dictionary = combat_engine.player_combat_stats
+				var heal_amt2 := 30
+				if "potion" in str(item_id):
+					heal_amt2 = 50
+				ps4["hp"] = mini(int(ps4.get("max_hp", 100)), int(ps4.get("hp", 0)) + heal_amt2)
+				economy_engine.player_inventory[item_id] = int(economy_engine.player_inventory[item_id]) - 1
+				_battle_log_line("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt2], "#7cc47c")
+				ToastManager.success("💊 恢复 %d HP" % heal_amt2)
+				_refresh_battle_ui()
+				_update_ui()
+				_sync_save_state()
+				return
+	ToastManager.warning("没有可用的药水")
 
 ## 自动战斗开关（连续点击循环 1x→2x→4x→关）
 func _on_battle_auto_pressed() -> void:
