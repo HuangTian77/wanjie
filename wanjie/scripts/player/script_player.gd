@@ -2762,6 +2762,11 @@ func _show_finish_stats() -> void:
 	list.append_text("🗓 通关时刻：%s\n" % finish_time_txt)
 	list.append_text("🎖 等级：Lv.%d\n" % lv)
 	list.append_text("💰 持有金币：%d\n" % gold)
+	if economy_engine != null:
+		var item_count := 0
+		for iid in economy_engine.player_inventory:
+			item_count += int(economy_engine.player_inventory[iid])
+		list.append_text("🎒 持有物品：%d 件\n" % item_count)
 	list.append_text("📖 触发事件：%d 个\n" % p[0])
 	# 本次游玩时长
 	if _play_start_time > 0:
