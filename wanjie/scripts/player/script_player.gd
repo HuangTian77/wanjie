@@ -1317,6 +1317,11 @@ func _on_combat_started(enemies: Array) -> void:
 	battle_log.context_menu_enabled = true
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
+	# 遗物加成提示（持有 rare_relic 时攻击 +5）
+	if economy_engine != null and int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
+		_battle_log_line("✨ 遗物共鸣：攻击力 +5", "#e6c84c")
+		if combat_engine != null:
+			combat_engine.player_combat_stats["atk"] = int(combat_engine.player_combat_stats.get("atk", 15)) + 5
 	# 时段提示（夜晚战斗可辨识）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		_battle_log_line("夜色中战斗…（视野受限）", "#7fa8d9")
