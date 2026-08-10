@@ -2000,6 +2000,36 @@ func _on_menu_bag_pressed() -> void:
 	title.text = "持有物品"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
+	# 使用药水按钮（恢复 HP 的道具）
+	if economy_engine != null and not economy_engine.player_inventory.is_empty():
+		var use_row := HBoxContainer.new()
+		box.add_child(use_row)
+		var use_lbl := Label.new()
+		use_lbl.text = "可使用："
+		use_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
+		use_row.add_child(use_lbl)
+		for item_id in economy_engine.player_inventory:
+			if int(economy_engine.player_inventory[item_id]) <= 0:
+				continue
+			if "potion" in str(item_id) or "herb" in str(item_id) or "药" in str(item_id):
+				var use_btn := Button.new()
+				use_btn.text = "%s ×%d" % [item_id, int(economy_engine.player_inventory[item_id])]
+				use_btn.flat = true
+				use_btn.pressed.connect(func():
+					if combat_engine != null:
+						var ps3: Dictionary = combat_engine.player_combat_stats
+						var heal_amt := 30
+						if "potion" in str(item_id):
+							heal_amt = 50
+						ps3["hp"] = mini(int(ps3.get("max_hp", 100)), int(ps3.get("hp", 0)) + heal_amt)
+						economy_engine.player_inventory[item_id] = int(economy_engine.player_inventory[item_id]) - 1
+						ToastManager.success("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt])
+						_add_history("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt])
+						_update_ui()
+						_sync_save_state()
+						_on_menu_bag_pressed()
+						dialog.queue_free())
+				use_row.add_child(use_btn)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(scroll)
