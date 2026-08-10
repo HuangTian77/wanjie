@@ -2543,14 +2543,17 @@ func _on_menu_log_pressed() -> void:
 			var c: Dictionary = ch[i]
 			list.append_text("• %s → %s\n" % [c.get("event_id", "?"), c.get("choice_id", "?")])
 		list.append_text("\n")
-	# 因果标记详情（最近 5 条）
+	# 因果标记详情（默认 5 条，多时显示"查看全部"）
 	if event_engine != null and not event_engine.causal_marks.is_empty():
 		list.append_text("[b]【因果标记】[/b]\n")
 		var cm: Array = event_engine.causal_marks
-		var start_cm := maxi(0, cm.size() - 5)
+		var show_all: bool = cm.size() <= 5
+		var start_cm := 0 if show_all else maxi(0, cm.size() - 5)
 		for i in range(start_cm, cm.size()):
 			var c2: Dictionary = cm[i]
 			list.append_text("• %s = %s\n" % [c2.get("key", c2.get("id", "?")), str(c2.get("value", c2.get("state", "?")))])
+		if not show_all:
+			list.append_text("[color=#8a8278]…共 %d 条（%s）[/color]\n" % [cm.size(), "选择【刷新】查看最近 5 条"])
 		list.append_text("\n")
 	# 空状态提示
 	if (event_engine == null or event_engine.choices_history.is_empty()) \
