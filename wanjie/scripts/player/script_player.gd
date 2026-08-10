@@ -1422,7 +1422,11 @@ func _on_combat_ended(result: String) -> void:
 			for li in loot:
 				var litem: String = str(li)
 				economy_engine.player_inventory[litem] = int(economy_engine.player_inventory.get(litem, 0)) + 1
-				ToastManager.success("🎁 获得掉落物品：%s" % litem)
+				if litem == "rare_relic":
+					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
+					_spawn_damage_popup(1, true)  # 金色大字
+				else:
+					ToastManager.success("🎁 获得掉落物品：%s" % litem)
 				_add_history("🎁 掉落物品：%s" % litem)
 			_sync_save_state()
 		# 经验升级（每 100 经验升 1 级，属性成长）

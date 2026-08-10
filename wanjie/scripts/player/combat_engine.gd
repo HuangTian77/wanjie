@@ -341,6 +341,8 @@ func get_rewards() -> Dictionary:
 		loot_items.append("herb")
 	if randf() < 0.15:
 		loot_items.append("potion")
+	if randf() < 0.05:
+		loot_items.append("rare_relic")
 	return {
 		"experience": 50 * enemies.size(),
 		"gold": randi_range(10, 50) * enemies.size(),
