@@ -1043,6 +1043,14 @@ func _on_tavern_close_pressed() -> void:
 
 func _on_tavern_char_selected(index: int) -> void:
 	_enter_tavern_char(index)
+	# 切换角色提示（显示当前角色好感）
+	var cname: String = str(TAVERN_CHARS[index].get("name", "角色")) if index >= 0 and index < TAVERN_CHARS.size() else "角色"
+	var mood_val: int = _tavern_moods.get(str(TAVERN_CHARS[index].get("id", "")) if index >= 0 and index < TAVERN_CHARS.size() else "", 0)
+	var mood_name := "普通"
+	match mood_val:
+		1: mood_name = "友好 🙂"
+		2: mood_name = "亲密 😊"
+	ToastManager.info("切换至：%s（好感：%s）" % [cname, mood_name])
 
 func _enter_tavern_char(index: int) -> void:
 	tavern_char_index = index
