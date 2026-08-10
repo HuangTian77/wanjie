@@ -391,17 +391,17 @@ horizontal_alignment = 1
 [node name="SaveBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "保存游戏"
+text = "💾 保存"
 
 [node name="LoadBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "加载存档"
+text = "📂 读档"
 
 [node name="DeleteBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "删除存档"
+text = "🗑 删除"
 
 [node name="Sep1" type="HSeparator" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
@@ -409,7 +409,7 @@ layout_mode = 2
 [node name="CharBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "👤 角色"
+text = "👤 角色状态"
 
 [node name="ShopBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
@@ -442,7 +442,7 @@ text = "📜 世界日志"
 [node name="RestBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "😴 休息（回满状态）"
+text = "🌙 休息"
 tooltip_text = "推进 8 小时并回满 HP/MP，30% 概率触发随机事件"
 
 [node name="FinishStatsBtn" type="Button" parent="MenuPanel/MenuVBox"]
