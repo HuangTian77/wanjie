@@ -2105,6 +2105,7 @@ func _on_menu_bag_pressed() -> void:
 				var use_btn := Button.new()
 				use_btn.text = "%s ×%d" % [item_id, int(economy_engine.player_inventory[item_id])]
 				use_btn.flat = true
+				use_btn.tooltip_text = "使用后恢复 HP（%s）" % ("大回复" if "potion" in str(item_id) else "小回复")
 				use_btn.pressed.connect(func():
 					if combat_engine != null:
 						var ps3: Dictionary = combat_engine.player_combat_stats
