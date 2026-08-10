@@ -372,6 +372,8 @@ func _show_continue_blink(show: bool) -> void:
 
 ## 推进中标志（防连点/防事件嵌套）
 var _advancing: bool = false
+## 当前显示的任务（切换提示用）
+var _last_quest_shown: String = ""
 ## 推进到下一个事件
 func _advance_to_next_event() -> void:
 	if _advancing:
@@ -646,6 +648,10 @@ func _update_ui() -> void:
 				quest_label.tooltip_text = "当前任务：%s" % active_q
 				if not active_desc.is_empty():
 					quest_label.tooltip_text += "\n%s" % active_desc
+				# 任务切换提示（首次出现新任务时）
+				if active_q != _last_quest_shown:
+					_last_quest_shown = active_q
+					ToastManager.info("📋 新任务：%s" % active_q)
 			else:
 				# 全部任务完成
 				quest_label.text = "✅ 任务完成"
