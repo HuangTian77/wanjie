@@ -732,7 +732,9 @@ func _update_ui() -> void:
 		time_label.tooltip_text = "世界时间 · 当前区域"
 		# tooltip 补充探索进度
 		if world_state and not world_state.explored_regions.is_empty():
-			time_label.tooltip_text += "\n已探索 %d 个区域" % world_state.explored_regions.size()
+			time_label.tooltip_text += "\n已探索 %d 个区域：%s" % [
+				world_state.explored_regions.size(),
+				"、".join(PackedStringArray(world_state.explored_regions))]
 
 ## HP 条填充样式（按血量百分比配色）
 func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
