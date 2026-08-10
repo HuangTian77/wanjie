@@ -1072,6 +1072,9 @@ func _enter_tavern_char(index: int) -> void:
 		char.get("name", "角色"),
 		char.get("personality", ""),
 		char.get("background", "")])
+	# 话题引导（提示可聊内容）
+	var topics: Array = ["🗡 剑术", "🏺 传说", "💰 物价", "🗺 地形", "⚔ 战斗"]
+	ToastManager.info("可聊：%s" % "、".join(PackedStringArray(topics)))
 	# 空输入禁用发送按钮
 	var sb := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/TavernSend")
 	if sb is Button:
