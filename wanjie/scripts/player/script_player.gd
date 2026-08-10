@@ -1267,7 +1267,16 @@ func _tavern_mock_reply(text: String) -> String:
 		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。" % char_name,
 		"（%s认真打量你）你这话，倒是提醒了我一件事。" % char_name,
 	]
-	return warm_prefix + replies[abs(text.hash()) % replies.size()]
+	var reply := warm_prefix + replies[abs(text.hash()) % replies.size()]
+	# 30% 概率追加世界观线索（当前区域/任务相关）
+	if randf() < 0.3 and world_state != null:
+		var region_hint: String = str(world_state.get_variable("current_region", ""))
+		var clues := [
+			"对了，听说%s那边的旧矿洞最近有异响。" % region_hint if not region_hint.is_empty() else "对了，城西集市明天有集会，或许有你要找的东西。",
+			"（压低声音）我在%s见过穿黑斗篷的人，鬼鬼祟祟的。" % region_hint if not region_hint.is_empty() else "（压低声音）城北钟楼半夜会自己响，没人知道为什么。",
+		]
+		reply += "\n" + clues[randi() % clues.size()]
+	return reply
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
 	# 新战斗清空上一场日志
