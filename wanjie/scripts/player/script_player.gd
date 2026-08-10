@@ -1499,10 +1499,12 @@ func _restore_save_state(sd: SaveData) -> void:
 	_sync_save_state()
 
 func _battle_log_line(line: String, color: String = "") -> void:
+	var ts := Time.get_time_string_from_system().substr(0, 5)
+	var prefix := "[color=#7a7268][%s][/color] " % ts
 	if not color.is_empty():
-		battle_log.append_text("[color=%s]%s[/color]\n" % [color, line])
+		battle_log.append_text(prefix + "[color=%s]%s[/color]\n" % [color, line])
 	else:
-		battle_log.append_text(line + "\n")
+		battle_log.append_text(prefix + line + "\n")
 	# 滚动到底 + 新行淡入高亮
 	battle_log.scroll_to_line(battle_log.get_line_count() - 1)
 	# 行数上限（防长战斗日志无限增长卡顿）
