@@ -1706,11 +1706,14 @@ func _on_menu_log_pressed() -> void:
 		fd.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 		fd.title = "导出世界日志"
 		fd.add_filter("*.txt ; 文本文件")
-		fd.current_path = "世界日志.txt"
+		fd.current_path = "世界日志_%s.txt" % Time.get_datetime_string_from_system().substr(0, 10).replace("-", "")
 		fd.min_size = Vector2i(600, 400)
 		add_child(fd)
 		fd.file_selected.connect(func(path: String):
-			var f := FileAccess.open(path, FileAccess.WRITE)
+			var save_path := path
+			if not save_path.ends_with(".txt"):
+				save_path += ".txt"
+			var f := FileAccess.open(save_path, FileAccess.WRITE)
 			if f:
 				f.store_string(list.text)
 				f.close()
