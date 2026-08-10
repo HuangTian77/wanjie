@@ -1876,6 +1876,8 @@ func _on_menu_char_pressed() -> void:
 	dialog.title = "角色状态"
 	dialog.min_size = Vector2i(420, 520)
 	add_child(dialog)
+	# 打开面板时收起菜单（避免遮挡）
+	menu_panel.visible = false
 	# 刷新按钮（重新构建面板）
 	var refresh_btn := Button.new()
 	refresh_btn.text = "↻ 刷新"
