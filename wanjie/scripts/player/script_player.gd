@@ -610,6 +610,13 @@ func _update_ui() -> void:
 			progress_label.text = "📊 %s %d%%" % [bar, pct]
 			progress_label.visible = true
 			progress_label.tooltip_text = "已完成 %d/%d 个事件" % [p[0], p[1]]
+			# 进度条颜色渐变（低=灰黄 中=金 高=绿）
+			if pct >= 100:
+				progress_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+			elif pct >= 50:
+				progress_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.35))
+			else:
+				progress_label.add_theme_color_override("font_color", Color(0.75, 0.68, 0.5))
 			# 通关提示（全部事件触发一次）
 			if p[0] >= p[1] and not _ending_shown:
 				_ending_shown = true
