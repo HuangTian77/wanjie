@@ -1390,7 +1390,7 @@ func _on_menu_shop_pressed() -> void:
 	# 商品区可滚动（物品多时防溢出）
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	inner.add_child(scroll)
+	box.add_child(scroll)
 	var inner := VBoxContainer.new()
 	inner.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(inner)
