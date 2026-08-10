@@ -535,6 +535,7 @@ func _handle_blueprint_result(result: Dictionary) -> void:
 	var err: String = result.get("error", "")
 	if err != "":
 		_add_history("[错误] %s" % err)
+		ToastManager.warning("⚠ 蓝图执行出错：%s" % err)
 	elif result.get("success", false):
 		_add_history("📌 事件推进完成（%d 步）" % int(result.get("steps", 0)))
 	_clear_choices()
