@@ -629,6 +629,7 @@ func _update_ui() -> void:
 		var region_hud: String = str(world_state.get_variable("current_region", ""))
 		var region_prefix := " 📍%s" % region_hud if not region_hud.is_empty() else ""
 		time_label.text = "🗓 " + world_state.get_time_display() + region_prefix
+		time_label.tooltip_text = "世界时间 · 当前区域"
 
 ## HP 条填充样式（按血量百分比配色）
 func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
