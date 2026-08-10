@@ -1932,6 +1932,13 @@ func _on_menu_char_pressed() -> void:
 		if world_state and not world_state.explored_regions.is_empty():
 			list.append_text("\n[color=#c9a06a]已探索区域（%d）[/color]\n" % world_state.explored_regions.size())
 			list.append_text("%s\n" % "、".join(PackedStringArray(world_state.explored_regions)))
+		# 活跃世界效果
+		if world_state and not world_state.active_effects.is_empty():
+			list.append_text("\n[color=#c9a06a]进行中的效果（%d）[/color]\n" % world_state.active_effects.size())
+			for fx in world_state.active_effects:
+				var fx_id: String = str(fx.get("id", "?")) if fx is Dictionary else str(fx)
+				var fx_remain: int = int(fx.get("remaining", 0)) if fx is Dictionary else 0
+				list.append_text("• %s（剩 %d 小时）\n" % [fx_id, fx_remain])
 	dialog.popup_centered()
 
 ## 商店弹窗（购买物品）
