@@ -2781,7 +2781,8 @@ func _setup_menu_tooltips() -> void:
 		"LogBtn": "查看世界事件日志",
 		"RestBtn": "推进 8 小时并回满 HP/MP",
 		"PlayerStatsBtn": "查看完整战斗属性与经验",
-		"HelpBtn": "查看操作帮助与快捷键",
+		"HelpBtn": "查看操作帮助与快捷键（H）",
+		"BackBtn": "返回大厅（B 键，自动保存）",
 	}
 	for n in tips:
 		var b := get_node_or_null("MenuPanel/MenuVBox/%s" % n)
