@@ -2159,6 +2159,11 @@ func _show_slot_selector(mode: String) -> void:
 	vbox.add_child(cancel_btn)
 
 	add_child(selector)
+	# 淡入动画（可关闭）
+	if ThemeManager.animations_enabled:
+		selector.modulate.a = 0.0
+		var stw := create_tween()
+		stw.tween_property(selector, "modulate:a", 1.0, 0.15)
 
 ## 获取槽位信息
 func _get_slot_info(slot: int) -> String:
