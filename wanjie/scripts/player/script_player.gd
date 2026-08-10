@@ -1743,6 +1743,8 @@ func _refresh_menu_title() -> void:
 		status_txt += " · Lv.%d ❤️%d/%d ⚡%d/%d" % [
 			int(pst.get("level", 1)), int(pst.get("hp", 0)), int(pst.get("max_hp", 1)),
 			int(pst.get("mp", 0)), int(pst.get("max_mp", 1))]
+	if economy_engine:
+		status_txt += " · 🪙 %d" % int(economy_engine.player_currencies.get("gold", 0))
 	var status_lbl := menu_panel.find_child("MenuStatus", true, false)
 	if status_lbl is Label:
 		(status_lbl as Label).text = status_txt.strip_edges()
