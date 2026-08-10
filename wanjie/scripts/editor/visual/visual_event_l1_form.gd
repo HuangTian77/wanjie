@@ -317,6 +317,43 @@ func _add_l1_trigger_type_field(form_vbox: VBoxContainer, event: Dictionary) -> 
 		_host._sync_to_code_editor()
 	)
 	hbox.add_child(opt)
+	# 时段约束下拉（随机/夜间事件可选）
+	var period_hbox := HBoxContainer.new()
+	period_hbox.add_theme_constant_override("separation", 8)
+	form_vbox.add_child(period_hbox)
+	var period_lbl := Label.new()
+	period_lbl.text = "限定时段"
+	period_lbl.custom_minimum_size.x = 110
+	period_lbl.add_theme_color_override("font_color", EditorUIFactory.C_LABEL)
+	period_lbl.add_theme_font_size_override("font_size", 13)
+	period_hbox.add_child(period_lbl)
+	var period_opt := OptionButton.new()
+	var period_map := [
+		["", "不限时段"],
+		["清晨", "仅清晨"],
+		["白天", "仅白天"],
+		["傍晚", "仅傍晚"],
+		["夜晚", "仅夜晚"],
+	]
+	for pm in period_map:
+		period_opt.add_item(pm[1])
+	var cur_period: String = str(event.get("period", ""))
+	var period_sel := 0
+	for pi in period_map.size():
+		if period_map[pi][0] == cur_period:
+			period_sel = pi
+			break
+	period_opt.selected = period_sel
+	period_opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	period_opt.item_selected.connect(func(pi):
+		if period_map[pi][0] == "":
+			event.erase("period")
+		else:
+			event["period"] = period_map[pi][0]
+		_host._mark_dirty()
+		_host._sync_to_code_editor()
+	)
+	period_hbox.add_child(period_opt)
 
 ## 前置事件下拉
 func _add_l1_prereq_field(form_vbox: VBoxContainer, event: Dictionary) -> void:
