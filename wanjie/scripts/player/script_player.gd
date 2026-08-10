@@ -2135,7 +2135,9 @@ func _on_menu_rest_pressed() -> void:
 
 func _do_rest() -> void:
 	if world_state:
+		# 休息后时段提示（睡醒时间）
 		world_state.advance_time(8)
+		ToastManager.info("🌅 醒来时已是%s" % world_state.get_period_name())
 	var recovered_hp := 0
 	var recovered_mp := 0
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
