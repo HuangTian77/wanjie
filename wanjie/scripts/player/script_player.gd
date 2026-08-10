@@ -1673,6 +1673,15 @@ func _on_menu_log_pressed() -> void:
 		stat_line += " · 世界效果 %d" % world_state.active_effects.size()
 	if not stat_line.is_empty():
 		list.append_text("[color=#9a8f7a]%s[/color]\n\n" % stat_line)
+	# 选择历史摘要（最近 5 条）
+	if event_engine != null and not event_engine.choices_history.is_empty():
+		list.append_text("[b]【选择历史】[/b]\n")
+		var ch: Array = event_engine.choices_history
+		var start_idx := maxi(0, ch.size() - 5)
+		for i in range(start_idx, ch.size()):
+			var c: Dictionary = ch[i]
+			list.append_text("• %s → %s\n" % [c.get("event_id", "?"), c.get("choice_id", "?")])
+		list.append_text("\n")
 	# 复制日志按钮
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
