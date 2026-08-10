@@ -607,7 +607,10 @@ func _add_choice_button(text: String, method: String = "") -> void:
 func _add_history(text: String) -> void:
 	var ts := ""
 	if world_state:
-		ts = "[color=#8a7a68][%s][/color] " % world_state.get_time_display()
+		ts = "[color=#8a7a68][%d月%d日 %s][/color] " % [
+			world_state.get_current_day(),
+			world_state.get_current_hour(),
+			world_state.get_period_name()]
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
 	# 折叠时提示有新记录（HistoryToggle 金色，展开后清除）
 	if not history_panel.visible:
