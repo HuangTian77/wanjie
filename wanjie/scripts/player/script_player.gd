@@ -2937,12 +2937,13 @@ func _get_slot_info(slot: int) -> String:
 	var pp: float = float(save_info.get("progress", 0.0))
 	if pp > 0.0:
 		prog_pct = " | %d%%" % int(pp * 100.0)
-	return "%s | Lv.%d%s | %s%s" % [
+	return "%s | Lv.%d%s | %s%s%s" % [
 		save_info.get("player_name", "?"),
 		save_info.get("level", 1),
 		prog_pct,
 		_fmt_play_time(save_info.get("play_time", 0)),
-		(" | 第 %d 天" % int(save_info.get("day", 1))) if save_info.has("day") else ""
+		(" | 第 %d 天" % int(save_info.get("day", 1))) if save_info.has("day") else "",
+		(" | %s" % str(save_info.get("saved_at", "")).substr(0, 16)) if str(save_info.get("saved_at", "")) != "" else ""
 	]
 
 ## 槽位保存
