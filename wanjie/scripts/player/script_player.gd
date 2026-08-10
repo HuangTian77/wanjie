@@ -2768,6 +2768,9 @@ func _show_finish_stats() -> void:
 		list.append_text("⏱ 游玩时长：%s\n" % _fmt_play_time(float(played_sec)))
 	list.append_text("⚔ 战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
 	list.append_text("🔥 最高连击：x%d\n" % _best_combo)
+	# 解锁成就展示
+	if not GameManager.user_data.achievements.is_empty():
+		list.append_text("🏆 成就：%d 个\n" % GameManager.user_data.achievements.size())
 	list.append_text("\n[color=#888]感谢体验！可返回大厅查看成就与进度。[/color]")
 	# 复制统计按钮
 	var copy_stats_btn := Button.new()
