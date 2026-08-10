@@ -2552,6 +2552,10 @@ func _on_menu_log_pressed() -> void:
 			var c2: Dictionary = cm[i]
 			list.append_text("• %s = %s\n" % [c2.get("key", c2.get("id", "?")), str(c2.get("value", c2.get("state", "?")))])
 		list.append_text("\n")
+	# 空状态提示
+	if (event_engine == null or event_engine.choices_history.is_empty()) \
+			and (event_engine == null or event_engine.causal_marks.is_empty()):
+		list.append_text("[color=#999]暂无世界记录——做出选择、触发事件后将在此呈现。[/color]\n")
 	# 复制日志按钮
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
