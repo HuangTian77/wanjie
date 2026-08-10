@@ -77,6 +77,9 @@ func _ready() -> void:
 	_init_engines()
 	_start_experience()
 	history_toggle.pressed.connect(_on_history_toggle_pressed)
+	var hclear := get_node_or_null("%HistoryClear")
+	if hclear is Button:
+		(hclear as Button).pressed.connect(_on_history_clear_pressed)
 	ToastManager.info("已消耗 1 点灵感进入剧本")
 	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
