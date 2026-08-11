@@ -494,6 +494,11 @@ func _continue_from_save() -> void:
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	ToastManager.success("第 %d 天 · 继续冒险" % day)
+	# 进度百分比
+	var prog5 := _get_progress()
+	if prog5[1] > 0:
+		var pct5 := int(float(prog5[0]) / float(prog5[1]) * 100.0)
+		ToastManager.info("📊 剧情进度 %d%%" % pct5)
 	_refresh_menu_title()
 	_advance_to_next_event()
 
