@@ -1466,6 +1466,9 @@ func _on_tavern_char_selected(index: int) -> void:
 		1: mood_name = "友好 🙂"
 		2: mood_name = "亲密 😊"
 	ToastManager.info("切换至：%s（好感：%s）" % [cname, mood_name])
+	# 好感度满时特殊对话提示
+	if mood_val >= 2:
+		ToastManager.info("💝 与 %s 的对话将获得更深的情谊" % cname)
 
 func _enter_tavern_char(index: int) -> void:
 	tavern_char_index = index
