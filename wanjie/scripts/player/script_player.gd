@@ -4209,6 +4209,8 @@ func _show_slot_selector(mode: String) -> void:
 
 	var selector := PanelContainer.new()
 	selector.name = "SlotSelector"
+	# 槽位选择器标题 tooltip
+	selector.tooltip_text = "存档槽：手动保存位置；自动存档每 5 分钟（可设置调整）"
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.96, 0.925, 0.843, 0.98)
 	style.set_corner_radius_all(10)
