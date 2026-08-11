@@ -1593,11 +1593,21 @@ func _on_tavern_send_pressed() -> void:
 			ToastManager.success("💛 %s 对你更友善了" % TavernManager.current_character.get("name", "角色"))
 		else:
 			ToastManager.success("💖 %s 与你亲密无间！" % TavernManager.current_character.get("name", "角色"))
-			# 亲密后赠送礼物（金币/道具）
+			# 亲密后赠送礼物（随机：金币/药水/遗物）
 			if economy_engine != null:
-				economy_engine.add_currency("gold", 20)
-				ToastManager.success("🎁 %s 送你 20 金币" % TavernManager.current_character.get("name", "角色"))
-				_add_history("🎁 %s 好感亲密，赠送 20 金币" % TavernManager.current_character.get("name", "角色"))
+				var gift_roll := randf()
+				if gift_roll < 0.15:
+					economy_engine.player_inventory["rare_relic"] = int(economy_engine.player_inventory.get("rare_relic", 0)) + 1
+					ToastManager.success("🎁 %s 送给你一枚✨遗物！" % TavernManager.current_character.get("name", "角色"))
+					_add_history("🎁 %s 赠送遗物" % TavernManager.current_character.get("name", "角色"))
+				elif gift_roll < 0.5:
+					economy_engine.player_inventory["health_potion"] = int(economy_engine.player_inventory.get("health_potion", 0)) + 2
+					ToastManager.success("🎁 %s 送你 2 瓶药水" % TavernManager.current_character.get("name", "角色"))
+					_add_history("🎁 %s 赠送 2 瓶药水" % TavernManager.current_character.get("name", "角色"))
+				else:
+					economy_engine.add_currency("gold", 20)
+					ToastManager.success("🎁 %s 送你 20 金币" % TavernManager.current_character.get("name", "角色"))
+					_add_history("🎁 %s 好感亲密，赠送 20 金币" % TavernManager.current_character.get("name", "角色"))
 				_sync_save_state()
 	_tavern_update_char_label()
 	# 持久化好感度
