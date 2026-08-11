@@ -64,6 +64,8 @@ var _help_shown: bool = false
 var _play_start_time: int = 0
 ## 战斗当前目标索引（-1 自动选第一个存活）
 var _battle_target: int = -1
+## 最近自动保存时间（秒，用于按钮反馈）
+var _last_autosave_time: float = 0.0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -108,6 +110,7 @@ func _ready() -> void:
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
 		SaveManager.autosave()
+		_last_autosave_time = Time.get_ticks_msec() / 1000.0
 		_add_history("⏱ 自动存档（第 %d 天）" % (world_state.get_current_day() if world_state else 1))
 		# 自动存档静默提示（仅首 3 次 Toast，之后仅历史记录防打扰）
 		_auto_save_count += 1
@@ -886,6 +889,13 @@ func _add_history(text: String) -> void:
 
 ## 更新UI
 func _update_ui() -> void:
+	# 自动保存按钮状态（保存后短暂显示"已保存"）
+	var save_btn := get_node_or_null("MainVBox/TopBar/TopHBox/SaveBtn")
+	if save_btn is Button:
+		if _last_autosave_time > 0.0 and int(Time.get_ticks_msec() / 1000.0 - _last_autosave_time) < 5:
+			(save_btn as Button).text = "💾 已保存"
+		else:
+			(save_btn as Button).text = "💾 存档"
 	if SaveManager.current_save:
 		var ps: Dictionary = SaveManager.current_save.player_state
 		player_name_label.text = ps.get("name", "旅者")
