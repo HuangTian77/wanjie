@@ -2144,6 +2144,7 @@ func _use_first_potion() -> void:
 					heal_amt2 = 50
 				ps4["hp"] = mini(int(ps4.get("max_hp", 100)), int(ps4.get("hp", 0)) + heal_amt2)
 				economy_engine.player_inventory[item_id] = int(economy_engine.player_inventory[item_id]) - 1
+				_spawn_damage_popup(heal_amt2)  # 药水恢复绿色飘字
 				_battle_log_line("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt2], "#7cc47c")
 				ToastManager.success("💊 恢复 %d HP" % heal_amt2)
 				_refresh_battle_ui()
