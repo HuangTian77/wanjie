@@ -4165,6 +4165,12 @@ func _on_menu_help_pressed() -> void:
 	for key in ["空格", "回车", "A", "H", "T", "Esc", "S", "L", "B", "1-9", "Tab", "Shift"]:
 		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
 	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v1.2.0（体验版）[/color]"
+	# 字体大小随设置
+	var help_fs := 14
+	match GameManager.user_data.font_size_preset:
+		"small": help_fs = 12
+		"large": help_fs = 17
+	help_lbl.add_theme_font_size_override("normal_font_size", help_fs)
 	help_scroll.add_child(help_lbl)
 	# 复制帮助按钮
 	var copy_help := Button.new()
