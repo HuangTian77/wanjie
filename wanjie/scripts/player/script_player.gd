@@ -2193,6 +2193,12 @@ func _restore_save_state(sd: SaveData) -> void:
 	# 打字机状态重置（读档后显示恢复文本）
 	_typewriter_done = true
 	_typewriter_index = 0
+	# 恢复最后一条剧情文本到主区
+	if event_engine != null and event_engine.event_history.size() > 0:
+		var last_ev: Dictionary = event_engine.event_history[event_engine.event_history.size() - 1]
+		var last_txt: String = str(last_ev.get("text", ""))
+		if not last_txt.is_empty():
+			_set_main_text(last_txt, true)
 	_update_ui()
 	_sync_save_state()
 
