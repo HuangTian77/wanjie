@@ -1687,6 +1687,9 @@ func _on_combat_started(enemies: Array) -> void:
 			threat = "轻松"
 			threat_color = "#7cc47c"
 		_battle_log_line("强度评估：[color=%s]%s[/color]（敌攻 %d vs 你 %d）" % [threat_color, threat, total_atk, p_atk], "")
+		# 强度标记入敌人栏（危险 ⚠ / 轻松 ✓）
+		if threat != "适中":
+			enemy_info.text += "\n[color=%s]强度：%s[/color]" % [threat_color, threat]
 	# 自动推进在战斗中暂停（需玩家手动战斗）
 	if _auto_advance_mode:
 		_battle_log_line("⏸ 自动推进已暂停（战斗进行中）", "#8a8278")
