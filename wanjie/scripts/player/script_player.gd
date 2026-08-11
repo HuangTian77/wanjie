@@ -1664,7 +1664,13 @@ func _on_combat_started(enemies: Array) -> void:
 	# 逃跑按钮 tooltip：当前成功率
 	var flee_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/FleeBtn")
 	if flee_btn is Button and combat_engine != null:
-		(flee_btn as Button).tooltip_text = "成功率 %.0f%%（敏捷影响）" % (combat_engine.last_flee_chance * 100.0)
+		# 持有烟雾弹类道具提升逃跑率
+		var flee_bonus := 0.0
+		if economy_engine != null and int(economy_engine.player_inventory.get("smoke_bomb", 0)) > 0:
+			flee_bonus = 0.15
+		(flee_btn as Button).tooltip_text = "成功率 %.0f%%（敏捷影响%s）" % (
+			(combat_engine.last_flee_chance + flee_bonus) * 100.0,
+			"，烟雾弹 +15%" if flee_bonus > 0.0 else "")
 	# 战斗快捷键提示（替换底部常驻提示）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint:
