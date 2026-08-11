@@ -537,6 +537,8 @@ func _advance_to_next_event() -> void:
 	if _advancing:
 		return
 	_advancing = true
+	# 推进时清除主文本 tooltip（防残留）
+	main_text.tooltip_text = ""
 	if event_engine == null:
 		_advancing = false
 		return
