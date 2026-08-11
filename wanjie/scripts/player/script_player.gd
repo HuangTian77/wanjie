@@ -1702,6 +1702,9 @@ func _on_combat_ended(result: String) -> void:
 					msg += " · 掉落：%s" % litem
 				else:
 					msg += "、%s" % litem
+			# 稀有掉落：主文本金强调（遗物）
+			if loot.has("rare_relic"):
+				msg += "（✨ 稀有！）"
 				if litem == "rare_relic":
 					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
 					_spawn_damage_popup(1, true)  # 金色大字
