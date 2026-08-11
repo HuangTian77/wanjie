@@ -52,6 +52,7 @@ var _auto_timer: float = 0.0
 @onready var econ_label: Label = %EconLabel
 @onready var item_label: Label = %ItemLabel
 @onready var quest_label: Label = %QuestLabel
+@onready var auto_indicator: Label = %AutoIndicator
 @onready var progress_label: Label = %ProgressLabel
 @onready var difficulty_option: OptionButton = %DifficultyOption
 ## 通关提示是否已显示（防重复）
@@ -813,6 +814,9 @@ func _update_ui() -> void:
 		else:
 			econ_label.text = "💰 0"
 			item_label.text = "🎒 0"
+		# 自动推进模式指示
+		if auto_indicator != null:
+			auto_indicator.visible = _auto_advance_mode
 		# 任务追踪（当前进行中的任务）
 		if script_data != null and script_data.quest_system != null and script_data.quest_system.quests.size() > 0:
 			var active_q := ""
