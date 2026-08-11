@@ -3791,6 +3791,9 @@ func _on_player_stats_pressed() -> void:
 	# 暴击率估算（基于速度）
 	var crit_rate := 5 + int(st.get("speed", 0)) / 5
 	list.append_text("🎯 暴击率 ≈ %d%%（速度影响）\n\n" % crit_rate)
+	# 闪避率估算
+	var dodge_rate := 3 + int(st.get("speed", 0)) / 8
+	list.append_text("💨 闪避率 ≈ %d%%（速度影响）\n\n" % dodge_rate)
 	# 攻防公式说明（tooltip 已在滚动列表外 → 直接文本提示）
 	list.append_text("[color=#7a7268]伤害 = 攻击 - 防御（最低 1）；速度影响先手与逃跑率[/color]\n\n")
 	# MP/HP 概览
