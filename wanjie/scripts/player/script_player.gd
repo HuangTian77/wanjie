@@ -2715,6 +2715,20 @@ func _on_menu_shop_pressed() -> void:
 					economy_engine.set_price(mid3, item_id3, new_price)
 			ToastManager.info("💰 商人重新报价")
 			_add_history("💰 商人重新报价（价格波动）")
+			# 刷新涨跌统计（比刷新前）
+			var up_cnt := 0
+			var down_cnt := 0
+			if economy_engine != null and economy_engine.economy_data != null:
+				for m4 in economy_engine.economy_data.markets:
+					for g4 in m4.get("goods", []):
+						var iid4: String = str(g4.get("item", ""))
+						var now_p: float = economy_engine.get_price(str(m4.get("id", "")), iid4)
+						if now_p > float(g4.get("price", now_p)) * 1.02:
+							up_cnt += 1
+						elif now_p < float(g4.get("price", now_p)) * 0.98:
+							down_cnt += 1
+			if up_cnt > 0 or down_cnt > 0:
+				_battle_log_line("📈 涨价 %d 项 · 📉 降价 %d 项" % [up_cnt, down_cnt], "#8a8278")
 			# 刷新次数提示（每日可多次，价格随机波动）
 			_shop_refresh_count += 1
 			if _shop_refresh_count == 5:
