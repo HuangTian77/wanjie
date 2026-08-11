@@ -108,6 +108,7 @@ func _ready() -> void:
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
 		SaveManager.autosave()
+		_add_history("⏱ 自动存档（第 %d 天）" % (world_state.get_current_day() if world_state else 1))
 		# 自动存档静默提示（仅首 3 次 Toast，之后仅历史记录防打扰）
 		_auto_save_count += 1
 		if _auto_save_count <= 3:
