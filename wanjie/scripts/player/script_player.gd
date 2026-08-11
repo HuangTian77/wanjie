@@ -4375,6 +4375,7 @@ func _on_slot_save_selected(slot: int) -> void:
 func _do_save_slot(slot: int) -> void:
 	var ok := SaveManager.save_game(slot)
 	if ok:
+		_last_autosave_time = Time.get_ticks_msec() / 1000.0
 		_add_history("游戏已保存到槽位 %d（第 %d 天）" % [slot + 1, world_state.get_current_day() if world_state else 1])
 		var time_txt: String = world_state.get_time_display() if world_state != null else ""
 		# 保存含当前剧情进度
