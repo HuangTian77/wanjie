@@ -2015,6 +2015,7 @@ func _on_battle_attack_pressed() -> void:
 		# 普攻小额回蓝（+1 MP 攒蓝机制）
 		var stats_a: Dictionary = combat_engine.player_combat_stats
 		stats_a["mp"] = mini(int(stats_a.get("max_mp", 50)), int(stats_a.get("mp", 0)) + 1)
+		_spawn_mp_popup(1)  # 蓝色 +1 MP 飘字
 		# 暴击日志金色（普通红色）
 		var is_crit: bool = bool(res.get("critical", false))
 		_battle_log_line("%s 攻击造成 %d 伤害%s" % [
