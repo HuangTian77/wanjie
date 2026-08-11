@@ -2110,6 +2110,11 @@ func _on_enemy_info_clicked(event: InputEvent) -> void:
 				break
 		ToastManager.info("🎯 目标：%s" % str(combat_engine.enemies[_battle_target].get("name", "?")))
 		_refresh_battle_ui()
+		# 目标切换闪烁（敌人栏高亮 0.3s）
+		enemy_info.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+		var tt := create_tween()
+		tt.tween_interval(0.3)
+		tt.tween_callback(func(): enemy_info.remove_theme_color_override("font_color"))
 
 func _on_battle_attack_pressed() -> void:
 	if combat_engine == null:
