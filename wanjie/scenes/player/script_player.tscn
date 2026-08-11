@@ -315,6 +315,7 @@ theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
 [node name="HistoryToggle" type="Button" parent="MainVBox/HSplit/RightPanel"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "点击展开/折叠世界历史记录（含时间戳与类型）"
 text = "▼ 展开记录"
 flat = true
 theme_override_font_sizes/font_size = 12
