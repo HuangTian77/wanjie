@@ -481,6 +481,8 @@ func _continue_from_save() -> void:
 		combat_engine.set_player_stats(sd.player_state)
 	_update_ui()
 	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
+	# 恢复自动推进偏好
+	_auto_advance_mode = GameManager.user_data.auto_advance
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	ToastManager.success("第 %d 天 · 继续冒险" % day)
