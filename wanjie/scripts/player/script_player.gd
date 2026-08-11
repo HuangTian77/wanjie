@@ -2059,8 +2059,13 @@ func _on_battle_skill_pressed() -> void:
 		if not sres.is_empty():
 			var dmg := int(sres.get("damage", 0))
 			if dmg > 0:
-				_battle_log_line("%s 释放 %s，造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), dmg], "#e0665a")
-				_spawn_damage_popup(-dmg, bool(sres.get("critical", false)))
+				# 技能暴击日志金色
+				var s_crit: bool = bool(sres.get("critical", false))
+				_battle_log_line("%s 释放 %s，造成 %d 伤害%s" % [
+					combat_engine.player_combat_stats.get("name", "你"),
+					skills[id].get("name", "技能"), dmg, "（暴击！）" if s_crit else ""],
+					"#e6c84c" if s_crit else "#e0665a")
+				_spawn_damage_popup(-dmg, s_crit)
 				# 技能命中闪红
 				enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
 				var setw := create_tween()
