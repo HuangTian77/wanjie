@@ -2025,7 +2025,9 @@ func _refresh_battle_ui() -> void:
 			var bar_chars := 8
 			var filled := int(round(e_ratio * bar_chars))
 			var hp_bar_txt := "▓".repeat(clampi(filled, 0, bar_chars)) + "░".repeat(bar_chars - clampi(filled, 0, bar_chars))
-			parts.append("%s%s HP:%d/%d %s" % [mark, e.get("name", "?"), e_hp, e_max, hp_bar_txt])
+			# 低血敌人红色标记
+			var low_tag := " ⚠" if e_ratio < 0.25 else ""
+			parts.append("%s%s HP:%d/%d %s%s" % [mark, e.get("name", "?"), e_hp, e_max, hp_bar_txt, low_tag])
 	var count_txt := ""
 	if total_enemies > 1:
 		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
