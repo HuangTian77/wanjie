@@ -434,7 +434,8 @@ func _start_new_experience() -> void:
 	else:
 		bg_text = script_data.description
 	_set_main_text("[b]【%s】[/b]\n\n%s" % [script_data.name, bg_text])
-	_add_history("进入世界: %s" % script_data.name)
+	var start_txt: String = world_state.get_time_display() if world_state else ""
+	_add_history("进入世界: %s（%s）" % [script_data.name, start_txt])
 	_advance_to_next_event()
 
 ## 从存档继续（优先手动存档槽 0，回退自动存档）
