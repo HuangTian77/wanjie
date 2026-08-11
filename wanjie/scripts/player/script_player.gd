@@ -4435,6 +4435,7 @@ func _on_slot_load_selected(slot: int) -> void:
 		if sd3 == null:
 			ToastManager.warning("读取失败")
 			return
+		ToastManager.success("📂 已读取槽位 %d 存档" % (slot + 1))
 		_restore_save_state(sd3)
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var day_loaded: int = world_state.get_current_day() if world_state else 1
