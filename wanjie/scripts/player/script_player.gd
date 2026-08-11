@@ -1696,6 +1696,13 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
 		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
+		# 战斗面板轻微震动（受击反馈）
+		if ThemeManager.animations_enabled:
+			var base_pos := battle_panel.position
+			var shake_tw := create_tween()
+			for i in 3:
+				shake_tw.tween_property(battle_panel, "position", base_pos + Vector2(randf_range(-4, 4), randf_range(-3, 3)), 0.03)
+			shake_tw.tween_property(battle_panel, "position", base_pos, 0.04)
 		# 玩家 HP 红闪反馈（血条变红闪烁）
 		var hp_lbl := get_node_or_null("MainVBox/HSplit/LeftPanel/LeftVBox/HPHBox/PlayerHPBar") as ProgressBar
 		if hp_lbl != null:
