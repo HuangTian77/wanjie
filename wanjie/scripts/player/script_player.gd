@@ -3391,6 +3391,10 @@ func _on_menu_log_pressed() -> void:
 
 ## 休息：时间推进 + 回满状态
 func _on_menu_rest_pressed() -> void:
+	# 战斗中不可休息（需先结束战斗）
+	if battle_panel.visible:
+		ToastManager.warning("战斗中无法休息！请先结束战斗")
+		return
 	# 休息确认（推进 8 小时，可能触发随机事件）
 	var confirm := ConfirmationDialog.new()
 	var hp_now2: int = 0
