@@ -2398,6 +2398,14 @@ func _on_menu_shop_pressed() -> void:
 				var price: float = economy_engine.get_price(mid, item_id)
 				var btn := Button.new()
 				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				# 供需状态 tooltip
+				var base_p: float = float(g.get("price", price))
+				var supply_state := "稳定"
+				if price < base_p * 0.95:
+					supply_state = "供过于求（降价）"
+				elif price > base_p * 1.05:
+					supply_state = "供不应求（涨价）"
+				btn.tooltip_text = "%s：现价 %d / 基价 %d（%s）" % [item_id, int(price), int(base_p), supply_state]
 				# 商品描述 tooltip
 				var item_desc: String = str(g.get("description", ""))
 				if not item_desc.is_empty():
