@@ -2638,6 +2638,7 @@ func _on_menu_bag_pressed() -> void:
 						_add_history("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt])
 						_update_ui()
 						_sync_save_state()
+						_spawn_damage_popup(heal_amt)
 						_on_menu_bag_pressed()
 						dialog.queue_free())
 				use_row.add_child(use_btn)
