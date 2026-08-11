@@ -3336,6 +3336,15 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
+	# 职业倾向（属性偏向判断）
+	var tend := "均衡型"
+	if int(st.get("atk", 0)) >= int(st.get("def", 0)) * 2:
+		tend = "力量型（攻击专精）"
+	elif int(st.get("def", 0)) >= int(st.get("atk", 0)) * 2:
+		tend = "守护型（防御专精）"
+	elif int(st.get("speed", 0)) >= int(st.get("atk", 0)) + int(st.get("def", 0)):
+		tend = "敏捷型（速度专精）"
+	list.append_text("🎯 倾向：%s\n\n" % tend)
 	# 经验进度（每 100 经验升级）
 	var exp_now: int = int(st.get("exp", 0))
 	list.append_text("✨ 经验：%d/100（%d%%）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0))])
