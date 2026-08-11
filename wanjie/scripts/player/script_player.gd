@@ -1507,6 +1507,12 @@ func _on_combat_ended(result: String) -> void:
 	# 战斗结束：自动推进恢复提示
 	if _auto_advance_mode:
 		ToastManager.info("▶ 战斗结束，自动推进已恢复")
+		# 低血自动休息建议（自动模式）
+		if combat_engine != null:
+			var ps6: Dictionary = combat_engine.player_combat_stats
+			var max6: int = int(ps6.get("max_hp", 100))
+			if max6 > 0 and int(ps6.get("hp", 0)) < max6 * 0.6:
+				ToastManager.warning("💤 生命较低，建议菜单休息回满")
 	# 敌人状态摘要（存活/阵亡）
 	if combat_engine != null and not combat_engine.enemies.is_empty():
 		var status_parts: Array[String] = []
