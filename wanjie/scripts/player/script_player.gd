@@ -2753,7 +2753,9 @@ func _on_menu_bag_pressed() -> void:
 		for item_id in economy_engine.player_inventory:
 			var qty: int = int(economy_engine.player_inventory[item_id])
 			if qty > 0:
-				list.append_text("• %s × %d\n" % [item_id, qty])
+				# 遗物不可出售标记
+				var relic_tag := "（不可出售，永久加成）" if str(item_id) == "rare_relic" else ""
+				list.append_text("• %s × %d%s\n" % [item_id, qty, relic_tag])
 				total_items += qty
 				# 用市场价估值（找不到则跳过）
 				if economy_engine.economy_data:
