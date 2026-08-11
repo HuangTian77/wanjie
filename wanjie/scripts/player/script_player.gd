@@ -4151,6 +4151,16 @@ func _on_menu_help_pressed() -> void:
 - 剧本进度会同步到大厅卡片进度条"""
 	dialog.min_size = Vector2i(560, 520)
 	add_child(dialog)
+	# 帮助文本放入滚动容器（长文本可滚动）
+	var help_scroll := ScrollContainer.new()
+	help_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(help_scroll)
+	var help_lbl := Label.new()
+	help_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	help_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	help_lbl.text = dialog.dialog_text
+	help_scroll.add_child(help_lbl)
+	dialog.dialog_text = ""
 	dialog.popup_centered()
 
 ## 显示槽位选择器
