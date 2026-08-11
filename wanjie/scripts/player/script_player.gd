@@ -1698,6 +1698,11 @@ func _on_combat_started(enemies: Array) -> void:
 
 func _on_combat_round_started(round_num: int) -> void:
 	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
+	# 回合 MP 状态（低 MP 提示）
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var mp_round: int = int(combat_engine.player_combat_stats.get("mp", 0))
+		if mp_round < 3:
+			_battle_log_line("✦ MP 紧张（%d），普攻可攒蓝" % mp_round, "#8a8278")
 	# 状态效果倒计时日志（剩余 1 回合提示）
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var ps_fx: Array = combat_engine.player_combat_stats.get("status_effects", [])
