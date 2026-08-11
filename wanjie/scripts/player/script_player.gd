@@ -532,6 +532,8 @@ var _sell_count: int = 0
 var _rated_this_run: bool = false
 ## 好感度已满提示标志
 var _tavern_mood_full_toast: int = 0
+## 已听背景故事的角色（防重复）
+var _heard_backgrounds: Dictionary = {}
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1469,8 +1471,10 @@ func _on_tavern_char_selected(index: int) -> void:
 	# 好感度满时特殊对话提示
 	if mood_val >= 2:
 		ToastManager.info("💝 与 %s 的对话将获得更深的情谊" % cname)
-	# 好感度满解锁背景故事
-	if mood_val >= 2 and index >= 0 and index < TAVERN_CHARS.size() and TAVERN_CHARS[index].has("background"):
+	# 好感度满解锁背景故事（仅一次）
+	if mood_val >= 2 and index >= 0 and index < TAVERN_CHARS.size() and TAVERN_CHARS[index].has("background") \
+			and not _heard_backgrounds.has(str(TAVERN_CHARS[index].get("id", ""))):
+		_heard_backgrounds[str(TAVERN_CHARS[index].get("id", ""))] = true
 		_tavern_append("assistant", "（她压低声音，说起往事）\n📖 %s" % TAVERN_CHARS[index]["background"])
 
 func _enter_tavern_char(index: int) -> void:
