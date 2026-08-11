@@ -1098,7 +1098,7 @@ func _on_choice_selected(choice_id: String) -> void:
 		consequence_text = "你的选择已经改变了世界的走向..."
 	else:
 		consequence_text = "[color=#c9a06a]%s[/color]" % consequence_text
-	_set_main_text("[i]你的选择产生了后果...[/i]\n\n%s" % consequence_text)
+	_set_main_text("[i]你的选择产生了后果...[/i]\n\n%s\n\n[color=#8a8278]（后果已生效，继续前行）[/color]" % consequence_text)
 	_clear_choices()
 	_add_choice_button("继续", "_on_continue_pressed")
 
