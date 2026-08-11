@@ -1670,7 +1670,7 @@ func _on_combat_started(enemies: Array) -> void:
 			flee_bonus = 0.15
 		(flee_btn as Button).tooltip_text = "成功率 %.0f%%（敏捷影响%s）" % (
 			(combat_engine.last_flee_chance + flee_bonus) * 100.0,
-			"，烟雾弹 +15%" if flee_bonus > 0.0 else "")
+			"，烟雾弹 +15%" if flee_bonus > 0.0 else "；烟雾弹可 +15%（战斗胜利概率掉落）")
 	# 战斗快捷键提示（替换底部常驻提示）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint:
