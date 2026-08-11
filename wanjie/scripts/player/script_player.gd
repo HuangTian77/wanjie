@@ -2686,6 +2686,12 @@ func _on_menu_shop_pressed() -> void:
 	add_child(dialog)
 	# 打开商店时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 商店提示条（价格波动规则）
+	var shop_hint := Label.new()
+	shop_hint.text = "购买抬价 2% · 出售拉低 2% · 可刷新比价"
+	shop_hint.add_theme_color_override("font_color", Color(0.6, 0.55, 0.48))
+	shop_hint.add_theme_font_size_override("font_size", 11)
+	dialog.add_child(shop_hint)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
 	# 刷新价格按钮（随机波动 ±20%）
