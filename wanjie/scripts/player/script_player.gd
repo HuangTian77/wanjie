@@ -870,6 +870,9 @@ func _update_ui() -> void:
 				gold += int(economy_engine.player_currencies[cid])
 			econ_label.text = "💰 %d" % gold
 			item_label.text = "🎒 %d" % economy_engine.player_inventory.size()
+		# 遗物 HUD 标记（持有遗物时）
+		if int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
+			item_label.text += " ✨"
 		else:
 			econ_label.text = "💰 0"
 			item_label.text = "🎒 0"
