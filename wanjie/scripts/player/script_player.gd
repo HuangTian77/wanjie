@@ -502,6 +502,8 @@ var _last_quest_shown: String = ""
 var _event_trigger_count: int = 0
 ## 自动存档次数（前几次提示，之后静默）
 var _auto_save_count: int = 0
+## 连续逃跑失败计数
+var _flee_fail_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -2268,6 +2270,10 @@ func _on_battle_flee_pressed() -> void:
 		# 若仍在战斗（未逃跑成功）提示成功率
 		if battle_panel.visible:
 			ToastManager.warning("逃跑失败…成功率 %.0f%%（敏捷越高越易逃脱）" % (chance * 100.0))
+			# 连续逃跑失败计数（≥2 提示用技能/药水）
+			_flee_fail_count += 1
+			if _flee_fail_count >= 2:
+				ToastManager.info("多次逃跑失败，可尝试技能/药水或战斗到底")
 		else:
 			_add_history("🏃 成功逃离战斗")
 			ToastManager.success("🏃 成功逃离战斗")
