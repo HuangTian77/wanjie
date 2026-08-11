@@ -3246,7 +3246,8 @@ func _on_menu_log_pressed() -> void:
 			list.append_text("• %s：剩 %d 回合\n" % [cid, int(event_engine.cooldowns[cid])])
 		list.append_text("\n")
 	# 背包摘要（含遗物数）
-	if economy_engine != null and not economy_engine.player_inventory.is_empty():		var relic_count: int = int(economy_engine.player_inventory.get("rare_relic", 0))
+	if economy_engine != null and not economy_engine.player_inventory.is_empty():
+		var relic_count: int = int(economy_engine.player_inventory.get("rare_relic", 0))
 		var bag_size: int = 0
 		for it2 in economy_engine.player_inventory:
 			bag_size += int(economy_engine.player_inventory[it2])
