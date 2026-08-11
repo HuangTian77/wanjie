@@ -520,6 +520,8 @@ var _auto_save_count: int = 0
 var _flee_fail_count: int = 0
 ## 连续战败场数
 var _lose_streak: int = 0
+## 连续胜利场数
+var _win_streak: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1813,11 +1815,18 @@ func _on_combat_ended(result: String) -> void:
 		_lose_streak = 0
 	# 战斗胜利庆祝（胜场计数里程碑，计数在战斗统计处统一累加）
 	if result == "victory":
+		_win_streak += 1
+		if _win_streak == 5:
+			ToastManager.success("🔥 五连胜！势不可挡")
+		elif _win_streak == 10:
+			ToastManager.success("⚡ 十连胜！战场传说")
 		var wins_after: int = _battle_wins + 1
 		if wins_after == 10:
 			ToastManager.success("🏆 累计 10 胜！战斗专家成就")
 		elif wins_after == 50:
 			ToastManager.success("🏆 累计 50 胜！百战老兵成就")
+	else:
+		_win_streak = 0
 	# 敌人状态摘要（存活/阵亡）
 	if combat_engine != null and not combat_engine.enemies.is_empty():
 		var status_parts: Array[String] = []
