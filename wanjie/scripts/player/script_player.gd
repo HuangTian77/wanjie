@@ -1650,6 +1650,16 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
 		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
+		# 玩家 HP 红闪反馈（血条变红闪烁）
+		var hp_lbl := get_node_or_null("MainVBox/HSplit/LeftPanel/LeftVBox/HPHBox/PlayerHPBar") as ProgressBar
+		if hp_lbl != null:
+			hp_lbl.add_theme_stylebox_override("fill", (func() -> StyleBox:
+				var sb := StyleBoxFlat.new()
+				sb.bg_color = Color(1.0, 0.25, 0.25)
+				return sb).call())
+			var hp_tw := create_tween()
+			hp_tw.tween_interval(0.3)
+			hp_tw.tween_callback(func(): hp_lbl.remove_theme_stylebox_override("fill"))
 	# 玩家攻击日志绿色（与敌人蓝色区分）
 	elif _action.get("type", "") in ["player_attack", "skill"] and int(_action.get("damage", 0)) > 0:
 		# 技能名（若有）
