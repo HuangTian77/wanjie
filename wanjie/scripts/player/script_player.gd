@@ -484,6 +484,8 @@ var _last_quest_shown: String = ""
 var _event_trigger_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
+## 敌人图鉴（击败敌人 → 次数，本次游玩）
+var _enemy_codex: Dictionary = {}
 ## 当前区域（切换提示用）
 var _last_region: String = ""
 ## 酒馆角色心情（char_id → 0/1/2 档）
@@ -1700,6 +1702,8 @@ func _on_combat_ended(result: String) -> void:
 			if not combat_engine.enemies.is_empty():
 				var first_enemy: String = str(combat_engine.enemies[0].get("name", "?"))
 				_add_history("🏁 击败 %s" % first_enemy)
+				# 敌人图鉴计数（本次游玩）
+				_enemy_codex[first_enemy] = int(_enemy_codex.get(first_enemy, 0)) + 1
 			# 掉落物品入背包
 			var loot: Array = rewards.get("loot", [])
 			for li in loot:
@@ -2279,6 +2283,11 @@ func _on_menu_char_pressed() -> void:
 		list.append_text("\n[color=#c9a06a]本次游玩[/color]\n")
 		list.append_text("• 天数：第 %d 天\n" % (world_state.get_current_day() if world_state else 1))
 		list.append_text("• 触发事件：%d 个（本次 %d）\n" % [(event_engine.triggered_ids.size() if event_engine != null else 0), _event_trigger_count])
+	# 敌人图鉴
+	if not _enemy_codex.is_empty():
+		list.append_text("\n[color=#c9a06a]敌人图鉴（本次）[/color]\n")
+		for ename in _enemy_codex:
+			list.append_text("• %s ×%d\n" % [ename, int(_enemy_codex[ename])])
 		list.append_text("• 历史记录：%d 条\n" % history_text.get_line_count())
 		list.append_text("• 当前进度：%d%%\n" % (int(_get_progress()[0] * 100.0 / maxf(1.0, float(_get_progress()[1])))))
 	dialog.popup_centered()
@@ -3073,8 +3082,7 @@ func _do_rest() -> void:
 		if not random_event.is_empty():
 			_run_event(random_event)
 
-## 通关统计弹窗（天数/等级/金币/事件数）
-func _show_finish_stats() -> void:
+## 通关统计弹窗（天数/等级/金币/事件数）func _show_finish_stats() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🎉 通关！"
 	dialog.min_size = Vector2i(420, 340)
