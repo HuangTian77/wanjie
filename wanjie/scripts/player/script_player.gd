@@ -1698,6 +1698,10 @@ func _on_combat_ended(result: String) -> void:
 			for li in loot:
 				var litem: String = str(li)
 				economy_engine.player_inventory[litem] = int(economy_engine.player_inventory.get(litem, 0)) + 1
+				if not msg.contains("掉落"):
+					msg += " · 掉落：%s" % litem
+				else:
+					msg += "、%s" % litem
 				if litem == "rare_relic":
 					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
 					_spawn_damage_popup(1, true)  # 金色大字
