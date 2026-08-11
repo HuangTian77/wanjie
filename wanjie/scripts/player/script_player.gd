@@ -3832,6 +3832,10 @@ func _do_save_slot(slot: int) -> void:
 		if prog[1] > 0:
 			prog_pct = int(prog[0] * 100.0 / float(prog[1]))
 		ToastManager.success("已保存到槽位 %d · %s · 进度 %d%%" % [slot + 1, time_txt, prog_pct])
+		# 手动保存后重置自动存档计时（避免紧接重复存档）
+		var ast := get_node_or_null("AutoSaveTimer") as Timer
+		if ast != null:
+			ast.start()
 	else:
 		ToastManager.warning("保存失败")
 	var sel := get_node_or_null("SlotSelector")
