@@ -1252,6 +1252,8 @@ func _apply_consequence(consequence: Dictionary) -> void:
 					var num_str := effect.get_slice("-", 1).strip_edges()
 					delta = -float(num_str) if num_str.is_valid_float() else -10.0
 				world_state.modify_faction_relationship(target, "player", delta)
+				ToastManager.info("🏴 势力关系变化：%s %+.0f" % [target, delta])
+				_add_history("🏴 势力关系：%s %+.0f" % [target, delta])
 
 	_sync_save_state()
 
