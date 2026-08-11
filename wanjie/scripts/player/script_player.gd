@@ -4437,6 +4437,11 @@ func _on_slot_load_selected(slot: int) -> void:
 			return
 		ToastManager.success("📂 已读取槽位 %d 存档" % (slot + 1))
 		_restore_save_state(sd3)
+		# 关闭槽位选择器并刷新
+		var slot_sel2 := get_node_or_null("SlotSelector")
+		if slot_sel2:
+			slot_sel2.queue_free()
+		_update_ui()
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var day_loaded: int = world_state.get_current_day() if world_state else 1
 		# 加载含进度与等级
