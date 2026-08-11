@@ -1834,7 +1834,10 @@ func _restore_save_state(sd: SaveData) -> void:
 	_sync_save_state()
 
 func _battle_log_line(line: String, color: String = "") -> void:
+	# 时间戳（含游戏日期，跨天战斗可区分）
 	var ts := Time.get_time_string_from_system().substr(0, 5)
+	if world_state != null:
+		ts = "第%d天 %s" % [world_state.get_current_day(), world_state.get_period_name()]
 	var prefix := "[color=#7a7268][%s][/color] " % ts
 	if not color.is_empty():
 		battle_log.append_text(prefix + "[color=%s]%s[/color]\n" % [color, line])
