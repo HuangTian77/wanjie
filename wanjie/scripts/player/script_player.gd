@@ -3742,6 +3742,20 @@ func _on_player_stats_pressed() -> void:
 	add_child(dialog)
 	# 打开属性面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 属性面板头部（等级/职业倾向快览）
+	var head_lbl := Label.new()
+	head_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head_lbl.add_theme_font_size_override("font_size", 16)
+	head_lbl.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var hst: Dictionary = combat_engine.player_combat_stats
+		var htend := "均衡型"
+		if int(hst.get("atk", 0)) >= int(hst.get("def", 0)) * 2:
+			htend = "力量型"
+		elif int(hst.get("def", 0)) >= int(hst.get("atk", 0)) * 2:
+			htend = "守护型"
+		head_lbl.text = "Lv.%d %s · %s" % [int(hst.get("level", 1)), str(hst.get("name", "旅者")), htend]
+	dialog.add_child(head_lbl)
 	# 刷新按钮（重建面板）
 	var refresh_stats_btn := Button.new()
 	refresh_stats_btn.text = "↻ 刷新"
