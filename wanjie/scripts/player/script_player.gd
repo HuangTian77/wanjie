@@ -547,6 +547,7 @@ func _advance_to_next_event() -> void:
 			var time_info := ""
 			var scenery := ""
 			var region_desc := ""
+			var rand_hint := ""
 			if world_state:
 				time_info = "（%s · %s）" % [world_state.get_time_display(), world_state.get_period_name()]
 				# 当前区域
@@ -559,7 +560,12 @@ func _advance_to_next_event() -> void:
 					"白天": scenery = "阳光正好，远山轮廓清晰可见。"
 					"傍晚": scenery = "晚霞把天边染成金色，炊烟袅袅升起。"
 					"夜晚": scenery = "月色清冷，唯有虫鸣与风作伴。"
-			_set_main_text("你在这个世界中继续探索...%s\n%s%s\n暂时没有发现特别的事件。\n\n[i][点击继续探索][/i]\n\n[color=#8a8278]（可按 A 开启自动推进）[/color]" % [time_info, region_desc, scenery])
+			# 随机事件可遭遇提示
+			if script_data != null and script_data.event_system != null:
+				var rand_total: int = script_data.event_system.random_events.size() if script_data.event_system.get("random_events") != null else 0
+				if rand_total > 0:
+					rand_hint = "此世界有 %d 个随机事件可遭遇。" % rand_total
+			_set_main_text("你在这个世界中继续探索...%s\n%s%s\n暂时没有发现特别的事件。\n\n[color=#8a8278]%s[/color]\n\n[i][点击继续探索][/i]\n\n[color=#8a8278]（可按 A 开启自动推进）[/color]" % [time_info, region_desc, scenery, rand_hint])
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
