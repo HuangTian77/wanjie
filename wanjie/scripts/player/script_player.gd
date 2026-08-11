@@ -1686,6 +1686,13 @@ func _on_combat_ended(result: String) -> void:
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
+			# 升级进度显示（当前经验/所需）
+			var exp_cur: int = int(ps.get("exp", 0))
+			var exp_need: int = 100
+			if exp_cur >= exp_need:
+				msg += "\n✨ 经验达到 %d/%d，可以升级！" % [exp_cur, exp_need]
+			else:
+				msg += "\n（经验 %d/%d）" % [exp_cur, exp_need]
 			# 胜利奖励金币飘字（金色 +）
 			if gold > 0:
 				_spawn_damage_popup(gold, false, true)  # 胜利金币金色
