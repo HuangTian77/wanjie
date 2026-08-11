@@ -1944,7 +1944,15 @@ func _refresh_battle_ui() -> void:
 	var fx_lines: Array[String] = []
 	var pfx: Array = ps.get("status_effects", []) if not ps.is_empty() else []
 	for fx in pfx:
-		fx_lines.append("%s(剩%d)" % [fx.get("name", "?"), int(fx.get("remaining_turns", 0))])
+		var fx_name: String = str(fx.get("name", "?"))
+		var fx_icon := ""
+		match fx_name:
+			"中毒": fx_icon = "🤢"
+			"虚弱": fx_icon = "😵"
+			"护盾": fx_icon = "🛡"
+			"狂暴": fx_icon = "😤"
+			"再生": fx_icon = "💚"
+		fx_lines.append("%s%s(剩%d)" % [fx_icon, fx_name, int(fx.get("remaining_turns", 0))])
 	for e in combat_engine.enemies:
 		if e.get("is_alive", true):
 			for fx in e.get("status_effects", []):
