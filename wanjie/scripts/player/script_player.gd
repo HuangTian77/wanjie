@@ -2277,6 +2277,7 @@ func _on_battle_flee_pressed() -> void:
 		else:
 			_add_history("🏃 成功逃离战斗")
 			ToastManager.success("🏃 成功逃离战斗")
+			_flee_fail_count = 0
 
 ## 使用背包中第一个药水/草药（Q 键/按钮共用）
 func _use_first_potion() -> void:
