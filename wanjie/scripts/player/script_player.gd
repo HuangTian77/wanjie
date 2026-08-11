@@ -3755,6 +3755,12 @@ func _on_player_stats_pressed() -> void:
 		elif int(hst.get("def", 0)) >= int(hst.get("atk", 0)) * 2:
 			htend = "守护型"
 		head_lbl.text = "Lv.%d %s · %s" % [int(hst.get("level", 1)), str(hst.get("name", "旅者")), htend]
+		# 高等级光环标记
+		var hlvl: int = int(hst.get("level", 1))
+		if hlvl >= 10:
+			head_lbl.text += " ⭐"
+		elif hlvl >= 5:
+			head_lbl.text += " ✨"
 	dialog.add_child(head_lbl)
 	# 刷新按钮（重建面板）
 	var refresh_stats_btn := Button.new()
