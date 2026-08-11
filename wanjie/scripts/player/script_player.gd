@@ -524,6 +524,8 @@ var _lose_streak: int = 0
 var _win_streak: int = 0
 ## 商店刷新次数（本次游玩）
 var _shop_refresh_count: int = 0
+## 累计购买件数（本次游玩）
+var _buy_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -2671,6 +2673,8 @@ func _on_menu_char_pressed() -> void:
 		list.append_text("\n[color=#c9a06a]本次游玩[/color]\n")
 		list.append_text("• 天数：第 %d 天\n" % (world_state.get_current_day() if world_state else 1))
 		list.append_text("• 触发事件：%d 个（本次 %d）\n" % [(event_engine.triggered_ids.size() if event_engine != null else 0), _event_trigger_count])
+		if _buy_count > 0:
+			list.append_text("🛒 购买物品：%d 件\n" % _buy_count)
 	# 敌人图鉴
 	if not _enemy_codex.is_empty():
 		list.append_text("\n[color=#c9a06a]敌人图鉴（本次）[/color]\n")
@@ -2906,6 +2910,7 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 	if economy_engine.buy(market_id, item_id, qty):
 		ToastManager.success("已购买 %d 个 %s（剩余 %d 金币）" % [qty, item_id, int(economy_engine.player_currencies.get("gold", 0))])
 		_add_history("🛒 购买 %d 个 %s" % [qty, item_id])
+		_buy_count += qty
 		_spawn_damage_popup(unit_price * qty, false, true)  # 购买 +金币飘字
 		_add_history("💰 购买 %d 个 %s（-%d 金币）" % [qty, item_id, unit_price * qty])
 		_sync_save_state()
