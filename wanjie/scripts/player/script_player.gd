@@ -1705,9 +1705,12 @@ func _tavern_history_line(m: Variant) -> String:
 
 func _tavern_append(role: String, content: String) -> void:
 	var ts := Time.get_time_string_from_system().substr(0, 5)
-	var prefix := "[color=#8a8278]%s[/color] [color=#c9a06a][b]%s[/b][/color] " % [
-		ts,
-		("艾琳" if role == "assistant" and TavernManager.current_character.get("id", "") == "innkeeper" else "费恩" if role == "assistant" else "你")]
+	var speaker := "你"
+	var speaker_color := "#7cc47c"
+	if role == "assistant":
+		speaker = "艾琳" if TavernManager.current_character.get("id", "") == "innkeeper" else "费恩"
+		speaker_color = "#c9a06a"
+	var prefix := "[color=#8a8278]%s[/color] [color=%s][b]%s[/b][/color] " % [ts, speaker_color, speaker]
 	tavern_msgs.append_text(prefix + content.replace("[", "［").replace("]", "］") + "\n\n")
 	# 自动滚动到底部（新消息可见）
 	tavern_msgs.scroll_to_line(tavern_msgs.get_line_count())
