@@ -3821,7 +3821,12 @@ func _do_save_slot(slot: int) -> void:
 	if ok:
 		_add_history("游戏已保存到槽位 %d（第 %d 天）" % [slot + 1, world_state.get_current_day() if world_state else 1])
 		var time_txt: String = world_state.get_time_display() if world_state != null else ""
-		ToastManager.success("已保存到槽位 %d · %s" % [slot + 1, time_txt])
+		# 保存含当前剧情进度
+		var prog := _get_progress()
+		var prog_pct := 0
+		if prog[1] > 0:
+			prog_pct = int(prog[0] * 100.0 / float(prog[1]))
+		ToastManager.success("已保存到槽位 %d · %s · 进度 %d%%" % [slot + 1, time_txt, prog_pct])
 	else:
 		ToastManager.warning("保存失败")
 	var sel := get_node_or_null("SlotSelector")
