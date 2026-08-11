@@ -3414,6 +3414,12 @@ func _refresh_menu_title() -> void:
 	if ast is Timer and (ast as Timer).is_stopped() == false:
 		var remain: int = int((ast as Timer).time_left / 60.0)
 		save_txt = " · 💾 %d分" % remain if remain >= 1 else ""
+	# 存档数统计（手动槽位已用数）
+	var slot_count := 0
+	for si in 3:
+		if SaveManager.get_slot_info(si) != {}:
+			slot_count += 1
+	var slot_txt := " · 📚 %d档" % slot_count if slot_count > 0 else ""
 	var region_menu := ""
 	if world_state:
 		var rm2: String = str(world_state.get_variable("current_region", ""))
@@ -3422,7 +3428,7 @@ func _refresh_menu_title() -> void:
 	var day_full := ""
 	if world_state:
 		day_full = world_state.get_time_display().get_slice(" ", 1) + " " + world_state.get_time_display().get_slice(" ", 2)
-	title_node.text = "%s · %s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, progress_txt, time_txt, save_txt]
+	title_node.text = "%s · %s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, progress_txt, time_txt, save_txt, slot_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
