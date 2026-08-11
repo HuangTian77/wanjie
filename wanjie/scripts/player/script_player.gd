@@ -460,6 +460,12 @@ func _start_new_experience() -> void:
 	_set_main_text("[b]【%s】[/b]\n\n%s" % [script_data.name, bg_text])
 	var start_txt: String = world_state.get_time_display() if world_state else ""
 	_add_history("进入世界: %s（%s）" % [script_data.name, start_txt])
+	# 进本时世界效果提示（进行中的效果）
+	if world_state != null and not world_state.active_effects.is_empty():
+		var fx_names: Array[String] = []
+		for fxid5 in world_state.active_effects:
+			fx_names.append("%s(%dh)" % [fxid5, int(world_state.active_effects[fxid5])])
+		ToastManager.info("🌪 世界效果：%s" % "，".join(fx_names))
 	_advance_to_next_event()
 
 ## 从存档继续（优先手动存档槽 0，回退自动存档）
