@@ -2293,6 +2293,30 @@ func _on_menu_char_pressed() -> void:
 	add_child(dialog)
 	# 打开面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 快捷操作行（休息/背包/商店）
+	var quick_row := HBoxContainer.new()
+	dialog.add_child(quick_row)
+	var quick_rest := Button.new()
+	quick_rest.text = "⛺ 休息"
+	quick_rest.flat = true
+	quick_rest.pressed.connect(func():
+		dialog.queue_free()
+		_on_menu_rest_pressed())
+	quick_row.add_child(quick_rest)
+	var quick_bag := Button.new()
+	quick_bag.text = "🎒 背包"
+	quick_bag.flat = true
+	quick_bag.pressed.connect(func():
+		dialog.queue_free()
+		_on_menu_bag_pressed())
+	quick_row.add_child(quick_bag)
+	var quick_shop := Button.new()
+	quick_shop.text = "🏪 商店"
+	quick_shop.flat = true
+	quick_shop.pressed.connect(func():
+		dialog.queue_free()
+		_on_menu_shop_pressed())
+	quick_row.add_child(quick_shop)
 	# 角色头衔（等级 + 属性倾向）
 	var title2 := Label.new()
 	title2.text = "旅者"
