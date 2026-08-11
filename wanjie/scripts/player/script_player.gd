@@ -2280,9 +2280,10 @@ func _on_menu_shop_pressed() -> void:
 	refresh_btn.tooltip_text = "商人重新报价（±20% 波动）"
 	refresh_btn.pressed.connect(func():
 		if economy_engine != null and economy_engine.economy_data != null:
+			var refresh_btn: Button = null
 			for m in economy_engine.economy_data.markets:
 				var mid2: String = str(m.get("id", ""))
-				var refresh_btn := Button.new()
+				refresh_btn = Button.new()
 				refresh_btn.text = "🔄 刷新 %s" % str(m.get("name", mid2))
 				refresh_btn.flat = true
 				refresh_btn.pressed.connect(func():
