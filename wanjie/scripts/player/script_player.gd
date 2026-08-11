@@ -1241,6 +1241,7 @@ func _apply_consequence(consequence: Dictionary) -> void:
 			if world_state:
 				world_state.set_variable(effect, true)
 				ToastManager.info("🌍 世界标记：%s" % effect)
+				_add_history("🌍 世界标记：%s" % effect)
 		_:
 			if world_state and target.begins_with("faction"):
 				var delta := 10.0
