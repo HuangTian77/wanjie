@@ -959,8 +959,10 @@ func _hp_style(r: float, g: float, b: float) -> StyleBoxFlat:
 func _on_event_triggered(event: Dictionary) -> void:
 	var desc: String = event.get("description", "发生了某件事...")
 	var event_name: String = event.get("name", "未知事件")
-	# 主线事件标记（有 chain_id 的显示 📌）
+	# 主线/随机事件标记（chain_id → 📌，random → 🎲）
 	var chain_mark := "📌 " if not str(event.get("chain_id", "")).is_empty() else ""
+	if chain_mark.is_empty() and str(event.get("trigger_type", "")) == "random":
+		chain_mark = "🎲 "
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [chain_mark, event_name, desc])
 	_add_history("事件%s: %s" % [chain_mark, event_name])
 
