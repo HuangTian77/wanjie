@@ -3336,6 +3336,9 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
+	# 经验进度（每 100 经验升级）
+	var exp_now: int = int(st.get("exp", 0))
+	list.append_text("✨ 经验：%d/100（%d%%）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0))])
 	list.append_text("[b]【状态效果】[/b]\n")
 	var fx: Array = st.get("status_effects", [])
 	if fx.is_empty():
