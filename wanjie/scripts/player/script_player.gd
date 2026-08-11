@@ -2082,6 +2082,7 @@ func _on_battle_skill_pressed() -> void:
 			var healed := int(sres.get("healed", 0))
 			if healed > 0:
 				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed], "#7cc47c")
+				_spawn_damage_popup(healed)  # 绿色恢复飘字
 				_spawn_damage_popup(healed)  # 治疗 +绿字飘字
 			if sres.get("buffed", false):
 				ToastManager.success("🛡 %s 获得增益！" % skills[id].get("name", "技能"))
