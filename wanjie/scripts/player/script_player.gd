@@ -3029,8 +3029,14 @@ func _do_rest() -> void:
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
-	# 休息后概率触发随机事件（30%）
-	if event_engine != null and randf() < 0.3:
+	# 休息后概率触发随机事件（30%，满血时 45% 因旅途更安逸）
+	var rest_event_chance := 0.3
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var rest_max: int = int(combat_engine.player_combat_stats.get("max_hp", 100))
+		var rest_hp: int = int(combat_engine.player_combat_stats.get("hp", 0))
+		if rest_max > 0 and rest_hp >= rest_max:
+			rest_event_chance = 0.45
+	if event_engine != null and randf() < rest_event_chance:
 		var random_event: Dictionary = event_engine.check_random_events()
 		if not random_event.is_empty():
 			_run_event(random_event)
