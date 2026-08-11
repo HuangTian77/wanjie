@@ -1327,8 +1327,7 @@ const TAVERN_CHARS: Array = [
 ]
 
 func _on_tavern_pressed() -> void:
-	tavern_panel.visible = true
-	menu_panel.visible = false
+	tavern_panel.visible = true	menu_panel.visible = false
 	# 时段氛围提示（夜晚酒馆）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		ToastManager.info("🌙 夜色中，酒馆灯火通明…")
@@ -1348,6 +1347,8 @@ func _on_tavern_pressed() -> void:
 		tavern_char_select.add_item("%s %s" % [TAVERN_CHARS[i].get("icon", ""), TAVERN_CHARS[i]["name"]], i)
 	tavern_char_select.item_selected.connect(_on_tavern_char_selected)
 	_enter_tavern_char(0)
+	# 输入 placeholder 按角色
+	tavern_input.placeholder_text = "对%s说话…" % str(TAVERN_CHARS[0].get("name", "角色"))
 	tavern_input.grab_focus()
 	var hist_count: int = TavernManager.dialog_history.size()
 	ToastManager.info("🏮 与 %s 对话（←→切换角色）%s" % [
