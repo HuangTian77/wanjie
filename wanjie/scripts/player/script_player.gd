@@ -2213,7 +2213,8 @@ func _on_battle_skill_pressed() -> void:
 				_spawn_mp_popup(-mp_cost_s)
 			if dmg > 0:
 				# 技能暴击日志金色
-				var s_crit: bool = bool(sres.get("critical", false))				_battle_log_line("%s 释放 %s，造成 %d 伤害%s" % [
+				var s_crit: bool = bool(sres.get("critical", false))
+				_battle_log_line("%s 释放 %s，造成 %d 伤害%s" % [
 					combat_engine.player_combat_stats.get("name", "你"),
 					skills[id].get("name", "技能"), dmg, "（暴击！）" if s_crit else ""],
 					"#e6c84c" if s_crit else "#e0665a")
