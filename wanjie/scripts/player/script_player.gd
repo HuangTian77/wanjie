@@ -2522,6 +2522,7 @@ func _on_menu_shop_pressed() -> void:
 			var good_desc: String = str(g.get("description", ""))
 			if not good_desc.is_empty():
 				btn.tooltip_text += "\n%s" % good_desc
+			btn.tooltip_text += "\n点击购买「数量」所选个"
 				# 商品描述 tooltip
 				var item_desc: String = str(g.get("description", ""))
 				if not item_desc.is_empty():
