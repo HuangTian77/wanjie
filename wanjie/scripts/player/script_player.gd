@@ -203,6 +203,20 @@ func _process(delta: float) -> void:
 						_battle_log_line("⚡ 自动释放技能：%s" % str(sk.get("name", "技能")), "#e6c84c")
 						break
 			if not used_skill:
+				# 智能集火：优先攻击低血敌人（<25%）
+				var best_t := -1
+				var best_ratio := 1.1
+				for ei in combat_engine.enemies.size():
+					if not combat_engine.enemies[ei].get("is_alive", true):
+						continue
+					var em: int = maxi(1, int(combat_engine.enemies[ei].get("max_hp", 1)))
+					var eh: int = int(combat_engine.enemies[ei].get("hp", 0))
+					var r: float = float(eh) / float(em)
+					if r < best_ratio:
+						best_ratio = r
+						best_t = ei
+				if best_t >= 0:
+					_battle_target = best_t
 				_on_battle_attack_pressed()
 	# 打字机效果
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
