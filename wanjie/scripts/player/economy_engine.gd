@@ -56,6 +56,8 @@ func buy(market_id: String, item_id: String, quantity: int = 1, currency_id: Str
 		return false
 	player_currencies[currency_id] -= price
 	player_inventory[item_id] = player_inventory.get(item_id, 0) + quantity
+	# 购买抬升商品价格 2%（市场波动）
+	set_price(market_id, item_id, get_price(market_id, item_id) * 1.02)
 	return true
 
 ## 出售物品

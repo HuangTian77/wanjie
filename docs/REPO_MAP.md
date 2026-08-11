@@ -1192,11 +1192,11 @@
 - func `get_price` (L41)
 - func `set_price` (L47)
 - func `buy` (L53)
-- func `sell` (L62)
-- func `update_market_prices` (L75)
-- func `add_currency` (L91)
-- func `add_item` (L95)
-- func `remove_item` (L99)
+- func `sell` (L64)
+- func `update_market_prices` (L77)
+- func `add_currency` (L93)
+- func `add_item` (L97)
+- func `remove_item` (L101)
 
 ### scripts/player/event_engine.gd (event_engine.gd)
 
