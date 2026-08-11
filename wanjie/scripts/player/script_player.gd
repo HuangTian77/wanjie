@@ -440,10 +440,12 @@ func _start_experience() -> void:
 		return
 	_play_start_time = Time.get_ticks_msec()
 	script_title.text = script_data.name
-	# 有存档 → 从存档继续；否则新开
+	# 有存档 → 从存档继续；否则新开（Toast 区分）
 	if SaveManager.has_save(script_data.id):
+		ToastManager.info("📂 检测到存档，继续上次进度")
 		_continue_from_save()
 		return
+	ToastManager.info("✨ 开始新的冒险")
 	_start_new_experience()
 
 ## 新开一局（无存档时的初始流程）
