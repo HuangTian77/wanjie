@@ -528,6 +528,8 @@ var _shop_refresh_count: int = 0
 var _buy_count: int = 0
 ## 累计出售件数（本次游玩）
 var _sell_count: int = 0
+## 本次游玩是否已评分（防重复）
+var _rated_this_run: bool = false
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -3159,6 +3161,11 @@ func _on_menu_rating_pressed() -> void:
 	dialog.confirmed.connect(func():
 		if chosen[0] <= 0:
 			return
+		# 防重复提交（本次游玩仅一次）
+		if _rated_this_run:
+			ToastManager.info("本次游玩已评过分")
+			return
+		_rated_this_run = true
 		var ws: Variant = script_data
 		if ws == null:
 			return
