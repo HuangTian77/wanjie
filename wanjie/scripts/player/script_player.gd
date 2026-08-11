@@ -482,6 +482,8 @@ var _auto_indicator_tween_started: bool = false
 var _last_quest_shown: String = ""
 ## 本次游玩触发事件计数
 var _event_trigger_count: int = 0
+## 连续探索次数（连击奖励）
+var _explore_streak: int = 0
 ## 当前区域（切换提示用）
 var _last_region: String = ""
 ## 酒馆角色心情（char_id → 0/1/2 档）
@@ -572,6 +574,16 @@ func _advance_to_next_event() -> void:
 				stats_x["exp"] = int(stats_x.get("exp", 0)) + 2
 				_sync_save_state()
 				_update_ui()
+			# 探索连击提示（连续探索 5 次）
+			_explore_streak += 1
+			if _explore_streak == 5:
+				ToastManager.success("🔍 连续探索 x5！获得 +5 灵感")
+				GameManager.user_data.inspiration = mini(GameManager.user_data.inspiration_max, GameManager.user_data.inspiration + 5)
+				GameManager.user_data.save_user_data()
+			elif _explore_streak == 10:
+				ToastManager.success("🔍 连续探索 x10！获得 +10 灵感")
+				GameManager.user_data.inspiration = mini(GameManager.user_data.inspiration_max, GameManager.user_data.inspiration + 10)
+				GameManager.user_data.save_user_data()
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
@@ -580,6 +592,8 @@ func _advance_to_next_event() -> void:
 
 ## 统一事件入口: 事件带蓝图图则蓝图驱动, 否则回退传统 event_engine 流程
 func _run_event(event: Dictionary) -> void:
+	# 遇到事件重置探索连击
+	_explore_streak = 0
 	if blueprint_executor == null:
 		event_engine.trigger_event(event)
 		return
