@@ -186,6 +186,7 @@ func _process(delta: float) -> void:
 							combat_engine.player_use_skill(str(sk2.get("id", "")), -1)
 							_refresh_battle_ui()
 							used_skill = true
+							_battle_log_line("💚 自动使用治疗技能回血", "#7cc47c")
 							break
 			# 否则 25% 概率释放第一个可用技能
 			if not used_skill and combat_engine.ability_data != null and randf() < 0.25:
