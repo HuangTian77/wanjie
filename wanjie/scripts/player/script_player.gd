@@ -1630,6 +1630,10 @@ func _on_combat_started(enemies: Array) -> void:
 		_battle_log_line("日志已清空", "#8a8278"))
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
+	# 敌人威胁度提示（攻击力高的敌人标⚠）
+	for e2 in enemies:
+		if int(e2.get("atk", 0)) >= int(combat_engine.player_combat_stats.get("atk", 0) if combat_engine != null else 20):
+			_battle_log_line("⚠ %s 攻击力高于你，谨慎应对！" % str(e2.get("name", "敌人")), "#e6a23c")
 	# 自动推进在战斗中暂停（需玩家手动战斗）
 	if _auto_advance_mode:
 		_battle_log_line("⏸ 自动推进已暂停（战斗进行中）", "#8a8278")
