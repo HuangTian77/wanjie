@@ -1622,6 +1622,9 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 	if _action.get("type", "") == "enemy_attack" and int(_action.get("damage", 0)) > 0:
 		_spawn_damage_popup(-int(_action.get("damage", 0)))
 		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
+	# 玩家攻击日志绿色（与敌人蓝色区分）
+	elif _action.get("type", "") in ["player_attack", "skill"] and int(_action.get("damage", 0)) > 0:
+		_battle_log_line("你攻击 %s，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7cc47c")
 		# 低血警告（HP ≤ 25%）
 		if combat_engine != null:
 			var ps2: Dictionary = combat_engine.player_combat_stats
