@@ -134,6 +134,15 @@ func _ready() -> void:
 				return
 			if hp_ratio <= 0.3:
 				_use_first_potion()
+			# 自动技能：有 MP 时使用第一个攻击技能
+			elif int(ps5.get("mp", 0)) >= 10 and combat_engine.ability_data != null:
+				var skills2: Array = combat_engine.ability_data.skills
+				if not skills2.is_empty():
+					var sid2: String = str(skills2[0].get("id", ""))
+					if not sid2.is_empty():
+						combat_engine.player_use_skill(sid2, 0)
+						_refresh_battle_ui()
+						return
 		_on_battle_attack_pressed())
 	add_child(_auto_combat_timer)
 
