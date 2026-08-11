@@ -4390,6 +4390,9 @@ func _on_slot_delete_selected(slot: int) -> void:
 		return
 	var confirm := ConfirmationDialog.new()
 	confirm.dialog_text = "确定删除槽位 %d 的存档（%s）吗？此操作不可恢复。" % [slot + 1, slot_info]
+	# 删除确认按钮文字（红色警示）
+	confirm.ok_button_text = "确认删除"
+	confirm.cancel_button_text = "取消"
 	confirm.confirmed.connect(func():
 		SaveManager.delete_save(script_data.id if script_data else "", slot)
 		ToastManager.success("存档已删除")
