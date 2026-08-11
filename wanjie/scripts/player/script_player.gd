@@ -2445,6 +2445,7 @@ func _on_menu_shop_pressed() -> void:
 	qty_spin.min_value = 1
 	qty_spin.max_value = 9
 	qty_spin.value = 1
+	qty_spin.tooltip_text = "购买数量（1-9，×单价）"
 	qty_spin.custom_minimum_size.x = 70
 	qty_row.add_child(qty_spin)
 	# 购买按钮 tooltip 提示
