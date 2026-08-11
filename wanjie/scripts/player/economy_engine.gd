@@ -67,6 +67,8 @@ func sell(market_id: String, item_id: String, quantity: int = 1, currency_id: St
 	if player_inventory[item_id] <= 0:
 		player_inventory.erase(item_id)
 	player_currencies[currency_id] = player_currencies.get(currency_id, 0) + price
+	# 出售拉低商品价格 2%（市场波动）
+	set_price(market_id, item_id, maxf(1.0, get_price(market_id, item_id) * 0.98))
 	return true
 
 ## 更新市场价格（模拟供需变化）
