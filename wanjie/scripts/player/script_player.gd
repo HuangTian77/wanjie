@@ -124,7 +124,15 @@ func _ready() -> void:
 		# 低血时自动用药
 		if combat_engine != null:
 			var ps5: Dictionary = combat_engine.player_combat_stats
-			if int(ps5.get("hp", 0)) <= int(ps5.get("max_hp", 100)) * 0.3:
+			var hp_ratio := 0.0
+			if int(ps5.get("max_hp", 100)) > 0:
+				hp_ratio = float(int(ps5.get("hp", 0))) / float(int(ps5.get("max_hp", 100)))
+			# 强敌逃跑：5 回合后仍低血则逃跑
+			if combat_engine.current_round > 5 and hp_ratio < 0.4:
+				_battle_log_line("🏃 自动撤退（久战不利）", "#8a8278")
+				_on_battle_flee_pressed()
+				return
+			if hp_ratio <= 0.3:
 				_use_first_potion()
 		_on_battle_attack_pressed())
 	add_child(_auto_combat_timer)
