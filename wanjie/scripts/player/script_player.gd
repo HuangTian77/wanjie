@@ -1930,6 +1930,10 @@ func _use_first_potion() -> void:
 ## 自动战斗开关（连续点击循环 1x→2x→4x→关）
 func _on_battle_auto_pressed() -> void:
 	var auto_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
+	# 自动推进模式已含自动战斗，避免双重攻击
+	if _auto_advance_mode and not _auto_battle:
+		ToastManager.info("自动推进模式已含自动战斗（A 可关闭）")
+		return
 	if not _auto_battle:
 		_auto_battle = true
 		_auto_interval = 0.6
