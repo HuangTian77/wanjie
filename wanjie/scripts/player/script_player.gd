@@ -3126,6 +3126,11 @@ func _on_menu_rating_pressed() -> void:
 		old.queue_free()
 	# 打开评分时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 评分提示（评分影响大厅精选排序）
+	var rating_tip := Label.new()
+	rating_tip.text = "评分越高越容易在「精选」榜出现"
+	rating_tip.add_theme_color_override("font_color", Color(0.6, 0.55, 0.48))
+	rating_tip.add_theme_font_size_override("font_size", 11)
 	var dialog := ConfirmationDialog.new()
 	dialog.name = "RatingDialog"
 	dialog.title = "评分"
