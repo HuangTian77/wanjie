@@ -3381,6 +3381,15 @@ func _on_player_stats_pressed() -> void:
 	if fx.is_empty():
 		list.append_text("（无）\n")
 	else:
+		# 效果说明映射
+		var fx_desc := {
+			"中毒": "每回合损失生命",
+			"虚弱": "攻击力降低",
+			"护盾": "减免伤害",
+			"狂暴": "攻击提升但防御降低",
+			"再生": "每回合恢复生命",
+			"迟缓": "速度降低",
+		}
 		for f in fx:
 			var fname: String = str(f.get("name", "?"))
 			var ficon := ""
@@ -3391,7 +3400,12 @@ func _on_player_stats_pressed() -> void:
 				"狂暴": ficon = "😤 "
 				"恢复": ficon = "💚 "
 				"眩晕": ficon = "💫 "
-			list.append_text("• %s%s（剩 %d 回合）\n" % [ficon, fname, int(f.get("remaining_turns", 0))])
+			# 效果说明追加
+			var fdesc: String = fx_desc.get(fname, "")
+			var fdesc_txt := ""
+			if not fdesc.is_empty():
+				fdesc_txt = "（%s）" % fdesc
+			list.append_text("• %s%s%s（剩 %d 回合）\n" % [ficon, fname, fdesc_txt, int(f.get("remaining_turns", 0))])
 	list.append_text("\n[b]【金币】[/b] %d" % (int(economy_engine.player_currencies.get("gold", 0)) if economy_engine else 0))
 	# 经验进度条
 	var exp_bar := ProgressBar.new()
