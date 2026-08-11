@@ -1624,7 +1624,12 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 		_battle_log_line("%s 攻击你，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7fa8d9")
 	# 玩家攻击日志绿色（与敌人蓝色区分）
 	elif _action.get("type", "") in ["player_attack", "skill"] and int(_action.get("damage", 0)) > 0:
-		_battle_log_line("你攻击 %s，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7cc47c")
+		# 技能名（若有）
+		var skill_name: String = str(_action.get("skill_name", ""))
+		if not skill_name.is_empty():
+			_battle_log_line("你使用【%s】攻击 %s，造成 %d 伤害" % [skill_name, _actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7cc47c")
+		else:
+			_battle_log_line("你攻击 %s，造成 %d 伤害" % [_actor.get("name", "敌人"), int(_action.get("damage", 0))], "#7cc47c")
 		# 低血警告（HP ≤ 25%）
 		if combat_engine != null:
 			var ps2: Dictionary = combat_engine.player_combat_stats
