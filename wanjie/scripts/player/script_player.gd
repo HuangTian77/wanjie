@@ -1705,6 +1705,12 @@ func _on_combat_ended(result: String) -> void:
 			# 稀有掉落：主文本金强调（遗物）
 			if loot.has("rare_relic"):
 				msg += "（✨ 稀有！）"
+			# 战后状态（HP/MP 剩余）
+			var ps_post: Dictionary = combat_engine.player_combat_stats
+			if not ps_post.is_empty():
+				msg += "\n（HP %d/%d · MP %d/%d）" % [
+					int(ps_post.get("hp", 0)), int(ps_post.get("max_hp", 100)),
+					int(ps_post.get("mp", 0)), int(ps_post.get("max_mp", 50))]
 				if litem == "rare_relic":
 					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
 					_spawn_damage_popup(1, true)  # 金色大字
