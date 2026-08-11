@@ -2757,6 +2757,9 @@ func _on_menu_bag_pressed() -> void:
 				var relic_tag := "（不可出售，永久加成）" if str(item_id) == "rare_relic" else ""
 				list.append_text("• %s × %d%s\n" % [item_id, qty, relic_tag])
 				total_items += qty
+				# 遗物 Tooltip 说明（持有效果）
+				if str(item_id) == "rare_relic":
+					list.append_text("[color=#e6c84c]  ✨ 战斗攻击 +5（永久）[/color]\n")
 				# 用市场价估值（找不到则跳过）
 				if economy_engine.economy_data:
 					for m in economy_engine.economy_data.markets:
