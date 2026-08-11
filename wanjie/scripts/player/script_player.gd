@@ -4320,13 +4320,14 @@ func _get_slot_info(slot: int) -> String:
 	var pp: float = float(save_info.get("progress", 0.0))
 	if pp > 0.0:
 		prog_pct = " | %d%%" % int(pp * 100.0)
-	return "%s | Lv.%d%s | %s%s%s" % [
+	return "%s | Lv.%d%s | %s%s%s%s" % [
 		save_info.get("player_name", "?"),
 		save_info.get("level", 1),
 		prog_pct,
 		_fmt_play_time(save_info.get("play_time", 0)),
 		(" | 第 %d 天" % int(save_info.get("day", 1))) if save_info.has("day") else "",
-		(" | 💰%d" % int(save_info.get("gold", 0))) if save_info.has("gold") else ""]
+		(" | 💰%d" % int(save_info.get("gold", 0))) if save_info.has("gold") else "",
+		(" | %s" % str(save_info.get("saved_at", "")).substr(5, 5)) if save_info.has("saved_at") else ""]
 
 ## 槽位保存
 func _on_slot_save_selected(slot: int) -> void:
