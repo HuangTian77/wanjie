@@ -2280,19 +2280,9 @@ func _on_menu_shop_pressed() -> void:
 	refresh_btn.tooltip_text = "商人重新报价（±20% 波动）"
 	refresh_btn.pressed.connect(func():
 		if economy_engine != null and economy_engine.economy_data != null:
-			var refresh_btn: Button = null
+			var mid3: String = ""
 			for m in economy_engine.economy_data.markets:
-				var mid2: String = str(m.get("id", ""))
-				refresh_btn = Button.new()
-				refresh_btn.text = "🔄 刷新 %s" % str(m.get("name", mid2))
-				refresh_btn.flat = true
-				refresh_btn.pressed.connect(func():
-					economy_engine.update_market_prices()
-					ToastManager.info("市场价格已刷新（供需波动）")
-					_on_menu_shop_pressed()
-					dialog.queue_free())
-				inner.add_child(refresh_btn)
-				var mid3: String = str(m.get("id", ""))
+				mid3 = str(m.get("id", ""))
 				for g in m.get("goods", []):
 					var item_id3: String = str(g.get("item", ""))
 					var base: float = float(g.get("price", 10))
