@@ -557,21 +557,25 @@ bbcode_enabled = true
 layout_mode = 2
 
 [node name="AutoBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+tooltip_text = "自动战斗：1x→2x→4x→关闭（HP<25% 自动暂停）"
 layout_mode = 2
 text = "⚡ 自动"
 tooltip_text = "自动战斗：点击循环 1x→2x→4x→关"
 
 [node name="AttackBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+tooltip_text = "普通攻击（每次 +1 MP 攒蓝）"
 layout_mode = 2
 text = "⚔ 攻击"
 tooltip_text = "普通攻击当前目标（命中率受敏捷影响）"
 
 [node name="SkillBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+tooltip_text = "技能菜单（数字键 1-9 快速释放）"
 layout_mode = 2
 text = "✦ 技能"
 tooltip_text = "释放技能（消耗 MP，快捷键 1-9）"
 
 [node name="FleeBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
+tooltip_text = "逃跑（成功率受速度影响）"
 layout_mode = 2
 text = "🏃 逃跑"
 
