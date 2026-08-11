@@ -1024,6 +1024,13 @@ func _update_ui() -> void:
 			"夜晚": period_icon = "🌙"
 		time_label.text += " · %s %s" % [period_icon, world_state.get_period_name()]
 		time_label.tooltip_text = "世界时间 · 当前区域 · %s" % world_state.get_period_name()
+		# 世界效果标记（进行中效果加 🌪）
+		if not world_state.active_effects.is_empty():
+			time_label.text += " 🌪"
+			var fx_tip := "世界效果："
+			for fxid2 in world_state.active_effects:
+				fx_tip += "%s(%dh) " % [fxid2, int(world_state.active_effects[fxid2])]
+			time_label.tooltip_text += "\n" + fx_tip
 		# tooltip 补充探索进度
 		if world_state and not world_state.explored_regions.is_empty():
 			time_label.tooltip_text += "\n已探索 %d 个区域：%s" % [
