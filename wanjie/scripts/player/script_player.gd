@@ -1052,6 +1052,11 @@ func _on_event_triggered(event: Dictionary) -> void:
 	if str(event.get("trigger_type", "")) == "random" and event.has("probability"):
 		tip_extra = "\n触发概率：%.0f%%" % (float(event["probability"]) * 100.0)
 	main_text.tooltip_text = "%s\n%s%s" % [event_name, desc, tip_extra]
+	# tooltip 闪烁提示（新事件可悬停查看）
+	if ThemeManager.animations_enabled:
+		main_text.modulate = Color(1, 1, 1, 0.9)
+		var tip_tw := create_tween()
+		tip_tw.tween_property(main_text, "modulate", Color.WHITE, 0.4)
 	# 事件触发计数（本次游玩）
 	_event_trigger_count += 1
 	# 事件链完成庆祝（当前链全部触发）
