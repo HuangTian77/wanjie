@@ -2117,13 +2117,13 @@ func _on_battle_auto_pressed() -> void:
 		_auto_battle = true
 		_auto_interval = 0.6
 		_auto_timer = 0.0
-		ToastManager.info("自动战斗开启（1x）")
+		ToastManager.info("自动战斗开启（1x，再按加速）")
 	elif _auto_interval == 0.6:
 		_auto_interval = 0.3
-		ToastManager.info("自动战斗加速（2x）")
+		ToastManager.info("自动战斗加速（2x，再按 4x）")
 	elif _auto_interval == 0.3:
 		_auto_interval = 0.15
-		ToastManager.info("自动战斗加速（4x）")
+		ToastManager.info("自动战斗加速（4x，再按关闭）")
 	else:
 		_auto_battle = false
 		ToastManager.info("自动战斗关闭")
