@@ -3788,6 +3788,8 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
+	# 攻防公式说明（tooltip 已在滚动列表外 → 直接文本提示）
+	list.append_text("[color=#7a7268]伤害 = 攻击 - 防御（最低 1）；速度影响先手与逃跑率[/color]\n\n")
 	# MP/HP 概览
 	list.append_text("❤️ HP %d/%d    ✦ MP %d/%d\n\n" % [
 		int(st.get("hp", 0)), int(st.get("max_hp", 100)),
