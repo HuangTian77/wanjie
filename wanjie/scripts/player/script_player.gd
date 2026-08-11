@@ -2074,6 +2074,10 @@ func _on_battle_skill_pressed() -> void:
 		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), _battle_target)
 		if not sres.is_empty():
 			var dmg := int(sres.get("damage", 0))
+			# 技能 MP 消耗飘字（蓝色 -）
+			var mp_cost_s: int = int((skills[id].get("cost", {}) as Dictionary).get("mana", 0))
+			if mp_cost_s > 0:
+				_spawn_mp_popup(-mp_cost_s)
 			if dmg > 0:
 				# 技能暴击日志金色
 				var s_crit: bool = bool(sres.get("critical", false))
