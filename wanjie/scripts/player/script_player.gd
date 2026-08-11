@@ -2182,9 +2182,9 @@ func _restore_save_state(sd: SaveData) -> void:
 	# 恢复自动推进偏好（读档后重置为用户设置）
 	_auto_advance_mode = GameManager.user_data.auto_advance
 	# 酒馆恢复（当前角色/历史）
-	if TavernManager != null:
-		TavernManager.load_history()
-		_update_tavern_char_select()
+	if TavernManager != null and not TavernManager.current_character.is_empty():
+		TavernManager.load_history(str(TavernManager.current_character.get("id", "innkeeper")))
+		_enter_tavern_char(maxi(0, tavern_char_select.selected))
 	# 进度百分比提示
 	var prog3 := _get_progress()
 	if prog3[1] > 0:
@@ -2198,7 +2198,7 @@ func _restore_save_state(sd: SaveData) -> void:
 		var last_ev: Dictionary = event_engine.event_history[event_engine.event_history.size() - 1]
 		var last_txt: String = str(last_ev.get("text", ""))
 		if not last_txt.is_empty():
-			_set_main_text(last_txt, true)
+			_set_main_text(last_txt)
 	# 读档完成关闭菜单与槽位选择器
 	if menu_panel != null:
 		menu_panel.visible = false
