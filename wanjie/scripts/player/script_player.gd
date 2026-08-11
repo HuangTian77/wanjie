@@ -4164,7 +4164,7 @@ func _on_menu_help_pressed() -> void:
 	var help_txt: String = dialog.dialog_text
 	for key in ["空格", "回车", "A", "H", "T", "Esc", "S", "L", "B", "1-9", "Tab", "Shift"]:
 		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
-	help_lbl.text = help_txt
+	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v1.2.0（体验版）[/color]"
 	help_scroll.add_child(help_lbl)
 	dialog.dialog_text = ""
 	dialog.popup_centered()
