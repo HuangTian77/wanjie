@@ -1703,6 +1703,11 @@ func _on_combat_round_started(round_num: int) -> void:
 		var mp_round: int = int(combat_engine.player_combat_stats.get("mp", 0))
 		if mp_round < 3:
 			_battle_log_line("✦ MP 紧张（%d），普攻可攒蓝" % mp_round, "#8a8278")
+		# 回合低血提示（<30% 建议药水/休息）
+		var hp_round: int = int(combat_engine.player_combat_stats.get("hp", 0))
+		var hp_round_max: int = maxi(1, int(combat_engine.player_combat_stats.get("max_hp", 100)))
+		if hp_round < hp_round_max * 0.3:
+			_battle_log_line("🩸 生命危急（%d%%），建议用药/治疗技能" % int(hp_round * 100.0 / hp_round_max), "#e05a4e")
 	# 状态效果倒计时日志（剩余 1 回合提示）
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var ps_fx: Array = combat_engine.player_combat_stats.get("status_effects", [])
