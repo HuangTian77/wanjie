@@ -2727,6 +2727,7 @@ func _on_menu_bag_pressed() -> void:
 				economy_engine.player_inventory[item_id2] = int(economy_engine.player_inventory[item_id2]) - 1
 				ToastManager.success("💰 卖出 %s +%d 金币" % [item_id2, gain])
 				_add_history("💰 卖出 %s +%d 金币" % [item_id2, gain])
+				_spawn_damage_popup(gain, false, true)  # 卖出金币金色飘字
 				_sync_save_state()
 				_on_menu_bag_pressed()
 				dialog.queue_free())
