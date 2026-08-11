@@ -1081,6 +1081,7 @@ func _on_choice_selected(choice_id: String) -> void:
 		consequence_text += "→ %s: %s\n" % [target, effect]
 		if not effect.is_empty():
 			_add_history("后果: %s（%s）" % [target, effect])
+			_spawn_damage_popup(consequences.size(), false, true)  # 后果数量金色飘字
 		_apply_consequence(c)
 
 	if consequence_text.is_empty():
