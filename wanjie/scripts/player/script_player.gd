@@ -4227,6 +4227,12 @@ func _show_slot_selector(mode: String) -> void:
 
 	var title_label := Label.new()
 	title_label.text = "选择存档槽位" if mode == "save" else ("选择加载槽位" if mode == "load" else "选择删除槽位")
+	# 副标题统计（已用槽位）
+	var used_slots := 0
+	for si3 in 3:
+		if _get_slot_info(si3) != "(空)":
+			used_slots += 1
+	title_label.tooltip_text = "已使用 %d/3 个槽位 · 自动存档独立" % used_slots
 	title_label.add_theme_font_size_override("font_size", 16)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
