@@ -4457,6 +4457,7 @@ func _on_slot_load_selected(slot: int) -> void:
 		if slot_sel2:
 			slot_sel2.queue_free()
 		_update_ui()
+		_refresh_menu_title()
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var day_loaded: int = world_state.get_current_day() if world_state else 1
 		# 加载含进度与等级
