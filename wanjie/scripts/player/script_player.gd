@@ -2202,6 +2202,15 @@ func _restore_save_state(sd: SaveData) -> void:
 	# 读档完成关闭菜单与槽位选择器
 	if menu_panel != null:
 		menu_panel.visible = false
+	# 恢复信息汇总（等级/金币/进度）
+	var summary: String = "📂 已恢复"
+	if world_state != null:
+		summary += " · 第 %d 天" % world_state.get_current_day()
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		summary += " · Lv.%d" % int(combat_engine.player_combat_stats.get("level", 1))
+	if economy_engine != null:
+		summary += " · 💰%d" % int(economy_engine.player_currencies.get("gold", 0))
+	ToastManager.success(summary)
 	_update_ui()
 	_sync_save_state()
 
