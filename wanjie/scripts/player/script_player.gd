@@ -1620,6 +1620,8 @@ func _tavern_mock_reply(text: String) -> String:
 	return reply
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
+	# 战斗背景色（主区轻微暗红提示战斗氛围）
+	main_text.add_theme_color_override("font_color", Color(0.92, 0.86, 0.8))
 	# 新战斗清空上一场日志
 	battle_log.clear()
 	# 右键复制菜单（选中文本可复制）
@@ -1728,6 +1730,8 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 恢复主文本颜色
+	main_text.remove_theme_color_override("font_color")
 	# 停止自动战斗辅助
 	if _auto_combat_timer != null:
 		_auto_combat_timer.stop()
