@@ -1430,6 +1430,9 @@ func _on_tavern_close_pressed() -> void:
 
 func _on_tavern_char_selected(index: int) -> void:
 	_enter_tavern_char(index)
+	# 输入 placeholder 随角色切换更新
+	if index >= 0 and index < TAVERN_CHARS.size():
+		tavern_input.placeholder_text = "对%s说话…" % str(TAVERN_CHARS[index].get("name", "角色"))
 	# 切换角色提示（显示当前角色好感）
 	var cname: String = str(TAVERN_CHARS[index].get("name", "角色")) if index >= 0 and index < TAVERN_CHARS.size() else "角色"
 	var mood_val: int = _tavern_moods.get(str(TAVERN_CHARS[index].get("id", "")) if index >= 0 and index < TAVERN_CHARS.size() else "", 0)
