@@ -3615,6 +3615,8 @@ func _setup_menu_tooltips() -> void:
 		"BagBtn": "查看背包物品与价值",
 		"RatingBtn": "为本剧本评分（1-5 星）",
 		"LogBtn": "查看世界事件日志",
+		"RestBtn": "休息 8 小时：回满 HP/MP，30% 概率遭遇事件",
+		"HelpBtn": "查看完整操作说明与快捷键",
 		"RestBtn": "推进 8 小时并回满 HP/MP",
 		"PlayerStatsBtn": "查看完整战斗属性与经验",
 		"HelpBtn": "查看操作帮助与快捷键（H）",
