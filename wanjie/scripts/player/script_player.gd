@@ -2740,7 +2740,7 @@ func _on_menu_bag_pressed() -> void:
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scroll.add_child(list)
 	if economy_engine == null or economy_engine.player_inventory.is_empty():
-		list.append_text("[color=#999]背包空空如也…[/color]")
+		list.append_text("[color=#999]背包空空如也…（商店可购买物品）[/color]")
 	else:
 		var total_items := 0
 		var total_value := 0
