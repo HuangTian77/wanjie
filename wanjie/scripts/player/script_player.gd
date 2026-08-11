@@ -1003,11 +1003,16 @@ func _on_event_triggered(event: Dictionary) -> void:
 
 func _on_choices_presented(choices: Array) -> void:
 	_clear_choices()
+	# 选项副作用预览（有后果的显示 ▶）
 	for i in choices.size():
 		var choice: Dictionary = choices[i]
 		# 复用统一选择按钮（序号/动画/键盘）
 		var btn := Button.new()
-		btn.text = "%d. %s" % [i + 1, choice.get("text", "选择")]
+		var btn_text: String = "%d. %s" % [i + 1, choice.get("text", "选择")]
+		var cons: Array = choice.get("consequences", [])
+		if not cons.is_empty():
+			btn_text += " ▶"
+		btn.text = btn_text
 		btn.custom_minimum_size = Vector2(0, 44)
 		btn.add_theme_font_size_override("font_size", 15)
 		btn.focus_mode = Control.FOCUS_ALL
