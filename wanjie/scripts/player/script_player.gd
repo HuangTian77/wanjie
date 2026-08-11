@@ -4398,8 +4398,8 @@ func _on_slot_delete_selected(slot: int) -> void:
 		ToastManager.success("存档已删除")
 		_add_history("🗑 已删除槽位 %d 存档" % (slot + 1))
 		# 删除后刷新槽位列表
-		var sel := get_node_or_null("SlotSelector")
-		if sel:
+		var slot_sel := get_node_or_null("SlotSelector")
+		if slot_sel:
 			_show_slot_selector("delete")
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
