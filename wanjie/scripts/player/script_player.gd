@@ -1821,6 +1821,9 @@ func _on_combat_ended(result: String) -> void:
 				_enemy_codex[first_enemy] = int(_enemy_codex.get(first_enemy, 0)) + 1
 			# 掉落物品入背包
 			var loot: Array = rewards.get("loot", [])
+			# 演示掉落：30% 概率额外获得烟雾弹（逃跑道具）
+			if randf() < 0.3:
+				loot.append("smoke_bomb")
 			for li in loot:
 				var litem: String = str(li)
 				economy_engine.player_inventory[litem] = int(economy_engine.player_inventory.get(litem, 0)) + 1
