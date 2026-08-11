@@ -3128,6 +3128,10 @@ func _on_menu_rating_pressed() -> void:
 		old.queue_free()
 	# 打开评分时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 评分按钮显示当前评分
+	var rating_btn := get_node_or_null("MenuPanel/MenuVBox/RatingBtn") as Button
+	if rating_btn != null and script_data != null and script_data.rating_count > 0:
+		rating_btn.text = "★ 评分（当前 %.1f）" % script_data.rating
 	# 评分提示（评分影响大厅精选排序）
 	var rating_tip := Label.new()
 	rating_tip.text = "评分越高越容易在「精选」榜出现"
