@@ -3776,6 +3776,14 @@ func _on_player_stats_pressed() -> void:
 		list.append_text("[color=#999]暂无战斗属性[/color]")
 		dialog.popup_centered()
 		return
+	# 复制属性按钮
+	var copy_attr_btn := Button.new()
+	copy_attr_btn.text = "⧉ 复制属性"
+	copy_attr_btn.flat = true
+	copy_attr_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(list.text)
+		ToastManager.success("属性已复制"))
+	dialog.add_child(copy_attr_btn)
 	var st: Dictionary = combat_engine.player_combat_stats
 	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
