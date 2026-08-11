@@ -1696,6 +1696,10 @@ func _on_combat_ended(result: String) -> void:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_add_history("⚔ 战斗胜利：+%d 金币 +%d 经验" % [gold, exp])
+			# 胜利历史含敌人名（若有）
+			if not combat_engine.enemies.is_empty():
+				var first_enemy: String = str(combat_engine.enemies[0].get("name", "?"))
+				_add_history("🏁 击败 %s" % first_enemy)
 			# 掉落物品入背包
 			var loot: Array = rewards.get("loot", [])
 			for li in loot:
