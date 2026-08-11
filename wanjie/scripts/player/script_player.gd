@@ -549,6 +549,11 @@ var _history_unread: int = 0
 ## 当前酒馆角色索引
 var tavern_char_index: int = 0
 
+## 彩蛋话题发送（bind 参数避免循环变量捕获问题）
+func _send_egg_topic(topic: String) -> void:
+	tavern_input.text = topic
+	_on_tavern_send_pressed()
+
 ## 更新酒馆角色下拉（显示心情标记）
 func _tavern_update_char_label() -> void:
 	var sel := get_node_or_null("TavernPanel/TavernVBox/TavernHeader/TavernCharSelect")
@@ -1356,6 +1361,19 @@ func _on_tavern_pressed() -> void:
 	var egg_hint := get_node_or_null("TavernPanel/TavernVBox/TavernHeader") as HBoxContainer
 	if egg_hint != null:
 		egg_hint.tooltip_text = "试试聊聊：遗物 / 命运 / 酒 / 世界"
+	# 彩蛋话题快捷按钮（自动发送）
+	var egg_row := get_node_or_null("TavernPanel/TavernVBox") as VBoxContainer
+	if egg_row != null and not egg_row.has_node("EggRow"):
+		var er := HBoxContainer.new()
+		er.name = "EggRow"
+		for topic in ["遗物", "命运", "酒", "世界"]:
+			var eb := Button.new()
+			eb.text = topic
+			eb.flat = true
+			eb.add_theme_font_size_override("font_size", 11)
+			eb.pressed.connect(_send_egg_topic.bind(topic))
+			er.add_child(eb)
+		egg_row.add_child(er)
 	var hist_count: int = TavernManager.dialog_history.size()
 	ToastManager.info("🏮 与 %s 对话（←→切换角色）%s" % [
 		TAVERN_CHARS[0].get("name", "角色"),
