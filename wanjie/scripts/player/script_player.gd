@@ -2665,9 +2665,11 @@ func _on_menu_pressed() -> void:
 		(fb as Button).grab_focus()
 
 func _on_menu_save_pressed() -> void:
+	# 快速保存到自动存档（Ctrl+S 等效）
 	_show_slot_selector("save")
 
 func _on_menu_load_pressed() -> void:
+	# 快速读档（含自动存档入口）
 	_show_slot_selector("load")
 
 func _on_menu_delete_pressed() -> void:
