@@ -566,6 +566,11 @@ func _advance_to_next_event() -> void:
 				if rand_total > 0:
 					rand_hint = "此世界有 %d 个随机事件可遭遇。" % rand_total
 			_set_main_text("你在这个世界中继续探索...%s\n%s%s\n暂时没有发现特别的事件。\n\n[color=#8a8278]%s[/color]\n\n[i][点击继续探索][/i]\n\n[color=#8a8278]（可按 A 开启自动推进）[/color]" % [time_info, region_desc, scenery, rand_hint])
+			# 探索小奖励（+2 经验鼓励继续）
+			if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+				var stats_x: Dictionary = combat_engine.player_combat_stats
+				stats_x["exp"] = int(stats_x.get("exp", 0)) + 2
+				_sync_save_state()
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
