@@ -417,7 +417,7 @@ text = "📂 读档（L）"
 [node name="DeleteBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "🗑 删除"
+text = "🗑 删除存档"
 
 [node name="Sep1" type="HSeparator" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
