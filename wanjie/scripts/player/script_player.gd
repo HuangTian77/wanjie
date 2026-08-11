@@ -2610,6 +2610,23 @@ func _on_menu_bag_pressed() -> void:
 	title.text = "持有物品"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
+	# 背包总估值（半价出售价合计）
+	if economy_engine != null and not economy_engine.player_inventory.is_empty():
+		var total_value := 0
+		for item_id in economy_engine.player_inventory:
+			var unit_v := 10
+			if economy_engine.economy_data != null:
+				for m in economy_engine.economy_data.markets:
+					for g in m.get("goods", []):
+						if str(g.get("item", "")) == str(item_id):
+							unit_v = int(economy_engine.get_price(str(m.get("id", "")), str(item_id)))
+							break
+			total_value += maxi(1, unit_v / 2) * int(economy_engine.player_inventory[item_id])
+		var val_lbl := Label.new()
+		val_lbl.text = "背包估值：%d 金币（可出售）" % total_value
+		val_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
+		val_lbl.add_theme_font_size_override("font_size", 11)
+		box.add_child(val_lbl)
 	# 使用药水按钮（恢复 HP 的道具）
 	if economy_engine != null and not economy_engine.player_inventory.is_empty():
 		var use_row := HBoxContainer.new()
