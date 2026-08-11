@@ -966,7 +966,10 @@ func _on_event_triggered(event: Dictionary) -> void:
 	if chain_mark.is_empty() and str(event.get("trigger_type", "")) == "random":
 		chain_mark = "🎲 "
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [chain_mark, event_name, desc])
-	_add_history("事件%s: %s" % [chain_mark, event_name])
+	# 历史记录（避免连续重复事件刷屏）
+	var hist_line := "事件%s: %s" % [chain_mark, event_name]
+	if not history_text.text.ends_with(hist_line):
+		_add_history(hist_line)
 	# 事件标题 tooltip（描述悬停查看）
 	main_text.tooltip_text = "%s\n%s" % [event_name, desc]
 	# 事件触发计数（本次游玩）
