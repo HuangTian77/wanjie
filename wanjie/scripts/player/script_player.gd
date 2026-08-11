@@ -970,8 +970,11 @@ func _on_event_triggered(event: Dictionary) -> void:
 	var hist_line := "事件%s: %s" % [chain_mark, event_name]
 	if not history_text.text.ends_with(hist_line):
 		_add_history(hist_line)
-	# 事件标题 tooltip（描述悬停查看）
-	main_text.tooltip_text = "%s\n%s" % [event_name, desc]
+	# 事件标题 tooltip（描述悬停查看；随机事件含概率）
+	var tip_extra := ""
+	if str(event.get("trigger_type", "")) == "random" and event.has("probability"):
+		tip_extra = "\n触发概率：%.0f%%" % (float(event["probability"]) * 100.0)
+	main_text.tooltip_text = "%s\n%s%s" % [event_name, desc, tip_extra]
 	# 事件触发计数（本次游玩）
 	_event_trigger_count += 1
 	# 事件到达动效（屏幕轻微震动，可关闭）
