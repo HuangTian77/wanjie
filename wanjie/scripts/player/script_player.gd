@@ -2293,6 +2293,16 @@ func _on_menu_char_pressed() -> void:
 	add_child(dialog)
 	# 打开面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 角色头衔（等级 + 属性倾向）
+	var title2 := Label.new()
+	title2.text = "旅者"
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var st2: Dictionary = combat_engine.player_combat_stats
+		title2.text = "Lv.%d %s" % [int(st2.get("level", 1)), str(st2.get("name", "旅者"))]
+	title2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title2.add_theme_font_size_override("font_size", 18)
+	title2.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
+	dialog.add_child(title2)
 	# 刷新按钮（重新构建面板）
 	var refresh_btn := Button.new()
 	refresh_btn.text = "↻ 刷新"
