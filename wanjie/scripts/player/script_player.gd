@@ -526,6 +526,8 @@ var _win_streak: int = 0
 var _shop_refresh_count: int = 0
 ## 累计购买件数（本次游玩）
 var _buy_count: int = 0
+## 累计出售件数（本次游玩）
+var _sell_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -2675,6 +2677,8 @@ func _on_menu_char_pressed() -> void:
 		list.append_text("• 触发事件：%d 个（本次 %d）\n" % [(event_engine.triggered_ids.size() if event_engine != null else 0), _event_trigger_count])
 		if _buy_count > 0:
 			list.append_text("🛒 购买物品：%d 件\n" % _buy_count)
+		if _sell_count > 0:
+			list.append_text("💰 出售物品：%d 件\n" % _sell_count)
 	# 敌人图鉴
 	if not _enemy_codex.is_empty():
 		list.append_text("\n[color=#c9a06a]敌人图鉴（本次）[/color]\n")
@@ -3074,6 +3078,7 @@ func _on_menu_bag_pressed() -> void:
 				economy_engine.player_inventory[item_id2] = int(economy_engine.player_inventory[item_id2]) - 1
 				ToastManager.success("💰 卖出 %s +%d 金币" % [item_id2, gain])
 				_add_history("💰 卖出 %s +%d 金币" % [item_id2, gain])
+				_sell_count += 1
 				_spawn_damage_popup(gain, false, true)  # 卖出金币金色飘字
 				_sync_save_state()
 				_on_menu_bag_pressed()
