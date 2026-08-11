@@ -522,6 +522,8 @@ var _flee_fail_count: int = 0
 var _lose_streak: int = 0
 ## 连续胜利场数
 var _win_streak: int = 0
+## 商店刷新次数（本次游玩）
+var _shop_refresh_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -2713,6 +2715,10 @@ func _on_menu_shop_pressed() -> void:
 					economy_engine.set_price(mid3, item_id3, new_price)
 			ToastManager.info("💰 商人重新报价")
 			_add_history("💰 商人重新报价（价格波动）")
+			# 刷新次数提示（每日可多次，价格随机波动）
+			_shop_refresh_count += 1
+			if _shop_refresh_count == 5:
+				ToastManager.info("已刷新 5 次，价格会更随机（低买高卖机会增多）")
 		dialog.queue_free()
 		_on_menu_shop_pressed())
 	refresh_row.add_child(refresh_btn)
