@@ -3095,6 +3095,40 @@ func _on_menu_log_pressed() -> void:
 	filter_opt.add_item("后果")
 	filter_opt.add_item("其他")
 	filter_row.add_child(filter_opt)
+	# 日志内关键字搜索
+	var search_row := HBoxContainer.new()
+	box.add_child(search_row)
+	var search_lbl := Label.new()
+	search_lbl.text = "搜索："
+	search_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	search_row.add_child(search_lbl)
+	var search_edit := LineEdit.new()
+	search_edit.placeholder_text = "在日志中搜索关键字…"
+	search_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	search_row.add_child(search_edit)
+	search_edit.text_changed.connect(func(_t: String):
+		# 关键字过滤（与类型筛选叠加）
+		var kw: String = search_edit.text.strip_edges()
+		var filtered := ""
+		var match_count := 0
+		var full := history_text.text
+		for line in full.split("\n"):
+			var keeps := true
+			match filter_opt.selected:
+				1: keeps = line.contains("事件") or line.contains("📌") or line.contains("🎲")
+				2: keeps = line.contains("后果") or line.contains("选择")
+				3: keeps = not (line.contains("事件") or line.contains("后果") or line.contains("选择"))
+			if not kw.is_empty() and not line.contains(kw):
+				keeps = false
+			if keeps and not line.strip_edges().is_empty():
+				filtered += line + "\n"
+				match_count += 1
+		list.clear()
+		if not filtered.is_empty():
+			list.append_text("[color=#8a7a68]匹配 %d 条[/color]\n\n" % match_count)
+			list.append_text(filtered)
+		else:
+			list.append_text("[color=#999]（无匹配记录）[/color]"))
 	filter_opt.item_selected.connect(func(_idx: int):
 		# 按前缀过滤历史（事件/后果/其他行）
 		var filtered := ""
