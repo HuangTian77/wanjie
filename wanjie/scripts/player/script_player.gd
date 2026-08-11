@@ -66,6 +66,8 @@ var _play_start_time: int = 0
 var _battle_target: int = -1
 ## 最近自动保存时间（秒，用于按钮反馈）
 var _last_autosave_time: float = 0.0
+## 上次休息时的天数（跨天自动存档用）
+var _last_rest_day: int = -1
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -3920,6 +3922,11 @@ func _do_rest() -> void:
 		var expired_fx: Array = world_state.tick_effects()
 		if not expired_fx.is_empty():
 			ToastManager.info("🌪 世界效果结束：%s" % "，".join(PackedStringArray(expired_fx)))
+	# 休息后自动存档（跨天节点）
+	if world_state and world_state.get_current_day() != _last_rest_day:
+		SaveManager.autosave()
+		_add_history("⛺ 休息后自动存档（第 %d 天）" % world_state.get_current_day())
+		_last_rest_day = world_state.get_current_day()
 	_update_ui()
 	_sync_save_state()
 	var rest_time_txt: String = world_state.get_time_display() if world_state != null else ""

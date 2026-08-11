@@ -1229,9 +1229,9 @@
 
 ### scripts/player/script_player.gd (script_player.gd)
 
-- func `_ready` (L79)
-- func `settings_auto_save_interval_min` (L159)
-- func `_process` (L167)
+- func `_ready` (L81)
+- func `settings_auto_save_interval_min` (L161)
+- func `_process` (L169)
 
 ### scripts/player/world_state.gd (world_state.gd)
 
