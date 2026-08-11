@@ -479,6 +479,11 @@ func _continue_from_save() -> void:
 	# 恢复战斗状态（player_state 中的 HP/MP/等级）
 	if combat_engine and sd.player_state:
 		combat_engine.set_player_stats(sd.player_state)
+	# 清理任何残留战斗 UI（续档不应直接进入战斗）
+	if battle_panel != null:
+		battle_panel.visible = false
+	if combat_engine != null:
+		combat_engine.reset_battle()
 	_update_ui()
 	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
 	# 恢复自动推进偏好
