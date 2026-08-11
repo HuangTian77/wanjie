@@ -1533,6 +1533,20 @@ func _on_tavern_send_pressed() -> void:
 	if text.is_empty():
 		return
 	tavern_input.text = ""
+	# 关键词彩蛋（特定话题特殊回应）
+	var easter_egg := ""
+	if text.contains("遗物") or text.contains("宝物"):
+		easter_egg = "（神秘地压低声音）听说上古遗物藏在旧矿坑深处…"
+	elif text.contains("命运") or text.contains("预言"):
+		easter_egg = "（若有所思）命运这种东西，总是喜欢和人开玩笑。"
+	elif text.contains("酒"):
+		easter_egg = "（递过一杯）尝尝这个，本店招牌，喝了能暖一整天。"
+	elif text.contains("世界"):
+		easter_egg = "（望向窗外）这个世界，比你想的辽阔得多。"
+	if not easter_egg.is_empty():
+		_tavern_append("assistant", easter_egg)
+		TavernManager.add_message("assistant", easter_egg)
+		return
 	# 斜杠命令：/h 历史 /c 清空
 	if text.begins_with("/"):
 		match text:
