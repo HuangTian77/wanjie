@@ -4257,7 +4257,7 @@ func _show_slot_selector(mode: String) -> void:
 		full_note.text = "⚠ 3 个槽位已满：保存将覆盖所选槽位"
 		full_note.add_theme_color_override("font_color", Color(0.85, 0.55, 0.2))
 		full_note.add_theme_font_size_override("font_size", 11)
-		title_box.add_child(full_note)
+		vbox.add_child(full_note)
 	title_label.add_theme_font_size_override("font_size", 16)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
