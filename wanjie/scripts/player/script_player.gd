@@ -851,12 +851,6 @@ func _update_ui() -> void:
 		current_hp = clampi(current_hp, 0, max_hp)
 		hp_bar.max_value = max_hp
 		hp_bar.value = current_hp
-		# 血条颜色随血量：>60% 绿 / 30-60% 橙 / <30% 红
-		var hp_ratio := float(current_hp) / float(maxf(1.0, max_hp))
-		var hp_fill := StyleBoxFlat.new()
-		hp_fill.set_corner_radius_all(4)
-		hp_fill.bg_color = Color(0.35, 0.85, 0.4) if hp_ratio > 0.6 else (Color(0.95, 0.7, 0.3) if hp_ratio > 0.3 else Color(0.9, 0.3, 0.3))
-		hp_bar.add_theme_stylebox_override("fill", hp_fill)
 		# 低血量警示色（<30% 变红）
 		var hp_ratio := float(current_hp) / float(max_hp) if max_hp > 0 else 0.0
 		if hp_ratio <= 0.3:
