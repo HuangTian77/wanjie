@@ -794,6 +794,8 @@ func _add_choice_button(text: String, method: String = "") -> void:
 
 ## 添加历史记录
 func _add_history(text: String) -> void:
+	# 悬停查看最近历史全文
+	history_text.tooltip_text = text
 	# 类型标记（事件/后果/其他 → 便于日志筛选）
 	var type_tag := "其他"
 	if text.contains("事件") or text.contains("📌") or text.contains("🎲"):
