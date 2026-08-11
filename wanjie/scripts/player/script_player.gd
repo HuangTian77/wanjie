@@ -3869,7 +3869,11 @@ func _on_slot_load_selected(slot: int) -> void:
 		_restore_save_state(sd3)
 		_add_history("已从槽位 %d 加载" % (slot + 1))
 		var day_loaded: int = world_state.get_current_day() if world_state else 1
-		ToastManager.success("已从槽位 %d 加载（第 %d 天）" % [slot + 1, day_loaded])
+		# 加载含进度与等级
+		var lv_loaded: int = 1
+		if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+			lv_loaded = int(combat_engine.player_combat_stats.get("level", 1))
+		ToastManager.success("已从槽位 %d 加载（第 %d 天 · Lv.%d）" % [slot + 1, day_loaded, lv_loaded])
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
 			sel.queue_free()
