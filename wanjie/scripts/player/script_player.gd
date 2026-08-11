@@ -108,8 +108,11 @@ func _ready() -> void:
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
 		SaveManager.autosave()
-		var time_txt3: String = world_state.get_time_display() if world_state != null else ""
-		ToastManager.success("⏱ 已自动存档 · %s" % time_txt3))
+		# 自动存档静默提示（仅首 3 次 Toast，之后仅历史记录防打扰）
+		_auto_save_count += 1
+		if _auto_save_count <= 3:
+			var time_txt3: String = world_state.get_time_display() if world_state != null else ""
+			ToastManager.success("⏱ 已自动存档 · %s" % time_txt3))
 	add_child(auto_save_timer)
 	# 自动推进计时器
 	_auto_continue_timer = Timer.new()
@@ -496,6 +499,8 @@ var _auto_indicator_tween_started: bool = false
 var _last_quest_shown: String = ""
 ## 本次游玩触发事件计数
 var _event_trigger_count: int = 0
+## 自动存档次数（前几次提示，之后静默）
+var _auto_save_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
