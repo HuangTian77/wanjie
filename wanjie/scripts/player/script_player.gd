@@ -2185,6 +2185,11 @@ func _restore_save_state(sd: SaveData) -> void:
 	if TavernManager != null:
 		TavernManager.load_history()
 		_update_tavern_char_select()
+	# 进度百分比提示
+	var prog3 := _get_progress()
+	if prog3[1] > 0:
+		var pct := int(float(prog3[0]) / float(prog3[1]) * 100.0)
+		ToastManager.info("📊 剧情进度 %d%%" % pct)
 	_update_ui()
 	_sync_save_state()
 
