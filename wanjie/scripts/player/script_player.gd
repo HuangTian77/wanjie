@@ -2181,6 +2181,10 @@ func _restore_save_state(sd: SaveData) -> void:
 		combat_engine.set_player_stats(sd.player_state)
 	# 恢复自动推进偏好（读档后重置为用户设置）
 	_auto_advance_mode = GameManager.user_data.auto_advance
+	# 酒馆恢复（当前角色/历史）
+	if TavernManager != null:
+		TavernManager.load_history()
+		_update_tavern_char_select()
 	_update_ui()
 	_sync_save_state()
 
