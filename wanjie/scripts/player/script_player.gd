@@ -3037,6 +3037,7 @@ func _do_rest() -> void:
 		if rest_max > 0 and rest_hp >= rest_max:
 			rest_event_chance = 0.45
 	if event_engine != null and randf() < rest_event_chance:
+		ToastManager.info("⛺ 休息时发生了事件…")
 		var random_event: Dictionary = event_engine.check_random_events()
 		if not random_event.is_empty():
 			_run_event(random_event)
