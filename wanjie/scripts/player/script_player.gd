@@ -3439,6 +3439,16 @@ func _do_rest() -> void:
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
+	# 世界效果随休息减少 8 小时
+	if world_state and not world_state.active_effects.is_empty():
+		for fxid in world_state.active_effects.keys():
+			var fxr: int = int(world_state.active_effects[fxid])
+			fxr -= 8
+			if fxr <= 0:
+				world_state.active_effects.erase(fxid)
+				ToastManager.info("⏳ 世界效果 %s 已结束" % fxid)
+			else:
+				world_state.active_effects[fxid] = fxr
 	# 休息后概率触发随机事件（30%，满血时 45% 因旅途更安逸）
 	var rest_event_chance := 0.3
 	if world_state and world_state.get_period_name() == "夜晚":
