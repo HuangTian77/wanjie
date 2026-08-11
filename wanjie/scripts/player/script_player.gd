@@ -571,6 +571,7 @@ func _advance_to_next_event() -> void:
 				var stats_x: Dictionary = combat_engine.player_combat_stats
 				stats_x["exp"] = int(stats_x.get("exp", 0)) + 2
 				_sync_save_state()
+				_update_ui()
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
