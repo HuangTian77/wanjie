@@ -971,6 +971,13 @@ func _on_event_triggered(event: Dictionary) -> void:
 	main_text.tooltip_text = "%s\n%s" % [event_name, desc]
 	# 事件触发计数（本次游玩）
 	_event_trigger_count += 1
+	# 事件到达动效（屏幕轻微震动，可关闭）
+	if ThemeManager.animations_enabled:
+		main_text.scale = Vector2.ONE
+		main_text.pivot_offset = main_text.size / 2.0
+		var etw := create_tween()
+		etw.tween_property(main_text, "scale", Vector2(1.01, 1.01), 0.08)
+		etw.tween_property(main_text, "scale", Vector2.ONE, 0.12)
 
 func _on_choices_presented(choices: Array) -> void:
 	_clear_choices()
