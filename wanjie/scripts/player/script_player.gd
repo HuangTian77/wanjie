@@ -3111,8 +3111,9 @@ func _on_menu_log_pressed() -> void:
 		list.append_text(filtered if not filtered.is_empty() else "[color=#999]（无匹配记录）[/color]"))
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
+	stat_line = "📜 历史 %d 条" % history_text.get_line_count()
 	if world_state:
-		stat_line = "🗓 %s" % world_state.get_time_display()
+		stat_line += " · 🗓 %s" % world_state.get_time_display()
 	if event_engine:
 		var causal_count: int = event_engine.causal_marks.size()
 		stat_line += " · 因果标记 %d" % causal_count
