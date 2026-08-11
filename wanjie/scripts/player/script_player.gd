@@ -1970,8 +1970,13 @@ func _on_battle_attack_pressed() -> void:
 		return
 	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
 	if not res.is_empty():
-		_battle_log_line("%s 攻击造成 %d 伤害" % [combat_engine.player_combat_stats.get("name", "你"), res.get("damage", 0)], "#e0665a")
-		_spawn_damage_popup(-int(res.get("damage", 0)), bool(res.get("critical", false)))
+		# 暴击日志金色（普通红色）
+		var is_crit: bool = bool(res.get("critical", false))
+		_battle_log_line("%s 攻击造成 %d 伤害%s" % [
+			combat_engine.player_combat_stats.get("name", "你"),
+			res.get("damage", 0), "（暴击！）" if is_crit else ""],
+			"#e6c84c" if is_crit else "#e0665a")
+		_spawn_damage_popup(-int(res.get("damage", 0)), is_crit)
 		# 敌人受击闪红（命中反馈）
 		if int(res.get("damage", 0)) > 0:
 			enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
