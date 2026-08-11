@@ -2083,6 +2083,12 @@ func _on_battle_attack_pressed() -> void:
 		# 敌人受击闪红（命中反馈）
 		if int(res.get("damage", 0)) > 0:
 			enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
+			var etw2 := create_tween()
+			etw2.tween_interval(0.15)
+			etw2.tween_callback(func(): enemy_info.remove_theme_color_override("font_color"))
+		# 敌人受击闪红（命中反馈）
+		if int(res.get("damage", 0)) > 0:
+			enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
 			var etw := create_tween()
 			etw.tween_interval(0.2)
 			etw.tween_callback(func():
