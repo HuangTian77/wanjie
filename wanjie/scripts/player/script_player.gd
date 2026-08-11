@@ -70,6 +70,8 @@ var _last_autosave_time: float = 0.0
 var _last_rest_day: int = -1
 ## 休息开始时的天数（跨天提示用）
 var _rest_start_day: int = -1
+## 休息次数统计
+var _rest_count: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -2877,6 +2879,7 @@ func _on_menu_char_pressed() -> void:
 		list.append_text("\n[color=#c9a06a]本次游玩[/color]\n")
 		list.append_text("• 天数：第 %d 天\n" % (world_state.get_current_day() if world_state else 1))
 		list.append_text("• 触发事件：%d 个（本次 %d）\n" % [(event_engine.triggered_ids.size() if event_engine != null else 0), _event_trigger_count])
+		list.append_text("• 休息：%d 次\n" % _rest_count)
 		if _buy_count > 0:
 			list.append_text("🛒 购买物品：%d 件\n" % _buy_count)
 		if _sell_count > 0:
@@ -3941,6 +3944,7 @@ func _do_rest() -> void:
 	if world_state != null and _rest_start_day >= 0 and world_state.get_current_day() > _rest_start_day:
 		ToastManager.info("🗓 新的一天开始了（第 %d 天）" % world_state.get_current_day())
 	_rest_start_day = world_state.get_current_day() if world_state != null else -1
+	_rest_count += 1
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
