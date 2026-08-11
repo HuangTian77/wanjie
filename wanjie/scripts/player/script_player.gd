@@ -530,6 +530,8 @@ var _buy_count: int = 0
 var _sell_count: int = 0
 ## 本次游玩是否已评分（防重复）
 var _rated_this_run: bool = false
+## 好感度已满提示标志
+var _tavern_mood_full_toast: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1581,6 +1583,10 @@ func _on_tavern_send_pressed() -> void:
 	var char_id2: String = str(TavernManager.current_character.get("id", "innkeeper")) if TavernManager.current_character != null and not TavernManager.current_character.is_empty() else "innkeeper"
 	var mood: int = _tavern_moods.get(char_id2, 0)
 	_tavern_moods[char_id2] = mini(mood + 1, 2)
+	# 好感度已满提示（仅首次）
+	if mood >= 2 and _tavern_mood_full_toast == 0:
+		_tavern_mood_full_toast = 1
+		ToastManager.info("%s 与你的羁绊已至深处" % str(TavernManager.current_character.get("name", "角色")))
 	# 好感档位提升提示
 	if _tavern_moods[char_id2] > mood:
 		if _tavern_moods[char_id2] == 1:
