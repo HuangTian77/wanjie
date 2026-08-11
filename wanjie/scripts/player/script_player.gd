@@ -1352,6 +1352,10 @@ func _on_tavern_pressed() -> void:
 	# 输入 placeholder 按角色
 	tavern_input.placeholder_text = "对%s说话…" % str(TAVERN_CHARS[0].get("name", "角色"))
 	tavern_input.grab_focus()
+	# 彩蛋话题提示（酒馆顶栏）
+	var egg_hint := get_node_or_null("TavernPanel/TavernVBox/TavernHeader") as HBoxContainer
+	if egg_hint != null:
+		egg_hint.tooltip_text = "试试聊聊：遗物 / 命运 / 酒 / 世界"
 	var hist_count: int = TavernManager.dialog_history.size()
 	ToastManager.info("🏮 与 %s 对话（←→切换角色）%s" % [
 		TAVERN_CHARS[0].get("name", "角色"),
