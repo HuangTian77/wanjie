@@ -2940,6 +2940,10 @@ func _on_menu_back_pressed() -> void:
 		prog_txt = "（当前进度 %d%%）" % int(float(pnow[0]) / float(pnow[1]) * 100.0)
 	var battle_note2 := "\n⚠ 当前处于战斗中，返回将放弃战斗！" if battle_panel.visible else ""
 	confirm.dialog_text = "返回大厅？将自动保存当前进度%s。%s" % [prog_txt, battle_note2]
+	# 确认信息含等级
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var lv_now: int = int(combat_engine.player_combat_stats.get("level", 1))
+		confirm.dialog_text += "\n（当前 Lv.%d）" % lv_now
 	confirm.confirmed.connect(func():
 		_sync_save_state()
 		_write_progress()
