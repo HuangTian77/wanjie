@@ -2190,6 +2190,9 @@ func _restore_save_state(sd: SaveData) -> void:
 	if prog3[1] > 0:
 		var pct := int(float(prog3[0]) / float(prog3[1]) * 100.0)
 		ToastManager.info("📊 剧情进度 %d%%" % pct)
+	# 打字机状态重置（读档后显示恢复文本）
+	_typewriter_done = true
+	_typewriter_index = 0
 	_update_ui()
 	_sync_save_state()
 
