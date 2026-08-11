@@ -1585,6 +1585,10 @@ func _on_tavern_send_pressed() -> void:
 		easter_egg = "（递过一杯）尝尝这个，本店招牌，喝了能暖一整天。"
 	elif text.contains("世界"):
 		easter_egg = "（望向窗外）这个世界，比你想的辽阔得多。"
+	elif text.contains("旅途") or text.contains("旅行"):
+		easter_egg = "（微笑）旅人总在路上，故事也跟着走。"
+	elif text.contains("天气") or text.contains("雨"):
+		easter_egg = "（看了看窗外）雨天的旅店最热闹，大家都进来躲雨。"
 	if not easter_egg.is_empty():
 		_tavern_append("assistant", easter_egg)
 		TavernManager.add_message("assistant", easter_egg)
