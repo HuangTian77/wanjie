@@ -3098,6 +3098,7 @@ func _on_menu_log_pressed() -> void:
 	filter_opt.item_selected.connect(func(_idx: int):
 		# 按前缀过滤历史（事件/后果/其他行）
 		var filtered := ""
+		var match_count := 0
 		var full := history_text.text
 		for line in full.split("\n"):
 			var keeps := true
@@ -3107,8 +3108,13 @@ func _on_menu_log_pressed() -> void:
 				3: keeps = not (line.contains("事件") or line.contains("后果") or line.contains("选择"))
 			if keeps and not line.strip_edges().is_empty():
 				filtered += line + "\n"
+				match_count += 1
 		list.clear()
-		list.append_text(filtered if not filtered.is_empty() else "[color=#999]（无匹配记录）[/color]"))
+		if not filtered.is_empty():
+			list.append_text("[color=#8a7a68]匹配 %d 条[/color]\n\n" % match_count)
+			list.append_text(filtered)
+		else:
+			list.append_text("[color=#999]（无匹配记录）[/color]"))
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
 	stat_line = "📜 历史 %d 条" % history_text.get_line_count()
