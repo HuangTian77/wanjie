@@ -1717,6 +1717,7 @@ func _on_combat_ended(result: String) -> void:
 	# 自动战斗重置
 	if _auto_battle:
 		_auto_battle = false
+		_battle_log_line("⏹ 自动战斗已停止", "#8a8278")
 		var ab := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
 		if ab is Button:
 			(ab as Button).remove_theme_override("font_color")
