@@ -196,6 +196,7 @@ func _process(delta: float) -> void:
 						combat_engine.player_use_skill(str(sk.get("id", "")), -1)
 						_refresh_battle_ui()
 						used_skill = true
+						_battle_log_line("⚡ 自动释放技能：%s" % str(sk.get("name", "技能")), "#e6c84c")
 						break
 			if not used_skill:
 				_on_battle_attack_pressed()
