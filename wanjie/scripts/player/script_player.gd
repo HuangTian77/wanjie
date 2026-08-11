@@ -4166,6 +4166,14 @@ func _on_menu_help_pressed() -> void:
 		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
 	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v1.2.0（体验版）[/color]"
 	help_scroll.add_child(help_lbl)
+	# 复制帮助按钮
+	var copy_help := Button.new()
+	copy_help.text = "⧉ 复制帮助"
+	copy_help.flat = true
+	copy_help.pressed.connect(func():
+		DisplayServer.clipboard_set(dialog.dialog_text)
+		ToastManager.success("帮助已复制"))
+	dialog.add_child(copy_help)
 	dialog.dialog_text = ""
 	dialog.popup_centered()
 
