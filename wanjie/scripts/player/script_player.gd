@@ -967,6 +967,8 @@ func _on_event_triggered(event: Dictionary) -> void:
 		chain_mark = "🎲 "
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [chain_mark, event_name, desc])
 	_add_history("事件%s: %s" % [chain_mark, event_name])
+	# 事件标题 tooltip（描述悬停查看）
+	main_text.tooltip_text = "%s\n%s" % [event_name, desc]
 	# 事件触发计数（本次游玩）
 	_event_trigger_count += 1
 
