@@ -3173,17 +3173,6 @@ func _on_menu_log_pressed() -> void:
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("日志已复制"))
 	box.add_child(copy_btn)
-	# 导出日志按钮（保存 txt 到用户目录）
-	var export_btn := Button.new()
-	export_btn.text = "💾 导出日志"
-	export_btn.pressed.connect(func():
-		var out_path := "user://logs_%s.txt" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
-		var f := FileAccess.open(out_path, FileAccess.WRITE)
-		if f:
-			f.store_string(list.text)
-			f.close()
-			ToastManager.success("日志已导出：%s" % ProjectSettings.globalize_path(out_path)))
-	box.add_child(export_btn)
 	# 刷新按钮（重新打开获取最新数据）
 	var refresh_log_btn := Button.new()
 	refresh_log_btn.text = "↻ 刷新"
@@ -3191,7 +3180,6 @@ func _on_menu_log_pressed() -> void:
 		dialog.queue_free()
 		_on_menu_log_pressed())
 	box.add_child(refresh_log_btn)
-	# 导出日志按钮
 	var export_btn := Button.new()
 	export_btn.text = "💾 导出日志"
 	export_btn.pressed.connect(func():
