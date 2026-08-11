@@ -977,6 +977,22 @@ func _on_event_triggered(event: Dictionary) -> void:
 	main_text.tooltip_text = "%s\n%s%s" % [event_name, desc, tip_extra]
 	# 事件触发计数（本次游玩）
 	_event_trigger_count += 1
+	# 事件链完成庆祝（当前链全部触发）
+	var cur_chain: String = str(event.get("chain_id", "")) if world_state == null else str(world_state.get_variable("current_chain", ""))
+	if not cur_chain.is_empty() and script_data != null and script_data.event_system != null:
+		var chain_total := 0
+		var chain_done := 0
+		for ev2 in script_data.event_system.events:
+			if str(ev2.get("chain_id", "")) == cur_chain:
+				chain_total += 1
+				if event_engine != null:
+					for te2 in event_engine.triggered_events:
+						if str(te2.get("event_id", "")) == str(ev2.get("id", "")):
+							chain_done += 1
+							break
+		if chain_total > 0 and chain_done >= chain_total:
+			ToastManager.success("🎊 剧情线「%s」全部完成！" % cur_chain)
+			_add_history("🎊 剧情线「%s」完成" % cur_chain)
 	# 事件到达动效（屏幕轻微震动，可关闭）
 	if ThemeManager.animations_enabled:
 		main_text.scale = Vector2.ONE
