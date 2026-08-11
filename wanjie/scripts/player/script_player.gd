@@ -2052,6 +2052,13 @@ func _refresh_battle_ui() -> void:
 		if _battle_target >= 0 and _battle_target < combat_engine.enemies.size() \
 				and combat_engine.enemies[_battle_target].get("is_alive", true):
 			target_name = str(combat_engine.enemies[_battle_target].get("name", "?"))
+		else:
+			# 目标已死亡/失效 → 自动切换到第一个存活敌人
+			for ti in combat_engine.enemies.size():
+				if combat_engine.enemies[ti].get("is_alive", true):
+					_battle_target = ti
+					target_name = str(combat_engine.enemies[ti].get("name", "?"))
+					break
 		enemy_info.text += "\n[color=#c9a06a]🎯 目标：%s（点击切换）[/color]" % target_name
 		enemy_info.tooltip_text = "Tab 或点击切换目标；当前攻击将指向 %s" % target_name
 	if enemy_info.get_signal_connection_list("gui_input").is_empty():
