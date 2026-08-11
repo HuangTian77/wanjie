@@ -3437,6 +3437,8 @@ func _do_rest() -> void:
 		_auto_continue_timer.start(1.0)
 	# 休息后概率触发随机事件（30%，满血时 45% 因旅途更安逸）
 	var rest_event_chance := 0.3
+	if world_state and world_state.get_period_name() == "夜晚":
+		rest_event_chance = 0.4  # 夜晚休息更易遭遇事件
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var rest_max: int = int(combat_engine.player_combat_stats.get("max_hp", 100))
 		var rest_hp: int = int(combat_engine.player_combat_stats.get("hp", 0))
