@@ -3224,6 +3224,24 @@ func _on_menu_log_pressed() -> void:
 		dialog.queue_free()
 		_on_menu_log_pressed())
 	box.add_child(refresh_log_btn)
+	# 清空历史按钮（确认后清空）
+	var clear_log_btn := Button.new()
+	clear_log_btn.text = "🗑 清空历史"
+	clear_log_btn.flat = true
+	clear_log_btn.add_theme_color_override("font_color", Color(0.9, 0.4, 0.35))
+	clear_log_btn.pressed.connect(func():
+		var cfm := ConfirmationDialog.new()
+		cfm.dialog_text = "确定清空全部历史记录？此操作不可撤销。"
+		cfm.confirmed.connect(func():
+			history_text.clear()
+			_history_last_day = 0
+			_add_history("📜 历史已清空")
+			ToastManager.info("历史记录已清空")
+			dialog.queue_free()
+			_on_menu_log_pressed())
+		add_child(cfm)
+		cfm.popup_centered())
+	box.add_child(clear_log_btn)
 	var export_btn := Button.new()
 	export_btn.text = "💾 导出日志"
 	export_btn.pressed.connect(func():
