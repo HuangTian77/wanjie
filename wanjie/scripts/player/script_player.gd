@@ -1670,6 +1670,9 @@ func _on_combat_ended(result: String) -> void:
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
 	if result == "defeat":
 		ToastManager.warning("💀 战斗失败…可通过菜单读档回到战斗前（自动存档）")
+	# 战斗胜利自动存档（失败不覆盖，保留战斗前存档可重试）
+	if result == "victory":
+		SaveManager.autosave()
 	# 结算统计：回合数
 	if combat_engine != null:
 		msg += "（共 %d 回合）" % combat_engine.current_round
