@@ -1099,6 +1099,8 @@ func _on_choice_selected(choice_id: String) -> void:
 	else:
 		consequence_text = "[color=#c9a06a]%s[/color]" % consequence_text
 	_set_main_text("[i]你的选择产生了后果...[/i]\n\n%s\n\n[color=#8a8278]（后果已生效，继续前行）[/color]" % consequence_text)
+	# 后果关键节点自动存档（防意外丢失）
+	SaveManager.autosave()
 	_clear_choices()
 	_add_choice_button("继续", "_on_continue_pressed")
 
