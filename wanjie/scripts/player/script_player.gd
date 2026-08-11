@@ -1362,6 +1362,15 @@ func _on_tavern_pressed() -> void:
 	# 输入 placeholder 按角色
 	tavern_input.placeholder_text = "对%s说话…" % str(TAVERN_CHARS[0].get("name", "角色"))
 	tavern_input.grab_focus()
+	# 酒馆说明条（好感度/话题规则）
+	var tavern_note := get_node_or_null("TavernPanel/TavernVBox") as VBoxContainer
+	if tavern_note != null and not tavern_note.has_node("TavernNote"):
+		var note := Label.new()
+		note.name = "TavernNote"
+		note.text = "多聊天提升好感度 → 亲密后解锁往事与礼物"
+		note.add_theme_color_override("font_color", Color(0.6, 0.55, 0.48))
+		note.add_theme_font_size_override("font_size", 11)
+		tavern_note.add_child(note)
 	# 彩蛋话题提示（酒馆顶栏）
 	var egg_hint := get_node_or_null("TavernPanel/TavernVBox/TavernHeader") as HBoxContainer
 	if egg_hint != null:
