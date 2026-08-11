@@ -3262,7 +3262,19 @@ func _on_menu_log_pressed() -> void:
 				var fa: String = str(rel.get("faction_a", "?"))
 				var fb: String = str(rel.get("faction_b", "?"))
 				var relv: float = world_state.get_faction_relationship(fa, fb)
-				rel_line += "• %s ⇄ %s：%+.0f\n" % [fa, fb, relv]
+				# 关系状态标签
+				var rel_state := "中立"
+				var rel_color := "#c9a06a"
+				if relv >= 50.0:
+					rel_state = "友好"
+					rel_color = "#7cc47c"
+				elif relv <= -50.0:
+					rel_state = "敌对"
+					rel_color = "#e05a4e"
+				elif relv < 0.0:
+					rel_state = "紧张"
+					rel_color = "#e6a23c"
+				rel_line += "• %s ⇄ %s：[color=%s]%s[/color]（%+.0f）\n" % [fa, fb, rel_color, rel_state, relv]
 			list.append_text(rel_line)
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
