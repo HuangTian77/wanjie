@@ -1713,6 +1713,12 @@ func _on_combat_ended(result: String) -> void:
 					msg += " · 掉落：%s" % litem
 				else:
 					msg += "、%s" % litem
+				if litem == "rare_relic":
+					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
+					_spawn_damage_popup(1, true)  # 金色大字
+				else:
+					ToastManager.success("🎁 获得掉落物品：%s" % litem)
+				_add_history("🎁 掉落物品：%s" % litem)
 			# 稀有掉落：主文本金强调（遗物）
 			if loot.has("rare_relic"):
 				msg += "（✨ 稀有！）"
@@ -1722,12 +1728,6 @@ func _on_combat_ended(result: String) -> void:
 				msg += "\n（HP %d/%d · MP %d/%d）" % [
 					int(ps_post.get("hp", 0)), int(ps_post.get("max_hp", 100)),
 					int(ps_post.get("mp", 0)), int(ps_post.get("max_mp", 50))]
-				if litem == "rare_relic":
-					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
-					_spawn_damage_popup(1, true)  # 金色大字
-				else:
-					ToastManager.success("🎁 获得掉落物品：%s" % litem)
-				_add_history("🎁 掉落物品：%s" % litem)
 			_sync_save_state()
 		# 经验升级（每 100 经验升 1 级，属性成长）
 		var stats: Dictionary = combat_engine.player_combat_stats
@@ -3082,7 +3082,8 @@ func _do_rest() -> void:
 		if not random_event.is_empty():
 			_run_event(random_event)
 
-## 通关统计弹窗（天数/等级/金币/事件数）func _show_finish_stats() -> void:
+## 通关统计弹窗（天数/等级/金币/事件数）
+func _show_finish_stats() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🎉 通关！"
 	dialog.min_size = Vector2i(420, 340)
