@@ -3181,7 +3181,9 @@ func _on_menu_rating_pressed() -> void:
 		ws.rating_count += 1
 		ScriptDataManager.update_script(ws, ["rating", "rating_count"])
 		ToastManager.success("评分已提交 ★%d" % chosen[0])
-		_add_history("⭐ 你给剧本评了 %d 星" % chosen[0]))
+		_add_history("⭐ 你给剧本评了 %d 星" % chosen[0])
+		# 首次评分成就
+		GameManager.user_data.unlock_achievement("first_rating", "首次为剧本评分"))
 	dialog.popup_centered()
 	stars.position = Vector2(120, 70)
 	# 取消评分轻提示（未打扰）
