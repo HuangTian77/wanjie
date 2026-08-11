@@ -4155,10 +4155,16 @@ func _on_menu_help_pressed() -> void:
 	var help_scroll := ScrollContainer.new()
 	help_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(help_scroll)
-	var help_lbl := Label.new()
+	var help_lbl := RichTextLabel.new()
 	help_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	help_lbl.text = dialog.dialog_text
+	help_lbl.fit_content = true
+	help_lbl.bbcode_enabled = true
+	# 快捷键加粗高亮（帮助文本中按键名加粗金色）
+	var help_txt: String = dialog.dialog_text
+	for key in ["空格", "回车", "A", "H", "T", "Esc", "S", "L", "B", "1-9", "Tab", "Shift"]:
+		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
+	help_lbl.text = help_txt
 	help_scroll.add_child(help_lbl)
 	dialog.dialog_text = ""
 	dialog.popup_centered()
