@@ -2072,6 +2072,18 @@ func _on_battle_attack_pressed() -> void:
 		# 攻击落空提示（MISS）
 		if int(res.get("damage", 0)) == 0 and not res.get("miss", false):
 			_battle_log_line("攻击落空…（闪避）", "#8a8278")
+			var miss_lbl := Label.new()
+			miss_lbl.text = "MISS"
+			miss_lbl.add_theme_color_override("font_color", Color(0.6, 0.58, 0.55))
+			miss_lbl.add_theme_font_size_override("font_size", 20)
+			miss_lbl.position = enemy_info.global_position + Vector2(randf_range(40, 100), -30)
+			miss_lbl.z_index = 100
+			add_child(miss_lbl)
+			var mtw := create_tween()
+			mtw.set_parallel(true)
+			mtw.tween_property(miss_lbl, "position:y", miss_lbl.position.y - 40, 0.7).set_ease(Tween.EASE_OUT)
+			mtw.tween_property(miss_lbl, "modulate:a", 0.0, 0.7)
+			mtw.chain().tween_callback(miss_lbl.queue_free)
 		# 普攻小额回蓝（+1 MP 攒蓝机制）
 		var stats_a: Dictionary = combat_engine.player_combat_stats
 		stats_a["mp"] = mini(int(stats_a.get("max_mp", 50)), int(stats_a.get("mp", 0)) + 1)

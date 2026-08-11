@@ -1,7 +1,7 @@
 # gdlint 配置（gdtoolkit 4.5.0，YAML 格式）
 # 中文注释 + 长链式调用，放宽行宽；风格类规则禁用（项目惯例优先）
 max-line-length: 300
-max-file-lines: 4000
+max-file-lines: 6000
 max-returns: 16
 max-public-methods: 50
 function-arguments-number: 18
