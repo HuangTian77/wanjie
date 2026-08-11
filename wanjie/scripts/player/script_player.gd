@@ -534,6 +534,8 @@ var _rated_this_run: bool = false
 var _tavern_mood_full_toast: int = 0
 ## 已听背景故事的角色（防重复）
 var _heard_backgrounds: Dictionary = {}
+## 发现彩蛋秘闻次数
+var _egg_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1592,6 +1594,9 @@ func _on_tavern_send_pressed() -> void:
 	if not easter_egg.is_empty():
 		_tavern_append("assistant", easter_egg)
 		TavernManager.add_message("assistant", easter_egg)
+		_egg_count += 1
+		if _egg_count == 5:
+			ToastManager.success("🗝 发现 5 段秘闻！酒馆话事人成就")
 		return
 	# 斜杠命令：/h 历史 /c 清空
 	if text.begins_with("/"):
