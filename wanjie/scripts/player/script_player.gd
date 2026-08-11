@@ -2777,6 +2777,8 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("🛒 购买物品：%d 件\n" % _buy_count)
 		if _sell_count > 0:
 			list.append_text("💰 出售物品：%d 件\n" % _sell_count)
+		if _egg_count > 0:
+			list.append_text("🗝 发现酒馆秘闻：%d 段\n" % _egg_count)
 	# 敌人图鉴
 	if not _enemy_codex.is_empty():
 		list.append_text("\n[color=#c9a06a]敌人图鉴（本次）[/color]\n")
