@@ -480,6 +480,8 @@ var _auto_combat_timer: Timer
 var _auto_indicator_tween_started: bool = false
 ## 当前显示的任务（切换提示用）
 var _last_quest_shown: String = ""
+## 本次游玩触发事件计数
+var _event_trigger_count: int = 0
 ## 当前区域（切换提示用）
 var _last_region: String = ""
 ## 酒馆角色心情（char_id → 0/1/2 档）
@@ -965,6 +967,8 @@ func _on_event_triggered(event: Dictionary) -> void:
 		chain_mark = "🎲 "
 	_set_main_text("[b]%s【%s】[/b]\n\n%s" % [chain_mark, event_name, desc])
 	_add_history("事件%s: %s" % [chain_mark, event_name])
+	# 事件触发计数（本次游玩）
+	_event_trigger_count += 1
 
 func _on_choices_presented(choices: Array) -> void:
 	_clear_choices()
@@ -2142,7 +2146,7 @@ func _on_menu_char_pressed() -> void:
 		# 本次游玩统计
 		list.append_text("\n[color=#c9a06a]本次游玩[/color]\n")
 		list.append_text("• 天数：第 %d 天\n" % (world_state.get_current_day() if world_state else 1))
-		list.append_text("• 触发事件：%d 个\n" % (event_engine.triggered_ids.size() if event_engine != null else 0))
+		list.append_text("• 触发事件：%d 个（本次 %d）\n" % [(event_engine.triggered_ids.size() if event_engine != null else 0), _event_trigger_count])
 		list.append_text("• 历史记录：%d 条\n" % history_text.get_line_count())
 		list.append_text("• 当前进度：%d%%\n" % (int(_get_progress()[0] * 100.0 / maxf(1.0, float(_get_progress()[1])))))
 	dialog.popup_centered()
