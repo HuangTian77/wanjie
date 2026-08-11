@@ -1618,6 +1618,14 @@ func _on_combat_started(enemies: Array) -> void:
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint:
 		hint.text = "技能：按 1-9 直接释放 · Tab 切换目标 · Q 用药 · Esc 菜单 · H 帮助 · 自动可调速"
+		# 药水库存显示
+		var potion_count := 0
+		if economy_engine != null:
+			for item_id in economy_engine.player_inventory:
+				if "potion" in str(item_id) or "herb" in str(item_id) or "药" in str(item_id):
+					potion_count += int(economy_engine.player_inventory[item_id])
+		if potion_count > 0:
+			hint.text += " · 🍶药水×%d" % potion_count
 
 func _on_combat_round_started(round_num: int) -> void:
 	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
