@@ -2741,6 +2741,14 @@ func _on_menu_shop_pressed() -> void:
 	# 金币不足整体提示（<50）
 	if gold < 50:
 		list.append_text("[color=#e05a4e]金币紧张，先出售背包物品换钱！[/color]\n\n")
+		# 一键去背包按钮
+		var go_bag := Button.new()
+		go_bag.text = "🎒 去背包出售"
+		go_bag.flat = true
+		go_bag.pressed.connect(func():
+			dialog.queue_free()
+			_on_menu_bag_pressed())
+		inner.add_child(go_bag)
 	# 购买数量选择（1-9）
 	var qty_row := HBoxContainer.new()
 	inner.add_child(qty_row)
