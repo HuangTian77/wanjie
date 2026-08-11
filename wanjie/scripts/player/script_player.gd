@@ -4243,6 +4243,9 @@ func _show_slot_selector(mode: String) -> void:
 		btn.text = "槽位 %d: %s" % [slot + 1, slot_info]
 		btn.tooltip_text = "槽位 %d 详情：%s" % [slot + 1, slot_info]
 		btn.custom_minimum_size = Vector2(0, 40)
+		# 空槽位样式（浅色提示可保存）
+		if slot_info == "(空)" and mode == "save":
+			btn.text = "槽位 %d:（空 — 点击保存到此处）" % (slot + 1)
 		match mode:
 			"save":
 				btn.pressed.connect(_on_slot_save_selected.bind(slot))
