@@ -2537,6 +2537,11 @@ func _on_menu_shop_pressed() -> void:
 				# 批量购买（数量 × 单价）
 				btn.pressed.connect(func():
 					var qty_buy: int = int(qty_spin.value)
+					# Shift 点击：剩余金币最大购买
+					if Input.is_key_pressed(KEY_SHIFT):
+						var gold_left: int = int(economy_engine.player_currencies.get("gold", 0))
+						var max_buy: int = int(gold_left / maxf(1.0, float(price)))
+						qty_buy = maxi(1, mini(9, max_buy))
 					var total_price: int = int(price) * qty_buy
 					# 大额购买确认（≥100 金币）
 					if total_price >= 100:
