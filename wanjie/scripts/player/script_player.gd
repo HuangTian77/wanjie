@@ -114,6 +114,20 @@ func _ready() -> void:
 	_auto_continue_timer.one_shot = true
 	_auto_continue_timer.timeout.connect(_auto_continue)
 	add_child(_auto_continue_timer)
+	# 自动战斗辅助计时器（自动推进模式）
+	_auto_combat_timer = Timer.new()
+	_auto_combat_timer.wait_time = 0.8
+	_auto_combat_timer.timeout.connect(func():
+		if not _auto_advance_mode or not battle_panel.visible:
+			_auto_combat_timer.stop()
+			return
+		# 低血时自动用药
+		if combat_engine != null:
+			var ps5: Dictionary = combat_engine.player_combat_stats
+			if int(ps5.get("hp", 0)) <= int(ps5.get("max_hp", 100)) * 0.3:
+				_use_first_potion()
+		_on_battle_attack_pressed())
+	add_child(_auto_combat_timer)
 
 ## 自动存档间隔（分钟，读设置，默认 5）
 func settings_auto_save_interval_min() -> float:
@@ -442,6 +456,8 @@ var _auto_advance_delay: float = 0.5
 var _auto_advance_mode: bool = false
 ## 自动模式延迟推进计时器
 var _auto_continue_timer: Timer
+## 自动战斗辅助计时器（自动推进模式）
+var _auto_combat_timer: Timer
 ## 当前显示的任务（切换提示用）
 var _last_quest_shown: String = ""
 ## 当前区域（切换提示用）
@@ -1409,6 +1425,8 @@ func _on_combat_started(enemies: Array) -> void:
 	# 自动推进在战斗中暂停（需玩家手动战斗）
 	if _auto_advance_mode:
 		_battle_log_line("⏸ 自动推进已暂停（战斗进行中）", "#8a8278")
+		# 自动战斗辅助：自动推进开启时自动攻击
+		_auto_combat_timer.start(1.2)
 	# 遗物加成提示（持有 rare_relic 时攻击 +5）
 	if economy_engine != null and int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
 		_battle_log_line("✨ 遗物共鸣：攻击力 +5", "#e6c84c")
@@ -1466,6 +1484,9 @@ func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
 
 func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
+	# 停止自动战斗辅助
+	if _auto_combat_timer != null:
+		_auto_combat_timer.stop()
 	# 战斗结束：自动推进恢复提示
 	if _auto_advance_mode:
 		ToastManager.info("▶ 战斗结束，自动推进已恢复")
