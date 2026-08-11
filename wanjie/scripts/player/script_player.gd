@@ -1068,6 +1068,9 @@ func _on_choice_selected(choice_id: String) -> void:
 				choice_text = str(c.get("text", choice_id))
 				break
 	var consequences: Array = event_engine.make_choice(choice_id)
+	# 有后果选项 Toast 提示（后果即将生效）
+	if not consequences.is_empty():
+		ToastManager.info("⚠ 此选择将带来 %d 项后果" % consequences.size())
 	_add_history("选择: %s" % choice_text)
 
 	var consequence_text := ""
