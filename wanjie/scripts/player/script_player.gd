@@ -2581,6 +2581,8 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 		ToastManager.warning("金币不足！需要 %d，当前 %d（差 %d）" % [need, have, maxi(0, need - have)])
 		# 金币不足引导（背包/休息）
 		_add_history("💰 购买失败：金币不足（需 %d）" % need)
+		# 金币不足红色飘字
+		_spawn_damage_popup(-need, false, false)
 
 ## 全部卖出普通物品（遗物除外）
 func _do_sell_all(dialog: AcceptDialog) -> void:
