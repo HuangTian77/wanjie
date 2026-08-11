@@ -2756,6 +2756,12 @@ func _on_menu_log_pressed() -> void:
 	if (event_engine == null or event_engine.choices_history.is_empty()) \
 			and (event_engine == null or event_engine.causal_marks.is_empty()):
 		list.append_text("[color=#999]暂无世界记录——做出选择、触发事件后将在此呈现。[/color]\n")
+	# 随机事件冷却详情
+	if event_engine != null and event_engine.cooldowns != null and not event_engine.cooldowns.is_empty():
+		list.append_text("[b]【事件冷却】[/b]\n")
+		for cid in event_engine.cooldowns:
+			list.append_text("• %s：剩 %d 回合\n" % [cid, int(event_engine.cooldowns[cid])])
+		list.append_text("\n")
 	# 复制日志按钮
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
