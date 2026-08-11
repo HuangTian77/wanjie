@@ -2131,7 +2131,7 @@ func _on_battle_flee_pressed() -> void:
 ## 使用背包中第一个药水/草药（Q 键/按钮共用）
 func _use_first_potion() -> void:
 	if economy_engine == null or economy_engine.player_inventory.is_empty():
-		ToastManager.warning("背包里没有药水")
+		ToastManager.warning("背包里没有药水（商店可购买）")
 		return
 	for item_id in economy_engine.player_inventory:
 		if int(economy_engine.player_inventory[item_id]) <= 0:
