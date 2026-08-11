@@ -1514,7 +1514,13 @@ func _enter_tavern_char(index: int) -> void:
 		for msg in history:
 			_tavern_append(msg.get("role", ""), msg.get("content", ""))
 	else:
-		_tavern_append("assistant", char["greeting"])
+		# 按好感度选择问候语
+		var mood_level: int = _tavern_moods.get(str(char.get("id", "")), 0)
+		var greet_txt: String = str(char.get("greeting", "你好，旅者。"))
+		match mood_level:
+			2: greet_txt = "你来了！%s（语气亲昵）" % greet_txt
+			1: greet_txt = "又见面了，%s" % greet_txt
+		_tavern_append("assistant", greet_txt)
 
 func _on_tavern_send_pressed() -> void:
 	var text := tavern_input.text.strip_edges()
