@@ -100,7 +100,8 @@ func _ready() -> void:
 		ToastManager.info("▶ 自动推进已开启（A 可关闭）")
 	# 定时自动存档（每 5 分钟，可按设置间隔）
 	var auto_save_timer := Timer.new()
-	auto_save_timer.name = "AutoSaveTimer"	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
+	auto_save_timer.name = "AutoSaveTimer"
+	auto_save_timer.wait_time = maxf(60.0, float(settings_auto_save_interval_min()) * 60.0)
 	auto_save_timer.autostart = true
 	auto_save_timer.timeout.connect(func():
 		_sync_save_state()
