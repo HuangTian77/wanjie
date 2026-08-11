@@ -2402,7 +2402,6 @@ func _on_menu_shop_pressed() -> void:
 				if not item_desc.is_empty():
 					btn.tooltip_text = item_desc
 				# 价格波动标记（相对基础价）
-				var base_p: float = float(g.get("price", price))
 				if price < base_p * 0.95:
 					btn.text += " ↓"
 					btn.tooltip_text = "低于基础价，划算！"
