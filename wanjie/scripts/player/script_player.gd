@@ -2628,6 +2628,12 @@ func _on_menu_bag_pressed() -> void:
 	title.text = "持有物品"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
+	# 物品件数统计（标题旁）
+	if economy_engine != null:
+		var item_total_qty := 0
+		for it_id in economy_engine.player_inventory:
+			item_total_qty += int(economy_engine.player_inventory[it_id])
+		title.text = "持有物品（共 %d 件）" % item_total_qty
 	# 背包总估值（半价出售价合计）
 	if economy_engine != null and not economy_engine.player_inventory.is_empty():
 		var total_value := 0
