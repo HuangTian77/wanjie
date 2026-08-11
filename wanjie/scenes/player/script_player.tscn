@@ -407,12 +407,12 @@ horizontal_alignment = 1
 [node name="SaveBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "💾 保存"
+text = "💾 保存（S）"
 
 [node name="LoadBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
-text = "📂 读档"
+text = "📂 读档（L）"
 
 [node name="DeleteBtn" type="Button" parent="MenuPanel/MenuVBox"]
 layout_mode = 2
