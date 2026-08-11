@@ -2127,6 +2127,17 @@ func _on_battle_auto_pressed() -> void:
 	else:
 		_auto_battle = false
 		ToastManager.info("自动战斗关闭")
+	# 按钮文本显示当前档位
+	if auto_btn is Button:
+		if _auto_battle:
+			var speed_lbl: String = "自动 1x"
+			if _auto_interval == 0.3:
+				speed_lbl = "自动 2x"
+			elif _auto_interval == 0.15:
+				speed_lbl = "自动 4x"
+			(auto_btn as Button).text = speed_lbl
+		else:
+			(auto_btn as Button).text = "自动"
 	# 状态色：开启金色，关闭还原
 	if auto_btn is Button:
 		if _auto_battle:
