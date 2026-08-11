@@ -466,6 +466,12 @@ func _start_new_experience() -> void:
 		for fxid5 in world_state.active_effects:
 			fx_names.append("%s(%dh)" % [fxid5, int(world_state.active_effects[fxid5])])
 		ToastManager.info("🌪 世界效果：%s" % "，".join(fx_names))
+	# 进本时进行中任务提示
+	if script_data != null and script_data.quest_system != null:
+		for q6 in script_data.quest_system.quests:
+			if str(q6.get("status", "")) == "active":
+				ToastManager.info("📋 当前任务：%s" % str(q6.get("name", q6.get("id", ""))))
+				break
 	_advance_to_next_event()
 
 ## 从存档继续（优先手动存档槽 0，回退自动存档）
