@@ -1668,6 +1668,24 @@ func _on_combat_started(enemies: Array) -> void:
 	for e2 in enemies:
 		if int(e2.get("atk", 0)) >= int(combat_engine.player_combat_stats.get("atk", 0) if combat_engine != null else 20):
 			_battle_log_line("⚠ %s 攻击力高于你，谨慎应对！" % str(e2.get("name", "敌人")), "#e6a23c")
+	# 战斗强度总评（全部敌人攻防 vs 玩家）
+	if combat_engine != null:
+		var total_atk := 0
+		var total_def := 0
+		for e3 in enemies:
+			total_atk += int(e3.get("atk", 0))
+			total_def += int(e3.get("def", 0))
+		var p_atk: int = int(combat_engine.player_combat_stats.get("atk", 0))
+		var p_def: int = int(combat_engine.player_combat_stats.get("def", 0))
+		var threat := "适中"
+		var threat_color := "#c9a06a"
+		if total_atk > p_atk * 1.5 or total_def > p_def * 1.5:
+			threat = "危险"
+			threat_color = "#e05a4e"
+		elif total_atk < p_atk * 0.7 and total_def < p_def * 0.7:
+			threat = "轻松"
+			threat_color = "#7cc47c"
+		_battle_log_line("强度评估：[color=%s]%s[/color]（敌攻 %d vs 你 %d）" % [threat_color, threat, total_atk, p_atk], "")
 	# 自动推进在战斗中暂停（需玩家手动战斗）
 	if _auto_advance_mode:
 		_battle_log_line("⏸ 自动推进已暂停（战斗进行中）", "#8a8278")
