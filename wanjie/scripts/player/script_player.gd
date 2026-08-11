@@ -3165,7 +3165,8 @@ func _on_menu_rating_pressed() -> void:
 		ws.rating = snappedf(new_rating, 0.1)
 		ws.rating_count += 1
 		ScriptDataManager.update_script(ws, ["rating", "rating_count"])
-		ToastManager.success("评分已提交 ★%d" % chosen[0]))
+		ToastManager.success("评分已提交 ★%d" % chosen[0])
+		_add_history("⭐ 你给剧本评了 %d 星" % chosen[0]))
 	dialog.popup_centered()
 	stars.position = Vector2(120, 70)
 
