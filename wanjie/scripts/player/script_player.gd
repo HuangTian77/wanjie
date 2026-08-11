@@ -2270,7 +2270,13 @@ func _on_battle_skill_pressed() -> void:
 
 func _on_battle_flee_pressed() -> void:
 	if combat_engine != null:
-		var chance: float = combat_engine.last_flee_chance
+		# 烟雾弹消耗并提升逃跑成功率
+		var flee_bonus := 0.0
+		if economy_engine != null and int(economy_engine.player_inventory.get("smoke_bomb", 0)) > 0:
+			economy_engine.player_inventory["smoke_bomb"] = int(economy_engine.player_inventory["smoke_bomb"]) - 1
+			flee_bonus = 0.15
+			_battle_log_line("💨 使用烟雾弹，逃跑成功率 +15%", "#e6c84c")
+		var chance: float = combat_engine.last_flee_chance + flee_bonus
 		# 尝试逃跑
 		combat_engine.try_flee()
 		# 若仍在战斗（未逃跑成功）提示成功率
