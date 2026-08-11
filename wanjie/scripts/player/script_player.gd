@@ -3041,7 +3041,15 @@ func _on_menu_log_pressed() -> void:
 		for cid in event_engine.cooldowns:
 			list.append_text("• %s：剩 %d 回合\n" % [cid, int(event_engine.cooldowns[cid])])
 		list.append_text("\n")
-	# 复制日志按钮
+	# 背包摘要（含遗物数）
+	if economy_engine != null and not economy_engine.player_inventory.is_empty():
+		var relic_count: int = int(economy_engine.player_inventory.get("rare_relic", 0))
+		var bag_size: int = 0
+		for it2 in economy_engine.player_inventory:
+			bag_size += int(economy_engine.player_inventory[it2])
+		stat_line += " · 背包 %d 件" % bag_size
+		if relic_count > 0:
+			stat_line += "（✨遗物×%d）" % relic_count
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
 	copy_btn.pressed.connect(func():
