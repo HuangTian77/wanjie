@@ -1376,6 +1376,15 @@ func _on_tavern_pressed() -> void:
 			eb.add_theme_font_size_override("font_size", 11)
 			eb.pressed.connect(_send_egg_topic.bind(topic))
 			er.add_child(eb)
+		# 随机话题按钮
+		var rand_eb := Button.new()
+		rand_eb.text = "🎲 随机"
+		rand_eb.flat = true
+		rand_eb.add_theme_font_size_override("font_size", 11)
+		rand_eb.pressed.connect(func():
+			var topics := ["遗物", "命运", "酒", "世界", "旅途", "天气"]
+			_send_egg_topic(topics[randi() % topics.size()]))
+		er.add_child(rand_eb)
 		egg_row.add_child(er)
 	var hist_count: int = TavernManager.dialog_history.size()
 	ToastManager.info("🏮 与 %s 对话（←→切换角色）%s" % [
