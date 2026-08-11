@@ -3816,7 +3816,10 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("🎯 倾向：%s\n\n" % tend)
 	# 经验进度（每 100 经验升级）
 	var exp_now: int = int(st.get("exp", 0))
-	list.append_text("✨ 经验：%d/100（%d%%）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0))])
+	if exp_now >= 100:
+		list.append_text("✨ 经验：%d/100（[color=#e6c84c]已满，战斗胜利后升级！[/color]）\n\n" % exp_now)
+	else:
+		list.append_text("✨ 经验：%d/100（%d%%）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0))])
 	list.append_text("[b]【状态效果】[/b]\n")
 	var fx: Array = st.get("status_effects", [])
 	if fx.is_empty():
