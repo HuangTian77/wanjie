@@ -2270,6 +2270,7 @@ func _on_battle_flee_pressed() -> void:
 			ToastManager.warning("逃跑失败…成功率 %.0f%%（敏捷越高越易逃脱）" % (chance * 100.0))
 		else:
 			_add_history("🏃 成功逃离战斗")
+			ToastManager.success("🏃 成功逃离战斗")
 
 ## 使用背包中第一个药水/草药（Q 键/按钮共用）
 func _use_first_potion() -> void:
