@@ -3794,6 +3794,10 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("❤️ HP %d/%d    ✦ MP %d/%d\n\n" % [
 		int(st.get("hp", 0)), int(st.get("max_hp", 100)),
 		int(st.get("mp", 0)), int(st.get("max_mp", 50))])
+	# 护盾显示（技能获得的护盾值）
+	var shield_show: int = int(st.get("shield", 0))
+	if shield_show > 0:
+		list.append_text("🛡 护盾：%d（减免伤害）\n\n" % shield_show)
 	list.append_text("[color=#7a7268]普攻回复 +1 MP；技能消耗 MP；休息回满[/color]\n\n")
 	# 职业倾向（属性偏向判断）
 	var tend := "均衡型"
