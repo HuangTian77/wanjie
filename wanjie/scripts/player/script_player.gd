@@ -1632,6 +1632,12 @@ func _on_combat_started(enemies: Array) -> void:
 
 func _on_combat_round_started(round_num: int) -> void:
 	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
+	# 状态效果倒计时日志（剩余 1 回合提示）
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		var ps_fx: Array = combat_engine.player_combat_stats.get("status_effects", [])
+		for f2 in ps_fx:
+			if int(f2.get("remaining_turns", 0)) == 1:
+				_battle_log_line("⏳ %s 还剩 1 回合" % str(f2.get("name", "效果")), "#e6c84c")
 	_refresh_battle_ui()
 
 func _on_combat_action_taken(_actor: Dictionary, _action: Dictionary) -> void:
