@@ -483,6 +483,8 @@ func _continue_from_save() -> void:
 	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
+	ToastManager.success("第 %d 天 · 继续冒险" % day)
+	_refresh_menu_title()
 	_advance_to_next_event()
 
 ## 继续提示闪烁（无选择按钮时显示 ▸ 继续，有限闪烁后自动清除）
