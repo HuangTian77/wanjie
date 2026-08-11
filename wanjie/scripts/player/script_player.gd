@@ -3395,10 +3395,16 @@ func _on_menu_rest_pressed() -> void:
 	var confirm := ConfirmationDialog.new()
 	var hp_now2: int = 0
 	var mp_now2: int = 0
+	var hp_max2 := 100
 	if combat_engine != null:
 		hp_now2 = int(combat_engine.player_combat_stats.get("hp", 0))
 		mp_now2 = int(combat_engine.player_combat_stats.get("mp", 0))
-	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。" % [hp_now2, mp_now2]
+		hp_max2 = int(combat_engine.player_combat_stats.get("max_hp", 100))
+	# 满血时休息提示（收益低，可考虑探索）
+	var full_note := ""
+	if hp_now2 >= hp_max2 and combat_engine != null:
+		full_note = "\n⚠ 当前 HP 已满，休息收益较低，建议继续探索。"
+	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。%s" % [hp_now2, mp_now2, full_note]
 	confirm.confirmed.connect(func():
 		menu_panel.visible = false
 		_do_rest())
