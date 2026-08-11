@@ -3915,6 +3915,11 @@ func _do_rest() -> void:
 		recovered_mp = int(stats.get("max_mp", 50)) - int(stats.get("mp", 0))
 		stats["hp"] = stats.get("max_hp", 100)
 		stats["mp"] = stats.get("max_mp", 50)
+	# 世界效果结算（休息跨小时，检查到期）
+	if world_state:
+		var expired_fx: Array = world_state.tick_effects()
+		if not expired_fx.is_empty():
+			ToastManager.info("🌪 世界效果结束：%s" % "，".join(PackedStringArray(expired_fx)))
 	_update_ui()
 	_sync_save_state()
 	var rest_time_txt: String = world_state.get_time_display() if world_state != null else ""
