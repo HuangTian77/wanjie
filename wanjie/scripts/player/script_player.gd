@@ -4120,6 +4120,10 @@ func _on_menu_help_pressed() -> void:
 	dialog.title = "❓ 操作帮助"
 	# 打开帮助时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 帮助打开时暂停自动推进（避免错过选择）
+	var auto_paused: bool = _auto_advance_mode
+	if auto_paused:
+		_auto_advance_mode = false
 	dialog.dialog_text = """【基本操作】
 - 点击 / 空格 / 回车：继续剧情、跳过打字机
 - A：切换自动推进（打字完成后自动继续，遇选择暂停）
@@ -4180,6 +4184,10 @@ func _on_menu_help_pressed() -> void:
 		DisplayServer.clipboard_set(dialog.dialog_text)
 		ToastManager.success("帮助已复制"))
 	dialog.add_child(copy_help)
+	# 帮助关闭恢复自动推进
+	dialog.closed.connect(func():
+		if auto_paused:
+			_auto_advance_mode = true)
 	dialog.dialog_text = ""
 	dialog.popup_centered()
 
