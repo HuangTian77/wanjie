@@ -2681,10 +2681,11 @@ func _on_menu_bag_pressed() -> void:
 			add_child(confirm_sell_all)
 			confirm_sell_all.popup_centered())
 		sell_row.add_child(sell_all)
+		# 按单价降序排列出售按钮（贵重物品优先）
+		var sell_items: Array = []
 		for item_id2 in economy_engine.player_inventory:
 			if int(economy_engine.player_inventory[item_id2]) <= 0:
 				continue
-			# 计算估值（价格×数量/2）
 			var unit_price := 10
 			if str(item_id2) == "rare_relic":
 				unit_price = 100
@@ -2693,6 +2694,11 @@ func _on_menu_bag_pressed() -> void:
 					for g in m.get("goods", []):
 						if str(g.get("item", "")) == str(item_id2):
 							unit_price = int(economy_engine.get_price(str(m.get("id", "")), str(item_id2)))
+			sell_items.append({"id": item_id2, "price": unit_price})
+		sell_items.sort_custom(func(a, b): return a["price"] > b["price"])
+		for si in sell_items:
+			var item_id2: String = str(si["id"])
+			var unit_price: int = int(si["price"])
 			var sell_btn := Button.new()
 			sell_btn.text = "%s ×%d（+%d💰）" % [item_id2, int(economy_engine.player_inventory[item_id2]), maxi(1, unit_price / 2)]
 			sell_btn.flat = true
