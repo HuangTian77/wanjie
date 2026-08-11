@@ -2062,7 +2062,7 @@ func _refresh_battle_ui() -> void:
 					target_name = str(combat_engine.enemies[ti].get("name", "?"))
 					break
 		enemy_info.text += "\n[color=#c9a06a]🎯 目标：%s（点击切换）[/color]" % target_name
-		enemy_info.tooltip_text = "Tab 或点击切换目标；当前攻击将指向 %s" % target_name
+		enemy_info.tooltip_text = "Tab 或点击切换目标；当前攻击将指向 %s（建议集火低血 ⚠ 敌人）" % target_name
 	if enemy_info.get_signal_connection_list("gui_input").is_empty():
 		enemy_info.gui_input.connect(_on_enemy_info_clicked)
 	enemy_info.add_theme_color_override("font_color", Color(0.9, 0.35, 0.35))
