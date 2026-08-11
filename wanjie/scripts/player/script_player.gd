@@ -2950,6 +2950,7 @@ func _do_sell_all(dialog: AcceptDialog) -> void:
 		sold_any = true
 	if sold_any:
 		economy_engine.add_currency("gold", total_gain)
+		_sell_count += 1
 		ToastManager.success("💰 全部卖出 +%d 金币" % total_gain)
 		_add_history("💰 全部卖出 +%d 金币" % total_gain)
 		_spawn_damage_popup(total_gain, false, true)  # 金币金色飘字
