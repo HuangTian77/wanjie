@@ -4245,6 +4245,13 @@ func _show_slot_selector(mode: String) -> void:
 		if _get_slot_info(si3) != "(空)":
 			used_slots += 1
 	title_label.tooltip_text = "已使用 %d/3 个槽位 · 自动存档独立" % used_slots
+	# 槽位已满提示（保存模式）
+	if mode == "save" and used_slots >= 3:
+		var full_note := Label.new()
+		full_note.text = "⚠ 3 个槽位已满：保存将覆盖所选槽位"
+		full_note.add_theme_color_override("font_color", Color(0.85, 0.55, 0.2))
+		full_note.add_theme_font_size_override("font_size", 11)
+		title_box.add_child(full_note)
 	title_label.add_theme_font_size_override("font_size", 16)
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
