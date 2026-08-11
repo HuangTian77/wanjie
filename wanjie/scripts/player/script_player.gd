@@ -1698,6 +1698,13 @@ func _on_combat_started(enemies: Array) -> void:
 
 func _on_combat_round_started(round_num: int) -> void:
 	_battle_log_line("─ ⚔ 第 %d 回合 ─" % round_num, "#c9a06a")
+	# 回合敌人剩余（多敌时）
+	if combat_engine != null and combat_engine.enemies.size() > 1:
+		var alive_n: int = 0
+		for ee in combat_engine.enemies:
+			if ee.get("is_alive", true):
+				alive_n += 1
+		_battle_log_line("敌人剩余：%d/%d" % [alive_n, combat_engine.enemies.size()], "#8a8278")
 	# 回合 MP 状态（低 MP 提示）
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var mp_round: int = int(combat_engine.player_combat_stats.get("mp", 0))
