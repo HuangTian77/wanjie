@@ -3170,6 +3170,10 @@ func _on_menu_rating_pressed() -> void:
 		_add_history("⭐ 你给剧本评了 %d 星" % chosen[0]))
 	dialog.popup_centered()
 	stars.position = Vector2(120, 70)
+	# 取消评分轻提示（未打扰）
+	dialog.canceled.connect(func():
+		if chosen[0] > 0:
+			ToastManager.info("评分未提交（可选 ★）"))
 
 func _on_menu_back_pressed() -> void:
 	# 返回确认（防误点丢失当前阅读位置）
