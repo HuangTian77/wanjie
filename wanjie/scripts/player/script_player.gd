@@ -68,6 +68,8 @@ var _battle_target: int = -1
 var _last_autosave_time: float = 0.0
 ## 上次休息时的天数（跨天自动存档用）
 var _last_rest_day: int = -1
+## 休息开始时的天数（跨天提示用）
+var _rest_start_day: int = -1
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -3935,6 +3937,10 @@ func _do_rest() -> void:
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
 	_add_history("在营地休息了 8 小时，状态恢复（HP +%d / MP +%d）" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0)])
+	# 跨天提示（休息前后天数不同）
+	if world_state != null and _rest_start_day >= 0 and world_state.get_current_day() > _rest_start_day:
+		ToastManager.info("🗓 新的一天开始了（第 %d 天）" % world_state.get_current_day())
+	_rest_start_day = world_state.get_current_day() if world_state != null else -1
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
