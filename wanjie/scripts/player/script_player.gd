@@ -2430,6 +2430,7 @@ func _on_menu_shop_pressed() -> void:
 func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: int, dialog: AcceptDialog) -> void:
 	if economy_engine.buy(market_id, item_id, qty):
 		ToastManager.success("已购买 %d 个 %s（剩余 %d 金币）" % [qty, item_id, int(economy_engine.player_currencies.get("gold", 0))])
+		_add_history("🛒 购买 %d 个 %s" % [qty, item_id])
 		_spawn_damage_popup(unit_price * qty, false, true)  # 购买 +金币飘字
 		_add_history("💰 购买 %d 个 %s（-%d 金币）" % [qty, item_id, unit_price * qty])
 		_sync_save_state()
