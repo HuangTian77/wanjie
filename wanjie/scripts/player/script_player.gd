@@ -1469,6 +1469,9 @@ func _on_tavern_char_selected(index: int) -> void:
 	# 好感度满时特殊对话提示
 	if mood_val >= 2:
 		ToastManager.info("💝 与 %s 的对话将获得更深的情谊" % cname)
+	# 好感度满解锁背景故事
+	if mood_val >= 2 and index >= 0 and index < TAVERN_CHARS.size() and TAVERN_CHARS[index].has("background"):
+		_tavern_append("assistant", "（她压低声音，说起往事）\n📖 %s" % TAVERN_CHARS[index]["background"])
 
 func _enter_tavern_char(index: int) -> void:
 	tavern_char_index = index
