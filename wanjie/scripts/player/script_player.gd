@@ -1951,6 +1951,7 @@ func _refresh_battle_ui() -> void:
 				fx_lines.append("%s:%s" % [e.get("name", "?"), fx.get("name", "?")])
 	if not fx_lines.is_empty():
 		enemy_info.text += "\n[效果] %s" % "，".join(fx_lines)
+		enemy_info.tooltip_text = "状态效果说明：中毒=每回合损血，护盾=减伤，狂暴=攻+防-，再生=回血"
 	if not ps.is_empty():
 		enemy_info.text += "\n%s HP:%d/%d MP:%d/%d" % [
 			ps.get("name", "旅者"), int(ps.get("hp", 0)), int(ps.get("max_hp", 1)),
