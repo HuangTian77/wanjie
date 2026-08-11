@@ -476,6 +476,8 @@ var _auto_advance_mode: bool = false
 var _auto_continue_timer: Timer
 ## 自动战斗辅助计时器（自动推进模式）
 var _auto_combat_timer: Timer
+## 自动指示呼吸动画已启动
+var _auto_indicator_tween_started: bool = false
 ## 当前显示的任务（切换提示用）
 var _last_quest_shown: String = ""
 ## 当前区域（切换提示用）
@@ -817,6 +819,14 @@ func _update_ui() -> void:
 		# 自动推进模式指示
 		if auto_indicator != null:
 			auto_indicator.visible = _auto_advance_mode
+			# 开启时呼吸闪烁（仅启动一次）
+			if _auto_advance_mode and not _auto_indicator_tween_started:
+				_auto_indicator_tween_started = true
+				auto_indicator.modulate.a = 1.0
+				var atw := create_tween()
+				atw.set_loops()
+				atw.tween_property(auto_indicator, "modulate:a", 0.4, 0.6)
+				atw.tween_property(auto_indicator, "modulate:a", 1.0, 0.6)
 		# 任务追踪（当前进行中的任务）
 		if script_data != null and script_data.quest_system != null and script_data.quest_system.quests.size() > 0:
 			var active_q := ""
