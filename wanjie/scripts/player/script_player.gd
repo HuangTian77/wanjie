@@ -518,6 +518,8 @@ var _event_trigger_count: int = 0
 var _auto_save_count: int = 0
 ## 连续逃跑失败计数
 var _flee_fail_count: int = 0
+## 连续战败场数
+var _lose_streak: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1802,6 +1804,13 @@ func _on_combat_ended(result: String) -> void:
 			var max6: int = int(ps6.get("max_hp", 100))
 			if max6 > 0 and int(ps6.get("hp", 0)) < max6 * 0.6:
 				ToastManager.warning("💤 生命较低，建议菜单休息回满")
+	# 战斗失败：连败提示（≥3 建议调整策略）
+	if result == "defeat":
+		_lose_streak += 1
+		if _lose_streak >= 3:
+			ToastManager.warning("连续战败 %d 场…建议：升级/购买装备/调整技能" % _lose_streak)
+	else:
+		_lose_streak = 0
 	# 战斗胜利庆祝（胜场计数里程碑，计数在战斗统计处统一累加）
 	if result == "victory":
 		var wins_after: int = _battle_wins + 1
