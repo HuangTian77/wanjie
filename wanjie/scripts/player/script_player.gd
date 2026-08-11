@@ -163,6 +163,16 @@ func _process(delta: float) -> void:
 		_auto_timer += delta
 		if _auto_timer >= _auto_interval:
 			_auto_timer = 0.0
+			# 低血保护：HP<25% 自动暂停自动战斗（提示手动治疗/逃跑）
+			var hp_low: int = int(combat_engine.player_combat_stats.get("hp", 0))
+			var hp_low_max: int = int(combat_engine.player_combat_stats.get("max_hp", 1))
+			if hp_low_max > 0 and hp_low < hp_low_max * 0.25:
+				_auto_battle = false
+				ToastManager.warning("🛑 生命低于 25%%，自动战斗已暂停（建议治疗或逃跑）")
+				var auto_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
+				if auto_btn is Button:
+					(auto_btn as Button).text = "自动"
+				return
 			# 智能战斗：HP<50% 优先治疗（MP 够时）
 			var used_skill := false
 			var hp_now: int = int(combat_engine.player_combat_stats.get("hp", 0))
