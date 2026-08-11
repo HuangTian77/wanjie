@@ -2139,6 +2139,16 @@ func _on_battle_skill_pressed() -> void:
 			if healed > 0:
 				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed], "#7cc47c")
 				_spawn_damage_popup(healed)  # 绿色恢复飘字
+				# 血条绿闪反馈
+				var hp_bar := get_node_or_null("MainVBox/HSplit/LeftPanel/LeftVBox/HPHBox/PlayerHPBar") as ProgressBar
+				if hp_bar != null:
+					hp_bar.add_theme_stylebox_override("fill", (func() -> StyleBox:
+						var sb := StyleBoxFlat.new()
+						sb.bg_color = Color(0.35, 0.9, 0.45)
+						return sb).call())
+					var hp_tw2 := create_tween()
+					hp_tw2.tween_interval(0.3)
+					hp_tw2.tween_callback(func(): hp_bar.remove_theme_stylebox_override("fill"))
 			# MP 恢复飘字（蓝色）
 			var mp_restored := int(sres.get("mp_restored", 0))
 			if mp_restored > 0:
