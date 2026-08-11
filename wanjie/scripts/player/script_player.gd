@@ -2993,7 +2993,12 @@ func _on_menu_log_pressed() -> void:
 func _on_menu_rest_pressed() -> void:
 	# 休息确认（推进 8 小时，可能触发随机事件）
 	var confirm := ConfirmationDialog.new()
-	confirm.dialog_text = "⛺ 休息 8 小时？\\nHP/MP 将回满，时间推进，30% 概率遭遇随机事件。"
+	var hp_now2: int = 0
+	var mp_now2: int = 0
+	if combat_engine != null:
+		hp_now2 = int(combat_engine.player_combat_stats.get("hp", 0))
+		mp_now2 = int(combat_engine.player_combat_stats.get("mp", 0))
+	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。" % [hp_now2, mp_now2]
 	confirm.confirmed.connect(func():
 		menu_panel.visible = false
 		_do_rest())
