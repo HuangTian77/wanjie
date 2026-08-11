@@ -4138,12 +4138,18 @@ func _on_menu_help_pressed() -> void:
 
 【酒馆 🏮】
 - 与旅店老板娘 / 老学者对话，了解世界观线索
+- 多聊天提升好感度（亲密后解锁往事与礼物）
+- 试试聊「遗物 / 命运 / 酒 / 世界」有隐藏回应
 - 对话历史自动保存
+
+【商店 🏪】
+- 购买物品（价格随供需波动），出售背包物品换金币
+- Shift 点击购买：用剩余金币买最多数量
 
 【提示】
 - 每 5 分钟自动存档，退出前建议手动保存
 - 剧本进度会同步到大厅卡片进度条"""
-	dialog.min_size = Vector2i(520, 480)
+	dialog.min_size = Vector2i(560, 520)
 	add_child(dialog)
 	dialog.popup_centered()
 
