@@ -45,6 +45,7 @@ var _auto_timer: float = 0.0
 @onready var battle_panel: PanelContainer = %BattlePanel
 @onready var enemy_info: Label = %EnemyInfo
 @onready var battle_log: RichTextLabel = %BattleLog
+@onready var battle_log_clear: Button = %BattleLogClear
 @onready var tavern_panel: PanelContainer = %TavernPanel
 @onready var tavern_char_select: OptionButton = %TavernCharSelect
 @onready var tavern_msgs: RichTextLabel = %TavernMsgs
@@ -1569,6 +1570,10 @@ func _on_combat_started(enemies: Array) -> void:
 	battle_log.clear()
 	# 右键复制菜单（选中文本可复制）
 	battle_log.context_menu_enabled = true
+	# 清空日志按钮
+	battle_log_clear.pressed.connect(func():
+		battle_log.clear()
+		_battle_log_line("日志已清空", "#8a8278"))
 	_refresh_battle_ui()
 	_battle_log_line("战斗开始！遭遇 %d 个敌人" % enemies.size(), "#c9a06a")
 	# 自动推进在战斗中暂停（需玩家手动战斗）

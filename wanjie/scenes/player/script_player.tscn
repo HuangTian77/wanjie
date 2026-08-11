@@ -532,6 +532,13 @@ layout_mode = 2
 text = "⚔ 战斗"
 horizontal_alignment = 1
 
+[node name="BattleLogClear" type="Button" parent="BattlePanel/BattleVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "🗑 清空日志"
+flat = true
+theme_override_font_sizes/font_size = 11
+
 [node name="EnemyInfo" type="Label" parent="BattlePanel/BattleVBox"]
 unique_name_in_owner = true
 layout_mode = 2
