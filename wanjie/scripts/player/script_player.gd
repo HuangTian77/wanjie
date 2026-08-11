@@ -793,6 +793,12 @@ func _add_choice_button(text: String, method: String = "") -> void:
 
 ## 添加历史记录
 func _add_history(text: String) -> void:
+	# 类型标记（事件/后果/其他 → 便于日志筛选）
+	var type_tag := "其他"
+	if text.contains("事件") or text.contains("📌") or text.contains("🎲"):
+		type_tag = "事件"
+	elif text.contains("后果") or text.contains("选择"):
+		type_tag = "后果"
 	var ts := ""
 	if world_state:
 		# 跨天分节标题
@@ -805,6 +811,9 @@ func _add_history(text: String) -> void:
 			world_state.get_current_hour(),
 			world_state.get_period_name()]
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
+	# 行尾类型标记（供日志筛选，浅灰小字）
+	if type_tag != "其他":
+		history_text.text += "[color=#4a443e][%s][/color]" % type_tag
 	# 展开时自动滚动到底（新记录可见）
 	if history_panel.visible and history_text.get_line_count() > 0:
 		history_text.scroll_to_line(history_text.get_line_count() - 1)
