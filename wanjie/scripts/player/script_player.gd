@@ -488,6 +488,9 @@ func _continue_from_save() -> void:
 	var day: int = (sd.world_state.get("game_time", {}) as Dictionary).get("day", 1)
 	# 恢复自动推进偏好
 	_auto_advance_mode = GameManager.user_data.auto_advance
+	# 酒馆恢复（当前角色/历史）
+	if TavernManager != null and not TavernManager.current_character.is_empty():
+		TavernManager.load_history(str(TavernManager.current_character.get("id", "innkeeper")))
 	_set_main_text("[b]【%s】[/b]\n\n已从存档继续…（第 %d 天）" % [script_data.name, day])
 	_add_history("继续世界: %s（第 %d 天）" % [script_data.name, day])
 	ToastManager.success("第 %d 天 · 继续冒险" % day)
