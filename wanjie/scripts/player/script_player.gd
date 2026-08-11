@@ -2002,15 +2002,31 @@ func _on_battle_attack_pressed() -> void:
 
 ## 伤害飘字（战斗手感：上浮淡出）
 func _spawn_damage_popup(amount: int, critical: bool = false, is_gold: bool = false) -> void:
+	# 快速连发时轻微错位（视觉层叠）
+	var spawn_y := randf_range(-16, 16)
+	_spawn_mp_popup_impl(amount, critical, is_gold, spawn_y)
+
+## MP 恢复飘字（蓝色，+MP）
+func _spawn_mp_popup(amount: int) -> void:
+	_spawn_mp_popup_impl(amount, false, false, randf_range(-16, 16), true)
+
+func _spawn_mp_popup_impl(amount: int, critical: bool, is_gold: bool, y_off: float, is_mp: bool = false) -> void:
 	var popup_pos := Vector2.ZERO
 	if enemy_info != null and enemy_info.is_visible_in_tree():
-		popup_pos = enemy_info.global_position + Vector2(randf_range(20, 120), -10)
+		popup_pos = enemy_info.global_position + Vector2(randf_range(20, 120), -10 + y_off)
 	else:
 		# fallback：屏幕中心（商店等非战斗场景）
-		popup_pos = get_viewport().get_visible_rect().size / 2 + Vector2(randf_range(-80, 80), -40)
+		popup_pos = get_viewport().get_visible_rect().size / 2 + Vector2(randf_range(-80, 80), -40 + y_off)
 	var lbl := Label.new()
-	var color := Color(0.95, 0.4, 0.35) if amount < 0 else (Color(1.0, 0.8, 0.3) if is_gold else Color(0.35, 0.9, 0.45))
+	# MP 飘字蓝色（#5ab0d8），其他沿用原色逻辑
+	var color := Color(0.35, 0.9, 0.45) if not is_mp else Color(0.35, 0.69, 0.85)
+	if amount < 0:
+		color = Color(0.95, 0.4, 0.35)
+	elif is_gold:
+		color = Color(1.0, 0.8, 0.3)
 	lbl.text = ("-%d" % absi(amount)) if amount < 0 else ("+%d" % amount)
+	if is_mp:
+		lbl.text = "✦ +%d" % amount
 	if is_gold:
 		lbl.text = "🪙 +%d" % amount
 	# 暴击：金色大字 + 更大上浮
@@ -2083,6 +2099,10 @@ func _on_battle_skill_pressed() -> void:
 			if healed > 0:
 				_battle_log_line("%s 释放 %s，恢复 %d 点生命" % [combat_engine.player_combat_stats.get("name", "你"), skills[id].get("name", "技能"), healed], "#7cc47c")
 				_spawn_damage_popup(healed)  # 绿色恢复飘字
+			# MP 恢复飘字（蓝色）
+			var mp_restored := int(sres.get("mp_restored", 0))
+			if mp_restored > 0:
+				_spawn_mp_popup(mp_restored)
 				_spawn_damage_popup(healed)  # 治疗 +绿字飘字
 			if sres.get("buffed", false):
 				ToastManager.success("🛡 %s 获得增益！" % skills[id].get("name", "技能"))
