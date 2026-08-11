@@ -1378,6 +1378,18 @@ func _on_tavern_export_pressed() -> void:
 		fd.queue_free())
 	fd.popup_centered()
 
+## 导出最近一场战斗日志
+func _on_menu_export_battle_log() -> void:
+	if battle_log.text.strip_edges().is_empty():
+		ToastManager.info("暂无战斗日志（先经历一场战斗）")
+		return
+	var out_path := "user://battle_log_%s.txt" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
+	var f := FileAccess.open(out_path, FileAccess.WRITE)
+	if f:
+		f.store_string(battle_log.text)
+		f.close()
+		ToastManager.success("战斗日志已导出：%s" % ProjectSettings.globalize_path(out_path))
+
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
 	tavern_panel.visible = false
