@@ -2107,6 +2107,10 @@ func _on_battle_skill_pressed() -> void:
 		var label: String = "%d. %s" % [skills.find(s) + 1, s.get("name", sid)]
 		if mana_cost > 0:
 			label += "（MP %d）" % mana_cost
+		# 数字快捷键标注
+		var skill_idx: int = skills.find(s)
+		if skill_idx < 9:
+			label = "[%d] %s" % [skill_idx + 1, label]
 		menu.add_item(label, skills.find(s))
 		# tooltip：技能描述
 		var desc: String = str(s.get("description", ""))
