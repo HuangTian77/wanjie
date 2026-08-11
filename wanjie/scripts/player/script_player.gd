@@ -2095,6 +2095,7 @@ func _on_battle_skill_pressed() -> void:
 		return
 	var menu := PopupMenu.new()
 	menu.name = "BattleSkillMenu"
+	var cur_mp2 := 0
 	for s in skills:
 		var sid: String = s.get("id", "")
 		# 显示 MP 消耗 + 数字键提示
@@ -2109,9 +2110,13 @@ func _on_battle_skill_pressed() -> void:
 			menu.set_item_tooltip(skills.find(s), desc)
 		# MP 不足：置灰禁用
 		var cur_mp: int = int(combat_engine.player_combat_stats.get("mp", 0))
+		cur_mp2 = cur_mp
 		if mana_cost > cur_mp:
 			menu.set_item_disabled(skills.find(s), true)
 			menu.set_item_tooltip(skills.find(s), "魔力不足（需要 %d MP）" % mana_cost)
+	# MP 全部不足提示
+	if cur_mp2 < 1:
+		ToastManager.warning("✦ MP 已耗尽，请先普攻攒蓝或休息恢复")
 	menu.id_pressed.connect(func(id: int):
 		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), _battle_target)
 		if not sres.is_empty():
