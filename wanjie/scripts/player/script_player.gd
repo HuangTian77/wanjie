@@ -2949,6 +2949,8 @@ func _on_menu_bag_pressed() -> void:
 				# 遗物 Tooltip 说明（持有效果）
 				if str(item_id) == "rare_relic":
 					list.append_text("[color=#e6c84c]  ✨ 战斗攻击 +5（永久）[/color]\n")
+				if str(item_id) == "smoke_bomb":
+					list.append_text("[color=#8a8278]  💨 战斗中逃跑成功率 +15%（自动消耗）[/color]\n")
 				# 用市场价估值（找不到则跳过）
 				if economy_engine.economy_data:
 					for m in economy_engine.economy_data.markets:
