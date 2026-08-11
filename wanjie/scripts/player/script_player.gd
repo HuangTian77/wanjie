@@ -1020,6 +1020,14 @@ func _on_choices_presented(choices: Array) -> void:
 				if c2 is Dictionary:
 					cons_txt += "• %s：%s\n" % [str(c2.get("target", "?")), str(c2.get("effect", "?"))]
 			btn.tooltip_text = cons_txt
+			# 有后果按钮金色边框高亮（提示有后续影响）
+			var border := StyleBoxFlat.new()
+			border.bg_color = Color(0.96, 0.925, 0.843, 1.0)
+			border.border_color = Color(0.85, 0.65, 0.3, 0.8)
+			border.set_border_width_all(2)
+			border.set_corner_radius_all(6)
+			border.set_content_margin_all(8)
+			btn.add_theme_stylebox_override("normal", border)
 		btn.custom_minimum_size = Vector2(0, 44)
 		btn.add_theme_font_size_override("font_size", 15)
 		btn.focus_mode = Control.FOCUS_ALL
