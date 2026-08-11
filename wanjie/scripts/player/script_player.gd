@@ -2179,6 +2179,8 @@ func _restore_save_state(sd: SaveData) -> void:
 		economy_engine.load_from_dict(sd.economy_state)
 	if combat_engine and sd.player_state:
 		combat_engine.set_player_stats(sd.player_state)
+	# 恢复自动推进偏好（读档后重置为用户设置）
+	_auto_advance_mode = GameManager.user_data.auto_advance
 	_update_ui()
 	_sync_save_state()
 
