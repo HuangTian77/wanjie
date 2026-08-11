@@ -2590,11 +2590,12 @@ func _do_sell_all(dialog: AcceptDialog) -> void:
 		economy_engine.add_currency("gold", total_gain)
 		ToastManager.success("💰 全部卖出 +%d 金币" % total_gain)
 		_add_history("💰 全部卖出 +%d 金币" % total_gain)
+		_spawn_damage_popup(total_gain, false, true)  # 金币金色飘字
 		_sync_save_state()
 		_on_menu_bag_pressed()
 		dialog.queue_free()
 	else:
-		ToastManager.info("没有可卖出的物品")
+		ToastManager.info("没有可卖出的物品（遗物保留）")
 
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
