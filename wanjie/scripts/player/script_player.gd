@@ -175,7 +175,7 @@ func _process(delta: float) -> void:
 			choice_container.visible = true
 			# 自动模式：短暂延迟后自动继续
 			if _auto_advance_mode and not _advancing:
-				_auto_continue_timer.start(0.5)
+				_auto_continue_timer.start(_auto_advance_delay)
 			# 无选择按钮时显示"继续"提示闪烁（有事件后由事件流程添加按钮）
 			if choice_container.get_child_count() == 0:
 				_show_continue_blink(true)
@@ -222,7 +222,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			ToastManager.success("▶ 自动推进开启（A 关闭）")
 			# 若当前文本已完成则立即继续
 			if _typewriter_done and choice_container.get_child_count() == 0:
-				_auto_continue_timer.start(0.5)
+				_auto_continue_timer.start(_auto_advance_delay)
 		else:
 			ToastManager.info("⏸ 自动推进关闭")
 		get_viewport().set_input_as_handled()
@@ -435,6 +435,8 @@ func _show_continue_blink(show: bool) -> void:
 
 ## 推进中标志（防连点/防事件嵌套）
 var _advancing: bool = false
+## 自动模式推进间隔（秒，A 切换后 ± 调整）
+var _auto_advance_delay: float = 0.5
 ## 自动推进模式开关（A 键切换）
 var _auto_advance_mode: bool = false
 ## 自动模式延迟推进计时器
