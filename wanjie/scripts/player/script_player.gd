@@ -2199,6 +2199,9 @@ func _restore_save_state(sd: SaveData) -> void:
 		var last_txt: String = str(last_ev.get("text", ""))
 		if not last_txt.is_empty():
 			_set_main_text(last_txt, true)
+	# 读档完成关闭菜单与槽位选择器
+	if menu_panel != null:
+		menu_panel.visible = false
 	_update_ui()
 	_sync_save_state()
 
