@@ -814,6 +814,10 @@ func _add_history(text: String) -> void:
 			world_state.get_current_hour(),
 			world_state.get_period_name()]
 	history_text.text += "%s[color=#6b5e52]%s[/color]\n" % [ts, text]
+	# 自动滚动到底部（新记录可见）
+	var hp_scroll := get_node_or_null("MainVBox/HSplit/RightPanel/HistoryPanel") as ScrollContainer
+	if hp_scroll != null:
+		hp_scroll.scroll_vertical = hp_scroll.get_v_scroll_bar().max_value
 	# 行尾类型标记（供日志筛选，浅灰小字）
 	if type_tag != "其他":
 		history_text.text += "[color=#4a443e][%s][/color]" % type_tag
