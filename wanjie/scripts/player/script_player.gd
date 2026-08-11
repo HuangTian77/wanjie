@@ -2069,6 +2069,9 @@ func _on_battle_attack_pressed() -> void:
 		return
 	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
 	if not res.is_empty():
+		# 攻击落空提示（MISS）
+		if int(res.get("damage", 0)) == 0 and not res.get("miss", false):
+			_battle_log_line("攻击落空…（闪避）", "#8a8278")
 		# 普攻小额回蓝（+1 MP 攒蓝机制）
 		var stats_a: Dictionary = combat_engine.player_combat_stats
 		stats_a["mp"] = mini(int(stats_a.get("max_mp", 50)), int(stats_a.get("mp", 0)) + 1)
