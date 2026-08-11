@@ -1683,6 +1683,7 @@ func _on_combat_started(enemies: Array) -> void:
 			threat = "危险"
 			threat_color = "#e05a4e"
 			ToastManager.warning("⚠ 敌人明显强于你，考虑逃跑或准备充分再战！")
+			_add_history("⚠ 遭遇强敌：%d 个（敌攻 %d vs 你 %d）" % [enemies.size(), total_atk, p_atk])
 		elif total_atk < p_atk * 0.7 and total_def < p_def * 0.7:
 			threat = "轻松"
 			threat_color = "#7cc47c"
