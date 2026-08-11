@@ -1362,6 +1362,16 @@ func _on_tavern_pressed() -> void:
 	# 输入 placeholder 按角色
 	tavern_input.placeholder_text = "对%s说话…" % str(TAVERN_CHARS[0].get("name", "角色"))
 	tavern_input.grab_focus()
+	# 酒馆内帮助按钮（H 键同效）
+	var tavern_help_btn := get_node_or_null("TavernPanel/TavernVBox/TavernHeader") as HBoxContainer
+	if tavern_help_btn != null and not tavern_help_btn.has_node("TavernHelpBtn"):
+		var thb := Button.new()
+		thb.name = "TavernHelpBtn"
+		thb.text = "❓"
+		thb.flat = true
+		thb.tooltip_text = "操作帮助（H）"
+		thb.pressed.connect(_on_menu_help_pressed)
+		tavern_help_btn.add_child(thb)
 	# 酒馆说明条（好感度/话题规则）
 	var tavern_note := get_node_or_null("TavernPanel/TavernVBox") as VBoxContainer
 	if tavern_note != null and not tavern_note.has_node("TavernNote"):
