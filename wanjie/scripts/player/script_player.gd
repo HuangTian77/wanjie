@@ -3721,6 +3721,8 @@ func _show_slot_selector(mode: String) -> void:
 
 	# 自动存档槽位（独立第 4 项）
 	if mode != "delete":
+		var sep := HSeparator.new()
+		vbox.add_child(sep)
 		var auto_info := SaveManager.get_slot_info(0, true)
 		var auto_txt := "(空)"
 		if not auto_info.is_empty():
