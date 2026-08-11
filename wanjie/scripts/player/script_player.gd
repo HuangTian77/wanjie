@@ -3845,6 +3845,7 @@ func _on_slot_delete_selected(slot: int) -> void:
 	confirm.confirmed.connect(func():
 		SaveManager.delete_save(script_data.id if script_data else "", slot)
 		ToastManager.success("存档已删除")
+		_add_history("🗑 已删除槽位 %d 存档" % (slot + 1))
 		var sel := get_node_or_null("SlotSelector")
 		if sel:
 			sel.queue_free())
