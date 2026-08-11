@@ -3082,6 +3082,33 @@ func _on_menu_log_pressed() -> void:
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	list.context_menu_enabled = true  # 右键复制
 	scroll.add_child(list)
+	# 历史筛选下拉（全部/事件/后果/其他）
+	var filter_row := HBoxContainer.new()
+	box.add_child(filter_row)
+	var filter_lbl := Label.new()
+	filter_lbl.text = "筛选："
+	filter_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	filter_row.add_child(filter_lbl)
+	var filter_opt := OptionButton.new()
+	filter_opt.add_item("全部")
+	filter_opt.add_item("事件")
+	filter_opt.add_item("后果")
+	filter_opt.add_item("其他")
+	filter_row.add_child(filter_opt)
+	filter_opt.item_selected.connect(func(_idx: int):
+		# 按前缀过滤历史（事件/后果/其他行）
+		var filtered := ""
+		var full := history_text.text
+		for line in full.split("\n"):
+			var keeps := true
+			match filter_opt.selected:
+				1: keeps = line.contains("事件") or line.contains("📌") or line.contains("🎲")
+				2: keeps = line.contains("后果") or line.contains("选择")
+				3: keeps = not (line.contains("事件") or line.contains("后果") or line.contains("选择"))
+			if keeps and not line.strip_edges().is_empty():
+				filtered += line + "\n"
+		list.clear()
+		list.append_text(filtered if not filtered.is_empty() else "[color=#999]（无匹配记录）[/color]"))
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
 	if world_state:
