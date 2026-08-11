@@ -2722,6 +2722,9 @@ func _on_menu_log_pressed() -> void:
 		var causal_count: int = event_engine.causal_marks.size()
 		stat_line += " · 因果标记 %d" % causal_count
 		stat_line += " · 选择历史 %d" % event_engine.choices_history.size()
+		# 随机事件冷却
+		if event_engine.cooldowns != null and not event_engine.cooldowns.is_empty():
+			stat_line += " · 冷却 %d" % event_engine.cooldowns.size()
 	if world_state and not world_state.active_effects.is_empty():
 		stat_line += " · 世界效果 %d" % world_state.active_effects.size()
 	if not stat_line.is_empty():
