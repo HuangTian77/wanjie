@@ -545,9 +545,16 @@ func _advance_to_next_event() -> void:
 			_run_event(random_event)
 		else:
 			var time_info := ""
+			var scenery := ""
 			if world_state:
 				time_info = "（%s · %s）" % [world_state.get_time_display(), world_state.get_period_name()]
-			_set_main_text("你在这个世界中继续探索...%s\n暂时没有发现特别的事件。\n\n[i][点击继续探索][/i]\n\n[color=#8a8278]（可按 A 开启自动推进）[/color]" % time_info)
+				# 时段场景描写（增加氛围）
+				match world_state.get_period_name():
+					"清晨": scenery = "晨雾还未散尽，鸟鸣从林间传来。"
+					"白天": scenery = "阳光正好，远山轮廓清晰可见。"
+					"傍晚": scenery = "晚霞把天边染成金色，炊烟袅袅升起。"
+					"夜晚": scenery = "月色清冷，唯有虫鸣与风作伴。"
+			_set_main_text("你在这个世界中继续探索...%s\n%s\n暂时没有发现特别的事件。\n\n[i][点击继续探索][/i]\n\n[color=#8a8278]（可按 A 开启自动推进）[/color]" % [time_info, scenery])
 			_clear_choices()
 			_add_choice_button("继续探索", "_on_continue_exploring")
 	else:
