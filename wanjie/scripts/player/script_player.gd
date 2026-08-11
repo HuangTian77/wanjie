@@ -4117,7 +4117,7 @@ func _on_menu_finish_stats_pressed() -> void:
 ## 操作帮助弹窗
 func _on_menu_help_pressed() -> void:
 	var dialog := AcceptDialog.new()
-	dialog.title = "操作帮助"
+	dialog.title = "❓ 操作帮助"
 	# 打开帮助时收起菜单（避免遮挡）
 	menu_panel.visible = false
 	dialog.dialog_text = """【基本操作】
