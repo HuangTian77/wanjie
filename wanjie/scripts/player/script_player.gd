@@ -1013,6 +1013,13 @@ func _on_choices_presented(choices: Array) -> void:
 		if not cons.is_empty():
 			btn_text += " ▶"
 		btn.text = btn_text
+		# 后果 tooltip 预览（悬停查看效果）
+		if not cons.is_empty():
+			var cons_txt := "选择后将触发 %d 项后果：\n" % cons.size()
+			for c2 in cons:
+				if c2 is Dictionary:
+					cons_txt += "• %s：%s\n" % [str(c2.get("target", "?")), str(c2.get("effect", "?"))]
+			btn.tooltip_text = cons_txt
 		btn.custom_minimum_size = Vector2(0, 44)
 		btn.add_theme_font_size_override("font_size", 15)
 		btn.focus_mode = Control.FOCUS_ALL
