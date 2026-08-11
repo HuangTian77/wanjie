@@ -3143,6 +3143,9 @@ func _on_menu_rating_pressed() -> void:
 	var stars := HBoxContainer.new()
 	stars.add_theme_constant_override("separation", 6)
 	var chosen := [0]
+	# 预填当前评分（已有评分则预选对应星）
+	if script_data != null and script_data.rating_count > 0 and not _rated_this_run:
+		chosen[0] = clampi(int(round(script_data.rating)), 1, 5)
 	for i in 5:
 		var b := Button.new()
 		b.text = "★"
