@@ -451,6 +451,7 @@ func _start_experience() -> void:
 ## 新开一局（无存档时的初始流程）
 func _start_new_experience() -> void:
 	_update_ui()
+	ToastManager.info("🌅 冒险开始 · 第一缕晨光" if world_state and world_state.get_period_name() == "清晨" else "🌅 冒险开始")
 	var bg_text := ""
 	if script_data.worldview and not script_data.worldview.background_story.is_empty():
 		bg_text = script_data.worldview.background_story
