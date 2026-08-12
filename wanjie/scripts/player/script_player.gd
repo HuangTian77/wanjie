@@ -4510,6 +4510,10 @@ func _on_menu_log_pressed() -> void:
 	if _battle_wins + _battle_defeats + _battle_flees > 0:
 		list.append_text("\n[b]【战斗】[/b]\n")
 		list.append_text("• ⚔️ 胜 %d · 败 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
+		# 胜率（有战斗时）
+		var tb2: int = _battle_wins + _battle_defeats + _battle_flees
+		if tb2 > 0:
+			list.append_text("• 📊 胜率 %d%%\n" % int(float(_battle_wins) / float(tb2) * 100.0))
 	# 世界变量（关键剧情标记）
 	if world_state and not world_state.world_variables.is_empty():
 		list.append_text("\n[b]【世界变量】[/b]\n")
