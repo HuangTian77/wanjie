@@ -628,6 +628,8 @@ var _tavern_mood_full_toast: int = 0
 var _heard_backgrounds: Dictionary = {}
 ## 发现彩蛋秘闻次数
 var _egg_count: int = 0
+## 帮助窗口滚动位置（重开记忆）
+var _help_scroll_pos: int = 0
 ## 酒馆输入历史（↑ 键调出，保留 10 条）
 var _tavern_input_history: Array[String] = []
 ## 连续探索次数（连击奖励）
@@ -5001,6 +5003,10 @@ func _on_menu_help_pressed() -> void:
 	var help_scroll := ScrollContainer.new()
 	help_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	dialog.add_child(help_scroll)
+	# 记忆上次滚动位置（关闭后重开保持）
+	help_scroll.scroll_vertical = _help_scroll_pos
+	dialog.closed.connect(func():
+		_help_scroll_pos = help_scroll.scroll_vertical)
 	var help_lbl := RichTextLabel.new()
 	help_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
