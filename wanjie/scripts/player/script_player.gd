@@ -4947,7 +4947,7 @@ func _do_rest() -> void:
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
 	if recovered_mp > 0:
-		_spawn_damage_popup(recovered_mp)
+		_spawn_mp_popup(recovered_mp)
 	_add_history("在营地休息了 8 小时，状态恢复（HP +%d / MP +%d）" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0)])
 	# 跨天提示（休息前后天数不同）
 	if world_state != null and _rest_start_day >= 0 and world_state.get_current_day() > _rest_start_day:
