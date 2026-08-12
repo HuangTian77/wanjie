@@ -4382,6 +4382,11 @@ func _on_menu_log_pressed() -> void:
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
 	stat_line = "📜 历史 %d 条" % history_text.get_line_count()
+	# 本次游玩时长
+	if _play_start_time > 0:
+		var play_mins := int((Time.get_ticks_msec() - _play_start_time) / 60000)
+		if play_mins > 0:
+			stat_line += " · ⏱ %d 分" % play_mins
 	if world_state:
 		stat_line += " · 🗓 %s" % world_state.get_time_display()
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
