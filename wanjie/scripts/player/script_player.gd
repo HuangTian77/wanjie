@@ -1663,10 +1663,10 @@ func _enter_tavern_char(index: int) -> void:
 	if sb is Button:
 		(sb as Button).disabled = true
 		tavern_input.text_changed.connect(func(t: String):
-			(sb as Button).disabled = t.strip_edges().is_empty())
-		# 字数提示（超 200 字警告）
-		if t.length() > 200:
-			ToastManager.warning("消息过长（%d/200 字），建议精简" % t.length())
+			(sb as Button).disabled = t.strip_edges().is_empty()
+			# 字数提示（超 200 字警告）
+			if t.length() > 200:
+				ToastManager.warning("消息过长（%d/200 字），建议精简" % t.length()))
 	# 清空输入按钮（Esc 在输入框内清空文字而非关闭面板）
 	var clear_btn := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/ClearTavernInput") as Button
 	if clear_btn == null:
