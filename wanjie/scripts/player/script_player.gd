@@ -4289,10 +4289,11 @@ func _on_menu_log_pressed() -> void:
 	# 标题精简（统计信息放内容区，避免标题溢出）
 	if stat_str.length() > 18:
 		stat_str = " · 标记 %d" % (event_engine.causal_marks.size() if event_engine else 0)
-	dialog.title = "世界日志%s%s%s" % [time_str, stat_str, region_txt]
+	dialog.title = "📜 世界日志%s%s%s" % [time_str, stat_str, region_txt]
 	# 标题 tooltip：统计说明
 	dialog.tooltip_text = "世界日志：因果标记=剧情关键选择；冷却=随机事件再触发倒计时"
-	dialog.min_size = Vector2i(480, 420)
+	dialog.min_size = Vector2i(520, 440)
+	dialog.ok_button_text = "关闭"
 	add_child(dialog)
 	var box := VBoxContainer.new()
 	dialog.add_child(box)
