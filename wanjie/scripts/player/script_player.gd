@@ -3504,6 +3504,10 @@ func _on_menu_shop_pressed() -> void:
 				# 批量购买（数量 × 单价）
 				btn.pressed.connect(func():
 					var qty_buy: int = int(qty_spin.value)
+					# 数量上限提示（超出当前金币可承受量时提示）
+					var gold_for_qty: int = int(economy_engine.player_currencies.get("gold", 0))
+					if qty_buy > 1 and qty_buy * final_price > gold_for_qty:
+						ToastManager.info("💰 金币仅够买 %d 个（已按最大可购量处理）" % maxi(0, int(gold_for_qty / maxf(1.0, float(final_price)))))
 					# Shift 点击：剩余金币最大购买
 					if Input.is_key_pressed(KEY_SHIFT):
 						var gold_left: int = int(economy_engine.player_currencies.get("gold", 0))
