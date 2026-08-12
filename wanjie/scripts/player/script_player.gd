@@ -80,6 +80,8 @@ var _total_damage_dealt: int = 0
 var _loot_count: int = 0
 ## 本局累计金币收入（战斗+出售）
 var _total_gold_earned: int = 0
+## 本局累计金币消费（购买）
+var _total_gold_spent: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -3439,6 +3441,8 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("💰 出售物品：%d 件\n" % _sell_count)
 		if _total_gold_earned > 0:
 			list.append_text("🪙 累计金币收入：%d\n" % _total_gold_earned)
+		if _total_gold_spent > 0:
+			list.append_text("🛒 累计金币消费：%d\n" % _total_gold_spent)
 		if _egg_count > 0:
 			list.append_text("🗝 发现酒馆秘闻：%d 段\n" % _egg_count)
 	# 敌人图鉴
@@ -3732,6 +3736,8 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 		ToastManager.success("已购买 %d 个 %s（剩余 %d 金币）" % [qty, item_id, int(economy_engine.player_currencies.get("gold", 0))])
 		_add_history("🛒 购买 %d 个 %s" % [qty, item_id])
 		_buy_count += qty
+		# 购买历史记录（本局累计消费）
+		_total_gold_spent += unit_price * qty
 		_spawn_damage_popup(unit_price * qty, false, true)  # 购买 +金币飘字
 		_add_history("💰 购买 %d 个 %s（-%d 金币）" % [qty, item_id, unit_price * qty])
 		_sync_save_state()
