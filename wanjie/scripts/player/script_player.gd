@@ -2093,11 +2093,16 @@ func _tavern_mock_reply(text: String) -> String:
 	match mood:
 		1: warm_prefix = "（%s语气温和了几分）" % char_name
 		2: warm_prefix = "（%s笑着凑近了些）" % char_name
+	# 语气标签（回复前缀，标识情绪）
+	var mood_tag := ""
+	match mood:
+		1: mood_tag = " [友好]"
+		2: mood_tag = " [亲密]"
 	var replies := [
-		"（%s若有所思地点点头）嗯，你说得对，继续说下去。" % char_name,
-		"（%s压低声音）这事说来话长…改天细聊。" % char_name,
-		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。" % char_name,
-		"（%s认真打量你）你这话，倒是提醒了我一件事。" % char_name,
+		"（%s若有所思地点点头）嗯，你说得对，继续说下去。%s" % [char_name, mood_tag],
+		"（%s压低声音）这事说来话长…改天细聊。%s" % [char_name, mood_tag],
+		"（%s微微一笑）有意思。不过这个话题，现在还不是时候。%s" % [char_name, mood_tag],
+		"（%s认真打量你）你这话，倒是提醒了我一件事。%s" % [char_name, mood_tag],
 	]
 	var reply: String = warm_prefix + str(replies[abs(text.hash()) % replies.size()])
 	# 30% 概率追加世界观线索（当前区域/任务相关）
