@@ -1687,6 +1687,9 @@ func _enter_tavern_char(index: int) -> void:
 func _on_tavern_send_pressed() -> void:
 	var text := tavern_input.text.strip_edges()
 	if text.is_empty():
+		# 空消息提示
+		tavern_input.placeholder_text = "输入点什么再发送吧…"
+		ToastManager.info("先输入一句话再发送")
 		return
 	tavern_input.text = ""
 	# 关键词彩蛋（特定话题特殊回应）
