@@ -2301,6 +2301,9 @@ func _on_combat_ended(result: String) -> void:
 					msg += "、%s" % litem
 				# 掉落日志（战斗日志独立记录）
 				_battle_log_line("🎁 掉落：%s" % litem, "#e6c84c")
+				# 稀有掉落庆祝
+				if str(li) == "rare_relic":
+					ToastManager.success("✨ 获得稀有遗物！永久攻击 +5")
 				if litem == "rare_relic":
 					ToastManager.success("✨ 稀有掉落！获得遗物 %s" % litem)
 					_spawn_damage_popup(1, true)  # 金色大字

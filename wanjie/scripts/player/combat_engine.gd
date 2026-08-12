@@ -364,8 +364,10 @@ func get_rewards() -> Dictionary:
 		loot_items.append("potion")
 	if randf() < 0.05:
 		loot_items.append("rare_relic")
+	# 稀有掉落标记（遗物出现时提示）
 	return {
 		"experience": 50 * enemies.size(),
 		"gold": randi_range(10, 50) * enemies.size(),
 		"loot": loot_items,
+		"has_rare": loot_items.has("rare_relic"),
 	}
