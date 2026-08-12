@@ -3616,6 +3616,8 @@ func _on_menu_rating_pressed() -> void:
 			rb2.text = "★ 评分（%.1f · %d 人）" % [script_data.rating, script_data.rating_count]
 		# 大厅精选排序数据即时生效
 		GameManager.scripts_changed.emit(script_data.id)
+		# 评分后本地剧本库同步（返回大厅时即时显示新评分）
+		GameManager.call_deferred("reload_scripts")
 		# 评分历史记录（user_data）
 		if not GameManager.user_data.rating_history.has(script_data.id):
 			GameManager.user_data.rating_history[script_data.id] = {}
