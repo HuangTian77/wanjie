@@ -3596,6 +3596,10 @@ func _on_menu_back_pressed() -> void:
 	confirm.ok_button_text = "返回大厅并保存"
 	confirm.cancel_button_text = "继续游戏"
 	confirm.dialog_text = "返回大厅？将自动保存当前进度%s。%s%s" % [prog_txt, battle_note2, res_stats]
+	# 灵感消耗提示（再次进入需消耗灵感）
+	var insp_back: int = GameManager.user_data.inspiration if GameManager.user_data != null else 0
+	if insp_back <= 1:
+		confirm.dialog_text += "\n⚠ 灵感仅剩 %d 点（再次进入需消耗 1 点）" % insp_back
 	# 确认信息含等级
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var lv_now: int = int(combat_engine.player_combat_stats.get("level", 1))
