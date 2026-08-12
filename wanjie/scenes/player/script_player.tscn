@@ -563,10 +563,9 @@ bbcode_enabled = true
 layout_mode = 2
 
 [node name="AutoBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
-tooltip_text = "自动战斗：1x→2x→4x→关闭（HP<25% 自动暂停）"
+tooltip_text = "自动战斗：点击循环 1x→2x→4x→关（HP<25% 自动暂停；读档保持）"
 layout_mode = 2
 text = "⚡ 自动"
-tooltip_text = "自动战斗：点击循环 1x→2x→4x→关"
 
 [node name="AttackBtn" type="Button" parent="BattlePanel/BattleVBox/BattleButtons"]
 tooltip_text = "普通攻击（每次 +1 MP 攒蓝）"
