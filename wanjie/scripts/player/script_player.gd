@@ -1190,6 +1190,12 @@ func _update_ui() -> void:
 			"夜晚": period_icon = "🌙"
 		time_label.text += " · %s %s" % [period_icon, world_state.get_period_name()]
 		time_label.tooltip_text = "世界时间 · 当前区域 · %s" % world_state.get_period_name()
+		# 时段配色（清晨暖金/白天亮蓝/傍晚橙/夜晚深蓝）
+		match world_state.get_period_name():
+			"清晨": time_label.add_theme_color_override("font_color", Color(0.95, 0.8, 0.5))
+			"白天": time_label.add_theme_color_override("font_color", Color(0.75, 0.85, 0.95))
+			"傍晚": time_label.add_theme_color_override("font_color", Color(0.95, 0.7, 0.45))
+			"夜晚": time_label.add_theme_color_override("font_color", Color(0.6, 0.65, 0.9))
 		# 世界效果标记（进行中效果加 🌪）
 		if not world_state.active_effects.is_empty():
 			time_label.text += " 🌪"
