@@ -3978,6 +3978,9 @@ func _refresh_menu_title() -> void:
 	var world_time_txt := ""
 	if world_state:
 		world_time_txt = " · 🕐%s" % world_state.get_time_display()
+		# 世界效果标记（进行中效果）
+		if not world_state.active_effects.is_empty():
+			world_time_txt += " 🌪%d" % world_state.active_effects.size()
 	title_node.text = "%s · %s%s%s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, world_time_txt, region_menu, diff_txt, progress_txt, time_txt, save_txt, slot_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
