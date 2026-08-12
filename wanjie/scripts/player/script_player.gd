@@ -4983,7 +4983,7 @@ func _on_player_stats_pressed() -> void:
 	if exp_now >= 100:
 		list.append_text("✨ 经验：%d/100（[color=#e6c84c]已满，战斗胜利后升级！[/color]）\n\n" % exp_now)
 	else:
-		list.append_text("✨ 经验：%d/100（%d%%）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0))])
+		list.append_text("✨ 经验：%d/100（%d%%，还差 %d 升级）\n\n" % [exp_now, mini(100, int(exp_now * 100.0 / 100.0)), maxi(0, 100 - exp_now)])
 	list.append_text("[b]【状态效果】[/b]\n")
 	var fx: Array = st.get("status_effects", [])
 	if fx.is_empty():
