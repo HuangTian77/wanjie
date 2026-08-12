@@ -4345,9 +4345,9 @@ func _on_menu_log_pressed() -> void:
 			if not kw.is_empty() and not line.contains(kw):
 				keeps = false
 			if keeps and not line.strip_edges().is_empty():
-				# 命中关键字高亮（金色）
+				# 命中关键字高亮（金色，仅高亮关键字而非整行）
 				if not kw.is_empty() and line.contains(kw):
-					filtered += "[color=#e6c84c]%s[/color]\n" % line
+					filtered += line.replace(kw, "[color=#e6c84c]%s[/color]" % kw) + "\n"
 				else:
 					filtered += line + "\n"
 				match_count += 1
