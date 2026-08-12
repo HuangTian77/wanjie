@@ -3578,7 +3578,9 @@ func _on_menu_rating_pressed() -> void:
 			# 选中星标亮度反馈（≤当前全亮，> 当前变暗）
 			for si in 5:
 				var sb: Button = stars.get_child(si)
-				sb.modulate = Color(1.0, 0.85, 0.3) if si < chosen[0] else Color(0.5, 0.4, 0.15))
+				sb.modulate = Color(1.0, 0.85, 0.3) if si < chosen[0] else Color(0.5, 0.4, 0.15)
+			# 星级文字提示（点击即显示所选等级）
+			ToastManager.info("选择 %d 星：%s（点击确认提交）" % [chosen[0], ["很差", "一般", "不错", "很棒", "神作"][chosen[0] - 1]]))
 		stars.add_child(b)
 	dialog.add_child(stars)
 	dialog.confirmed.connect(func():
