@@ -1671,6 +1671,10 @@ func _on_menu_export_battle_log() -> void:
 	var out_path := "user://battle_log_%s.txt" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
 	var f := FileAccess.open(out_path, FileAccess.WRITE)
 	if f:
+		# 导出含战斗统计头部
+		f.store_string("战斗日志导出\n")
+		f.store_string("战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
+		f.store_string("导出时间：%s\n%s\n\n" % [Time.get_datetime_string_from_system(), "=".repeat(24)])
 		f.store_string(battle_log.text)
 		f.close()
 		ToastManager.success("战斗日志已导出：%s" % ProjectSettings.globalize_path(out_path))
