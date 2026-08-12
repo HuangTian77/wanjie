@@ -1983,6 +1983,8 @@ func _on_tavern_send_pressed() -> void:
 	if last_idx >= 0:
 		rt.text = all_text.substr(0, last_idx) + "\n\n"
 	_tavern_append("assistant", reply)
+	# 回复完成提示（角色说完话）
+	ToastManager.info("💬 %s：%s" % [str(TavernManager.current_character.get("name", "角色")), reply.substr(0, mini(20, reply.length())) + ("…" if reply.length() > 20 else "")])
 	# 角色心情升温（每 3 次对话 +1 档，最多 😊）
 	# 酒馆角色心情（对话升温 🙂/😊）
 	var char_id2: String = str(TavernManager.current_character.get("id", "innkeeper")) if TavernManager.current_character != null and not TavernManager.current_character.is_empty() else "innkeeper"
