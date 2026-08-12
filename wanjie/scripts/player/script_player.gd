@@ -4199,6 +4199,13 @@ func _on_player_stats_pressed() -> void:
 		for cfx in char_fx:
 			fx_txt += "• %s（剩 %d 回合）\n" % [str(cfx.get("name", "?")), int(cfx.get("remaining_turns", 0))]
 		list.append_text(fx_txt)
+	# 已学技能列表
+	var skills: Array = st.get("skills", [])
+	if not skills.is_empty():
+		var skill_txt := "\n[color=#c9a06a]【技能】[/color]\n"
+		for sk in skills:
+			skill_txt += "• %s（MP %d）\n" % [str(sk.get("name", sk.get("id", "?"))), int((sk.get("cost", {}) as Dictionary).get("mana", 0))]
+		list.append_text(skill_txt)
 	# MP/HP 概览
 	list.append_text("❤️ HP %d/%d    ✦ MP %d/%d\n\n" % [
 		int(st.get("hp", 0)), int(st.get("max_hp", 100)),
