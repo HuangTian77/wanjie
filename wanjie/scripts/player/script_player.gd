@@ -2699,6 +2699,10 @@ func _on_battle_skill_pressed() -> void:
 		var label: String = "%d. %s" % [skills.find(s) + 1, s.get("name", sid)]
 		if mana_cost > 0:
 			label += "（MP %d）" % mana_cost
+		# 技能元素属性标签
+		var s_elem: String = str(s.get("element", ""))
+		if not s_elem.is_empty():
+			label += " [%s]" % s_elem
 		# 数字快捷键标注
 		var skill_idx: int = skills.find(s)
 		if skill_idx < 9:
