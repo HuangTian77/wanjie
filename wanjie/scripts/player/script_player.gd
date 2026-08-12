@@ -2339,6 +2339,9 @@ func _on_combat_ended(result: String) -> void:
 			if GameManager.user_data != null:
 				GameManager.user_data.unlock_achievement("battle_20", "累计 20 场战斗胜利")
 	else:
+		# 连胜中断提示（≥3 时）
+		if _win_streak >= 3:
+			ToastManager.info("💔 %d 连胜中断…" % _win_streak)
 		_win_streak = 0
 	# 敌人状态摘要（存活/阵亡）
 	if combat_engine != null and not combat_engine.enemies.is_empty():
