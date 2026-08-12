@@ -3694,7 +3694,11 @@ func _on_menu_shop_pressed() -> void:
 					btn.tooltip_text = "低于基础价，划算！"
 				elif price > base_p * 1.05:
 					btn.text += " ↑"
-					btn.tooltip_text = "高于基础价，可等刷新降价"
+					# 高价时若背包持有该物 → 提示可卖出获利
+					if int(economy_engine.player_inventory.get(item_id, 0)) > 0:
+						btn.tooltip_text = "高于基础价！持有 %d 个可卖出获利" % int(economy_engine.player_inventory.get(item_id, 0))
+					else:
+						btn.tooltip_text = "高于基础价，可等刷新降价"
 				# 批量购买（数量 × 单价）
 				btn.pressed.connect(func():
 					var qty_buy: int = int(qty_spin.value)
