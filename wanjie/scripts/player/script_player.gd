@@ -1593,8 +1593,14 @@ func _on_tavern_export_pressed() -> void:
 		var f := FileAccess.open(path, FileAccess.WRITE)
 		if f:
 			f.store_string("%s 的对话记录（%s 剧本）\n%s\n" % [char.get("name", "角色"), script_data.name if script_data else "", "=".repeat(24)])
+			# 角色名映射（user/assistant → 玩家/角色名）
 			for msg in history:
-				f.store_string("[%s] %s\n" % [msg.get("role", "?"), msg.get("content", "")])
+				var role_txt: String = str(msg.get("role", "?"))
+				if role_txt == "assistant":
+					role_txt = str(char.get("name", "角色"))
+				elif role_txt == "user":
+					role_txt = "玩家"
+				f.store_string("[%s] %s\n" % [role_txt, msg.get("content", "")])
 			f.close()
 			ToastManager.success("对话已导出")
 		else:
