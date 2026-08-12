@@ -3769,8 +3769,9 @@ func _do_sell_all(dialog: AcceptDialog) -> void:
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🎒 背包"
-	dialog.min_size = Vector2i(360, 340)
+	dialog.min_size = Vector2i(380, 360)
 	dialog.name = "BagDialog"
+	dialog.ok_button_text = "关闭"
 	add_child(dialog)
 	# 打开背包时收起菜单（避免遮挡）
 	menu_panel.visible = false
