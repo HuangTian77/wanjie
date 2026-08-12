@@ -4909,7 +4909,7 @@ func _show_slot_selector(mode: String) -> void:
 		var btn := Button.new()
 		var slot_info := _get_slot_info(slot)
 		btn.text = "槽位 %d: %s" % [slot + 1, slot_info]
-		btn.tooltip_text = "槽位 %d 详情：%s" % [slot + 1, slot_info]
+		btn.tooltip_text = "槽位 %d 详情：%s（点击可%s）" % [slot + 1, slot_info, "保存" if mode == "save" else ("读取" if mode == "load" else "删除")]
 		btn.custom_minimum_size = Vector2(0, 40)
 		# 空槽位样式（浅色提示可保存）
 		if slot_info == "(空)" and mode == "save":
