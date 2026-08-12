@@ -3837,6 +3837,14 @@ func _on_menu_bag_pressed() -> void:
 			_on_menu_bag_pressed()
 			dialog.queue_free())
 		use_row.add_child(bag_refresh)
+		# 使用数量选择（SpinBox，最多 9）
+		var use_qty := SpinBox.new()
+		use_qty.min_value = 1
+		use_qty.max_value = 9
+		use_qty.value = 1
+		use_qty.tooltip_text = "一次使用数量（1-9）"
+		use_qty.custom_minimum_size.x = 60
+		use_row.add_child(use_qty)
 		for item_id in economy_engine.player_inventory:
 			if int(economy_engine.player_inventory[item_id]) <= 0:
 				continue
@@ -3855,15 +3863,26 @@ func _on_menu_bag_pressed() -> void:
 						var heal_amt := 30
 						if "potion" in str(item_id):
 							heal_amt = 50
-						ps3["hp"] = mini(int(ps3.get("max_hp", 100)), int(ps3.get("hp", 0)) + heal_amt)
-						economy_engine.player_inventory[item_id] = int(economy_engine.player_inventory[item_id]) - 1
-						ToastManager.success("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt])
-						_add_history("💊 使用 %s 恢复 %d HP" % [item_id, heal_amt])
-						_update_ui()
-						_sync_save_state()
-						_spawn_damage_popup(heal_amt)
-						_on_menu_bag_pressed()
-						dialog.queue_free())
+						# 按选择数量使用（库存足够时）
+						var use_n := mini(int(use_qty.value), int(economy_engine.player_inventory[item_id]))
+						var total_heal := 0
+						for _ui in use_n:
+							var cur_hp_i: int = int(ps3.get("hp", 0))
+							var max_hp_i: int = int(ps3.get("max_hp", 100))
+							if cur_hp_i >= max_hp_i:
+								break
+							var healed_i := mini(heal_amt, max_hp_i - cur_hp_i)
+							ps3["hp"] = cur_hp_i + healed_i
+							total_heal += healed_i
+							economy_engine.player_inventory[item_id] = int(economy_engine.player_inventory[item_id]) - 1
+						if total_heal > 0:
+							ToastManager.success("💊 使用 %d 个 %s 恢复 %d HP" % [use_n, item_id, total_heal])
+							_add_history("💊 使用 %d 个 %s 恢复 %d HP" % [use_n, item_id, total_heal])
+							_update_ui()
+							_sync_save_state()
+							_spawn_damage_popup(total_heal)
+							_on_menu_bag_pressed()
+							dialog.queue_free())
 				use_row.add_child(use_btn)
 	# 出售行（所有物品半价卖出，获取金币）
 	if economy_engine != null and not economy_engine.player_inventory.is_empty():
