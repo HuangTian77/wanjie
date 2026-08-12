@@ -3509,6 +3509,8 @@ func _on_menu_shop_pressed() -> void:
 							down_cnt += 1
 			if up_cnt > 0 or down_cnt > 0:
 				_battle_log_line("📈 涨价 %d 项 · 📉 降价 %d 项" % [up_cnt, down_cnt], "#8a8278")
+				# 刷新涨跌入历史（市场动态记录）
+				_add_history("💰 市场波动：涨价 %d 项 · 降价 %d 项" % [up_cnt, down_cnt])
 			# 刷新次数提示（每日可多次，价格随机波动）
 			_shop_refresh_count += 1
 			if _shop_refresh_count == 5:
