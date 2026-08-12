@@ -1788,6 +1788,9 @@ func _tavern_history_line(m: Variant) -> String:
 	return "%s: %s" % [role, content]
 
 func _tavern_append(role: String, content: String) -> void:
+	# 消息长度限制（超长截断防卡顿）
+	if content.length() > 400:
+		content = content.substr(0, 397) + "…"
 	var ts := Time.get_time_string_from_system().substr(0, 5)
 	var speaker := "你"
 	var speaker_color := "#7cc47c"
