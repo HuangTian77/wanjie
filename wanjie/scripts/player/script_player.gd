@@ -611,6 +611,13 @@ var _tavern_moods: Dictionary = {}
 var _tavern_unread: int = 0
 ## 历史记录上次所在天（跨天分节）
 var _history_last_day: int = 0
+## 每日事件计数（第 N 天 → 条数）
+var _history_day_stats: Dictionary = {}
+
+## 跨天时统计展示（在日志分节标题下显示当天事件数）
+func _add_history_day_count(day: int) -> void:
+	var cnt: int = int(_history_day_stats.get(day, 0))
+	history_text.text += "[color=#8a7a68]（第 %d 天事件 %d 条）[/color]\n" % [day, cnt]
 ## 历史折叠时新增条数（未读提示）
 var _history_unread: int = 0
 ## 当前酒馆角色索引
@@ -906,6 +913,9 @@ func _add_choice_button(text: String, method: String = "") -> void:
 func _add_history(text: String) -> void:
 	# 悬停查看最近历史全文
 	history_text.tooltip_text = text
+	# 每日事件计数
+	var cur_day_stat: int = world_state.get_current_day() if world_state != null else 1
+	_history_day_stats[cur_day_stat] = int(_history_day_stats.get(cur_day_stat, 0)) + 1
 	# 类型标记（事件/后果/其他 → 便于日志筛选）
 	var type_tag := "其他"
 	if text.contains("事件") or text.contains("📌") or text.contains("🎲"):
@@ -918,6 +928,7 @@ func _add_history(text: String) -> void:
 		var cur_day: int = world_state.get_current_day()
 		if _history_last_day != 0 and cur_day != _history_last_day:
 			history_text.text += "[color=#c9a06a]── 第 %d 天 ──[/color]\n" % cur_day
+			_add_history_day_count(cur_day)
 		_history_last_day = cur_day
 		ts = "[color=#8a7a68][%d月%d日 %s][/color] " % [
 			world_state.get_current_day(),
