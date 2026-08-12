@@ -26,6 +26,7 @@ ToastManager="*res://scripts/ui/toast_manager.gd"
 LLMClient="*res://scripts/autoload/llm_client.gd"
 TavernManager="*res://scripts/autoload/tavern_manager.gd"
 ThemeManager="*res://scripts/autoload/theme_manager.gd"
+EditorMode="*res://scripts/autoload/editor_mode.gd"
 
 [dialogic]
 

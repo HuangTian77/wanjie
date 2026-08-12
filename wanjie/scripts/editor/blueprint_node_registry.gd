@@ -12,6 +12,12 @@ const _FLOAT: int = 3
 const _STRING: int = 4
 const _ANY: int = 5
 
+# === 编辑模式分级（与 EditorMode 常量数值一致）===
+# core=0 简易可见 / advanced=1 详细可见 / expert=2 仅详尽可见
+const _MODE_CORE: int = 0
+const _MODE_ADVANCED: int = 1
+const _MODE_EXPERT: int = 2
+
 # === 分类定义 ===
 const CATEGORIES: Dictionary = {
 	"flow": {"name": "流程控制", "icon": "⚙", "color": Color(0.4, 0.4, 0.5)},
@@ -44,31 +50,41 @@ static func ensure_init() -> void:
 
 # === 公共API ===
 
-## 获取所有已注册节点类型
-static func get_all_types() -> Array[String]:
+## 获取所有已注册节点类型（可按编辑模式过滤）
+static func get_all_types(mode: int = -1) -> Array[String]:
 	ensure_init()
 	var result: Array[String] = []
 	for k in _registry:
+		if mode >= 0 and int(_registry[k].get("min_mode", _MODE_ADVANCED)) > mode:
+			continue
 		result.append(k)
 	return result
 
-## 按分类获取节点类型
-static func get_types_by_category(category: String) -> Array[String]:
+## 按分类获取节点类型（可按编辑模式过滤）
+static func get_types_by_category(category: String, mode: int = -1) -> Array[String]:
 	ensure_init()
 	var result: Array[String] = []
 	for k in _registry:
 		if _registry[k]["category"] == category:
+			if mode >= 0 and int(_registry[k].get("min_mode", _MODE_ADVANCED)) > mode:
+				continue
 			result.append(k)
+	return result
+
+## 获取分类信息（按模式过滤空分类）
+static func get_categories(mode: int = -1) -> Dictionary:
+	if mode < 0:
+		return CATEGORIES
+	var result: Dictionary = {}
+	for cat in CATEGORIES:
+		if not get_types_by_category(cat, mode).is_empty():
+			result[cat] = CATEGORIES[cat]
 	return result
 
 ## 获取节点定义
 static func get_definition(node_type: String) -> Dictionary:
 	ensure_init()
 	return _registry.get(node_type, {})
-
-## 获取分类信息
-static func get_categories() -> Dictionary:
-	return CATEGORIES
 
 ## 获取节点中文名（无 title 时显示）
 static func get_display_name(node_type: String) -> String:
@@ -213,11 +229,12 @@ static func _query_data_pool(pool_name: String, ws) -> Array:
 # === 内部注册辅助 ===
 
 static func _reg(type: String, category: String, cname: String, desc: String,
-		inputs: Array, outputs: Array, params: Array, priority: String = "P1") -> void:
+		inputs: Array, outputs: Array, params: Array, priority: String = "P1", min_mode: int = _MODE_ADVANCED) -> void:
 	_registry[type] = {
 		"type": type, "category": category, "name": cname, "description": desc,
 		"priority": priority, "color": CATEGORIES.get(category, {}).get("color", Color(0.4, 0.4, 0.4)),
 		"inputs": inputs, "outputs": outputs, "params": params,
+		"min_mode": min_mode,
 	}
 
 static func _exec_in() -> Dictionary:
@@ -254,13 +271,13 @@ static func _register_flow_nodes() -> void:
 
 	_reg("flow_start", "flow", "开始", "蓝图入口点,执行流的起点",
 		[], [_exec_out()],
-		[_enum_param("trigger_type", "触发方式", ["manual", "auto", "event"], "manual")], "P0")
+		[_enum_param("trigger_type", "触发方式", ["manual", "auto", "event"], "manual")], "P0", _MODE_CORE)
 	_reg("flow_branch", "flow", "条件分支", "根据布尔条件选择执行路径",
 		[_exec_in(), _pin("condition", B)], [_exec_out("true"), _exec_out("false")],
-		[], "P0")
+		[], "P0", _MODE_CORE)
 	_reg("flow_sequence", "flow", "顺序执行", "依次执行多个输出分支",
 		[_exec_in()], [_exec_out("then_0"), _exec_out("then_1")],
-		[_param("pin_count", "输出数量", "int", 2, {"min": 2, "max": 8})], "P0")
+		[_param("pin_count", "输出数量", "int", 2, {"min": 2, "max": 8})], "P0", _MODE_CORE)
 	_reg("flow_for_loop", "flow", "循环", "重复执行指定次数",
 		[_exec_in(), _pin("count", I)], [_exec_out("body"), _exec_out("done"), _pin("index", I)],
 		[], "P1")
@@ -269,19 +286,19 @@ static func _register_flow_nodes() -> void:
 		[_param("branch_count", "分支数", "int", 2, {"min": 2, "max": 6})], "P1")
 	_reg("flow_wait", "flow", "等待", "延迟指定秒数后继续执行",
 		[_exec_in(), _pin("seconds", F)], [_exec_out()],
-		[], "P1")
+		[], "P1", _MODE_CORE)
 	_reg("flow_print_log", "flow", "打印日志", "输出调试信息到日志",
 		[_exec_in(), _pin("message", S)], [_exec_out()],
-		[_enum_param("level", "级别", ["info", "warn", "error"], "info")], "P0")
+		[_enum_param("level", "级别", ["info", "warn", "error"], "info")], "P0", _MODE_CORE)
 	_reg("flow_comment", "flow", "注释框", "视觉标注,不影响执行",
 		[], [],
-		[_param("text", "注释文本", "string", "注释"), _param("size_x", "宽度", "int", 300), _param("size_y", "高度", "int", 200)], "P0")
+		[_param("text", "注释文本", "string", "注释"), _param("size_x", "宽度", "int", 300), _param("size_y", "高度", "int", 200)], "P0", _MODE_CORE)
 	_reg("flow_get_var", "flow", "获取变量", "读取世界/局部变量的值",
 		[], [_pin("value", A)],
-		[_param("var_name", "变量名", "string", "")], "P0")
+		[_param("var_name", "变量名", "string", "")], "P0", _MODE_CORE)
 	_reg("flow_set_var", "flow", "设置变量", "写入世界/局部变量",
 		[_exec_in(), _pin("value", A)], [_exec_out()],
-		[_param("var_name", "变量名", "string", "")], "P0")
+		[_param("var_name", "变量名", "string", "")], "P0", _MODE_CORE)
 	_reg("flow_expression", "flow", "表达式", "执行自定义GDScript表达式",
 		[_exec_in()], [_pin("result", A), _exec_out()],
 		[_param("code", "代码", "string", "")], "P1")
@@ -369,13 +386,13 @@ static func _register_story_nodes() -> void:
 
 	_reg("story_trigger", "story", "触发剧情事件", "触发指定的剧情事件",
 		[_exec_in()], [_exec_out()],
-		[_ref_param("event_id", "事件", "event_story_events")], "P0")
+		[_ref_param("event_id", "事件", "event_story_events")], "P0", _MODE_CORE)
 	_reg("story_choice", "story", "显示玩家选择", "向玩家展示选项并等待选择",
 		[_exec_in()], [_exec_out("choice_0"), _exec_out("choice_1"), _exec_out("choice_2"), _exec_out("choice_3")],
 		[_param("choice_0_text", "选项1文本", "string", "选项A"),
 		_param("choice_1_text", "选项2文本", "string", "选项B"),
 		_param("choice_2_text", "选项3文本", "string", ""),
-		_param("choice_3_text", "选项4文本", "string", "")], "P0")
+		_param("choice_3_text", "选项4文本", "string", "")], "P0", _MODE_CORE)
 	_reg("story_branch", "story", "进入分支", "根据条件跳转到不同事件",
 		[_exec_in(), _pin("condition", B)], [_exec_out("branch_true"), _exec_out("branch_false")],
 		[_ref_param("true_event", "满足时事件", "event_story_events"),
@@ -416,7 +433,7 @@ static func _register_story_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_param("speaker", "说话者", "string", ""),
 		_param("text", "对话文本", "string", ""),
-		_param("portrait", "立绘", "string", "")], "P1")
+		_param("portrait", "立绘", "string", "")], "P1", _MODE_CORE)
 	_reg("story_causal_mark", "story", "添加因果标记", "记录因果关联标记",
 		[_exec_in()], [_exec_out()],
 		[_param("mark_id", "标记ID", "string", ""),

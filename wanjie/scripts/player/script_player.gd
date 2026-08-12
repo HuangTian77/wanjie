@@ -5439,7 +5439,7 @@ func _on_menu_help_pressed() -> void:
 	var help_txt: String = dialog.dialog_text
 	for key in ["空格", "回车", "A", "H", "C", "T", "Q", "Esc", "S", "L", "B", "1-9", "Tab", "Shift", "↑", "↓"]:
 		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
-	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v1.2.0（体验版）[/color]"
+	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v%s（体验版）[/color]" % ProjectSettings.get_setting("application/config/version", "1.0.0")
 	# 字体大小随设置
 	var help_fs := 14
 	match GameManager.user_data.font_size_preset:

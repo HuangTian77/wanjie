@@ -211,6 +211,13 @@ theme_override_font_sizes/font_size = 12
 text = "🖥 MUD"
 flat = true
 
+[node name="EditModeOpt" type="OptionButton" parent="MainVBox/TopBar/TopBarHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 28)
+layout_mode = 2
+flat = true
+theme_override_font_sizes/font_size = 12
+
 [node name="SaveBtn" type="Button" parent="MainVBox/TopBar/TopBarHBox"]
 custom_minimum_size = Vector2(64, 28)
 layout_mode = 2

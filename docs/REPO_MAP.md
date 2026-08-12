@@ -1,7 +1,7 @@
 # 项目符号地图（REPO_MAP）— GDScript 类/信号/函数索引
 
 > 自动生成：`python wanjie/tools/gen_repo_map.py`（Aider repo map 思想，AI 上下文加速）。
-> 统计：125 个文件。改代码前先在此定位目标符号，再定向读取。
+> 统计：126 个文件。改代码前先在此定位目标符号，再定向读取。
 
 ## resources/data/
 
@@ -119,6 +119,18 @@
 
 - class_name **DragonflameEraData**
 - func `apply` (L7)
+
+### scripts/autoload/editor_mode.gd (editor_mode.gd)
+
+- signal `mode_changed`
+- func `_ready` (L33)
+- func `set_mode` (L38)
+- func `get_mode` (L47)
+- func `get_mode_name` (L51)
+- func `get_mode_desc` (L55)
+- func `is_visible` (L60)
+- func `is_simple` (L65)
+- func `is_exhaustive` (L70)
 
 ### scripts/autoload/game_manager.gd (game_manager.gd)
 
@@ -298,15 +310,15 @@
 ### scripts/editor/blueprint_node_registry.gd (`BlueprintNodeRegistry`)
 
 - class_name **BlueprintNodeRegistry**
-- func `ensure_init` (L32)
-- func `get_all_types` (L48)
-- func `get_types_by_category` (L56)
-- func `get_definition` (L65)
-- func `get_categories` (L70)
-- func `get_display_name` (L74)
-- func `search_nodes` (L80)
-- func `create_node` (L98)
-- func `get_param_options` (L128)
+- func `ensure_init` (L38)
+- func `get_all_types` (L54)
+- func `get_types_by_category` (L64)
+- func `get_categories` (L75)
+- func `get_definition` (L85)
+- func `get_display_name` (L90)
+- func `search_nodes` (L96)
+- func `create_node` (L114)
+- func `get_param_options` (L144)
 
 ### scripts/editor/blueprint_validator.gd (`BlueprintValidator`)
 
@@ -481,7 +493,7 @@
 
 ### scripts/editor/script_editor.gd (script_editor.gd)
 
-- func `_ready` (L139)
+- func `_ready` (L142)
 
 ### scripts/editor/script_validator.gd (`ScriptValidator`)
 

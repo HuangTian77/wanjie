@@ -798,6 +798,19 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		available_types = BlueprintData.get_compatible_node_types(graph, _bp_ctx_drag_data_type, _bp_ctx_drag_is_output)
 	else:
 		available_types = BlueprintData.get_available_node_types()
+	# 按编辑模式过滤（简易隐藏高级节点；基础节点保留）
+	var edit_mode: int = EditorMode.current_mode
+	# 传统基础节点分级（简易隐藏高级调试类）
+	var base_node_mode := {"print": 1, "expression": 1, "random_event": 1}
+	var filtered_types: Array[String] = []
+	for nt in available_types:
+		var reg_def_f: Dictionary = BlueprintNodeRegistry.get_definition(nt)
+		if reg_def_f.is_empty():
+			if int(base_node_mode.get(nt, 0)) <= edit_mode:
+				filtered_types.append(nt)
+		elif int(reg_def_f.get("min_mode", 1)) <= edit_mode:
+			filtered_types.append(nt)
+	available_types = filtered_types
 	# 按分类分组
 	var categorized: Dictionary = {}  # category -> [node_type, ...]
 	var base_types: Array[String] = []

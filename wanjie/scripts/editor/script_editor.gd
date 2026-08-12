@@ -18,6 +18,8 @@ var mud_editor = null  # MudEditorClass instance
 var _editors: Dictionary = {}
 ## 当前激活的编辑器key
 var _current_editor_key: String = ""
+## 上次选中的模块（编辑模式切换后重建面板用）
+var _last_module_meta: Dictionary = {}
 ## 当前选中项的检查器数据（已废弃）
 
 ## UI节点引用
@@ -39,6 +41,7 @@ var _current_editor_key: String = ""
 @onready var mode_visual_btn: Button = %ModeVisualBtn
 @onready var mode_code_btn: Button = %ModeCodeBtn
 @onready var mode_mud_btn: Button = %ModeMudBtn
+@onready var edit_mode_opt: OptionButton = %EditModeOpt
 @onready var code_editor_container: VBoxContainer = %CodeEditorContainer
 @onready var mud_editor_container: VBoxContainer = %MudEditorContainer
 @onready var center_vsplit: VSplitContainer = %CenterVSplit
@@ -164,6 +167,7 @@ func _ready() -> void:
 	_init_code_editor()
 	_init_mud_editor()
 	_update_mode_buttons()
+	_setup_edit_mode_opt()
 	# 根据 metadata 中的编辑器偏好自动切换模式
 	_apply_saved_editor_mode()
 	# 首次进入编辑器引导
@@ -195,6 +199,39 @@ func _lock_mode_buttons() -> void:
 	mode_visual_btn.visible = false
 	mode_code_btn.visible = false
 	mode_mud_btn.visible = false
+
+## === 编辑模式（简易/详细/详尽）===
+## 初始化顶栏模式下拉
+func _setup_edit_mode_opt() -> void:
+	if edit_mode_opt == null:
+		return
+	for i in EditorMode.MODE_NAMES.size():
+		edit_mode_opt.add_item("%s %s" % [EditorMode.MODE_ICONS[i], EditorMode.MODE_NAMES[i]], i)
+	edit_mode_opt.selected = EditorMode.current_mode
+	edit_mode_opt.tooltip_text = "编辑模式：%s" % EditorMode.get_mode_desc()
+	edit_mode_opt.item_selected.connect(func(idx: int):
+		EditorMode.set_mode(idx))
+	EditorMode.mode_changed.connect(_on_edit_mode_changed)
+
+## 编辑模式切换回调：刷新下拉 + 重建当前 visual 编辑器
+func _on_edit_mode_changed(mode: int) -> void:
+	if edit_mode_opt != null:
+		edit_mode_opt.selected = mode
+		edit_mode_opt.tooltip_text = "%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]]
+	# 清空 visual 相关编辑器缓存（重新构建以应用过滤/精简）
+	var to_erase: Array[String] = []
+	for key in _editors:
+		if key != "welcome" and key != "code" and key != "mud":
+			to_erase.append(key)
+	for key in to_erase:
+		_editors.erase(key)
+	# 当前是 visual 模块且记录过选中 → 重建该模块
+	if not _last_module_meta.is_empty() and _current_editor_key != "welcome" \
+			and _current_editor_key != "code" and _current_editor_key != "mud":
+		_open_editor_for_path(_last_module_meta.get("path", ""), _last_module_meta.get("title", ""), _last_module_meta.get("meta", {}))
+		ToastManager.info("已切换为%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
+	else:
+		ToastManager.info("编辑模式：%s" % EditorMode.MODE_NAMES[mode])
 
 ## 加载剧本数据
 func _load_script() -> void:
@@ -462,6 +499,12 @@ func _on_module_tree_selected() -> void:
 		return
 	var path: String = meta.get("path", "")
 	var title: String = item.get_text(0).strip_edges()
+	# 记录当前选中模块（模式切换后重建用）
+	_last_module_meta = {
+		"path": path,
+		"title": title,
+		"meta": meta,
+	}
 	_open_editor_for_path(path, title, meta)
 
 ## === 子系统子分支 -> 蓝图优先路由 ===
