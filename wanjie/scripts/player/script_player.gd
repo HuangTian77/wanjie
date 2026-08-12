@@ -72,6 +72,8 @@ var _last_rest_day: int = -1
 var _rest_start_day: int = -1
 ## 休息次数统计
 var _rest_count: int = 0
+## 本场战斗累计伤害
+var _total_damage_dealt: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -2087,6 +2089,10 @@ func _on_combat_ended(result: String) -> void:
 		"defeat": _battle_defeats += 1
 		_: _battle_flees += 1
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
+	# 战斗结束日志统计
+	var rounds_log: int = combat_engine.current_round if combat_engine != null else 0
+	var dmg_log: int = _total_damage_dealt
+	_battle_log_line("─ 战斗结束：%s（%d 回合，造成 %d 伤害）─" % [msg, rounds_log, dmg_log], "#c9a06a")
 	# 逃跑结果提示（含烟雾弹信息）
 	if result == "flee":
 		var flee_chance_pct := 50
@@ -2464,6 +2470,7 @@ func _on_battle_attack_pressed() -> void:
 		_spawn_damage_popup(-int(res.get("damage", 0)), is_crit)
 		# 敌人受击闪红（命中反馈）
 		if int(res.get("damage", 0)) > 0:
+			_total_damage_dealt += int(res.get("damage", 0))
 			enemy_info.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
 			var etw2 := create_tween()
 			etw2.tween_interval(0.15)
