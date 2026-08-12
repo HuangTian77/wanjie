@@ -4987,16 +4987,20 @@ func _on_player_stats_pressed() -> void:
 	# 职业倾向（属性偏向判断）
 	var tend := "均衡型"
 	var tend_mark := "⚖"
+	var tend_color := "#c9a06a"
 	if int(st.get("atk", 0)) >= int(st.get("def", 0)) * 2:
 		tend = "力量型（攻击专精）"
 		tend_mark = "🗡"
+		tend_color = "#e0665a"
 	elif int(st.get("def", 0)) >= int(st.get("atk", 0)) * 2:
 		tend = "守护型（防御专精）"
 		tend_mark = "🛡"
+		tend_color = "#6a9fd8"
 	elif int(st.get("speed", 0)) >= int(st.get("atk", 0)) + int(st.get("def", 0)):
 		tend = "敏捷型（速度专精）"
 		tend_mark = "💨"
-	list.append_text("%s 倾向：%s\n\n" % [tend_mark, tend])
+		tend_color = "#7cc47c"
+	list.append_text("%s 倾向：[color=%s]%s[/color]\n\n" % [tend_mark, tend_color, tend])
 	# 本次游玩统计（休息/事件/战斗）
 	list.append_text("[color=#c9a06a]【本次冒险】[/color]\n")
 	list.append_text("• 休息 %d 次 · 触发事件 %d 个\n" % [_rest_count, _event_trigger_count])
