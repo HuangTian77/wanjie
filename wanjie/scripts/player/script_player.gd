@@ -2792,6 +2792,11 @@ func _on_battle_skill_pressed() -> void:
 	add_child(menu)
 	menu.popup(Rect2i(0, 0, 0, 0))
 	menu.position = Vector2i(get_viewport().get_visible_rect().size / 2) - Vector2i(100, 50)
+	# 菜单关闭后焦点回主战斗按钮
+	menu.popup_hide.connect(func():
+		var atk_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AttackBtn") as Button
+		if atk_btn != null:
+			atk_btn.grab_focus())
 
 func _on_battle_flee_pressed() -> void:
 	if combat_engine != null:
