@@ -1600,7 +1600,11 @@ func _on_tavern_export_pressed() -> void:
 					role_txt = str(char.get("name", "角色"))
 				elif role_txt == "user":
 					role_txt = "玩家"
-				f.store_string("[%s] %s\n" % [role_txt, msg.get("content", "")])
+				# 消息时间戳（如有）
+				var ts_line := ""
+				if msg.has("time"):
+					ts_line = "[%s] " % str(msg.get("time", ""))
+				f.store_string("%s[%s] %s\n" % [ts_line, role_txt, msg.get("content", "")])
 			f.close()
 			ToastManager.success("对话已导出")
 		else:
