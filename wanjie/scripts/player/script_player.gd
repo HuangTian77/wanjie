@@ -2028,6 +2028,9 @@ func _on_combat_started(enemies: Array) -> void:
 		elif diff_mul > 1.0:
 			diff_mark = "（困难挑战）"
 		_battle_log_line("强度评估：[color=%s]%s[/color]（敌攻 %d vs 你 %d）%s" % [threat_color, threat, eff_atk, p_atk, diff_mark], "")
+		# 强度评估 Toast（危险/轻松时提示）
+		if threat != "适中":
+			ToastManager.info("⚔ 敌人强度：%s" % threat)
 		# 强度标记入敌人栏（危险 ⚠ / 轻松 ✓）
 		if threat != "适中":
 			enemy_info.text += "\n[color=%s]强度：%s[/color]" % [threat_color, threat]
