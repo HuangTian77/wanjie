@@ -3542,6 +3542,15 @@ func _on_menu_shop_pressed() -> void:
 	# 余额颜色：充足金色 / 紧张红色
 	var gold_color := "#c9a06a" if gold >= 50 else "#e05a4e"
 	list.append_text("[color=%s]持有金币: %d[/color]（背包 %d 件）\n\n" % [gold_color, gold, economy_engine.player_inventory.size() if economy_engine else 0])
+	# 刷新余额按钮（出售/购买后手动刷新）
+	var refresh_gold := Button.new()
+	refresh_gold.text = "↻ 刷新余额"
+	refresh_gold.flat = true
+	refresh_gold.tooltip_text = "重新读取最新金币/背包状态"
+	refresh_gold.pressed.connect(func():
+		_on_menu_shop_pressed()
+		dialog.queue_free())
+	inner.add_child(refresh_gold)
 	# 金币不足整体提示（<50）
 	if gold < 50:
 		list.append_text("[color=#e05a4e]金币紧张，先出售背包物品换钱！[/color]\n\n")
