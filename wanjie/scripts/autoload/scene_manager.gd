@@ -49,8 +49,8 @@ func _do_scene_switch(scene_path: String) -> void:
 func go_back_to_hub() -> void:
 	# 返回大厅前刷新剧本库（进度/评分即时生效）
 	var gm: Node = get_tree().root.get_node_or_null("GameManager")
-	if gm != null and gm.has_method("refresh_scripts"):
-		gm.call("refresh_scripts")
+	if gm != null and gm.has_method("reload_scripts"):
+		gm.call("reload_scripts")
 	change_scene(SCENE_MAIN_HUB)
 
 ## 打开剧本编辑器
