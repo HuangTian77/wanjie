@@ -1959,6 +1959,8 @@ func _on_tavern_send_pressed() -> void:
 	# 角色"思考中…"提示（省略号循环动效），延迟模拟回复
 	_tavern_append("assistant", "…")
 	TavernManager.dialog_history.append({"role": "assistant", "content": ""})
+	# 思考提示（轻提示，不打扰）
+	ToastManager.info("💭 %s 正在思考…" % str(TavernManager.current_character.get("name", "角色")))
 	var dots := 0
 	var think_timer := create_tween().set_loops()
 	think_timer.tween_interval(0.25)
