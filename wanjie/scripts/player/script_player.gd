@@ -4493,13 +4493,17 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("[color=#7a7268]普攻回复 +1 MP；技能消耗 MP；休息回满[/color]\n\n")
 	# 职业倾向（属性偏向判断）
 	var tend := "均衡型"
+	var tend_mark := "⚖"
 	if int(st.get("atk", 0)) >= int(st.get("def", 0)) * 2:
 		tend = "力量型（攻击专精）"
+		tend_mark = "🗡"
 	elif int(st.get("def", 0)) >= int(st.get("atk", 0)) * 2:
 		tend = "守护型（防御专精）"
+		tend_mark = "🛡"
 	elif int(st.get("speed", 0)) >= int(st.get("atk", 0)) + int(st.get("def", 0)):
 		tend = "敏捷型（速度专精）"
-	list.append_text("🎯 倾向：%s\n\n" % tend)
+		tend_mark = "💨"
+	list.append_text("%s 倾向：%s\n\n" % [tend_mark, tend])
 	# 经验进度（每 100 经验升级）
 	var exp_now: int = int(st.get("exp", 0))
 	if exp_now >= 100:
