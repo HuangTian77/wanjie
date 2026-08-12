@@ -4690,6 +4690,8 @@ func _show_finish_stats() -> void:
 		var played_sec: int = int((Time.get_ticks_msec() - _play_start_time) / 1000)
 		list.append_text("⏱ 游玩时长：%s\n" % _fmt_play_time(float(played_sec)))
 	list.append_text("⚔ 战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
+	# 战斗统计 tooltip（说明跨存档保留）
+	list.tooltip_text = "战斗统计随存档保留（读档/继续均累计）"
 	# 胜率显示（有战斗记录时）
 	var total_battles: int = _battle_wins + _battle_defeats + _battle_flees
 	if total_battles > 0:
