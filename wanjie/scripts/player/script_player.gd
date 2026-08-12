@@ -3453,6 +3453,15 @@ func _on_menu_bag_pressed() -> void:
 		use_lbl.text = "可使用："
 		use_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
 		use_row.add_child(use_lbl)
+		# 刷新背包按钮（使用/出售后状态同步）
+		var bag_refresh := Button.new()
+		bag_refresh.text = "↻"
+		bag_refresh.flat = true
+		bag_refresh.tooltip_text = "刷新背包"
+		bag_refresh.pressed.connect(func():
+			_on_menu_bag_pressed()
+			dialog.queue_free())
+		use_row.add_child(bag_refresh)
 		for item_id in economy_engine.player_inventory:
 			if int(economy_engine.player_inventory[item_id]) <= 0:
 				continue
