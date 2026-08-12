@@ -2322,6 +2322,12 @@ func _on_combat_ended(result: String) -> void:
 		"victory": _battle_wins += 1
 		"defeat": _battle_defeats += 1
 		_: _battle_flees += 1
+	# 战斗统计即时写入存档（重进保持胜场）
+	if SaveManager.current_save != null and combat_engine != null:
+		var ps_stats: Dictionary = SaveManager.current_save.player_state
+		ps_stats["battle_wins"] = _battle_wins
+		ps_stats["battle_defeats"] = _battle_defeats
+		ps_stats["battle_flees"] = _battle_flees
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
 	# 战斗结束日志统计
 	var rounds_log: int = combat_engine.current_round if combat_engine != null else 0
