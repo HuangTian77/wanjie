@@ -1551,10 +1551,17 @@ func _on_export_chat_pressed() -> void:
 func _on_tavern_clear_pressed() -> void:
 	var cur: int = tavern_char_select.selected
 	var char: Dictionary = TAVERN_CHARS[cur]
-	TavernManager.clear_history()
-	tavern_msgs.clear()
-	_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
-	ToastManager.info("已清空 %s 的对话历史" % char.get("name", "角色"))
+	# 清空确认（防误删对话记录）
+	var confirm_clr := ConfirmationDialog.new()
+	confirm_clr.dialog_text = "确定清空 %s 的对话历史？此操作不可恢复。" % char.get("name", "角色")
+	confirm_clr.ok_button_text = "清空"
+	confirm_clr.confirmed.connect(func():
+		TavernManager.clear_history()
+		tavern_msgs.clear()
+		_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
+		ToastManager.info("已清空 %s 的对话历史" % char.get("name", "角色")))
+	add_child(confirm_clr)
+	confirm_clr.popup_centered()
 
 ## 导出当前角色对话记录
 func _on_tavern_export_pressed() -> void:
