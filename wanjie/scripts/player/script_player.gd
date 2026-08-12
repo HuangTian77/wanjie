@@ -3043,6 +3043,15 @@ func _on_menu_pressed() -> void:
 	# 菜单打开提示（含灵感/资源状态轻提示）
 	if GameManager.user_data != null and GameManager.user_data.inspiration <= 1:
 		ToastManager.info("💡 灵感仅剩 %d 点（每进一本消耗 1）" % GameManager.user_data.inspiration)
+	# 世界状态预览（菜单标题下轻提示当前区域/天气）
+	if world_state != null:
+		var region_preview: String = str(world_state.get_variable("current_region", ""))
+		if not region_preview.is_empty():
+			var weather_preview: String = str(world_state.get_variable("weather", ""))
+			var preview_txt := "📍%s" % region_preview
+			if not weather_preview.is_empty():
+				preview_txt += " · ☀%s" % weather_preview
+			ToastManager.info("🌍 %s" % preview_txt)
 	# 焦点到保存按钮（键盘可操作）
 	var fb := get_node_or_null("MenuPanel/MenuVBox/SaveBtn")
 	if fb is Button:
