@@ -4938,12 +4938,14 @@ func _on_player_stats_pressed() -> void:
 	var dodge_rate := 3 + int(st.get("speed", 0)) / 8
 	list.append_text("💨 闪避率 ≈ %d%%（速度影响）\n\n" % dodge_rate)
 	# 攻防公式说明（tooltip 已在滚动列表外 → 直接文本提示）
-	# 状态效果显示（角色面板）
+	# 状态效果显示（角色面板，负面红色/正面绿色）
 	var char_fx: Array = st.get("status_effects", [])
 	if not char_fx.is_empty():
 		var fx_txt := "\n[color=#c9a06a]【状态效果】[/color]\n"
 		for cfx in char_fx:
-			fx_txt += "• %s（剩 %d 回合）\n" % [str(cfx.get("name", "?")), int(cfx.get("remaining_turns", 0))]
+			var fx_kind: String = str(cfx.get("kind", ""))
+			var fx_color := "#7cc47c" if fx_kind == "buff" else "#e05a4e" if fx_kind == "debuff" else "#c9a06a"
+			fx_txt += "• [color=%s]%s[/color]（剩 %d 回合）\n" % [fx_color, str(cfx.get("name", "?")), int(cfx.get("remaining_turns", 0))]
 		list.append_text(fx_txt)
 	# 已学技能列表
 	var skills: Array = st.get("skills", [])
