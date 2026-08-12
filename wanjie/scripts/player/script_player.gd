@@ -5451,6 +5451,7 @@ func _on_menu_help_pressed() -> void:
 	var copy_help := Button.new()
 	copy_help.text = "⧉ 复制帮助"
 	copy_help.flat = true
+	copy_help.tooltip_text = "将操作说明复制到剪贴板"
 	copy_help.pressed.connect(func():
 		DisplayServer.clipboard_set(dialog.dialog_text)
 		ToastManager.success("帮助已复制"))
