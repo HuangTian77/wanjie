@@ -3568,6 +3568,12 @@ func _on_menu_rating_pressed() -> void:
 	# 预填当前评分（已有评分则预选对应星）
 	if script_data != null and script_data.rating_count > 0 and not _rated_this_run:
 		chosen[0] = clampi(int(round(script_data.rating)), 1, 5)
+		# 预选星亮起（等星星创建后应用）
+		stars.ready.connect(func():
+			for si in mini(5, chosen[0]):
+				var sb0: Button = stars.get_child(si)
+				sb0.modulate = Color(1.0, 0.85, 0.3)
+				sb0.button_pressed = true)
 	for i in 5:
 		var b := Button.new()
 		b.text = "★"
