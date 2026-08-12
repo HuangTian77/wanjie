@@ -4356,6 +4356,11 @@ func _show_finish_stats() -> void:
 		var played_sec: int = int((Time.get_ticks_msec() - _play_start_time) / 1000)
 		list.append_text("⏱ 游玩时长：%s\n" % _fmt_play_time(float(played_sec)))
 	list.append_text("⚔ 战斗统计：胜 %d · 负 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
+	# 胜率显示（有战斗记录时）
+	var total_battles: int = _battle_wins + _battle_defeats + _battle_flees
+	if total_battles > 0:
+		var win_rate := int(float(_battle_wins) / float(total_battles) * 100.0)
+		list.append_text("📊 胜率 %d%%（%d 场）\n" % [win_rate, total_battles])
 	if _win_streak >= 2:
 		list.append_text("🔥 当前连胜：%d 场\n" % _win_streak)
 	list.append_text("🔥 最高连击：x%d\n" % _best_combo)
