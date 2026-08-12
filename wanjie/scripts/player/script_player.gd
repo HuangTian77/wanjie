@@ -1596,6 +1596,13 @@ func _on_tavern_export_pressed() -> void:
 			f.store_string("导出时间：%s\n\n" % Time.get_datetime_string_from_system())
 			# 对话统计（条数）
 			f.store_string("共 %d 条消息\n\n" % history.size())
+			# 好感度信息（导出时记录）
+			var mood_exp: int = _tavern_moods.get(str(char.get("id", "")), 0)
+			var mood_name_exp := "普通"
+			match mood_exp:
+				1: mood_name_exp = "友好 🙂"
+				2: mood_name_exp = "亲密 😊"
+			f.store_string("当前好感度：%s\n" % mood_name_exp)
 			# 角色名映射（user/assistant → 玩家/角色名）
 			for msg in history:
 				var role_txt: String = str(msg.get("role", "?"))
