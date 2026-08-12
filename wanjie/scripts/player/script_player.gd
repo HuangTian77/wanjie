@@ -2946,6 +2946,7 @@ func _on_menu_char_pressed() -> void:
 	var quick_rest := Button.new()
 	quick_rest.text = "⛺ 休息"
 	quick_rest.flat = true
+	quick_rest.tooltip_text = "推进 8 小时，回满 HP/MP"
 	quick_rest.pressed.connect(func():
 		dialog.queue_free()
 		_on_menu_rest_pressed())
@@ -2953,6 +2954,7 @@ func _on_menu_char_pressed() -> void:
 	var quick_bag := Button.new()
 	quick_bag.text = "🎒 背包"
 	quick_bag.flat = true
+	quick_bag.tooltip_text = "查看物品并使用药水"
 	quick_bag.pressed.connect(func():
 		dialog.queue_free()
 		_on_menu_bag_pressed())
@@ -2960,6 +2962,7 @@ func _on_menu_char_pressed() -> void:
 	var quick_shop := Button.new()
 	quick_shop.text = "🏪 商店"
 	quick_shop.flat = true
+	quick_shop.tooltip_text = "购买/出售物品（价格随供需波动）"
 	quick_shop.pressed.connect(func():
 		dialog.queue_free()
 		_on_menu_shop_pressed())
