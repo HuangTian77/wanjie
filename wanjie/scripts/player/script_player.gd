@@ -4868,6 +4868,11 @@ func _on_menu_rest_pressed() -> void:
 	# 休息按钮文字明确
 	confirm.ok_button_text = "休息 8 小时"
 	confirm.cancel_button_text = "取消"
+	# 休息确认面板淡入动效
+	if ThemeManager.animations_enabled:
+		confirm.modulate.a = 0.4
+		var tw_rest_cf := create_tween()
+		tw_rest_cf.tween_property(confirm, "modulate:a", 1.0, 0.15)
 	confirm.confirmed.connect(func():
 		menu_panel.visible = false
 		_do_rest())
