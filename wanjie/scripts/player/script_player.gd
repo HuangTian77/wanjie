@@ -3400,6 +3400,8 @@ func _on_menu_rating_pressed() -> void:
 		var rb2 := get_node_or_null("MenuPanel/MenuVBox/RatingBtn") as Button
 		if rb2 != null and script_data != null and script_data.rating_count > 0:
 			rb2.text = "★ 评分（%.1f · %d 人）" % [script_data.rating, script_data.rating_count]
+		# 大厅精选排序数据即时生效
+		GameManager.scripts_changed.emit(script_data.id)
 		# 首次评分成就
 		GameManager.user_data.unlock_achievement("first_rating", "首次为剧本评分"))
 	dialog.popup_centered()
