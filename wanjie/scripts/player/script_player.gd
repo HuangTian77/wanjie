@@ -2509,7 +2509,13 @@ func _refresh_battle_ui() -> void:
 			var hp_bar_txt := "▓".repeat(clampi(filled, 0, bar_chars)) + "░".repeat(bar_chars - clampi(filled, 0, bar_chars))
 			# 低血敌人红色标记
 			var low_tag := " ⚠" if e_ratio < 0.25 else ""
-			parts.append("%s%s HP:%d/%d %s%s" % [mark, e.get("name", "?"), e_hp, e_max, hp_bar_txt, low_tag])
+			# 血量颜色提示（低血红/半血红橙）
+			var hp_color := "#ffffff"
+			if e_ratio < 0.25:
+				hp_color = "#e05a4e"
+			elif e_ratio < 0.5:
+				hp_color = "#e0a04e"
+			parts.append("%s[color=%s]%s[/color] HP:%d/%d %s%s" % [mark, hp_color, e.get("name", "?"), e_hp, e_max, hp_bar_txt, low_tag])
 	var count_txt := ""
 	if total_enemies > 1:
 		count_txt = "（剩 %d/%d）" % [alive, total_enemies]
