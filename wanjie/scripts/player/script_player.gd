@@ -2441,6 +2441,10 @@ func _on_combat_ended(result: String) -> void:
 			# 演示掉落：30% 概率额外获得烟雾弹（逃跑道具）
 			if randf() < 0.3:
 				loot.append("smoke_bomb")
+			# 连胜奖励掉落（5 连胜时额外草药）
+			if _win_streak >= 5 and randf() < 0.5:
+				loot.append("herb")
+				_battle_log_line("🎁 连胜奖励：额外草药", "#7cc47c")
 			for li in loot:
 				var litem: String = str(li)
 				economy_engine.player_inventory[litem] = int(economy_engine.player_inventory.get(litem, 0)) + 1
