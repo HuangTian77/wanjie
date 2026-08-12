@@ -4203,6 +4203,9 @@ func _on_menu_rating_pressed() -> void:
 		GameManager.scripts_changed.emit(script_data.id)
 		# 评分后本地剧本库同步（返回大厅时即时显示新评分）
 		GameManager.call_deferred("reload_scripts")
+		# 评分后保存进度（评分结果持久化到存档）
+		_sync_save_state()
+		SaveManager.autosave()
 		# 评分历史记录（user_data）
 		if not GameManager.user_data.rating_history.has(script_data.id):
 			GameManager.user_data.rating_history[script_data.id] = {}
