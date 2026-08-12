@@ -385,11 +385,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		if combat_engine != null and combat_engine.ability_data != null:
 			var skills: Array = combat_engine.ability_data.skills
 			if skill_idx < skills.size():
-				var sid: String = str(skills[skill_idx].get("id", ""))
-				if not sid.is_empty():
-					combat_engine.player_use_skill(sid, 0)
-					_refresh_battle_ui()
-					get_viewport().set_input_as_handled()
+				# MP 不足时自动改普攻（回蓝）
+				var skill_cost: int = int((skills[skill_idx].get("cost", {}) as Dictionary).get("mana", 0))
+				var mp_cur2: int = int(combat_engine.player_combat_stats.get("mp", 0))
+				if skill_cost > mp_cur2:
+					ToastManager.info("✦ MP 不足（需 %d），已改为普攻" % skill_cost)
+					_on_battle_attack_pressed()
+				else:
+					var sid: String = str(skills[skill_idx].get("id", ""))
+					if not sid.is_empty():
+						combat_engine.player_use_skill(sid, 0)
+						_refresh_battle_ui()
+				get_viewport().set_input_as_handled()
 			else:
 				ToastManager.info("技能 %d 不存在（当前 %d 个技能）" % [skill_idx + 1, skills.size()])
 	elif event is InputEventKey and event.pressed and not event.echo and not battle_panel.visible \
