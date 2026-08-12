@@ -658,6 +658,8 @@ var _heard_backgrounds: Dictionary = {}
 var _egg_count: int = 0
 ## 帮助窗口滚动位置（重开记忆）
 var _help_scroll_pos: int = 0
+## 日志窗口滚动位置（重开记忆）
+var _log_scroll_pos: int = 0
 ## 酒馆输入历史（↑ 键调出，保留 10 条）
 var _tavern_input_history: Array[String] = []
 ## 连续探索次数（连击奖励）
@@ -4303,6 +4305,10 @@ func _on_menu_log_pressed() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	box.add_child(scroll)
+	# 滚动位置记忆（重开保持）
+	scroll.scroll_vertical = _log_scroll_pos
+	dialog.closed.connect(func():
+		_log_scroll_pos = scroll.scroll_vertical)
 	var list := RichTextLabel.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
