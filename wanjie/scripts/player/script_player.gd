@@ -3511,6 +3511,12 @@ func _get_progress() -> Array:
 func _no_dialog_open() -> bool:
 	if get_node_or_null("SlotSelector") != null:
 		return false
+	if get_node_or_null("CharStatusDialog") != null:
+		return false
+	if get_node_or_null("RatingDialog") != null:
+		return false
+	if get_node_or_null("TavernPanel") != null and tavern_panel.visible:
+		return false
 	for c in get_children():
 		if c is AcceptDialog and (c as AcceptDialog).visible:
 			return false
