@@ -2589,6 +2589,11 @@ func _on_enemy_info_clicked(event: InputEvent) -> void:
 func _on_battle_attack_pressed() -> void:
 	if combat_engine == null:
 		return
+	# 命中率提示（攻击按钮 tooltip）
+	var atk_tip_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AttackBtn") as Button
+	if atk_tip_btn != null:
+		var agi_r: int = int(combat_engine.player_combat_stats.get("agility", 10))
+		atk_tip_btn.tooltip_text = "普攻（命中率受敏捷影响，敏捷 %d；回复 MP）" % agi_r
 	# 普攻攒蓝提示（MP 不足时战斗日志提示）
 	var cur_mp_a: int = int(combat_engine.player_combat_stats.get("mp", 0))
 	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
