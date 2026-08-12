@@ -3980,6 +3980,8 @@ func _refresh_menu_title() -> void:
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
 	if gm2 != null and gm2.user_data != null:
 		status_txt += "🏆 %d/%d" % [gm2.user_data.achievements.size(), gm2.ACHIEVEMENTS.size()]
+		# 灵感/资源显示（诗墨）
+		status_txt += " · ✨%d 灵感" % gm2.user_data.inspiration
 	status_txt += save_txt
 	if combat_engine and not combat_engine.player_combat_stats.is_empty():
 		var pst: Dictionary = combat_engine.player_combat_stats
