@@ -3583,6 +3583,7 @@ func _on_menu_rating_pressed() -> void:
 	dialog.add_child(stars)
 	dialog.confirmed.connect(func():
 		if chosen[0] <= 0:
+			ToastManager.info("请先点击星星选择评分")
 			return
 		# 防重复提交（本次游玩仅一次）
 		if _rated_this_run:
