@@ -335,7 +335,7 @@ theme_override_colors/font_color = Color(0.42, 0.373, 0.322, 0.7)
 [node name="HistoryPanel" type="ScrollContainer" parent="MainVBox/HSplit/RightPanel"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 
 [node name="HistoryText" type="RichTextLabel" parent="MainVBox/HSplit/RightPanel/HistoryPanel"]
