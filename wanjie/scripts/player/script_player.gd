@@ -3003,6 +3003,8 @@ func _on_history_clear_pressed() -> void:
 
 ## === 历史记录折叠 ===
 func _on_history_toggle_pressed() -> void:
+	# 记录展开前的新记录数（用于展开提示）
+	var unread_before: int = _history_unread
 	history_panel.visible = not history_panel.visible
 	_history_unread = 0
 	history_toggle.text = "▲ 收起记录(%d)" % history_text.get_line_count() if history_panel.visible else "▼ 展开记录(%d)" % history_text.get_line_count()
@@ -3014,6 +3016,9 @@ func _on_history_toggle_pressed() -> void:
 		history_text.scroll_to_line(history_text.get_line_count() - 1)
 	# 展开后清除新记录高亮
 	history_toggle.remove_theme_color_override("font_color")
+	# 展开提示（收起时再次提醒折叠状态）
+	if history_panel.visible and unread_before > 0:
+		ToastManager.info("📜 已展开历史（%d 条新记录）" % unread_before)
 
 ## === 菜单 ===
 func _on_menu_pressed() -> void:
