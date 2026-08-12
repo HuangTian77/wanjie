@@ -2082,6 +2082,12 @@ func _on_combat_ended(result: String) -> void:
 		"defeat": _battle_defeats += 1
 		_: _battle_flees += 1
 	var msg := "战斗胜利！" if result == "victory" else ("战斗失败…" if result == "defeat" else "成功逃跑")
+	# 逃跑结果提示（含烟雾弹信息）
+	if result == "flee":
+		var flee_chance_pct := 50
+		if combat_engine != null:
+			flee_chance_pct = int(combat_engine.last_flee_chance * 100.0)
+		ToastManager.info("💨 成功逃跑（成功率 %d%%）" % flee_chance_pct)
 	if result == "defeat":
 		ToastManager.warning("💀 战斗失败…可通过菜单读档回到战斗前（自动存档）")
 	# 战斗胜利自动存档（失败不覆盖，保留战斗前存档可重试）
