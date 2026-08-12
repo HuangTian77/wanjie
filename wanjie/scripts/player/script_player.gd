@@ -1535,6 +1535,7 @@ func _on_tavern_pressed() -> void:
 	# 时段氛围提示（夜晚酒馆）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		ToastManager.info("🌙 夜色中，酒馆灯火通明…")
+		_add_history("🌙 夜晚来到酒馆")
 	# 时段氛围（白天/傍晚轻提示）
 	elif world_state != null:
 		match world_state.get_period_name():
