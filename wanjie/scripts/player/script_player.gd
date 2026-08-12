@@ -3560,9 +3560,17 @@ func _on_menu_bag_pressed() -> void:
 		for item_id in sorted_ids:
 			var qty: int = int(economy_engine.player_inventory[item_id])
 			if qty > 0:
+				# 物品类型标签
+				var type_tag := ""
+				if str(item_id) == "rare_relic":
+					type_tag = " [遗物]"
+				elif "potion" in str(item_id) or "herb" in str(item_id):
+					type_tag = " [药水]"
+				elif "smoke" in str(item_id) or "bomb" in str(item_id):
+					type_tag = " [道具]"
 				# 遗物不可出售标记
 				var relic_tag := "（不可出售，永久加成）" if str(item_id) == "rare_relic" else ""
-				list.append_text("• %s × %d%s\n" % [item_id, qty, relic_tag])
+				list.append_text("• %s × %d%s%s\n" % [item_id, qty, type_tag, relic_tag])
 				total_items += qty
 				# 遗物 Tooltip 说明（持有效果）
 				if str(item_id) == "rare_relic":
