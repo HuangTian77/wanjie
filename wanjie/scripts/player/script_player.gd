@@ -5053,6 +5053,9 @@ func _do_save_slot(slot: int) -> void:
 		var ast := get_node_or_null("AutoSaveTimer") as Timer
 		if ast != null:
 			ast.start()
+		# 保存后刷新 HUD 与菜单
+		_update_ui()
+		_refresh_menu_title()
 	else:
 		ToastManager.warning("保存失败")
 	var sel := get_node_or_null("SlotSelector")
