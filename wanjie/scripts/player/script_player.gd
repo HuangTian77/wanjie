@@ -198,6 +198,8 @@ func _process(delta: float) -> void:
 			if hp_low_max > 0 and hp_low < hp_low_max * 0.25:
 				_auto_battle = false
 				ToastManager.warning("🛑 生命低于 25%%，自动战斗已暂停（建议治疗或逃跑）")
+				# 暂停原因入战斗日志
+				_battle_log_line("🛑 自动战斗暂停：生命过低（%d/%d）" % [hp_low, hp_low_max], "#e05a4e")
 				var auto_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn")
 				if auto_btn is Button:
 					(auto_btn as Button).text = "自动"
