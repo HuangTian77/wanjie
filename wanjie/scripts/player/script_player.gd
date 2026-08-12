@@ -2038,6 +2038,9 @@ func _on_combat_ended(result: String) -> void:
 		_lose_streak += 1
 		if _lose_streak >= 3:
 			ToastManager.warning("连续战败 %d 场…建议：升级/购买装备/调整技能" % _lose_streak)
+	# 战败提示自动存档建议（可回滚）
+	if result == "defeat":
+		ToastManager.info("💡 战败可读档重试（菜单 L）或继续当前状态")
 	else:
 		_lose_streak = 0
 	# 战斗胜利庆祝（胜场计数里程碑，计数在战斗统计处统一累加）
