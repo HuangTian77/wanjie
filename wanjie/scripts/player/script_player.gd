@@ -4468,8 +4468,9 @@ func _on_menu_log_pressed() -> void:
 					rel_color = "#e6a23c"
 				rel_line += "• %s ⇄ %s：[color=%s]%s[/color]（%+.0f）\n" % [fa, fb, rel_color, rel_state, relv]
 			list.append_text(rel_line)
+	# 复制日志按钮（含统计行）
 	var copy_btn := Button.new()
-	copy_btn.text = "⧉ 复制日志"
+	copy_btn.text = "⧉ 复制"
 	copy_btn.flat = true
 	copy_btn.pressed.connect(func():
 		DisplayServer.clipboard_set(list.text)
