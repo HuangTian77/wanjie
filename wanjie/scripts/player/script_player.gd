@@ -3040,6 +3040,9 @@ func _on_menu_pressed() -> void:
 	# 刷新动态 tooltip（槽位概要随存档变化）
 	_setup_menu_tooltips()
 	menu_panel.visible = true
+	# 菜单打开提示（含灵感/资源状态轻提示）
+	if GameManager.user_data != null and GameManager.user_data.inspiration <= 1:
+		ToastManager.info("💡 灵感仅剩 %d 点（每进一本消耗 1）" % GameManager.user_data.inspiration)
 	# 焦点到保存按钮（键盘可操作）
 	var fb := get_node_or_null("MenuPanel/MenuVBox/SaveBtn")
 	if fb is Button:
