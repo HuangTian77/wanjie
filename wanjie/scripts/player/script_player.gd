@@ -2014,6 +2014,8 @@ func _on_combat_ended(result: String) -> void:
 	battle_panel.visible = false
 	# 恢复主文本颜色
 	main_text.remove_theme_color_override("font_color")
+	# 战斗结束释放焦点回主区
+	main_text.grab_focus()
 	# 停止自动战斗辅助
 	if _auto_combat_timer != null:
 		_auto_combat_timer.stop()
