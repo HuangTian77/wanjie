@@ -2510,6 +2510,10 @@ func _on_retry_from_save() -> void:
 ## 统一恢复存档状态（读档/重试共用）
 func _restore_save_state(sd: SaveData) -> void:
 	SaveManager.current_save = sd
+	# 恢复战斗统计（读档保持胜场）
+	_battle_wins = int(sd.player_state.get("battle_wins", _battle_wins))
+	_battle_defeats = int(sd.player_state.get("battle_defeats", _battle_defeats))
+	_battle_flees = int(sd.player_state.get("battle_flees", _battle_flees))
 	# 读档重置战斗状态（若之前处于战斗）
 	if battle_panel != null:
 		battle_panel.visible = false
