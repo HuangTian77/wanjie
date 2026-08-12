@@ -4993,7 +4993,7 @@ func _on_menu_help_pressed() -> void:
 - 世界效果（🌪）影响战斗与事件，休息时结算
 - 势力关系影响对话与事件走向
 - 通关所有事件解锁成就"""
-	dialog.min_size = Vector2i(560, 520)
+	dialog.min_size = Vector2i(620, 560)
 	add_child(dialog)
 	# 帮助文本放入滚动容器（长文本可滚动）
 	var help_scroll := ScrollContainer.new()
