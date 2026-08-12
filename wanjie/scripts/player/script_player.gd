@@ -4023,6 +4023,9 @@ func _on_menu_bag_pressed() -> void:
 		list.append_text("\n[color=#999]没有匹配「%s」的物品[/color]" % bag_search_edit.text.strip_edges())
 	else:
 		list.append_text("\n[color=#8a7a68]合计 %d 件 · 预估价值 %d 金币[/color]" % [total_items, total_value])
+	# 遗物持有提示（若有）
+	if int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
+		list.append_text("[color=#e6c84c]✨ 持有遗物：永久攻击 +5 已生效[/color]\n")
 	dialog.popup_centered()
 
 ## 评分：1-5 星（平均后写入剧本）
