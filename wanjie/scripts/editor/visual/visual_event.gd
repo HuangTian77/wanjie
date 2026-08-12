@@ -450,6 +450,13 @@ func _build_event_overview(detail: Control) -> void:
 	]
 	for s in stats:
 		_ui().add_info_label(detail, "%s: %s" % [s[0], s[1]])
+	# 简易模式：操作引导
+	if EditorMode.is_simple():
+		_ui().add_hseparator(detail)
+		_ui().add_info_label(detail, "🌱 简易模式：")
+		_ui().add_info_label(detail, "1. 点击左侧节点图中的「剧情事件」卡片")
+		_ui().add_info_label(detail, "2. 在表单中填写事件内容与玩家选择")
+		_ui().add_info_label(detail, "3. Ctrl+S 保存 / F5 试玩")
 	_ui().add_info_label(detail, "点击左侧节点图中的事件卡片查看详情")
 	_ui().add_info_label(detail, "双击事件卡片进入蓝图编辑")
 

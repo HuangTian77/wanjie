@@ -212,12 +212,16 @@ func _setup_edit_mode_opt() -> void:
 	edit_mode_opt.item_selected.connect(func(idx: int):
 		EditorMode.set_mode(idx))
 	EditorMode.mode_changed.connect(_on_edit_mode_changed)
+	# 状态栏初始显示当前模式
+	_update_status_mode(EditorMode.current_mode)
 
 ## 编辑模式切换回调：刷新下拉 + 重建当前 visual 编辑器
 func _on_edit_mode_changed(mode: int) -> void:
 	if edit_mode_opt != null:
 		edit_mode_opt.selected = mode
 		edit_mode_opt.tooltip_text = "%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]]
+	# 状态栏常驻当前模式
+	_update_status_mode(mode)
 	# 首次切简易模式：弹出模式说明引导
 	if mode == EditorMode.SIMPLE and GameManager.user_data != null \
 			and not GameManager.user_data.editor_simple_guide_seen:
@@ -249,6 +253,17 @@ func _on_edit_mode_changed(mode: int) -> void:
 		ToastManager.success("%s %s模式已启用：%s" % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
 	else:
 		ToastManager.info("%s 编辑模式：%s" % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode]])
+
+## 状态栏显示当前编辑模式（前缀）
+func _update_status_mode(mode: int) -> void:
+	if status_label == null:
+		return
+	var cur: String = status_label.text
+	# 移除旧的模式前缀（若存在）
+	for m in EditorMode.MODE_ICONS.size():
+		cur = cur.replace("[%s %s] " % [EditorMode.MODE_ICONS[m], EditorMode.MODE_NAMES[m]], "")
+	var prefix := "%s %s " % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode]]
+	status_label.text = prefix + cur
 
 ## 编辑模式说明弹窗（三模式差异）
 func _show_edit_mode_guide(_mode: int) -> void:

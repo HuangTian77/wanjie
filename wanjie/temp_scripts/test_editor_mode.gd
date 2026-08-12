@@ -46,6 +46,25 @@ func _initialize() -> void:
 	# 持久化
 	em.set_mode(em.EXHAUSTIVE)
 	_check("切详尽 is_exhaustive", em.is_exhaustive())
+	# 注册表全面分级断言
+	var all_simple: Array = BlueprintNodeRegistry.get_all_types(em.SIMPLE)
+	var all_full: Array = BlueprintNodeRegistry.get_all_types(em.EXHAUSTIVE)
+	_check("简易类型数 < 详尽", all_simple.size() < all_full.size())
+	_check("简易不含表达式", not all_simple.has("flow_expression"))
+	_check("简易不含贸易规则", not all_simple.has("eco_set_trade_rule"))
+	_check("简易不含战斗设值", not all_simple.has("combat_set_stats"))
+	_check("简易不含势力关系", not all_simple.has("world_faction_relation"))
+	_check("简易不含任务失败", not all_simple.has("quest_fail"))
+	_check("简易含开始", all_simple.has("flow_start"))
+	_check("简易含对话", all_simple.has("story_dialog"))
+	_check("详尽含全部 expert", all_full.has("flow_expression") and all_full.has("eco_set_trade_rule"))
+	# expert 节点数量（31 个标记）
+	var expert_count := 0
+	for t in BlueprintNodeRegistry.get_all_types(-1):
+		var d: Dictionary = BlueprintNodeRegistry.get_definition(t)
+		if int(d.get("min_mode", 1)) >= 2:
+			expert_count += 1
+	_check("expert 节点 >= 30", expert_count >= 30)
 	em.set_mode(em.DETAILED)
 	_check("恢复详细", em.current_mode == em.DETAILED)
 	print("ALL_TESTS_PASSED" if _fail == 0 else "TESTS_FAILED=%d" % _fail)
