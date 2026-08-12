@@ -3981,7 +3981,7 @@ func _refresh_menu_title() -> void:
 	if gm2 != null and gm2.user_data != null:
 		status_txt += "🏆 %d/%d" % [gm2.user_data.achievements.size(), gm2.ACHIEVEMENTS.size()]
 		# 灵感/资源显示（诗墨）
-		status_txt += " · ✨%d 灵感" % gm2.user_data.inspiration
+		status_txt += " · ✨%d 灵感 · 📜%d 诗墨" % [gm2.user_data.inspiration, gm2.user_data.shimo]
 	status_txt += save_txt
 	if combat_engine and not combat_engine.player_combat_stats.is_empty():
 		var pst: Dictionary = combat_engine.player_combat_stats
