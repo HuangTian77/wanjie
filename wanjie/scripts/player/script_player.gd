@@ -4939,6 +4939,8 @@ func _on_menu_help_pressed() -> void:
 	dialog.title = "❓ 操作帮助"
 	# 打开帮助时收起菜单（避免遮挡）
 	menu_panel.visible = false
+	# 打字机跳过状态保存（帮助关闭后恢复）
+	var typewriter_paused: bool = not _typewriter_done
 	# 帮助打开时暂停自动推进（避免错过选择）
 	var auto_paused: bool = _auto_advance_mode
 	if auto_paused:
@@ -5027,7 +5029,10 @@ func _on_menu_help_pressed() -> void:
 	# 帮助关闭恢复自动推进
 	dialog.closed.connect(func():
 		if auto_paused:
-			_auto_advance_mode = true)
+			_auto_advance_mode = true
+		# 打字机恢复（若之前未完成）
+		if typewriter_paused:
+			_typewriter_done = false)
 	dialog.dialog_text = ""
 	dialog.popup_centered()
 
