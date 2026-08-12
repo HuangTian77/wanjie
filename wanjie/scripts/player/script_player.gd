@@ -1116,6 +1116,8 @@ func _update_ui() -> void:
 			if not chain.is_empty():
 				chain_label.text = "🔗 %s" % chain
 				chain_label.visible = true
+				# 链标签颜色（蓝色强调剧情线）
+				chain_label.add_theme_color_override("font_color", Color(0.6, 0.75, 0.95))
 				# tooltip：链事件进度
 				var tip2 := "当前剧情线：%s" % chain
 				if script_data != null and script_data.event_system != null:
