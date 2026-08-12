@@ -2094,6 +2094,9 @@ func _on_combat_started(enemies: Array) -> void:
 	ToastManager.warning("⚔ 遭遇敌人：%s" % "、".join(names))
 	# 战斗开场日志
 	_battle_log_line("⚔ 遭遇敌人：%s（%d 个）" % ["、".join(names), enemies.size()], "#e6c84c")
+	# 战斗开始统计提示（累计胜场）
+	if _battle_wins > 0:
+		_battle_log_line("📊 当前战绩：胜 %d · 败 %d · 逃 %d" % [_battle_wins, _battle_defeats, _battle_flees], "#8a8278")
 	# 战斗开始时关闭其他浮层（菜单/酒馆/面板）
 	menu_panel.visible = false
 	if tavern_panel != null:
