@@ -5411,8 +5411,14 @@ func _on_menu_help_pressed() -> void:
 - 探索触发事件；连续探索有奖励
 - 世界效果（🌪）影响战斗与事件，休息时结算
 - 势力关系影响对话与事件走向
-- 通关所有事件解锁成就"""
-	dialog.min_size = Vector2i(620, 560)
+- 通关所有事件解锁成就
+
+【角色成长 📈】
+- 战斗获得经验（100/级），升级提升攻防
+- 职业称号按属性偏向自动判定（剑客/守卫/游侠）
+- 休息回满 HP/MP；药水战斗中可快速使用（Q 键）
+- 成就解锁（战斗/评分/收藏/通关）"""
+	dialog.min_size = Vector2i(620, 600)
 	add_child(dialog)
 	# 帮助文本放入滚动容器（长文本可滚动）
 	var help_scroll := ScrollContainer.new()
