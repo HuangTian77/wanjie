@@ -2059,6 +2059,8 @@ func _on_combat_started(enemies: Array) -> void:
 		ToastManager.warning("⚔ 遭遇 %d 个敌人！Tab 切换目标" % enemies.size())
 	else:
 		ToastManager.warning("⚔ 遭遇敌人！")
+	# 敌人信息初始 tooltip（悬停查看详情）
+	enemy_info.tooltip_text = "悬停查看敌人攻防/状态效果"
 	# 逃跑按钮 tooltip：当前成功率
 	var flee_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/FleeBtn")
 	if flee_btn is Button and combat_engine != null:
