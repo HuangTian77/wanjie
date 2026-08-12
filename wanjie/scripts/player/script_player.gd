@@ -1885,6 +1885,8 @@ func _on_tavern_send_pressed() -> void:
 			(tb as Button).add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 			_tavern_unread += 1
 			(tb as Button).text = "🏮 酒馆(%d)" % _tavern_unread
+			# 新消息 Toast（角色对玩家说话）
+			ToastManager.info("🏮 酒馆有 %d 条新消息" % _tavern_unread)
 
 ## 酒馆历史行（/h 命令用）
 func _tavern_history_line(m: Variant) -> String:
