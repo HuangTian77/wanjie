@@ -3369,6 +3369,17 @@ func _on_menu_shop_pressed() -> void:
 	var inner := VBoxContainer.new()
 	inner.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(inner)
+	# 商品搜索框（过滤商品列表）
+	var search_row_s := HBoxContainer.new()
+	inner.add_child(search_row_s)
+	var search_lbl_s := Label.new()
+	search_lbl_s.text = "🔍"
+	search_lbl_s.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	search_row_s.add_child(search_lbl_s)
+	var search_edit_s := LineEdit.new()
+	search_edit_s.placeholder_text = "搜索商品…"
+	search_edit_s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	search_row_s.add_child(search_edit_s)
 	var list := RichTextLabel.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -3461,6 +3472,10 @@ func _on_menu_shop_pressed() -> void:
 				return economy_engine.get_price(mid, str(a.get("item", ""))) < economy_engine.get_price(mid, str(b.get("item", ""))))
 			for g in goods:
 				var item_id: String = g.get("item", "")
+				# 搜索过滤（商品名/ID 包含关键词）
+				if not search_edit_s.text.strip_edges().is_empty() \
+						and not str(item_id).to_lower().contains(search_edit_s.text.strip_edges().to_lower()):
+					continue
 				var price: float = economy_engine.get_price(mid, item_id)
 				# 难度价格修正（简单 -15% / 困难 +20%）
 				var price_mul := 1.0
