@@ -1801,6 +1801,9 @@ func _tavern_append(role: String, content: String) -> void:
 	# 消息气泡背景色（玩家浅绿 / 角色浅棕）
 	var bubble := "[bgcolor=#2a2e24]" if role == "user" else "[bgcolor=#2e2a22]"
 	tavern_msgs.append_text(bubble + prefix + content.replace("[", "［").replace("]", "］") + "[/bgcolor]\n\n")
+	# 历史条数限制（超 120 条清首条，防长会话卡顿）
+	if tavern_msgs.get_line_count() > 600:
+		tavern_msgs.text = tavern_msgs.text.substr(tavern_msgs.text.find("\n") + 1)
 	# 自动滚动到底部（新消息可见）
 	tavern_msgs.scroll_to_line(tavern_msgs.get_line_count())
 
