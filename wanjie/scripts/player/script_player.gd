@@ -4943,9 +4943,12 @@ func _show_slot_selector(mode: String) -> void:
 				(" | 第 %d 天" % int(auto_info.get("day", 1))) if auto_info.has("day") else ""]
 		var auto_btn := Button.new()
 		auto_btn.text = "自动存档: %s" % auto_txt
+		# 自动存档图标（已有存档时）
+		if not auto_info.is_empty():
+			auto_btn.text = "⏱ 自动存档: %s" % auto_txt
 		if not auto_info.is_empty():
 			var auto_saved: String = str(auto_info.get("saved_at", "无"))
-			auto_btn.tooltip_text = "上次自动保存：%s" % auto_saved.substr(5, 5) if auto_saved.length() >= 10 else auto_saved
+			auto_btn.tooltip_text = "上次自动保存：%s（每小时自动覆盖，无需手动管理）" % auto_saved.substr(5, 5) if auto_saved.length() >= 10 else auto_saved
 		else:
 			auto_btn.tooltip_text = "尚无自动存档"
 		auto_btn.custom_minimum_size = Vector2(0, 40)
