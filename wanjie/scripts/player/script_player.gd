@@ -3242,8 +3242,14 @@ func _on_menu_shop_pressed() -> void:
 			for g in goods:
 				var item_id: String = g.get("item", "")
 				var price: float = economy_engine.get_price(mid, item_id)
+				# 难度价格修正（简单 -15% / 困难 +20%）
+				var price_mul := 1.0
+				match GameManager.user_data.difficulty_mode if GameManager.user_data != null else "normal":
+					"easy": price_mul = 0.85
+					"hard": price_mul = 1.2
+				var final_price := int(price * price_mul)
 				var btn := Button.new()
-				btn.text = "购买 %s（%d 金币）" % [item_id, int(price)]
+				btn.text = "购买 %s（%d 金币）" % [item_id, final_price]
 				# 供需状态 tooltip
 				var base_p: float = float(g.get("price", price))
 				var supply_state := "稳定"
@@ -3277,24 +3283,24 @@ func _on_menu_shop_pressed() -> void:
 					# Shift 点击：剩余金币最大购买
 					if Input.is_key_pressed(KEY_SHIFT):
 						var gold_left: int = int(economy_engine.player_currencies.get("gold", 0))
-						var max_buy: int = int(gold_left / maxf(1.0, float(price)))
+						var max_buy: int = int(gold_left / maxf(1.0, float(final_price)))
 						qty_buy = maxi(1, mini(9, max_buy))
-					var total_price: int = int(price) * qty_buy
+					var total_price: int = final_price * qty_buy
 					# 大额购买确认（≥100 金币）
 					if total_price >= 100:
 						var confirm_buy := ConfirmationDialog.new()
 						confirm_buy.dialog_text = "确定花费 %d 金币购买 %d 个 %s？" % [total_price, qty_buy, item_id]
 						confirm_buy.confirmed.connect(func():
-							_do_shop_buy_qty(mid, item_id, int(price), qty_buy, dialog))
+							_do_shop_buy_qty(mid, item_id, final_price, qty_buy, dialog))
 						add_child(confirm_buy)
 						confirm_buy.popup_centered()
 						return
 					_do_shop_buy_qty(mid, item_id, int(price), qty_buy, dialog))
 				# 金币不足：置灰禁用
 				var gold_now: int = int(economy_engine.player_currencies.get("gold", 0))
-				if gold_now < int(price):
+				if gold_now < final_price:
 					btn.disabled = true
-					btn.tooltip_text = "金币不足（需要 %d）" % int(price)
+					btn.tooltip_text = "金币不足（需要 %d）" % final_price
 				inner.add_child(btn)
 				bought_any = true
 	if not bought_any:
