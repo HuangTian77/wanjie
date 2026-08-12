@@ -3340,6 +3340,9 @@ func _on_menu_rating_pressed() -> void:
 	# 评分提示（评分影响大厅精选排序）
 	var rating_tip := Label.new()
 	rating_tip.text = "评分越高越容易在「精选」榜出现"
+	# 已评过分时提示当前分数
+	if script_data != null and script_data.rating_count > 0:
+		rating_tip.text = "当前评分 %.1f（%d 人）· 评分越高越容易在「精选」榜出现" % [script_data.rating, script_data.rating_count]
 	rating_tip.add_theme_color_override("font_color", Color(0.6, 0.55, 0.48))
 	rating_tip.add_theme_font_size_override("font_size", 11)
 	var dialog := ConfirmationDialog.new()
