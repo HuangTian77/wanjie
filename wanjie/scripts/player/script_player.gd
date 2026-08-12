@@ -1752,7 +1752,7 @@ func _on_tavern_send_pressed() -> void:
 		if _egg_count == 5:
 			ToastManager.success("🗝 发现 5 段秘闻！酒馆话事人成就")
 		return
-	# 斜杠命令：/h 历史 /c 清空
+	# 斜杠命令：/h 历史 /c 清空 /help 帮助
 	if text.begins_with("/"):
 		match text:
 			"/h":
@@ -1767,8 +1767,11 @@ func _on_tavern_send_pressed() -> void:
 				tavern_msgs.clear()
 				_tavern_append("assistant", "（记录已清空）")
 				return
+			"/help":
+				_tavern_append("assistant", "可用指令：\n/h 查看对话历史\n/c 清空对话\n/help 显示本帮助\n\n（试试聊聊「遗物 / 命运 / 酒 / 世界」有惊喜）")
+				return
 			_:
-				_tavern_append("assistant", "（疑惑）你说的我听不懂…试试 /h 或 /c")
+				_tavern_append("assistant", "（疑惑）你说的我听不懂…试试 /h 或 /c 或 /help")
 				return
 	_tavern_append("user", text)
 	TavernManager.dialog_history.append({"role": "user", "content": text})
