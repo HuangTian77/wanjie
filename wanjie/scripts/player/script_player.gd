@@ -3547,7 +3547,10 @@ func _on_menu_shop_pressed() -> void:
 				inner.add_child(btn)
 				bought_any = true
 	if not bought_any:
-		list.append_text("[color=#999]当前市场暂无商品…[/color]")
+		if not search_edit_s.text.strip_edges().is_empty():
+			list.append_text("[color=#999]没有匹配「%s」的商品[/color]" % search_edit_s.text.strip_edges())
+		else:
+			list.append_text("[color=#999]当前市场暂无商品…[/color]")
 	dialog.popup_centered()
 
 ## 清空当前角色对话历史
