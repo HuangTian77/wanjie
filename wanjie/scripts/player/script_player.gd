@@ -2420,6 +2420,11 @@ func _on_combat_ended(result: String) -> void:
 			"hard": reward_mul = 1.3
 		gold = int(gold * reward_mul)
 		exp = int(exp * reward_mul)
+		# 连胜经验加成（每连胜 +2%，最多 +20%）
+		if _win_streak >= 2:
+			var streak_bonus := mini(0.2, float(_win_streak) * 0.02)
+			exp = int(exp * (1.0 + streak_bonus))
+			_battle_log_line("⚡ 连胜加成：经验 +%d%%" % int(streak_bonus * 100.0), "#e6c84c")
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
