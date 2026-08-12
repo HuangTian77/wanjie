@@ -323,6 +323,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_H:
 		_on_menu_help_pressed()
 		get_viewport().set_input_as_handled()
+	# C: 打开角色状态面板
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_C and not event.ctrl_pressed \
+			and not battle_panel.visible and _no_dialog_open():
+		_on_menu_char_pressed()
+		get_viewport().set_input_as_handled()
 	# T: 打开酒馆
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_T:
 		if not tavern_panel.visible:
