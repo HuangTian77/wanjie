@@ -666,6 +666,8 @@ var _log_scroll_pos: int = 0
 var _shop_search_q: String = ""
 ## 酒馆输入历史（↑ 键调出，保留 10 条）
 var _tavern_input_history: Array[String] = []
+## 酒馆消息时间分组（分钟级分隔线）
+var _tavern_last_ts: String = ""
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -2037,6 +2039,10 @@ func _tavern_append(role: String, content: String) -> void:
 	if content.length() > 400:
 		content = content.substr(0, 397) + "…"
 	var ts := Time.get_time_string_from_system().substr(0, 5)
+	# 消息分钟分组（新分钟首次消息加分隔线）
+	if ts != _tavern_last_ts and not _tavern_last_ts.is_empty():
+		tavern_msgs.append_text("[color=#4a443e]── %s ──[/color]\n" % ts)
+	_tavern_last_ts = ts
 	var speaker := "你"
 	var speaker_color := "#7cc47c"
 	if role == "assistant":
