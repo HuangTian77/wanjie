@@ -3443,6 +3443,7 @@ func _on_menu_bag_pressed() -> void:
 		val_lbl.text = "背包估值：%d 金币（可出售）" % total_value
 		val_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
 		val_lbl.add_theme_font_size_override("font_size", 11)
+		val_lbl.tooltip_text = "按当前市场半价估算；实际出售价随供需波动"
 		box.add_child(val_lbl)
 	# 使用药水按钮（恢复 HP 的道具）
 	if economy_engine != null and not economy_engine.player_inventory.is_empty():
