@@ -15,6 +15,14 @@
 
 ## 2. 语义色约定
 
+### 2.1 可视化编辑器三档模式（EditorMode）
+- 单例：`scripts/autoload/editor_mode.gd`（autoload 名 `EditorMode`），模式持久化 `user://editor_mode.cfg`
+- 三档：**SIMPLE=0 简易**（🌱 零基础，只显示核心节点/字段，隐藏调试工具）/ **DETAILED=1 详细**（⚙ 标准，默认）/ **EXHAUSTIVE=2 详尽**（🧠 全部功能 + 调试信息）
+- 切换入口：编辑器顶栏 `EditModeOpt` 下拉 / 设置页「编辑器模式」/ 快捷键 `Ctrl+1/2/3` / F1 帮助
+- 分级机制：`blueprint_node_registry.gd` 节点 `min_mode`（core=简易可见 / advanced=详细 / expert=仅详尽，31 个 expert 节点）；表单区块按 `EditorMode.is_visible()` 过滤
+- 简易模式：隐藏高级节点菜单项、图重命名/删除、+Print、自动布局、迷你地图、事件复制按钮、前置条件/触发条件区块；蓝图隐藏左图列表（顶部中文图名下拉替代）；模块树进阶子系统灰化；L1 新手引导卡片
+- 详尽模式：节点 ID 角标/执行顺序圈数字/右下角缩放坐标指示条、参数 label 附原始 key、参数 JSON 只读视图、右键「图数据 JSON」、编译详细报告
+- 模式切换：重建当前面板（清 `_editors` 缓存）并淡入动画，画布缩放/偏移经 `EditorMode.bp_view_state` 跨重建保留
 - 错误 `C_RED`/`C_ERROR`、成功 `C_GREEN`/`C_SUCCESS`、警告 `C_YELLOW`/`C_WARNING`、信息 `C_ACCENT`（蓝）
 - 同语义同色，不在局部硬编码新色值；StyleBoxFlat 不每次新建（缓存复用，尤其 toast/轮播指示器）
 

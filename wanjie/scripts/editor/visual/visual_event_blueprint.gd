@@ -445,6 +445,12 @@ func _compile_blueprint() -> void:
 	if graph["nodes"].is_empty():
 		_log_output("[蓝图] 无节点可编译")
 		return
+	# 详尽模式：编译前输出图概览
+	if EditorMode.is_exhaustive():
+		_log_output("=== 编译报告（详尽）===")
+		_log_output("节点 %d 个：%s" % [graph["nodes"].size(), str(graph["nodes"].keys())])
+		_log_output("连接 %d 条：%s" % [graph.get("connections", []).size(), str(graph.get("connections", []))])
+		_log_output("执行顺序：%s" % str(_bp_compute_exec_order(graph)))
 	# 验证蓝图
 	var errors: Array[Dictionary] = BlueprintValidator.validate_graph(graph, _host._current_script())
 	var error_count: int = 0
@@ -455,6 +461,9 @@ func _compile_blueprint() -> void:
 	if error_count > 0:
 		_log_output("[蓝图] 编译中止: %d 个错误" % error_count)
 		return
+	# 详尽模式：校验通过提示
+	if EditorMode.is_exhaustive():
+		_log_output("[蓝图校验] 通过（0 错误 / %d 警告）" % (errors.size() - error_count))
 	# 生成代码
 	const ScriptCodeGenClass = preload("res://scripts/editor/script_codegen.gd")
 	var code: String = ScriptCodeGenClass.generate_blueprint_code(graph, _host._current_script())

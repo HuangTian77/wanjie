@@ -275,7 +275,31 @@ func _refresh_graph_list() -> void:
 	var idx := 0
 	var select_idx := 0
 	for key in keys:
-		_graph_list.add_item(key)
+		# 简易模式：图 key 显示中文名（evt:xxx → 「剧情图」）
+		var display_key: String = key
+		if EditorMode.is_simple():
+			if key.begins_with("evt:"):
+				display_key = "📖 剧情图"
+			elif key.begins_with("sys:worldview"):
+				display_key = "🌍 世界观图"
+			elif key.begins_with("sys:economy"):
+				display_key = "💰 经济图"
+			elif key.begins_with("sys:ability"):
+				display_key = "✨ 能力图"
+			elif key.begins_with("sys:quest"):
+				display_key = "📋 任务图"
+			elif key.begins_with("sys:combat"):
+				display_key = "⚔ 战斗图"
+			elif key.begins_with("sys:map"):
+				display_key = "🗺 地图图"
+			elif key.begins_with("sys:event"):
+				display_key = "📜 事件图"
+			elif key == "sys:global":
+				display_key = "🌐 全局图"
+			else:
+				display_key = key.trim_prefix("sys:").trim_prefix("evt:")
+		_graph_list.add_item(display_key)
+		_graph_list.set_item_metadata(idx, key)
 		if key == _current_key:
 			select_idx = idx
 		idx += 1
@@ -291,7 +315,10 @@ func _new_default_graph() -> Dictionary:
 	return graph
 
 func _on_graph_selected(index: int) -> void:
-	var key := _graph_list.get_item_text(index)
+	# 读取 item 元数据中的真实 key（显示名可能被简易模式替换为中文）
+	var key: String = str(_graph_list.get_item_metadata(index))
+	if key.is_empty():
+		key = _graph_list.get_item_text(index)
 	if key != _current_key:
 		_current_key = key
 		_on_graph_switched()

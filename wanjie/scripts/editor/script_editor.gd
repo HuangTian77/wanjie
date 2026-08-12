@@ -246,9 +246,9 @@ func _on_edit_mode_changed(mode: int) -> void:
 			var tw_mode := create_tween()
 			tw_mode.tween_property(editor_container, "modulate:a", 0.4, 0.08)
 			tw_mode.tween_property(editor_container, "modulate:a", 1.0, 0.18)
-		ToastManager.info("已切换为%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
+		ToastManager.success("%s %s模式已启用：%s" % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
 	else:
-		ToastManager.info("编辑模式：%s" % EditorMode.MODE_NAMES[mode])
+		ToastManager.info("%s 编辑模式：%s" % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode]])
 
 ## 编辑模式说明弹窗（三模式差异）
 func _show_edit_mode_guide(_mode: int) -> void:
