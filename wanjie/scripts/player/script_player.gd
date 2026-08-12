@@ -3203,7 +3203,10 @@ func _on_menu_char_pressed() -> void:
 	if not _enemy_codex.is_empty():
 		list.append_text("\n[color=#c9a06a]敌人图鉴（本次）[/color]\n")
 		for ename in _enemy_codex:
-			list.append_text("• %s ×%d\n" % [ename, int(_enemy_codex[ename])])
+			var cnt_enc: int = int(_enemy_codex[ename])
+			# 首次击败标记（次数 1 为初遇）
+			var first_tag := " 🎖" if cnt_enc == 1 else ""
+			list.append_text("• %s ×%d%s\n" % [ename, cnt_enc, first_tag])
 		list.append_text("• 历史记录：%d 条\n" % history_text.get_line_count())
 		list.append_text("• 当前进度：%d%%\n" % (int(_get_progress()[0] * 100.0 / maxf(1.0, float(_get_progress()[1])))))
 	dialog.popup_centered()
