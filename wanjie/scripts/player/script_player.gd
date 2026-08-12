@@ -3601,6 +3601,7 @@ func _on_menu_back_pressed() -> void:
 		menu_panel.visible = false
 		var back_time: String = world_state.get_time_display() if world_state != null else ""
 		ToastManager.success("已自动保存 · %s" % back_time)
+		_add_history("🏠 返回大厅（已自动保存，第 %d 天）" % (world_state.get_current_day() if world_state != null else 1))
 		SceneManager.go_back_to_hub())
 	add_child(confirm)
 	confirm.popup_centered()
