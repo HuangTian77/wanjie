@@ -2725,6 +2725,9 @@ func _on_battle_skill_pressed() -> void:
 			var sname := str(skills[id].get("name", "技能"))
 			if dmg > 0:
 				ToastManager.info("⚡ %s 命中！" % sname)
+				# 技能暴击 Toast
+				if bool(sres.get("critical", false)):
+					ToastManager.success("💥 %s 暴击！" % sname)
 			# 技能 MP 消耗飘字（蓝色 -）
 			var mp_cost_s: int = int((skills[id].get("cost", {}) as Dictionary).get("mana", 0))
 			if mp_cost_s > 0:
