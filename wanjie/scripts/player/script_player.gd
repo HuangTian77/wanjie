@@ -4537,7 +4537,7 @@ func _setup_menu_tooltips() -> void:
 		"ShopBtn": "购买/出售物品（金币交易）",
 		"ExportChatBtn": "导出酒馆对话历史为 txt",
 		"BagBtn": "查看背包物品与价值",
-		"RatingBtn": "为本剧本评分（1-5 星）",
+		"RatingBtn": "为本剧本评分（1-5 星）；评分影响大厅精选排序",
 		"LogBtn": "查看世界事件日志",
 		"RestBtn": "休息 8 小时：回满 HP/MP，30% 概率遭遇事件，跨天自动存档",
 		"PlayerStatsBtn": "查看完整战斗属性与经验",
