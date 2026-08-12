@@ -3583,6 +3583,7 @@ func _do_sell_all(dialog: AcceptDialog) -> void:
 		_add_history("💰 全部卖出 +%d 金币" % total_gain)
 		_spawn_damage_popup(total_gain, false, true)  # 金币金色飘字
 		_sync_save_state()
+		# 卖出后商店余额同步（重开商店显示最新金币）
 		_on_menu_bag_pressed()
 		dialog.queue_free()
 	else:
