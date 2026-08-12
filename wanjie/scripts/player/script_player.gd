@@ -2296,8 +2296,12 @@ func _on_combat_ended(result: String) -> void:
 		var wins_after: int = _battle_wins + 1
 		if wins_after == 10:
 			ToastManager.success("🏆 累计 10 胜！战斗专家成就")
+			if GameManager.user_data != null:
+				GameManager.user_data.unlock_achievement("battle_10", "累计 10 场战斗胜利")
 		elif wins_after == 50:
 			ToastManager.success("🏆 累计 50 胜！百战老兵成就")
+			if GameManager.user_data != null:
+				GameManager.user_data.unlock_achievement("battle_50", "累计 50 场战斗胜利")
 	else:
 		_win_streak = 0
 	# 敌人状态摘要（存活/阵亡）
