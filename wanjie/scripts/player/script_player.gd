@@ -4523,6 +4523,10 @@ func _on_player_stats_pressed() -> void:
 		tend = "敏捷型（速度专精）"
 		tend_mark = "💨"
 	list.append_text("%s 倾向：%s\n\n" % [tend_mark, tend])
+	# 本次游玩统计（休息/事件/战斗）
+	list.append_text("[color=#c9a06a]【本次冒险】[/color]\n")
+	list.append_text("• 休息 %d 次 · 触发事件 %d 个\n" % [_rest_count, _event_trigger_count])
+	list.append_text("• 战斗：胜 %d · 败 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
 	# 经验进度（每 100 经验升级）
 	var exp_now: int = int(st.get("exp", 0))
 	if exp_now >= 100:
