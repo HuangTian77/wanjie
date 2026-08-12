@@ -2724,6 +2724,11 @@ func _on_battle_skill_pressed() -> void:
 	# MP 全部不足提示
 	if cur_mp2 < 1:
 		ToastManager.warning("✦ MP 已耗尽，请先普攻攒蓝或休息恢复")
+	# 菜单标题显示当前 MP
+	var mp_now: int = int(combat_engine.player_combat_stats.get("mp", 0))
+	var mp_max: int = int(combat_engine.player_combat_stats.get("max_mp", 50))
+	menu.size = Vector2i(260, 0)
+	menu.title = "✦ 技能（MP %d/%d）" % [mp_now, mp_max]
 	menu.id_pressed.connect(func(id: int):
 		var sres: Dictionary = combat_engine.player_use_skill(skills[id].get("id", ""), _battle_target)
 		if not sres.is_empty():
