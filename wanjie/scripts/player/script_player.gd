@@ -2218,6 +2218,13 @@ func _on_combat_ended(result: String) -> void:
 		var rewards: Dictionary = combat_engine.get_rewards()
 		var gold: int = int(rewards.get("gold", 0))
 		var exp: int = int(rewards.get("experience", 0))
+		# 难度奖励倍率（简单 0.8 / 困难 1.3）
+		var reward_mul := 1.0
+		match GameManager.user_data.difficulty_mode if GameManager.user_data != null else "normal":
+			"easy": reward_mul = 0.8
+			"hard": reward_mul = 1.3
+		gold = int(gold * reward_mul)
+		exp = int(exp * reward_mul)
 		if economy_engine != null and gold > 0:
 			economy_engine.add_currency("gold", gold)
 			msg = "战斗胜利！获得 %d 金币、%d 经验" % [gold, exp]
