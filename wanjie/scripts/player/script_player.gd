@@ -2848,6 +2848,9 @@ func _on_battle_flee_pressed() -> void:
 		# 若仍在战斗（未逃跑成功）提示成功率
 		if battle_panel.visible:
 			ToastManager.warning("逃跑失败…成功率 %.0f%%（敏捷越高越易逃脱）" % (chance * 100.0))
+			# 有烟雾弹时提示（下次逃跑 +15%）
+			if economy_engine != null and int(economy_engine.player_inventory.get("smoke_bomb", 0)) > 0:
+				ToastManager.info("💨 背包有烟雾弹（逃跑 +15%），可再次尝试")
 			# 连续逃跑失败计数（≥2 提示用技能/药水）
 			_flee_fail_count += 1
 			if _flee_fail_count >= 2:
