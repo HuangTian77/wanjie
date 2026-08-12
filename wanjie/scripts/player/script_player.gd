@@ -4285,6 +4285,7 @@ func _on_menu_help_pressed() -> void:
 - 点击 / 空格 / 回车：继续剧情、跳过打字机
 - A：切换自动推进（打字完成后自动继续，遇选择暂停）
 - H：随时打开本帮助
+- C：打开角色状态面板
 - T：快捷打开 / 关闭酒馆
 - Esc：打开 / 关闭菜单
 - 顶部菜单：存档 / 读档 / 酒馆对话 / 评分
@@ -4323,7 +4324,7 @@ func _on_menu_help_pressed() -> void:
 	help_lbl.bbcode_enabled = true
 	# 快捷键加粗高亮（帮助文本中按键名加粗金色）
 	var help_txt: String = dialog.dialog_text
-	for key in ["空格", "回车", "A", "H", "T", "Esc", "S", "L", "B", "1-9", "Tab", "Shift"]:
+	for key in ["空格", "回车", "A", "H", "C", "T", "Esc", "S", "L", "B", "1-9", "Tab", "Shift"]:
 		help_txt = help_txt.replace(key, "[b][color=#e6c84c]%s[/color][/b]" % key)
 	help_lbl.text = help_txt + "\n\n[color=#8a8278]万界 · v1.2.0（体验版）[/color]"
 	# 字体大小随设置
