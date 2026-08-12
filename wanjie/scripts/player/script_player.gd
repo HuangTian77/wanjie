@@ -1402,6 +1402,11 @@ const TAVERN_CHARS: Array = [
 ]
 
 func _on_tavern_pressed() -> void:
+	# 面板已打开则聚焦而非重复创建
+	if tavern_panel.visible:
+		tavern_input.grab_focus()
+		menu_panel.visible = false
+		return
 	tavern_panel.visible = true
 	menu_panel.visible = false
 	# 时段氛围提示（夜晚酒馆）
