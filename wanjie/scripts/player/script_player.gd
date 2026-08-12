@@ -3357,8 +3357,10 @@ func _on_menu_char_pressed() -> void:
 	if ps.is_empty():
 		list.append_text("[color=#999]角色数据未初始化[/color]")
 	else:
+		# 角色名显示（含职业倾向）
+		var char_disp: String = str(ps.get("name", "旅者"))
 		var rows := [
-			["名称", str(ps.get("name", "旅者"))],
+			["名称", char_disp],
 			["等级", "Lv.%d" % int(ps.get("level", 1))],
 			["生命", "%d/%d" % [int(ps.get("hp", 0)), int(ps.get("max_hp", 1))]],
 			["魔力", "%d/%d" % [int(ps.get("mp", 0)), int(ps.get("max_mp", 1))]],
