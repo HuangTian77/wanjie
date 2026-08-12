@@ -4197,6 +4197,8 @@ func _on_menu_rating_pressed() -> void:
 		var rb2 := get_node_or_null("MenuPanel/MenuVBox/RatingBtn") as Button
 		if rb2 != null and script_data != null and script_data.rating_count > 0:
 			rb2.text = "★ 评分（%.1f · %d 人）" % [script_data.rating, script_data.rating_count]
+		# 评分后 HUD 更新（评分总数）
+		_refresh_menu_title()
 		# 大厅精选排序数据即时生效
 		GameManager.scripts_changed.emit(script_data.id)
 		# 评分后本地剧本库同步（返回大厅时即时显示新评分）
