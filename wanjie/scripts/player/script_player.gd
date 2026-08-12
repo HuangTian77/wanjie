@@ -3746,7 +3746,9 @@ func _refresh_difficulty_option() -> void:
 			if gm2 != null and gm2.user_data != null:
 				gm2.user_data.difficulty_mode = modes[idx]
 				gm2.save_user_data()
-				ToastManager.info("难度已切换: %s" % modes[idx]))
+				# 难度中文名
+				var mode_cn := {"adaptive": "自适应", "easy": "简单", "normal": "普通", "hard": "困难"}
+				ToastManager.info("难度已切换：%s（下次战斗生效）" % str(mode_cn.get(modes[idx], modes[idx]))))
 
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
