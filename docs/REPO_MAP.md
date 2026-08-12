@@ -1072,21 +1072,21 @@
 ### scripts/editor/visual/visual_blueprint_draw.gd (`VisualBlueprintDraw`)
 
 - class_name **VisualBlueprintDraw**
-- func `screen_to_world` (L18)
-- func `world_to_screen` (L22)
-- func `draw_grid` (L26)
-- func `draw_bp_node` (L50)
-- func `draw_bp_pins` (L80)
-- func `draw_connection` (L92)
-- func `cubic_bezier` (L103)
-- func `get_pin_world_pos` (L112)
-- func `hit_test_node` (L120)
-- func `hit_test_pins` (L133)
-- func `draw_blueprint_node` (L149)
-- func `draw_typed_pins` (L193)
-- func `draw_exec_connection` (L240)
-- func `hit_test_bp_pins` (L269)
-- func `hit_test_bp_node` (L289)
+- func `screen_to_world` (L28)
+- func `world_to_screen` (L32)
+- func `draw_grid` (L36)
+- func `draw_bp_node` (L60)
+- func `draw_bp_pins` (L90)
+- func `draw_connection` (L102)
+- func `cubic_bezier` (L113)
+- func `get_pin_world_pos` (L122)
+- func `hit_test_node` (L130)
+- func `hit_test_pins` (L143)
+- func `draw_blueprint_node` (L159)
+- func `draw_typed_pins` (L217)
+- func `draw_exec_connection` (L270)
+- func `hit_test_bp_pins` (L299)
+- func `hit_test_bp_node` (L319)
 
 ### scripts/editor/visual/visual_blueprint_workspace.gd (visual_blueprint_workspace.gd)
 
@@ -1128,8 +1128,8 @@
 
 - class_name **VisualModuleBase**
 - func `build_standard_layout` (L45)
-- func `get_nav_title` (L99)
-- func `get_nav_items` (L103)
+- func `get_nav_title` (L107)
+- func `get_nav_items` (L111)
 
 ### scripts/editor/visual/visual_quest.gd (visual_quest.gd)
 
