@@ -3608,6 +3608,9 @@ func _on_menu_back_pressed() -> void:
 		_sync_save_state()
 		_write_progress()
 		SaveManager.autosave()
+		# 清理战斗状态（返回大厅）
+		if combat_engine != null:
+			combat_engine.reset_battle()
 		menu_panel.visible = false
 		var back_time: String = world_state.get_time_display() if world_state != null else ""
 		ToastManager.success("已自动保存 · %s" % back_time)
