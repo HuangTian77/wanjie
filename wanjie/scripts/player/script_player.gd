@@ -3705,10 +3705,15 @@ func _refresh_menu_title() -> void:
 		var rm2: String = str(world_state.get_variable("current_region", ""))
 		if not rm2.is_empty():
 			region_menu = " · 📍%s" % rm2
+	# 当前难度显示
+	var diff_txt := ""
+	if GameManager.user_data != null:
+		var diff_cn := {"adaptive": "自适应", "easy": "简单", "normal": "普通", "hard": "困难"}
+		diff_txt = " · 🎚%s" % str(diff_cn.get(GameManager.user_data.difficulty_mode, "普通"))
 	var day_full := ""
 	if world_state:
 		day_full = world_state.get_time_display().get_slice(" ", 1) + " " + world_state.get_time_display().get_slice(" ", 2)
-	title_node.text = "%s · %s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, progress_txt, time_txt, save_txt, slot_txt]
+	title_node.text = "%s · %s%s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, diff_txt, progress_txt, time_txt, save_txt, slot_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
@@ -3748,7 +3753,9 @@ func _refresh_difficulty_option() -> void:
 				gm2.save_user_data()
 				# 难度中文名
 				var mode_cn := {"adaptive": "自适应", "easy": "简单", "normal": "普通", "hard": "困难"}
-				ToastManager.info("难度已切换：%s（下次战斗生效）" % str(mode_cn.get(modes[idx], modes[idx]))))
+				ToastManager.info("难度已切换：%s（下次战斗生效）" % str(mode_cn.get(modes[idx], modes[idx])))
+				# 菜单标题难度显示
+				_refresh_menu_title())
 
 func _on_menu_close_pressed() -> void:
 	menu_panel.visible = false
