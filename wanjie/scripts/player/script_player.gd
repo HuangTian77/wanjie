@@ -68,6 +68,8 @@ var _battle_target: int = -1
 var _last_autosave_time: float = 0.0
 ## 上次休息时的天数（跨天自动存档用）
 var _last_rest_day: int = -1
+## 上次休息时间（毫秒，防连点）
+var _last_rest_ms: int = 0
 ## 休息开始时的天数（跨天提示用）
 var _rest_start_day: int = -1
 ## 休息次数统计
@@ -4477,6 +4479,11 @@ func _on_menu_rest_pressed() -> void:
 	confirm.popup_centered()
 
 func _do_rest() -> void:
+	# 防连点（1 秒内不可重复休息）
+	var now_ms := Time.get_ticks_msec()
+	if now_ms - _last_rest_ms < 1000:
+		return
+	_last_rest_ms = now_ms
 	if world_state:
 		# 休息后时段提示（睡醒时间）
 		world_state.advance_time(8)
