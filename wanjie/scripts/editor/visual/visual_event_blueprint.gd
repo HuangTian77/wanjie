@@ -1594,6 +1594,22 @@ func _bp_prop_add_text(parent: Control, label: String, current: String, on_chang
 	edit.text = current
 	edit.add_theme_font_size_override("font_size", 12)
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 详尽模式：文本参数实时校验提示（空值/表达式括号）
+	if EditorUIFactory != null and EditorMode.is_exhaustive():
+		edit.text_changed.connect(func(t: String):
+			var warn := ""
+			if t.strip_edges().is_empty():
+				warn = "空值"
+			elif t.count("(") != t.count(")"):
+				warn = "括号不匹配"
+			elif t.count("{") != t.count("}"):
+				warn = "花括号不匹配"
+			if warn != "":
+				edit.add_theme_color_override("font_color", Color(1.0, 0.4, 0.35))
+				edit.tooltip_text = "⚠ %s" % warn
+			else:
+				edit.add_theme_color_override("font_color", Color(0.85, 0.87, 0.9))
+				edit.tooltip_text = hint)
 	edit.text_submitted.connect(func(v: String):
 		on_change.call(v)
 	)

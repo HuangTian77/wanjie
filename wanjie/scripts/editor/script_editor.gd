@@ -45,6 +45,7 @@ var _last_module_meta: Dictionary = {}
 @onready var mode_simple_btn: Button = %ModeSimpleBtn
 @onready var mode_detail_btn: Button = %ModeDetailBtn
 @onready var mode_expert_btn: Button = %ModeExpertBtn
+@onready var collab_btn: Button = %CollabBtn
 @onready var code_editor_container: VBoxContainer = %CodeEditorContainer
 @onready var mud_editor_container: VBoxContainer = %MudEditorContainer
 @onready var center_vsplit: VSplitContainer = %CenterVSplit
@@ -251,6 +252,8 @@ func _on_edit_mode_changed(mode: int) -> void:
 			to_erase.append(key)
 	for key in to_erase:
 		_editors.erase(key)
+	# 重建模块树（简易灰化/中文图名即时生效）
+	_build_module_tree()
 	# 当前是 visual 模块且记录过选中 → 重建该模块
 	if not _last_module_meta.is_empty() and _current_editor_key != "welcome" \
 			and _current_editor_key != "code" and _current_editor_key != "mud":
@@ -279,6 +282,9 @@ func _update_status_mode(mode: int) -> void:
 		mode_simple_btn.modulate = Color(1, 1, 1) if mode == EditorMode.SIMPLE else Color(0.5, 0.5, 0.5)
 		mode_detail_btn.modulate = Color(1, 1, 1) if mode == EditorMode.DETAILED else Color(0.5, 0.5, 0.5)
 		mode_expert_btn.modulate = Color(1, 1, 1) if mode == EditorMode.EXHAUSTIVE else Color(0.5, 0.5, 0.5)
+	# 简易模式顶栏精简（隐藏切换编辑器按钮）
+	if collab_btn != null:
+		collab_btn.visible = not EditorMode.is_simple()
 
 ## 首次使用：编辑模式选择弹窗（简易推荐给零基础）
 func _show_edit_mode_choice() -> void:

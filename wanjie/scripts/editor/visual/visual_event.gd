@@ -584,6 +584,46 @@ func _sync_event_nodes() -> void:
 		}
 		ry += 130.0
 
+## 事件节点右键菜单（打开蓝图/复制/删除）
+func _show_event_node_menu(canvas: Control, node_id: String, screen_pos: Vector2) -> void:
+	var popup := PopupMenu.new()
+	popup.name = "EventNodeMenu"
+	popup.add_item("🔷 打开蓝图编辑", 1)
+	# 复制/删除为进阶操作（简易模式隐藏复制）
+	if not EditorMode.is_simple():
+		popup.add_item("⧉ 复制事件", 2)
+	popup.add_item("🗑 删除事件", 3)
+	popup.id_pressed.connect(func(id: int):
+		match id:
+			1: _enter_event_blueprint(node_id)
+			2: _duplicate_event(node_id)
+			3: _delete_event_node(node_id)
+		popup.queue_free())
+	canvas.add_child(popup)
+	popup.popup(Rect2i(Vector2i(screen_pos), Vector2i(180, 120)))
+
+## 复制事件（创建副本）
+func _duplicate_event(node_id: String) -> void:
+	if _host.current_script == null or _host.current_script.event_system == null:
+		return
+	var es = _host.current_script.event_system
+	var src: Dictionary = {}
+	for ev in es.story_events:
+		if ev.get("id", "") == node_id:
+			src = ev
+			break
+	if src.is_empty():
+		return
+	var new_id := "event_dup_%d" % Time.get_ticks_msec()
+	var copy := (src as Dictionary).duplicate(true)
+	copy["id"] = new_id
+	copy["name"] = str(src.get("name", "")) + " 副本"
+	es.story_events.append(copy)
+	_sync_to_code_editor()
+	_mark_dirty()
+	_sync_event_nodes()
+	_log_output("[事件] 已复制: %s" % copy["name"])
+
 ## 获取事件节点颜色
 func _get_event_node_color(event_type: String) -> Color:
 	match event_type:
@@ -715,6 +755,11 @@ func _on_event_graph_input(event: InputEvent, canvas: Control) -> void:
 			_bp_mod._bp_dragging = true
 			_bp_mod._bp_drag_start = event.position
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			# 右键: 事件节点操作菜单优先
+			var node_hit := VisualBlueprintDraw.hit_test_bp_node(event.position, graph, _bp_mod._bp_offset, _bp_mod._bp_zoom)
+			if node_hit != "" and graph["nodes"].has(node_hit):
+				_show_event_node_menu(canvas, node_hit, event.position)
+				return
 			# 右键: 引脚拖拽连线 或 空白处菜单
 			var pin_hit = VisualBlueprintDraw.hit_test_pins(event.position, graph, _bp_mod._bp_offset, _bp_mod._bp_zoom)
 			if pin_hit != null:
