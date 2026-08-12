@@ -1667,6 +1667,9 @@ func _enter_tavern_char(index: int) -> void:
 		(sb as Button).disabled = true
 		tavern_input.text_changed.connect(func(t: String):
 			(sb as Button).disabled = t.strip_edges().is_empty())
+		# 字数提示（超 200 字警告）
+		if t.length() > 200:
+			ToastManager.warning("消息过长（%d/200 字），建议精简" % t.length())
 	# 回车直接发送
 	if not tavern_input.text_submitted.is_connected(_on_tavern_send_pressed):
 		tavern_input.text_submitted.connect(_on_tavern_send_pressed)
