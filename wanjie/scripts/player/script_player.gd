@@ -3845,6 +3845,7 @@ func _on_menu_log_pressed() -> void:
 	filter_opt.add_item("事件")
 	filter_opt.add_item("后果")
 	filter_opt.add_item("其他")
+	filter_opt.add_item("仅今日")
 	filter_row.add_child(filter_opt)
 	# 日志内关键字搜索
 	var search_row := HBoxContainer.new()
@@ -3895,6 +3896,7 @@ func _on_menu_log_pressed() -> void:
 				1: keeps = line.contains("事件") or line.contains("📌") or line.contains("🎲")
 				2: keeps = line.contains("后果") or line.contains("选择")
 				3: keeps = not (line.contains("事件") or line.contains("后果") or line.contains("选择"))
+				4: keeps = line.contains("第 %d 天" % (world_state.get_current_day() if world_state != null else 1))
 			if keeps and not line.strip_edges().is_empty():
 				filtered += line + "\n"
 				match_count += 1
