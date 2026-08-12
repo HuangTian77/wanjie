@@ -1603,6 +1603,10 @@ func _enter_tavern_char(index: int) -> void:
 	var tavern_title := get_node_or_null("TavernPanel/TavernVBox") as VBoxContainer
 	if tavern_title != null and tavern_title.has_node("TavernTitle"):
 		(tavern_title.get_node("TavernTitle") as Label).text = "🏮 酒馆 · %s" % char.get("name", "角色")
+	# 角色介绍按钮（tooltip 简介）
+	var char_desc: String = str(char.get("description", ""))
+	if not char_desc.is_empty():
+		ToastManager.info("📖 %s：%s" % [char.get("name", "角色"), char_desc])
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…（/h 历史 · /c 清空）" % char.get("name", "角色")
 	# 话题快捷按钮（点击即发送；按角色定制）
