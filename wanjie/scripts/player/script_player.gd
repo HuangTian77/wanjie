@@ -74,6 +74,8 @@ var _rest_start_day: int = -1
 var _rest_count: int = 0
 ## 本场战斗累计伤害
 var _total_damage_dealt: int = 0
+## 本场掉落物品数
+var _loot_count: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -2239,7 +2241,7 @@ func _on_combat_ended(result: String) -> void:
 	# 战斗结束日志统计
 	var rounds_log: int = combat_engine.current_round if combat_engine != null else 0
 	var dmg_log: int = _total_damage_dealt
-	_battle_log_line("─ 战斗结束：%s（%d 回合，造成 %d 伤害）─" % [msg, rounds_log, dmg_log], "#c9a06a")
+	_battle_log_line("─ 战斗结束：%s（%d 回合，造成 %d 伤害，掉落 %d 件）─" % [msg, rounds_log, dmg_log, _loot_count], "#c9a06a")
 	# 逃跑结果提示（含烟雾弹信息）
 	if result == "flee":
 		var flee_chance_pct := 50
@@ -2301,6 +2303,7 @@ func _on_combat_ended(result: String) -> void:
 					msg += "、%s" % litem
 				# 掉落日志（战斗日志独立记录）
 				_battle_log_line("🎁 掉落：%s" % litem, "#e6c84c")
+				_loot_count += 1
 				# 稀有掉落庆祝
 				if str(li) == "rare_relic":
 					ToastManager.success("✨ 获得稀有遗物！永久攻击 +5")
