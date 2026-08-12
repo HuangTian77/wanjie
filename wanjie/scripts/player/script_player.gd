@@ -4947,12 +4947,19 @@ func _on_player_stats_pressed() -> void:
 			var fx_color := "#7cc47c" if fx_kind == "buff" else "#e05a4e" if fx_kind == "debuff" else "#c9a06a"
 			fx_txt += "• [color=%s]%s[/color]（剩 %d 回合）\n" % [fx_color, str(cfx.get("name", "?")), int(cfx.get("remaining_turns", 0))]
 		list.append_text(fx_txt)
-	# 已学技能列表
+	# 已学技能列表（含元素标签与 MP 颜色）
 	var skills: Array = st.get("skills", [])
 	if not skills.is_empty():
 		var skill_txt := "\n[color=#c9a06a]【技能】[/color]\n"
 		for sk in skills:
-			skill_txt += "• %s（MP %d）\n" % [str(sk.get("name", sk.get("id", "?"))), int((sk.get("cost", {}) as Dictionary).get("mana", 0))]
+			var sk_mp: int = int((sk.get("cost", {}) as Dictionary).get("mana", 0))
+			# MP 颜色（当前 MP 不足时红字）
+			var mp_color := "#7cc4e0"
+			if int(st.get("mp", 0)) < sk_mp:
+				mp_color = "#e05a4e"
+			var sk_elem: String = str(sk.get("element", ""))
+			var elem_tag := " [%s]" % sk_elem if not sk_elem.is_empty() else ""
+			skill_txt += "• %s%s（[color=%s]MP %d[/color]）\n" % [str(sk.get("name", sk.get("id", "?"))), elem_tag, mp_color, sk_mp]
 		list.append_text(skill_txt)
 	# MP/HP 概览
 	list.append_text("❤️ HP %d/%d    ✦ MP %d/%d\n\n" % [
