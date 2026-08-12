@@ -4393,6 +4393,8 @@ func _on_menu_log_pressed() -> void:
 		stat_line += " · Lv.%d" % int(combat_engine.player_combat_stats.get("level", 1))
 	if economy_engine != null:
 		stat_line += " · 💰%d" % int(economy_engine.player_currencies.get("gold", 0))
+		if not economy_engine.player_inventory.is_empty():
+			stat_line += " · 🎒%d" % economy_engine.player_inventory.size()
 	if event_engine:
 		var causal_count: int = event_engine.causal_marks.size()
 		stat_line += " · 因果标记 %d" % causal_count
