@@ -2179,6 +2179,9 @@ func _on_combat_started(enemies: Array) -> void:
 	var btitle := get_node_or_null("BattlePanel/BattleVBox/BattleTitle")
 	if btitle is Label and combat_engine != null:
 		(btitle as Label).text = "⚔ 战斗 · 第 %d 回合" % combat_engine.current_round
+		# 战绩显示（有战斗记录时）
+		if _battle_wins + _battle_defeats + _battle_flees > 0:
+			(btitle as Label).text += " · 战绩 %d胜" % _battle_wins
 	# 战斗开始 Toast：敌人数量与目标提示
 	if enemies.size() > 1:
 		ToastManager.warning("⚔ 遭遇 %d 个敌人！Tab 切换目标" % enemies.size())
