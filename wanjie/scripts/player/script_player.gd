@@ -3586,10 +3586,16 @@ func _on_menu_back_pressed() -> void:
 	if pnow[1] > 0:
 		prog_txt = "（当前进度 %d%%）" % int(float(pnow[0]) / float(pnow[1]) * 100.0)
 	var battle_note2 := "\n⚠ 当前处于战斗中，返回将放弃战斗！" if battle_panel.visible else ""
+	# 返回确认含资源统计
+	var res_stats := ""
+	if economy_engine != null:
+		var gold_back: int = int(economy_engine.player_currencies.get("gold", 0))
+		var items_back: int = economy_engine.player_inventory.size()
+		res_stats = "\n（💰 %d · 🎒 %d 件）" % [gold_back, items_back]
 	# 返回按钮文案明确（自动保存说明）
 	confirm.ok_button_text = "返回大厅并保存"
 	confirm.cancel_button_text = "继续游戏"
-	confirm.dialog_text = "返回大厅？将自动保存当前进度%s。%s" % [prog_txt, battle_note2]
+	confirm.dialog_text = "返回大厅？将自动保存当前进度%s。%s%s" % [prog_txt, battle_note2, res_stats]
 	# 确认信息含等级
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var lv_now: int = int(combat_engine.player_combat_stats.get("level", 1))
