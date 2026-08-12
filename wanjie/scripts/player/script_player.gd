@@ -1563,6 +1563,10 @@ func _on_tavern_clear_pressed() -> void:
 		_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
 		if mood_keep > 0:
 			_tavern_moods[str(char.get("id", ""))] = mood_keep
+		# 保存好感度
+		if GameManager.user_data != null:
+			GameManager.user_data.tavern_moods = _tavern_moods.duplicate()
+			GameManager.user_data.save_user_data()
 		ToastManager.info("已清空 %s 的对话历史（好感度保留）" % char.get("name", "角色")))
 	add_child(confirm_clr)
 	confirm_clr.popup_centered()
