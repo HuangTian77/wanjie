@@ -2207,10 +2207,16 @@ func _on_combat_ended(result: String) -> void:
 	# 敌人状态摘要（存活/阵亡）
 	if combat_engine != null and not combat_engine.enemies.is_empty():
 		var status_parts: Array[String] = []
+		var killed_count := 0
 		for e in combat_engine.enemies:
 			var ename: String = str(e.get("name", "?"))
+			if not e.get("is_alive", false):
+				killed_count += 1
 			status_parts.append(("%s ✅" % ename) if e.get("is_alive", false) else ("%s 💀" % ename))
 		_battle_log_line("敌人状态：%s" % "，".join(status_parts), "#8a8278")
+		# 全灭提示
+		if killed_count > 0 and killed_count == combat_engine.enemies.size():
+			ToastManager.success("☠ 敌人全灭！")
 	# 恢复常驻操作提示（战斗时被快捷键提示替换）
 	var hint := get_node_or_null("MainVBox/HintLabel")
 	if hint is Label and (hint as Label).text.begins_with("⚔"):
