@@ -2477,6 +2477,8 @@ func _battle_log_line(line: String, color: String = "") -> void:
 func _refresh_battle_ui() -> void:
 	if combat_engine == null:
 		return
+	# 战斗 HUD HP/MP 实时刷新（含 MP 变化动画）
+	_update_ui()
 	var parts: Array[String] = []
 	var alive := 0
 	var total_enemies := 0
