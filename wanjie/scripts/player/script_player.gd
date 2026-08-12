@@ -3470,6 +3470,7 @@ func _on_menu_shop_pressed() -> void:
 	# 商店提示条（价格波动规则）
 	var shop_hint := Label.new()
 	shop_hint.text = "购买抬价 2% · 出售拉低 2% · 买卖差约 52%（低买高卖）"
+	shop_hint.tooltip_text = "利润示例：买 100 金币的药水 → 涨价后卖出约赚 50 金币；价格刷新 ±20% 波动"
 	shop_hint.add_theme_color_override("font_color", Color(0.6, 0.55, 0.48))
 	shop_hint.add_theme_font_size_override("font_size", 11)
 	dialog.add_child(shop_hint)
