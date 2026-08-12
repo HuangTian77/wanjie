@@ -66,6 +66,14 @@ func build_standard_layout(sub_type: String, meta: Dictionary = {}) -> Control:
 	nav.add_theme_constant_override("separation", 2)
 	nav.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	nav_scroll.add_child(nav)
+	# 简易模式：导航顶部模式徽标
+	if EditorMode.is_simple():
+		var mode_badge := Label.new()
+		mode_badge.text = "🌱 简易模式"
+		mode_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		mode_badge.add_theme_font_size_override("font_size", 11)
+		mode_badge.add_theme_color_override("font_color", Color(0.5, 0.8, 0.55, 0.9))
+		nav.add_child(mode_badge)
 	_ui().add_nav_title(nav, get_nav_title())
 	# 右侧内容区
 	var content_scroll := ScrollContainer.new()

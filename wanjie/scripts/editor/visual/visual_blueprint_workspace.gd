@@ -63,8 +63,10 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 		_graph_list.item_selected.connect(_on_graph_selected)
 		tb_hbox.add_child(_graph_list)
 		_ui().add_toolbar_btn(tb_hbox, "＋ 新建图", _on_new_graph_pressed)
-		_ui().add_toolbar_btn(tb_hbox, "✎ 重命名", _on_rename_graph_pressed)
-		_ui().add_toolbar_btn(tb_hbox, "🗑 删除", _on_delete_graph_pressed)
+		# 简易模式隐藏图重命名/删除（避免误操作）
+		if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+			_ui().add_toolbar_btn(tb_hbox, "✎ 重命名", _on_rename_graph_pressed)
+			_ui().add_toolbar_btn(tb_hbox, "🗑 删除", _on_delete_graph_pressed)
 		_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	# 快捷节点
 	_ui().add_toolbar_btn(tb_hbox, "+Start", func(): _bp_mod._add_blueprint_node("start"))
@@ -72,12 +74,16 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	_ui().add_toolbar_btn(tb_hbox, "+Seq", func(): _bp_mod._add_blueprint_node("sequence"))
 	_ui().add_toolbar_btn(tb_hbox, "+SetVar", func(): _bp_mod._add_blueprint_node("set_var"))
 	_ui().add_toolbar_btn(tb_hbox, "+GetVar", func(): _bp_mod._add_blueprint_node("get_var"))
-	_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
+	# Print 调试节点仅详细/详尽模式显示
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+		_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
 	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	_ui().add_toolbar_btn(tb_hbox, "编译", _compile_current)
 	_ui().add_toolbar_btn(tb_hbox, "🔍 搜索", func(): _bp_mod._open_node_search())
 	_ui().add_toolbar_btn(tb_hbox, "适应画布", func(): _bp_mod._fit_canvas_to_nodes(_canvas))
-	_ui().add_toolbar_btn(tb_hbox, "自动布局", func(): _bp_mod._auto_layout_event_graph())
+	# 自动布局为进阶操作（简易模式隐藏）
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+		_ui().add_toolbar_btn(tb_hbox, "自动布局", func(): _bp_mod._auto_layout_event_graph())
 	# === 主区域: 左图说明 + 画布 + 右详情 ===
 	var hsplit := HSplitContainer.new()
 	hsplit.size_flags_vertical = Control.SIZE_EXPAND_FILL

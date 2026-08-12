@@ -62,7 +62,9 @@ func _create_event_editor(_sub_type: String, _meta: Dictionary) -> Control:
 	toolbar_panel.add_child(toolbar)
 	_ui().add_toolbar_btn(toolbar, "+ 剧情事件", func(): _add_story_event_node(main_vbox))
 	_ui().add_toolbar_btn(toolbar, "+ 随机事件", func(): _add_random_event_node(main_vbox))
-	_ui().add_toolbar_btn(toolbar, "+ 事件链", func(): _add_event_chain(main_vbox))
+	# 事件链为进阶功能（简易模式隐藏）
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+		_ui().add_toolbar_btn(toolbar, "+ 事件链", func(): _add_event_chain(main_vbox))
 	_ui().add_toolbar_btn(toolbar, "🔄 自动布局", func(): _bp_mod._auto_layout_event_graph())
 	_ui().add_toolbar_btn(toolbar, "🔍 适应画布", func(): _bp_mod._fit_canvas_to_nodes(main_vbox))
 	# 蓝图导航
