@@ -3955,7 +3955,15 @@ func _on_menu_bag_pressed() -> void:
 					type_tag = " [道具]"
 				# 遗物不可出售标记
 				var relic_tag := "（不可出售，永久加成）" if str(item_id) == "rare_relic" else ""
-				list.append_text("• %s × %d%s%s\n" % [item_id, qty, type_tag, relic_tag])
+				# 物品稀有度颜色（遗物金/药水绿/道具蓝/普通白）
+				var item_color := "#c9c9c9"
+				if str(item_id) == "rare_relic":
+					item_color = "#e6c84c"
+				elif "potion" in str(item_id) or "herb" in str(item_id):
+					item_color = "#7cc47c"
+				elif "smoke" in str(item_id) or "bomb" in str(item_id):
+					item_color = "#6a9fd8"
+				list.append_text("• [color=%s]%s[/color] × %d%s%s\n" % [item_color, item_id, qty, type_tag, relic_tag])
 				total_items += qty
 				# 遗物 Tooltip 说明（持有效果）
 				if str(item_id) == "rare_relic":
