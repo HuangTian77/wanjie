@@ -1550,6 +1550,11 @@ func _on_menu_export_battle_log() -> void:
 
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
+	# 告别语（仅当有对话时显示一次）
+	if tavern_msgs.get_line_count() > 1:
+		var cur_char: Dictionary = TAVERN_CHARS[tavern_char_index] if tavern_char_index >= 0 and tavern_char_index < TAVERN_CHARS.size() else {}
+		var farewell := "（%s目送你离开）下次再来呀。" % str(cur_char.get("name", "老板娘"))
+		ToastManager.info(farewell)
 	# 关闭时保存对话历史与好感度
 	TavernManager.save_history()
 	if GameManager.user_data != null:
