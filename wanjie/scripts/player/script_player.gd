@@ -2833,6 +2833,15 @@ func _on_menu_char_pressed() -> void:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scroll.add_child(list)
+	# 经验进度条（RichText 不支持子节点 → 追加在 scroll 内）
+	var exp_bar := ProgressBar.new()
+	exp_bar.max_value = 100
+	exp_bar.value = 0
+	exp_bar.custom_minimum_size = Vector2(0, 10)
+	exp_bar.show_percentage = false
+	exp_bar.visible = false
+	exp_bar.name = "ExpBar"
+	scroll.add_child(exp_bar)
 	var ps: Dictionary = {}
 	if SaveManager.current_save:
 		ps = SaveManager.current_save.player_state
@@ -4138,6 +4147,11 @@ func _on_player_stats_pressed() -> void:
 	dialog.add_child(copy_attr_btn)
 	var st: Dictionary = combat_engine.player_combat_stats
 	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
+	# 更新经验进度条（scroll 内的 ExpBar）
+	var exp_bar2 := scroll.find_child("ExpBar", true, false) as ProgressBar
+	if exp_bar2 != null:
+		exp_bar2.value = mini(100, int(st.get("exp", 0)))
+		exp_bar2.visible = true
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
 	list.append_text("「攻」：物理伤害基础\n")
