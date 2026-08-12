@@ -3990,6 +3990,10 @@ func _refresh_menu_title() -> void:
 			int(pst.get("mp", 0)), int(pst.get("max_mp", 1))]
 	if economy_engine:
 		status_txt += " · 🪙 %d" % int(economy_engine.player_currencies.get("gold", 0))
+		# 背包物品数
+		var inv_count2: int = economy_engine.player_inventory.size()
+		if inv_count2 > 0:
+			status_txt += " · 🎒%d" % inv_count2
 	var status_lbl := menu_panel.find_child("MenuStatus", true, false)
 	if status_lbl is Label:
 		(status_lbl as Label).text = status_txt.strip_edges()
