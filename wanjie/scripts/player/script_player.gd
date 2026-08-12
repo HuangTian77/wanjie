@@ -1840,6 +1840,11 @@ func _tavern_mock_reply(text: String) -> String:
 	return reply
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
+	# 战斗开场提示（敌人数/类型）
+	var names: Array[String] = []
+	for e in enemies:
+		names.append(str(e.get("name", "敌人")))
+	ToastManager.warning("⚔ 遭遇敌人：%s" % "、".join(names))
 	# 战斗开始时关闭其他浮层（菜单/酒馆/面板）
 	menu_panel.visible = false
 	if tavern_panel != null:
