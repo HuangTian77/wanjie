@@ -1550,6 +1550,11 @@ func _on_menu_export_battle_log() -> void:
 
 func _on_tavern_close_pressed() -> void:
 	TavernManager.end_dialog()
+	# 关闭时保存对话历史与好感度
+	TavernManager.save_history()
+	if GameManager.user_data != null:
+		GameManager.user_data.tavern_moods = _tavern_moods.duplicate()
+		GameManager.user_data.save_user_data()
 	tavern_panel.visible = false
 	# 焦点还原（键盘可继续操作）
 	main_text.grab_focus()
