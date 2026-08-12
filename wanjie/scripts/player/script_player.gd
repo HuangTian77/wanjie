@@ -3905,7 +3905,8 @@ func _on_menu_log_pressed() -> void:
 			list.append_text("[color=#8a7a68]匹配 %d 条[/color]\n\n" % match_count)
 			list.append_text(filtered)
 		else:
-			list.append_text("[color=#999]（无匹配记录）[/color]"))
+			var fnames2 := ["全部", "事件", "后果", "其他", "仅今日"]
+			list.append_text("[color=#999]（「%s」筛选下无匹配记录）[/color]" % fnames2[filter_opt.selected]))
 	# 内容区顶部完整统计（标题精简后的补充信息）
 	var stat_line := ""
 	stat_line = "📜 历史 %d 条" % history_text.get_line_count()
