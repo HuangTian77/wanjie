@@ -2335,10 +2335,10 @@ func _on_combat_ended(result: String) -> void:
 		"victory": _battle_wins += 1
 		"defeat": _battle_defeats += 1
 		_: _battle_flees += 1
-		# 逃跑成就（累计 5 次）
-		if result == "flee" and _battle_flees == 5 and GameManager.user_data != null:
-			GameManager.user_data.unlock_achievement("flee_5", "累计逃跑 5 次（机智的旅人）")
-			ToastManager.success("🏃 逃跑 5 次成就解锁！")
+	# 逃跑成就（累计 5 次）
+	if result == "flee" and _battle_flees == 5 and GameManager.user_data != null:
+		GameManager.user_data.unlock_achievement("flee_5", "累计逃跑 5 次（机智的旅人）")
+		ToastManager.success("🏃 逃跑 5 次成就解锁！")
 	# 战斗统计即时写入存档（重进保持胜场）
 	if SaveManager.current_save != null and combat_engine != null:
 		var ps_stats: Dictionary = SaveManager.current_save.player_state
