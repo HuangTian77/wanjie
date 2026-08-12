@@ -4485,6 +4485,10 @@ func _do_rest() -> void:
 		var weather: String = str(world_state.get_variable("weather", ""))
 		if not weather.is_empty():
 			ToastManager.info("☀ 今日天气：%s" % weather)
+		# 休息地点氛围（区域名）
+		var rest_region: String = str(world_state.get_variable("current_region", ""))
+		if not rest_region.is_empty():
+			_add_history("⛺ 在 %s 扎营休息" % rest_region)
 	var recovered_hp := 0
 	var recovered_mp := 0
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
