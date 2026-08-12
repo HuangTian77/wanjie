@@ -4170,16 +4170,16 @@ func _on_player_stats_pressed() -> void:
 		exp_bar2.value = mini(100, int(st.get("exp", 0)))
 		exp_bar2.visible = true
 	# HP/MP 进度条（HPBar/MPBar）
-	var hp_bar := scroll.find_child("HPBar", true, false) as ProgressBar
-	if hp_bar != null:
-		hp_bar.max_value = maxi(1, int(st.get("max_hp", 100)))
-		hp_bar.value = clampi(int(st.get("hp", 0)), 0, int(st.get("max_hp", 100)))
-		hp_bar.visible = true
-	var mp_bar := scroll.find_child("MPBar", true, false) as ProgressBar
-	if mp_bar != null:
-		mp_bar.max_value = maxi(1, int(st.get("max_mp", 50)))
-		mp_bar.value = clampi(int(st.get("mp", 0)), 0, int(st.get("max_mp", 50)))
-		mp_bar.visible = true
+	var hp_prog := scroll.find_child("HPBar", true, false) as ProgressBar
+	if hp_prog != null:
+		hp_prog.max_value = maxi(1, int(st.get("max_hp", 100)))
+		hp_prog.value = clampi(int(st.get("hp", 0)), 0, int(st.get("max_hp", 100)))
+		hp_prog.visible = true
+	var mp_prog := scroll.find_child("MPBar", true, false) as ProgressBar
+	if mp_prog != null:
+		mp_prog.max_value = maxi(1, int(st.get("max_mp", 50)))
+		mp_prog.value = clampi(int(st.get("mp", 0)), 0, int(st.get("max_mp", 50)))
+		mp_prog.visible = true
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
 	list.append_text("「攻」：物理伤害基础\n")
