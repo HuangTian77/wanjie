@@ -2708,9 +2708,12 @@ func _on_battle_skill_pressed() -> void:
 		if skill_idx < 9:
 			label = "[%d] %s" % [skill_idx + 1, label]
 		menu.add_item(label, skills.find(s))
-		# tooltip：技能描述
+		# tooltip：技能描述 + 元素克制提示
 		var desc: String = str(s.get("description", ""))
+		var s_elem2: String = str(s.get("element", ""))
 		if not desc.is_empty():
+			if not s_elem2.is_empty():
+				desc += "\n元素：%s（克制对应抗性弱的目标）" % s_elem2
 			menu.set_item_tooltip(skills.find(s), desc)
 		# MP 不足：置灰禁用
 		var cur_mp: int = int(combat_engine.player_combat_stats.get("mp", 0))
