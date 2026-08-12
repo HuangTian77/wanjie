@@ -1969,9 +1969,16 @@ func _on_combat_started(enemies: Array) -> void:
 			total_def += int(e3.get("def", 0))
 		var p_atk: int = int(combat_engine.player_combat_stats.get("atk", 0))
 		var p_def: int = int(combat_engine.player_combat_stats.get("def", 0))
+		# 难度修正（简单 +30% 攻防评估）
+		var diff_mul := 1.0
+		match GameManager.user_data.difficulty_mode if GameManager.user_data != null else "normal":
+			"easy": diff_mul = 0.7
+			"hard": diff_mul = 1.2
 		var threat := "适中"
 		var threat_color := "#c9a06a"
-		if total_atk > p_atk * 1.5 or total_def > p_def * 1.5:
+		var eff_atk := int(total_atk * diff_mul)
+		var eff_def := int(total_def * diff_mul)
+		if eff_atk > p_atk * 1.5 or eff_def > p_def * 1.5:
 			threat = "危险"
 			threat_color = "#e05a4e"
 			ToastManager.warning("⚠ 敌人明显强于你，考虑逃跑或准备充分再战！")
@@ -1979,7 +1986,13 @@ func _on_combat_started(enemies: Array) -> void:
 		elif total_atk < p_atk * 0.7 and total_def < p_def * 0.7:
 			threat = "轻松"
 			threat_color = "#7cc47c"
-		_battle_log_line("强度评估：[color=%s]%s[/color]（敌攻 %d vs 你 %d）" % [threat_color, threat, total_atk, p_atk], "")
+		# 难度标记（非普通时提示）
+		var diff_mark := ""
+		if diff_mul < 1.0:
+			diff_mark = "（简单加成）"
+		elif diff_mul > 1.0:
+			diff_mark = "（困难挑战）"
+		_battle_log_line("强度评估：[color=%s]%s[/color]（敌攻 %d vs 你 %d）%s" % [threat_color, threat, eff_atk, p_atk, diff_mark], "")
 		# 强度标记入敌人栏（危险 ⚠ / 轻松 ✓）
 		if threat != "适中":
 			enemy_info.text += "\n[color=%s]强度：%s[/color]" % [threat_color, threat]
