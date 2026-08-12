@@ -3982,7 +3982,7 @@ func _on_menu_back_pressed() -> void:
 	# 确认信息含等级
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var lv_now: int = int(combat_engine.player_combat_stats.get("level", 1))
-		confirm.dialog_text += "\n（当前 Lv.%d）" % lv_now
+		confirm.dialog_text += "\n（当前 Lv.%d · 胜 %d 场）" % [lv_now, _battle_wins]
 	confirm.confirmed.connect(func():
 		_sync_save_state()
 		_write_progress()
