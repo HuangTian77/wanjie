@@ -1537,6 +1537,8 @@ func _on_tavern_pressed() -> void:
 		tavern_panel.modulate.a = 0.3
 		var tw_tavern := create_tween()
 		tw_tavern.tween_property(tavern_panel, "modulate:a", 1.0, 0.18)
+	# 输入框聚焦（键盘可直接输入）
+	tavern_input.grab_focus()
 	# 时段氛围提示（夜晚酒馆）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		ToastManager.info("🌙 夜色中，酒馆灯火通明…")
