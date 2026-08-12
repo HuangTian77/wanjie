@@ -1583,6 +1583,9 @@ func _on_tavern_export_pressed() -> void:
 	fd.file_mode = FileDialog.FILE_MODE_SAVE_FILE
 	fd.title = "导出对话记录"
 	fd.add_filter("*.txt ; 文本文件")
+	fd.current_file = "tavern_%s.txt" % str(char.get("id", "chat"))
+	# 导出成功提示（FileDialog 回调已有，此处补充当前角色名）
+	fd.access = FileDialog.ACCESS_FILESYSTEM
 	fd.current_path = "酒馆对话_%s.txt" % char.get("name", "角色")
 	fd.min_size = Vector2i(600, 400)
 	add_child(fd)
