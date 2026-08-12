@@ -56,6 +56,8 @@ var _bp_search_list: ItemList = null
 var _bp_search_results: Array[String] = []  # node_ids
 ## 搜索定位高亮节点（黄框提示）
 var _bp_highlight_node: String = ""
+## 选中的连线索引（点击连线选中，Delete 删除）
+var _bp_selected_connection: int = -1
 
 # 小地图
 var _bp_minimap: Control = null
@@ -510,6 +512,7 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 	# 1. 网格背景
 	VisualBlueprintDraw.draw_grid(canvas, _bp_offset, _bp_zoom)
 	# 2. 连线
+	var conn_index := 0
 	for conn in graph.get("connections", []):
 		if not graph["nodes"].has(conn["from_node"]) or not graph["nodes"].has(conn["to_node"]):
 			continue
@@ -519,12 +522,23 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var to_pos: Vector2 = BlueprintData.get_pin_world_pos(to_node, false, conn["to_port"])
 		if conn["is_exec"]:
 			VisualBlueprintDraw.draw_exec_connection(canvas, from_pos, to_pos, _bp_offset, _bp_zoom)
+			# 选中连线高亮
+			if _bp_selected_connection == conn_index:
+				var fs: Vector2 = VisualBlueprintDraw.world_to_screen(from_pos, _bp_offset, _bp_zoom)
+				var ts: Vector2 = VisualBlueprintDraw.world_to_screen(to_pos, _bp_offset, _bp_zoom)
+				canvas.draw_line(fs, ts, Color(1.0, 0.85, 0.2, 0.95), 3.0 * _bp_zoom)
 		else:
 			var pin_color: Color = Color(0.5, 0.7, 0.5, 0.8)
 			if from_node["outputs"].size() > conn["from_port"]:
 				var dt: int = from_node["outputs"][conn["from_port"]]["data_type"]
 				pin_color = BlueprintData.PIN_COLORS.get(dt, pin_color)
 			VisualBlueprintDraw.draw_connection(canvas, from_pos, to_pos, pin_color, 1.5 * _bp_zoom, _bp_offset, _bp_zoom)
+			# 选中连线高亮
+			if _bp_selected_connection == conn_index:
+				var fs2: Vector2 = VisualBlueprintDraw.world_to_screen(from_pos, _bp_offset, _bp_zoom)
+				var ts2: Vector2 = VisualBlueprintDraw.world_to_screen(to_pos, _bp_offset, _bp_zoom)
+				canvas.draw_line(fs2, ts2, Color(1.0, 0.85, 0.2, 0.95), 3.0 * _bp_zoom)
+		conn_index += 1
 	# 3. 节点
 	var show_detail: bool = EditorMode.is_exhaustive()
 	# 详尽模式：计算执行顺序（BFS 从 start 沿 exec 连接）
@@ -563,6 +577,32 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
 		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
 
+## 连线命中检测（返回 connections 索引，未命中 -1）
+func _bp_hit_test_connection(screen_pos: Vector2, graph: Dictionary) -> int:
+	var conns: Array = graph.get("connections", [])
+	for i in conns.size():
+		var conn: Dictionary = conns[i]
+		var fn: String = str(conn.get("from_node", ""))
+		var tn: String = str(conn.get("to_node", ""))
+		if not graph["nodes"].has(fn) or not graph["nodes"].has(tn):
+			continue
+		var from_world: Vector2 = BlueprintData.get_pin_world_pos(graph["nodes"][fn], true, int(conn.get("from_port", 0)))
+		var to_world: Vector2 = BlueprintData.get_pin_world_pos(graph["nodes"][tn], false, int(conn.get("to_port", 0)))
+		var from_screen: Vector2 = VisualBlueprintDraw.world_to_screen(from_world, _bp_offset, _bp_zoom)
+		var to_screen: Vector2 = VisualBlueprintDraw.world_to_screen(to_world, _bp_offset, _bp_zoom)
+		if _point_segment_distance(screen_pos, from_screen, to_screen) < 8.0:
+			return i
+	return -1
+
+## 点到线段距离（避免 Geometry2D 静态类兼容问题）
+func _point_segment_distance(p: Vector2, a: Vector2, b: Vector2) -> float:
+	var ab := b - a
+	var len2 := ab.length_squared()
+	if len2 < 0.0001:
+		return p.distance_to(a)
+	var t := clampf((p - a).dot(ab) / len2, 0.0, 1.0)
+	return p.distance_to(a + ab * t)
+
 ## 详尽模式：计算节点执行顺序（从 start 沿 exec 连接 BFS）
 func _bp_compute_exec_order(graph: Dictionary) -> Dictionary:
 	var order: Dictionary = {}
@@ -594,6 +634,66 @@ func _bp_compute_exec_order(graph: Dictionary) -> Dictionary:
 				if not visited.has(to) and not queue.has(to):
 					queue.append(to)
 	return order
+
+## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
+func _bp_quick_add_popup(canvas: Control) -> void:
+	var popup := PopupPanel.new()
+	popup.name = "QuickAddPopup"
+	popup.size = Vector2i(300, 360)
+	popup.position = Vector2i(0, 0)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 6)
+	popup.add_child(box)
+	var title := Label.new()
+	title.text = "快速添加节点（输入搜索）"
+	title.add_theme_font_size_override("font_size", 13)
+	box.add_child(title)
+	var edit := LineEdit.new()
+	edit.placeholder_text = "输入节点名/类型/描述…"
+	box.add_child(edit)
+	var list := ItemList.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(list)
+	var all_types: Array = BlueprintNodeRegistry.get_all_types(EditorMode.current_mode)
+	# 填充全部（按模式过滤）
+	var display: Array[String] = []
+	for t in all_types:
+		var d: Dictionary = BlueprintNodeRegistry.get_definition(t)
+		display.append("%s（%s）" % [d.get("name", t), d.get("category", "")])
+		list.add_item("%s（%s）" % [d.get("name", t), d.get("category", "")])
+	list.add_item("▶ 传统：%s" % "start")
+	display.append("start")
+	# 过滤
+	edit.text_changed.connect(func(t: String):
+		var q := t.strip_edges().to_lower()
+		list.clear()
+		for i in display.size():
+			if q.is_empty() or display[i].to_lower().contains(q):
+				list.add_item(display[i], null, false)
+				list.set_item_metadata(list.item_count - 1, i))
+	# 选中创建
+	list.item_activated.connect(func(idx: int):
+		var meta = list.get_item_metadata(idx)
+		var type_idx: int = int(meta)
+		var node_type: String = all_types[type_idx] if type_idx < all_types.size() else "start"
+		var world_pos := _bp_screen_to_world(canvas.size / 2.0)
+		_create_node_at_position_custom(node_type, world_pos)
+		popup.queue_free())
+	canvas.add_child(popup)
+	popup.popup(Rect2i(Vector2i(canvas.size / 2.0 - Vector2(150, 180)), Vector2i(300, 360)))
+	edit.grab_focus()
+
+## 指定位置创建节点（快速添加用）
+func _create_node_at_position_custom(node_type: String, world_pos: Vector2) -> void:
+	var graph := _get_active_graph()
+	_bp_push_undo()
+	var node: Dictionary = BlueprintData.create_node(node_type, world_pos)
+	graph["nodes"][node["id"]] = node
+	_save_active_graph()
+	_host._sync_to_code_editor()
+	var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
+	if canvas:
+		canvas.queue_redraw()
 
 ## 详尽模式：查看整图数据 JSON（只读调试）
 func _bp_show_graph_data(graph: Dictionary) -> void:
@@ -627,6 +727,18 @@ func _bp_show_graph_data(graph: Dictionary) -> void:
 		DisplayServer.clipboard_set(JSON.stringify(graph, "\t"))
 		ToastManager.success("完整图数据已复制"))
 	dialog.add_child(copy_btn)
+	# 导出文件按钮（详尽调试）
+	var save_btn := Button.new()
+	save_btn.text = "💾 导出 JSON 文件"
+	save_btn.flat = true
+	save_btn.pressed.connect(func():
+		var out_path := "user://graph_data_%s.json" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
+		var f := FileAccess.open(out_path, FileAccess.WRITE)
+		if f:
+			f.store_string(JSON.stringify(graph, "\t"))
+			f.close()
+			ToastManager.success("已导出：%s" % ProjectSettings.globalize_path(out_path)))
+	dialog.add_child(save_btn)
 	var host_node: Node = _host._editor_container()
 	host_node.add_child(dialog)
 	dialog.popup_centered()
@@ -691,6 +803,13 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_show_bp_node_properties(hit_id)
 				canvas.queue_redraw()
 				return
+			# 检测连线命中（点击连线选中）
+			var conn_idx := _bp_hit_test_connection(event.position, graph)
+			if conn_idx >= 0:
+				_bp_selected_connection = conn_idx
+				_bp_selected_ids.clear()
+				canvas.queue_redraw()
+				return
 			# 空白处: 双击打开添加节点菜单，单击框选
 			if event.double_click:
 				_bp_ctx_from_pin_drag = false
@@ -698,6 +817,7 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_show_bp_context_menu(canvas, event.position)
 				return
 			_bp_selected_ids.clear()
+			_bp_selected_connection = -1
 			_bp_box_selecting = true
 			_bp_box_start = event.position
 			_bp_box_end = event.position
@@ -831,6 +951,18 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 				_log_output("[清除连线] 已移除 %d 条连线" % conns.size())
 		elif event.keycode == KEY_DELETE:
+			# 优先删除选中的连线
+			if _bp_selected_connection >= 0:
+				var conns2: Array = graph.get("connections", [])
+				if _bp_selected_connection < conns2.size():
+					_bp_push_undo()
+					conns2.remove_at(_bp_selected_connection)
+					_save_active_graph()
+					_host._sync_to_code_editor()
+					_log_output("[删除连线] 已移除")
+				_bp_selected_connection = -1
+				canvas.queue_redraw()
+				return
 			if not _bp_selected_ids.is_empty():
 				# 多节点删除确认（防误删）
 				if _bp_selected_ids.size() >= 3:
@@ -964,6 +1096,13 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.id_pressed.connect(func(id: int):
 			if id == 99001:
 				_bp_show_graph_data(graph)
+			popup.queue_free())
+	# 快速添加节点搜索（UE 风格）
+	popup.add_separator()
+	popup.add_item("🔍 快速添加节点…", 99002)
+	popup.id_pressed.connect(func(id: int):
+		if id == 99002:
+			_bp_quick_add_popup(canvas)
 			popup.queue_free())
 	# 菜单关闭时清理
 	popup.popup_hide.connect(func():

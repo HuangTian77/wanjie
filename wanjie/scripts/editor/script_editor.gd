@@ -827,17 +827,24 @@ func _create_stats_panel() -> Control:
 	var stats := [
 		["📜 剧情事件", str(ev_count)],
 		["🎲 随机事件", str(rand_count)],
-		["🔗 事件链", str(chain_count)],
 		["✍️ 剧情字数", str(words)],
+		["📈 体验次数", str(ws.play_count)],
+		["⭐ 评分", "%.1f（%d人）" % [ws.rating, ws.rating_count]],
+	]
+	# 简易模式：只显示核心统计（隐藏进阶细节）
+	if EditorMode.is_simple():
+		_add_stat_card(vbox, stats)
+		_add_info_label(vbox, "🌱 简易模式已隐藏进阶统计（事件链/技能/NPC/货币/蓝图等），切换「详细/详尽」查看")
+		return panel
+	stats.append_array([
+		["🔗 事件链", str(chain_count)],
 		["⚔ 技能数", str(skill_count)],
 		["👹 NPC", str(npc_count)],
 		["💰 货币种类", str(money_types)],
 		["🧩 蓝图节点", str(_count_blueprint_nodes(ws))],
 		["🔌 蓝图连线", str(_count_blueprint_connections(ws))],
 		["📏 预估体验时长", "%d 分钟" % int(ev_count * 3.0)],
-		["📈 体验次数", str(ws.play_count)],
-		["⭐ 评分", "%.1f（%d人）" % [ws.rating, ws.rating_count]],
-	]
+	])
 	for item in stats:
 		var row := HBoxContainer.new()
 		var k := Label.new()
