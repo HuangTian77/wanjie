@@ -3558,6 +3558,8 @@ func _on_menu_rating_pressed() -> void:
 	dialog.dialog_text = "为《%s》评分（当前 %.1f ★，%d 人）" % [script_data.name if script_data else "", script_data.rating if script_data else 0.0, script_data.rating_count if script_data else 0]
 	dialog.get_ok_button().text = "提交评分"
 	dialog.get_cancel_button().text = "下次再说"
+	# Esc 关闭视为"下次再说"（不提交）
+	dialog.exclusive = true
 	add_child(dialog)
 	# 星级选择（HBox 5 个 ★ 按钮）
 	var stars := HBoxContainer.new()
