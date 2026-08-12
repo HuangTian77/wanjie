@@ -2972,7 +2972,19 @@ func _on_menu_char_pressed() -> void:
 	title2.text = "旅者"
 	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
 		var st2: Dictionary = combat_engine.player_combat_stats
-		title2.text = "Lv.%d %s" % [int(st2.get("level", 1)), str(st2.get("name", "旅者"))]
+		var char_name2: String = str(st2.get("name", "旅者"))
+		# 职业称号（按属性偏向）
+		var job_title := "旅者"
+		var atk_v: int = int(st2.get("atk", 0))
+		var def_v: int = int(st2.get("def", 0))
+		var speed_v: int = int(st2.get("speed", 0))
+		if atk_v >= def_v and atk_v >= speed_v:
+			job_title = "剑客"
+		elif def_v >= atk_v and def_v >= speed_v:
+			job_title = "守卫"
+		elif speed_v > atk_v and speed_v > def_v:
+			job_title = "游侠"
+		title2.text = "Lv.%d %s · %s" % [int(st2.get("level", 1)), char_name2, job_title]
 	title2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title2.add_theme_font_size_override("font_size", 18)
 	title2.add_theme_color_override("font_color", Color(0.95, 0.85, 0.6))
