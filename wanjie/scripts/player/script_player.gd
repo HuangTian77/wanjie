@@ -3369,6 +3369,11 @@ func _do_shop_buy_qty(market_id: String, item_id: String, unit_price: int, qty: 
 	else:
 		var need: int = unit_price * qty
 		var have: int = int(economy_engine.player_currencies.get("gold", 0))
+		# 区分金币不足与数量上限
+		var cur_qty: int = int(economy_engine.player_inventory.get(item_id, 0))
+		if cur_qty + qty > 99:
+			ToastManager.warning("已达数量上限（99 个 %s）" % item_id)
+			return
 		ToastManager.warning("金币不足！需要 %d，当前 %d（差 %d）" % [need, have, maxi(0, need - have)])
 		# 金币不足引导（背包/休息）
 		_add_history("💰 购买失败：金币不足（需 %d）" % need)
