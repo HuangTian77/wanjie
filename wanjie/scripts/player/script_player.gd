@@ -2602,6 +2602,7 @@ func _on_battle_attack_pressed() -> void:
 		var mp_gain_a: int = int(res.get("mp_gain", 0))
 		if mp_gain_a > 0:
 			_battle_log_line("✦ 普攻回复 MP +%d" % mp_gain_a, "#7cc4e0")
+			_spawn_mp_popup(mp_gain_a)
 		# 攻击落空提示（MISS）
 		if int(res.get("damage", 0)) == 0 and not res.get("miss", false):
 			_battle_log_line("攻击落空…（闪避）", "#8a8278")
