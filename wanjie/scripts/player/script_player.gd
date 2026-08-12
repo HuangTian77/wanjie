@@ -4856,6 +4856,15 @@ func _on_menu_rest_pressed() -> void:
 	# 夜晚休息事件概率说明（30%→40%）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		confirm.dialog_text += "\n（夜晚休息事件概率提升至 40%）"
+	# 休息后时段预览（醒来时）
+	if world_state != null:
+		var wake_period := ""
+		match world_state.get_period_name():
+			"清晨": wake_period = "白天"
+			"白天": wake_period = "傍晚"
+			"傍晚": wake_period = "夜晚"
+			"夜晚": wake_period = "清晨"
+		confirm.dialog_text += "\n（休息后将是「%s」）" % wake_period
 	# 休息按钮文字明确
 	confirm.ok_button_text = "休息 8 小时"
 	confirm.cancel_button_text = "取消"
