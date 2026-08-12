@@ -1840,6 +1840,13 @@ func _tavern_mock_reply(text: String) -> String:
 	return reply
 func _on_combat_started(enemies: Array) -> void:
 	battle_panel.visible = true
+	# 战斗开始时关闭其他浮层（菜单/酒馆/面板）
+	menu_panel.visible = false
+	if tavern_panel != null:
+		tavern_panel.visible = false
+	var any_dialog := get_node_or_null("CharStatusDialog")
+	if any_dialog != null:
+		any_dialog.queue_free()
 	# 战斗背景色（主区轻微暗红提示战斗氛围）
 	main_text.add_theme_color_override("font_color", Color(0.92, 0.86, 0.8))
 	# 新战斗清空上一场日志
