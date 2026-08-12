@@ -267,6 +267,7 @@ func _process(delta: float) -> void:
 								best_t2 = ei2
 					if best_t2 >= 0:
 						_battle_target = best_t2
+						_battle_log_line("🎯 自动集火：%s（HP 最低）" % str(combat_engine.enemies[best_t2].get("name", "敌人")), "#c9a06a")
 				_on_battle_attack_pressed()
 	# 打字机效果
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
