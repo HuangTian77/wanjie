@@ -1043,6 +1043,13 @@ func _update_ui() -> void:
 		else:
 			hp_bar.add_theme_stylebox_override("fill", _hp_style(0.35, 0.85, 0.4))
 		hp_label.text = "HP: %d/%d" % [current_hp, max_hp]
+		# HP 颜色（低血红/中橙/健康绿）
+		var hp_c := Color(0.49, 0.77, 0.49)
+		if hp_ratio <= 0.3:
+			hp_c = Color(0.88, 0.35, 0.31)
+		elif hp_ratio <= 0.6:
+			hp_c = Color(0.88, 0.63, 0.31)
+		hp_label.add_theme_color_override("font_color", hp_c)
 		# 护盾显示（技能获得的护盾值）
 		var shield_val: int = int(ps.get("shield", 0))
 		if shield_val > 0:
