@@ -555,6 +555,11 @@ func _on_card_clicked(script_id: String) -> void:
 	info.bbcode_enabled = true
 	info.append_text("[color=#c9a06a][b]%s[/b][/color]  by %s\n" % [ws.name, ws.author])
 	info.append_text("★ %.1f（%d人） · %d人体验 · 📜%s\n" % [ws.rating, ws.rating_count, ws.play_count, str(ws.status)])
+	# 我的评分（已评过显示）
+	if GameManager.user_data.rating_history.has(script_id):
+		var my_rating: int = int(GameManager.user_data.rating_history[script_id].get("stars", 0))
+		if my_rating > 0:
+			info.append_text("⭐ 我的评分：%s\n" % "★".repeat(my_rating))
 	info.append_text("\n%s" % ws.description)
 	box.add_child(info)
 	# 操作
