@@ -1588,6 +1588,12 @@ func _enter_tavern_char(index: int) -> void:
 	tavern_msgs.context_menu_enabled = true
 	var char: Dictionary = TAVERN_CHARS[index]
 	TavernManager.start_dialog(char)
+	# 开场问候（每角色个性化）
+	var greet: String = str(char.get("greeting", "欢迎光临，旅行者。"))
+	if _tavern_moods.get(str(char.get("id", "")), 0) >= 1:
+		greet += " 见到你真高兴！"
+	_tavern_append("assistant", greet)
+	TavernManager.add_message("assistant", greet)
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…（/h 历史 · /c 清空）" % char.get("name", "角色")
 	# 话题快捷按钮（点击即发送；按角色定制）
