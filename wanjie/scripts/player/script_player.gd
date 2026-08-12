@@ -668,6 +668,8 @@ var _shop_search_q: String = ""
 var _tavern_input_history: Array[String] = []
 ## 酒馆消息时间分组（分钟级分隔线）
 var _tavern_last_ts: String = ""
+## 酒馆对话次数（每 10 次奖励灵感）
+var _tavern_chat_count: int = 0
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1990,6 +1992,12 @@ func _on_tavern_send_pressed() -> void:
 	var char_id2: String = str(TavernManager.current_character.get("id", "innkeeper")) if TavernManager.current_character != null and not TavernManager.current_character.is_empty() else "innkeeper"
 	var mood: int = _tavern_moods.get(char_id2, 0)
 	_tavern_moods[char_id2] = mini(mood + 1, 2)
+	# 连续对话计数（每 10 次对话奖励灵感）
+	_tavern_chat_count += 1
+	if _tavern_chat_count % 10 == 0 and GameManager.user_data != null:
+		GameManager.user_data.inspiration = mini(GameManager.user_data.inspiration_max, GameManager.user_data.inspiration + 1)
+		GameManager.user_data.save_user_data()
+		ToastManager.success("💡 与 %s 畅聊 %d 次，获得 +1 灵感！" % [str(TavernManager.current_character.get("name", "角色")), _tavern_chat_count])
 	# 好感度已满提示（仅首次）
 	if mood >= 2 and _tavern_mood_full_toast == 0:
 		_tavern_mood_full_toast = 1
