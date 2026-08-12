@@ -3914,6 +3914,10 @@ func _do_rest() -> void:
 		# 休息后时段提示（睡醒时间）
 		world_state.advance_time(8)
 		ToastManager.info("🌅 醒来时已是%s" % world_state.get_period_name())
+		# 天气/氛围提示
+		var weather: String = str(world_state.get_variable("weather", ""))
+		if not weather.is_empty():
+			ToastManager.info("☀ 今日天气：%s" % weather)
 	var recovered_hp := 0
 	var recovered_mp := 0
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
