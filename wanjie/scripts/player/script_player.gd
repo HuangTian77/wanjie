@@ -1759,7 +1759,10 @@ func _on_tavern_send_pressed() -> void:
 				var lines: Array[String] = []
 				for m in TavernManager.dialog_history:
 					lines.append(_tavern_history_line(m))
-				_tavern_append("assistant", "（翻看旧账）这是之前的对话记录——\n%s" % "\n".join(lines))
+				if lines.is_empty():
+					_tavern_append("assistant", "（翻看旧账）……还没有任何对话记录呢。")
+				else:
+					_tavern_append("assistant", "（翻看旧账）这是之前的对话记录——\n%s" % "\n".join(lines))
 				return
 			"/c":
 				TavernManager.dialog_history.clear()
