@@ -1115,6 +1115,12 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 详尽模式：执行顺序显示
+	if EditorMode.is_exhaustive():
+		var order_map: Dictionary = _bp_compute_exec_order(graph)
+		var order_val: int = int(order_map.get(node_id, 0))
+		var order_txt: String = "（未连接，不参与执行流）" if order_val == 0 else "第 %d 步执行" % order_val
+		_host._ui().add_info_label(detail, "⚡ 执行顺序：%s" % order_txt)
 	# 坐标编辑（X/Y）
 	var pos_box := HBoxContainer.new()
 	pos_box.add_theme_constant_override("separation", 8)

@@ -98,7 +98,9 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	left_sb.border_width_right = 1
 	left_sb.border_color = Color(0.2, 0.25, 0.35, 0.3)
 	left_panel.add_theme_stylebox_override("panel", left_sb)
-	hsplit.add_child(left_panel)
+	# 简易模式：隐藏左侧图列表（聚焦画布，减少认知负担）
+	if not EditorMode.is_simple():
+		hsplit.add_child(left_panel)
 	var left_vbox := VBoxContainer.new()
 	left_vbox.add_theme_constant_override("separation", 4)
 	left_panel.add_child(left_vbox)
@@ -164,6 +166,9 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	detail_scroll.add_child(_detail)
 	# === 初始化图列表与默认图 ===
 	_refresh_graph_list()
+	# 简易模式：打开蓝图自动适应画布（聚焦当前图）
+	if EditorMode.is_simple() and _canvas != null:
+		_bp_mod._fit_canvas_to_nodes(_canvas)
 	_root_ui = root
 	return root
 

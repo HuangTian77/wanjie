@@ -324,6 +324,9 @@ func _build_module_tree() -> void:
 	wv_item.set_text(0, "📖 世界观")
 	wv_item.set_metadata(0, {"path": "worldview/overview", "type": "worldview_overview"})
 	wv_item.set_custom_color(0, Color(0.55, 0.8, 1.0, 1))
+	# 简易模式：进阶子系统灰化提示
+	if EditorMode.is_simple():
+		wv_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	_add_leaf(wv_item, "背景故事", "worldview/background", "worldview_bg")
 	_add_leaf(wv_item, "时代定义 (%d)" % wv.era_definitions.size(), "worldview/eras", "worldview_eras")
 	_add_leaf(wv_item, "时间线 (%d)" % wv.timeline.size(), "worldview/timeline", "worldview_timeline")
@@ -362,6 +365,9 @@ func _build_module_tree() -> void:
 	ec_item.set_text(0, "💰 经济系统")
 	ec_item.set_metadata(0, {"path": "economy/overview", "type": "economy_overview"})
 	ec_item.set_custom_color(0, Color(0.5, 0.9, 0.5, 1))
+	# 简易模式：进阶子系统灰化提示
+	if EditorMode.is_simple():
+		ec_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	_add_leaf(ec_item, "货币 (%d)" % ec.currencies.size(), "economy/currencies", "economy_curr")
 	_add_leaf(ec_item, "资源 (%d)" % ec.resources.size(), "economy/resources", "economy_res")
 	_add_leaf(ec_item, "市场 (%d)" % ec.markets.size(), "economy/markets", "economy_mkt")
@@ -375,6 +381,9 @@ func _build_module_tree() -> void:
 	ab_item.set_text(0, "⚔ 能力系统")
 	ab_item.set_metadata(0, {"path": "ability/overview", "type": "ability_overview"})
 	ab_item.set_custom_color(0, Color(1.0, 0.5, 0.5, 1))
+	# 简易模式：进阶子系统灰化提示
+	if EditorMode.is_simple():
+		ab_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	_add_leaf(ab_item, "技能 (%d)" % ab.skills.size(), "ability/skills", "ability_skills")
 	for sk in ab.skills:
 		var sk_item := module_tree.create_item(ab_item)
@@ -393,6 +402,9 @@ func _build_module_tree() -> void:
 	quest_item.set_text(0, "📋 任务系统")
 	quest_item.set_metadata(0, {"path": "quest/overview", "type": "quest_overview"})
 	quest_item.set_custom_color(0, Color(0.9, 0.8, 0.45, 1))
+	# 简易模式：进阶子系统灰化提示
+	if EditorMode.is_simple():
+		quest_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	_add_leaf(quest_item, "任务列表 (%d)" % qs.quests.size(), "quest/list", "quest_list")
 	for q in qs.quests:
 		var q_item := module_tree.create_item(quest_item)
@@ -408,6 +420,9 @@ func _build_module_tree() -> void:
 	combat_item.set_text(0, "⚔ 战斗系统")
 	combat_item.set_metadata(0, {"path": "combat/overview", "type": "combat_overview"})
 	combat_item.set_custom_color(0, Color(1.0, 0.55, 0.45, 1))
+	# 简易模式：进阶子系统灰化提示
+	if EditorMode.is_simple():
+		combat_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	_add_leaf(combat_item, "敌人模板 (%d)" % cs.enemy_templates.size(), "combat/enemies", "combat_enemies")
 	_add_leaf(combat_item, "NPC池 (%d)" % cs.npc_pool.size(), "combat/npcs", "combat_npcs")
 	_add_leaf(combat_item, "战斗配置 (%d)" % cs.battle_configs.size(), "combat/battles", "combat_battles")
@@ -418,6 +433,9 @@ func _build_module_tree() -> void:
 	map_item.set_text(0, "🗺 地图")
 	map_item.set_metadata(0, {"path": "map/overview", "type": "map_overview"})
 	map_item.set_custom_color(0, Color(0.6, 0.85, 0.65, 1))
+	# 简易模式：地图为进阶子系统灰化
+	if EditorMode.is_simple():
+		map_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
 	var regions: Array = wv.geography.get("regions", [])
 	_add_leaf(map_item, "区域定义 (%d)" % regions.size(), "map/regions", "map_region")
 	for r in regions:
@@ -1247,6 +1265,14 @@ func _input(event: InputEvent) -> void:
 			if editor_mode == "visual" and _mod_event._l1_mod.can_redo_form():
 				_mod_event._l1_mod.redo_form()
 				get_viewport().set_input_as_handled()
+		# F1: 三模式/编辑帮助
+		elif event.keycode == KEY_F1:
+			_show_edit_mode_guide(EditorMode.current_mode)
+			get_viewport().set_input_as_handled()
+		# Ctrl+1/2/3: 快捷切换编辑模式（简易/详细/详尽）
+		elif event.ctrl_pressed and event.keycode >= KEY_1 and event.keycode <= KEY_3:
+			EditorMode.set_mode(event.keycode - KEY_1)
+			get_viewport().set_input_as_handled()
 
 ## === 顶栏按钮 ===
 func _on_back_pressed() -> void:
