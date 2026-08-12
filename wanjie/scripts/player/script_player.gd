@@ -2589,8 +2589,14 @@ func _on_enemy_info_clicked(event: InputEvent) -> void:
 func _on_battle_attack_pressed() -> void:
 	if combat_engine == null:
 		return
+	# 普攻攒蓝提示（MP 不足时战斗日志提示）
+	var cur_mp_a: int = int(combat_engine.player_combat_stats.get("mp", 0))
 	var res: Dictionary = combat_engine.player_attack(_battle_target)  # 指定目标（-1 自动选存活）
 	if not res.is_empty():
+		# 普攻回蓝提示（本次攻击回复 MP）
+		var mp_gain_a: int = int(res.get("mp_gain", 0))
+		if mp_gain_a > 0:
+			_battle_log_line("✦ 普攻回复 MP +%d" % mp_gain_a, "#7cc4e0")
 		# 攻击落空提示（MISS）
 		if int(res.get("damage", 0)) == 0 and not res.get("miss", false):
 			_battle_log_line("攻击落空…（闪避）", "#8a8278")
