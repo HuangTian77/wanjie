@@ -114,6 +114,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TavernVBox" type="VBoxContainer" parent="TavernPanel"]
+[node name="TavernTitle" type="Label" parent="TavernPanel/TavernVBox"]
+layout_mode = 2
+text = "🏮 酒馆"
+horizontal_alignment = 1
+
 layout_mode = 2
 
 [node name="TavernHeader" type="HBoxContainer" parent="TavernPanel/TavernVBox"]

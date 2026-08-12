@@ -1599,6 +1599,10 @@ func _enter_tavern_char(index: int) -> void:
 		greet += " 见到你真高兴！"
 	_tavern_append("assistant", greet)
 	TavernManager.add_message("assistant", greet)
+	# 面板标题显示当前角色
+	var tavern_title := get_node_or_null("TavernPanel/TavernVBox") as VBoxContainer
+	if tavern_title != null and tavern_title.has_node("TavernTitle"):
+		(tavern_title.get_node("TavernTitle") as Label).text = "🏮 酒馆 · %s" % char.get("name", "角色")
 	# 输入框占位提示当前角色
 	tavern_input.placeholder_text = "对%s说话…（/h 历史 · /c 清空）" % char.get("name", "角色")
 	# 话题快捷按钮（点击即发送；按角色定制）
