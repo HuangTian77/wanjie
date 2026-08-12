@@ -809,6 +809,13 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_bp_selected_connection = conn_idx
 				_bp_selected_ids.clear()
 				canvas.queue_redraw()
+				# 连线信息提示
+				var conns_i: Array = graph.get("connections", [])
+				if conn_idx < conns_i.size():
+					var cinfo: Dictionary = conns_i[conn_idx]
+					var ctype: String = "执行流" if bool(cinfo.get("is_exec", true)) else "数据"
+					ToastManager.info("连线：%s 端口%d → 端口%d（%s）｜Delete 删除" % [
+						ctype, int(cinfo.get("from_port", 0)), int(cinfo.get("to_port", 0)), ctype])
 				return
 			# 空白处: 双击打开添加节点菜单，单击框选
 			if event.double_click:
@@ -1272,6 +1279,8 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 参数数量标题
+	_host._ui().add_section_label(detail, "⚙ 参数（%d 项）" % reg_def.get("params", []).size())
 	# 详尽模式：执行顺序显示
 	if EditorMode.is_exhaustive():
 		var order_map: Dictionary = _bp_compute_exec_order(graph)

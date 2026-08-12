@@ -42,6 +42,9 @@ var _last_module_meta: Dictionary = {}
 @onready var mode_code_btn: Button = %ModeCodeBtn
 @onready var mode_mud_btn: Button = %ModeMudBtn
 @onready var edit_mode_opt: OptionButton = %EditModeOpt
+@onready var mode_simple_btn: Button = %ModeSimpleBtn
+@onready var mode_detail_btn: Button = %ModeDetailBtn
+@onready var mode_expert_btn: Button = %ModeExpertBtn
 @onready var code_editor_container: VBoxContainer = %CodeEditorContainer
 @onready var mud_editor_container: VBoxContainer = %MudEditorContainer
 @onready var center_vsplit: VSplitContainer = %CenterVSplit
@@ -175,6 +178,9 @@ func _ready() -> void:
 		GameManager.user_data.editor_visited = true
 		GameManager.save_user_data()
 		ToastManager.info("欢迎进入编辑器！左侧模块树选择子系统，右侧编辑，Ctrl+S 保存，F1 展开帮助")
+	# 首次使用（未看过模式说明）：弹编辑模式选择
+	if not GameManager.user_data.editor_simple_guide_seen:
+		_show_edit_mode_choice()
 	# 锁定编辑器模式：隐藏模式切换按钮（创建剧本时已确定，不允许自由切换）
 	_lock_mode_buttons()
 	# 显示欢迎编辑器
@@ -212,6 +218,10 @@ func _setup_edit_mode_opt() -> void:
 	edit_mode_opt.item_selected.connect(func(idx: int):
 		EditorMode.set_mode(idx))
 	EditorMode.mode_changed.connect(_on_edit_mode_changed)
+	# 底部模式快速切换条
+	mode_simple_btn.pressed.connect(func(): EditorMode.set_mode(EditorMode.SIMPLE))
+	mode_detail_btn.pressed.connect(func(): EditorMode.set_mode(EditorMode.DETAILED))
+	mode_expert_btn.pressed.connect(func(): EditorMode.set_mode(EditorMode.EXHAUSTIVE))
 	# 状态栏初始显示当前模式
 	_update_status_mode(EditorMode.current_mode)
 
@@ -264,6 +274,39 @@ func _update_status_mode(mode: int) -> void:
 		cur = cur.replace("[%s %s] " % [EditorMode.MODE_ICONS[m], EditorMode.MODE_NAMES[m]], "")
 	var prefix := "%s %s " % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode]]
 	status_label.text = prefix + cur
+	# 底部模式按钮高亮当前模式
+	if mode_simple_btn != null:
+		mode_simple_btn.modulate = Color(1, 1, 1) if mode == EditorMode.SIMPLE else Color(0.5, 0.5, 0.5)
+		mode_detail_btn.modulate = Color(1, 1, 1) if mode == EditorMode.DETAILED else Color(0.5, 0.5, 0.5)
+		mode_expert_btn.modulate = Color(1, 1, 1) if mode == EditorMode.EXHAUSTIVE else Color(0.5, 0.5, 0.5)
+
+## 首次使用：编辑模式选择弹窗（简易推荐给零基础）
+func _show_edit_mode_choice() -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "选择编辑模式"
+	dialog.dialog_text = """欢迎使用剧本编辑器！请选择适合你的编辑模式（随时可在顶栏切换）：
+
+🌱 简易 —— 适合零基础新手
+   只显示核心节点与常用字段，附带新手引导
+
+⚙ 详细 —— 适合有经验的开发者（默认）
+   完整节点分类与常用高级参数
+
+🧠 详尽 —— 适合高级开发者
+   全部功能 + 调试信息与数据视图"""
+	dialog.min_size = Vector2i(560, 340)
+	dialog.ok_button_text = "🌱 简易（新手推荐）"
+	dialog.cancel_button_text = "⚙ 详细"
+	dialog.confirmed.connect(func():
+		GameManager.user_data.editor_simple_guide_seen = true
+		GameManager.save_user_data()
+		EditorMode.set_mode(EditorMode.SIMPLE))
+	dialog.canceled.connect(func():
+		GameManager.user_data.editor_simple_guide_seen = true
+		GameManager.save_user_data()
+		EditorMode.set_mode(EditorMode.DETAILED))
+	add_child(dialog)
+	dialog.popup_centered()
 
 ## 编辑模式说明弹窗（三模式差异）
 func _show_edit_mode_guide(_mode: int) -> void:
