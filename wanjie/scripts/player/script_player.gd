@@ -660,6 +660,8 @@ var _egg_count: int = 0
 var _help_scroll_pos: int = 0
 ## 日志窗口滚动位置（重开记忆）
 var _log_scroll_pos: int = 0
+## 商店搜索词（重开记忆）
+var _shop_search_q: String = ""
 ## 酒馆输入历史（↑ 键调出，保留 10 条）
 var _tavern_input_history: Array[String] = []
 ## 连续探索次数（连击奖励）
@@ -3532,6 +3534,13 @@ func _on_menu_shop_pressed() -> void:
 	search_edit_s.placeholder_text = "搜索商品…"
 	search_edit_s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	search_row_s.add_child(search_edit_s)
+	# 记住上次搜索词（刷新后保留）
+	search_edit_s.text = _shop_search_q
+	search_edit_s.text_changed.connect(func(t: String):
+		_shop_search_q = t
+		# 实时刷新列表（重开商店保留搜索）
+		_on_menu_shop_pressed()
+		dialog.queue_free())
 	var list := RichTextLabel.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
