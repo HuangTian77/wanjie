@@ -5024,6 +5024,9 @@ func _on_slot_save_selected(slot: int) -> void:
 	if _get_slot_info(slot) != "(空)":
 		var confirm_ov := ConfirmationDialog.new()
 		confirm_ov.dialog_text = "槽位 %d 已有存档（%s），确定覆盖？" % [slot + 1, _get_slot_info(slot)]
+		# 覆盖按钮明确文字
+		confirm_ov.ok_button_text = "覆盖保存"
+		confirm_ov.cancel_button_text = "取消"
 		confirm_ov.confirmed.connect(func():
 			_do_save_slot(slot))
 		add_child(confirm_ov)
