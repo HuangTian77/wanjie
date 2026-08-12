@@ -54,6 +54,8 @@ var _bp_search_popup: PopupPanel = null
 var _bp_search_edit: LineEdit = null
 var _bp_search_list: ItemList = null
 var _bp_search_results: Array[String] = []  # node_ids
+## 搜索定位高亮节点（黄框提示）
+var _bp_highlight_node: String = ""
 
 # 小地图
 var _bp_minimap: Control = null
@@ -311,6 +313,8 @@ func _on_search_item_selected(idx: int) -> void:
 		var center: Vector2 = canvas.size / 2.0
 		_bp_offset = center - node_pos * _bp_zoom
 		_bp_selected_ids = [nid]
+		# 定位高亮（黄框，下次交互清除）
+		_bp_highlight_node = nid
 		canvas.queue_redraw()
 	_bp_search_popup.hide()
 
@@ -522,6 +526,10 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var node: Dictionary = graph["nodes"][nid]
 		var selected: bool = _bp_selected_ids.has(nid)
 		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, show_detail, _bp_last_mouse_pos, int(exec_order.get(nid, 0)))
+	# 3.5 搜索定位高亮（黄框提示）
+	if _bp_highlight_node != "" and graph["nodes"].has(_bp_highlight_node):
+		var hl_pos: Vector2 = VisualBlueprintDraw.world_to_screen(graph["nodes"][_bp_highlight_node]["pos"], _bp_offset, _bp_zoom)
+		canvas.draw_rect(Rect2(hl_pos - Vector2(4, 4), Vector2(180 * _bp_zoom + 8, BlueprintData.calc_node_height(graph["nodes"][_bp_highlight_node]) * _bp_zoom + 8)), Color(1.0, 0.85, 0.2, 0.9), false, 2.0)
 	# 4. 拖拽中的临时连线
 	if _bp_pin_dragging:
 		var from_node: Dictionary = graph["nodes"].get(_bp_pin_drag_from_id, {})
@@ -689,6 +697,7 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
 			_bp_dragging = true
 			_bp_drag_start = event.position
+			_bp_highlight_node = ""
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			# 右键: 引脚拖拽 或 空白处菜单
 			var pin_hit = VisualBlueprintDraw.hit_test_bp_pins(event.position, graph, _bp_offset, _bp_zoom)
@@ -1196,6 +1205,14 @@ func _show_bp_node_properties(node_id: String) -> void:
 				_bp_delete_selected(graph, canvas)
 			_hide_bp_node_properties())
 		detail.add_child(del_btn)
+		# 详尽模式：参数 JSON 只读预览（调试视图）
+		if EditorMode.is_exhaustive():
+			var json_view := RichTextLabel.new()
+			json_view.bbcode_enabled = true
+			json_view.fit_content = true
+			json_view.add_theme_font_size_override("normal_font_size", 10)
+			json_view.text = "[color=#7f8a96]// 参数原始数据（只读）\n%s[/color]" % JSON.stringify(node.get("properties", {}))
+			detail.add_child(json_view)
 		var props: Dictionary = node.get("properties", {})
 		for param in params:
 			var key: String = param["key"]

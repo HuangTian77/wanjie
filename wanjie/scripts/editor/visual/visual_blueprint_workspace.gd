@@ -166,11 +166,25 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	detail_scroll.add_child(_detail)
 	# === 初始化图列表与默认图 ===
 	_refresh_graph_list()
-	# 简易模式：打开蓝图自动适应画布（聚焦当前图）
-	if EditorMode.is_simple() and _canvas != null:
-		_bp_mod._fit_canvas_to_nodes(_canvas)
+	# 恢复模式切换前保存的画布视图状态（缩放/偏移）
+	if _canvas != null:
+		var saved_vs: Dictionary = EditorMode.take_bp_view_state()
+		if not saved_vs.is_empty():
+			if saved_vs.has("zoom") and float(saved_vs["zoom"]) > 0:
+				_bp_mod._bp_zoom = float(saved_vs["zoom"])
+			if saved_vs.has("offset"):
+				_bp_mod._bp_offset = saved_vs["offset"]
+		elif EditorMode.is_simple():
+			# 简易模式：打开蓝图自动适应画布（聚焦当前图）
+			_bp_mod._fit_canvas_to_nodes(_canvas)
 	_root_ui = root
 	return root
+
+## 供宿主在面板销毁前保存画布视图状态
+func _get_bp_view_state() -> Dictionary:
+	if _bp_mod == null or _canvas == null:
+		return {}
+	return {"zoom": _bp_mod._bp_zoom, "offset": _bp_mod._bp_offset}
 
 ## === workspace 宿主接口（供 VisualEventBlueprint duck-typing） ===
 

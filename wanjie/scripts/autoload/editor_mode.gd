@@ -27,7 +27,22 @@ signal mode_changed(mode: int)
 
 var current_mode: int = DETAILED
 
+## 模式切换时保存的画布视图状态（跨面板重建传递）
+var _bp_view_state: Dictionary = {}
+
 const CONFIG_PATH := "user://editor_mode.cfg"
+
+
+## 保存蓝图画布视图状态（模式切换重建前调用）
+func set_bp_view_state(state: Dictionary) -> void:
+	_bp_view_state = state.duplicate()
+
+
+## 读取并清空蓝图画布视图状态
+func take_bp_view_state() -> Dictionary:
+	var s := _bp_view_state.duplicate()
+	_bp_view_state = {}
+	return s
 
 
 func _ready() -> void:

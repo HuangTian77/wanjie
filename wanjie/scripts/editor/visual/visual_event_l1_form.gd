@@ -219,7 +219,9 @@ func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
 			_host._mark_dirty()
 			_host._sync_to_code_editor()
 			_build_l1_form_view(_event_l1_container))
-		row.add_child(dup_btn)
+		# 简易模式隐藏复制按钮（避免新手误操作）
+		if not EditorMode.is_simple():
+			row.add_child(dup_btn)
 		# 删除事件
 		var del_btn := Button.new()
 		del_btn.text = "✕"

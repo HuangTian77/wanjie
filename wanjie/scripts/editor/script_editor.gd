@@ -228,6 +228,12 @@ func _on_edit_mode_changed(mode: int) -> void:
 	var to_erase: Array[String] = []
 	for key in _editors:
 		if key != "welcome" and key != "code" and key != "mud":
+			# 蓝图面板销毁前保存画布视图状态（缩放/偏移）
+			var panel: Control = _editors[key]
+			if panel != null and panel.has_method("_get_bp_view_state"):
+				var vs: Dictionary = panel._get_bp_view_state()
+				if not vs.is_empty():
+					EditorMode.set_bp_view_state(vs)
 			to_erase.append(key)
 	for key in to_erase:
 		_editors.erase(key)

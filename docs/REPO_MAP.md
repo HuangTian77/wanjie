@@ -123,14 +123,16 @@
 ### scripts/autoload/editor_mode.gd (editor_mode.gd)
 
 - signal `mode_changed`
-- func `_ready` (L33)
-- func `set_mode` (L38)
-- func `get_mode` (L47)
-- func `get_mode_name` (L51)
-- func `get_mode_desc` (L55)
-- func `is_visible` (L60)
-- func `is_simple` (L65)
-- func `is_exhaustive` (L70)
+- func `set_bp_view_state` (L37)
+- func `take_bp_view_state` (L42)
+- func `_ready` (L48)
+- func `set_mode` (L53)
+- func `get_mode` (L62)
+- func `get_mode_name` (L66)
+- func `get_mode_desc` (L70)
+- func `is_visible` (L75)
+- func `is_simple` (L80)
+- func `is_exhaustive` (L85)
 
 ### scripts/autoload/game_manager.gd (game_manager.gd)
 
