@@ -3297,6 +3297,10 @@ func _on_menu_shop_pressed() -> void:
 				var final_price := int(price * price_mul)
 				var btn := Button.new()
 				btn.text = "购买 %s（%d 金币）" % [item_id, final_price]
+				# 已持有数量提示
+				var held_qty: int = int(economy_engine.player_inventory.get(item_id, 0))
+				if held_qty > 0:
+					btn.text += "（持有 %d）" % held_qty
 				# 供需状态 tooltip
 				var base_p: float = float(g.get("price", price))
 				var supply_state := "稳定"
