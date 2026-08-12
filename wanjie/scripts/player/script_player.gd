@@ -4175,7 +4175,7 @@ func _on_menu_rating_pressed() -> void:
 			return
 		# 防重复提交（本次游玩仅一次）
 		if _rated_this_run:
-			ToastManager.info("本次游玩已评过分")
+			ToastManager.info("本次游玩已评过分（返回大厅可再次进入后重新评分）")
 			return
 		_rated_this_run = true
 		var ws: Variant = script_data
