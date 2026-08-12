@@ -2435,6 +2435,9 @@ func _on_combat_ended(result: String) -> void:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
 			_add_history("⚔ 战斗胜利：+%d 金币 +%d 经验" % [gold, exp])
+			# 连胜状态入历史（≥2 时）
+			if _win_streak >= 2:
+				_add_history("🔥 连胜 %d 场（经验加成 %d%%）" % [_win_streak, mini(20, _win_streak * 2)])
 			# 胜利历史含敌人名（若有）
 			if not combat_engine.enemies.is_empty():
 				var first_enemy: String = str(combat_engine.enemies[0].get("name", "?"))
