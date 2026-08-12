@@ -4843,9 +4843,16 @@ func _on_menu_rest_pressed() -> void:
 		full_note = "\n⚠ 当前 HP 已满，休息收益较低，建议继续探索。"
 	# 受伤程度提示（低血时休息更值得）
 	var hurt_note := ""
+	var heal_preview := ""
 	if hp_max2 > 0 and hp_now2 < hp_max2 * 0.5:
 		hurt_note = "\n💚 当前伤势较重，休息恢复价值高。"
-	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。%s%s" % [hp_now2, mp_now2, full_note, hurt_note]
+		# 恢复量预览（困难模式 80%）
+		var rest_mul_p := 1.0
+		if GameManager.user_data != null and GameManager.user_data.difficulty_mode == "hard":
+			rest_mul_p = 0.8
+		var heal_p := int((hp_max2 - hp_now2) * rest_mul_p)
+		heal_preview = "\n（预计恢复约 %d HP）" % heal_p
+	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。%s%s%s" % [hp_now2, mp_now2, full_note, hurt_note, heal_preview]
 	# 夜晚休息事件概率说明（30%→40%）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		confirm.dialog_text += "\n（夜晚休息事件概率提升至 40%）"
