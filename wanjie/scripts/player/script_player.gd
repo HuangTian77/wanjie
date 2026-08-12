@@ -967,6 +967,9 @@ func _add_history(text: String) -> void:
 	# 展开时自动滚动到底（新记录可见）
 	if history_panel.visible and history_text.get_line_count() > 0:
 		history_text.scroll_to_line(history_text.get_line_count() - 1)
+	# 滚动条跟随（保持在底部时自动跟随；用户上翻时不打扰）
+	if hp_scroll != null and hp_scroll.get_v_scroll_bar().value >= hp_scroll.get_v_scroll_bar().max_value - 80.0:
+		hp_scroll.scroll_vertical = hp_scroll.get_v_scroll_bar().max_value
 	# 折叠时提示有新记录（HistoryToggle 金色，展开后清除）
 	if not history_panel.visible:
 		history_toggle.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
