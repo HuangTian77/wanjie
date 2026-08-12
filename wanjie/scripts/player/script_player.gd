@@ -3925,6 +3925,17 @@ func _on_menu_bag_pressed() -> void:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	scroll.add_child(list)
+	# 背包搜索框（过滤物品）
+	var bag_search_row := HBoxContainer.new()
+	box.add_child(bag_search_row)
+	var bag_search_lbl := Label.new()
+	bag_search_lbl.text = "🔍"
+	bag_search_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	bag_search_row.add_child(bag_search_lbl)
+	var bag_search_edit := LineEdit.new()
+	bag_search_edit.placeholder_text = "搜索物品…"
+	bag_search_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bag_search_row.add_child(bag_search_edit)
 	if economy_engine == null or economy_engine.player_inventory.is_empty():
 		list.append_text("[color=#999]背包空空如也…（商店可购买物品）[/color]")
 	else:
@@ -3945,6 +3956,10 @@ func _on_menu_bag_pressed() -> void:
 		for item_id in sorted_ids:
 			var qty: int = int(economy_engine.player_inventory[item_id])
 			if qty > 0:
+				# 搜索过滤
+				if not bag_search_edit.text.strip_edges().is_empty() \
+						and not str(item_id).to_lower().contains(bag_search_edit.text.strip_edges().to_lower()):
+					continue
 				# 物品类型标签
 				var type_tag := ""
 				if str(item_id) == "rare_relic":
