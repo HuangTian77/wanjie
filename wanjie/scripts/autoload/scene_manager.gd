@@ -20,6 +20,7 @@ signal scene_change_completed(target_scene: String)
 ## 切换到指定场景（带淡入淡出动画）
 func change_scene(scene_path: String) -> void:
 	scene_change_started.emit(scene_path)
+	# 返回大厅时 Toast 已由调用方显示，避免重复
 	# 如果动效关闭，直接切换
 	if not ThemeManager.animations_enabled:
 		_do_scene_switch(scene_path)
