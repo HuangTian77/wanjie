@@ -3931,6 +3931,11 @@ func _do_rest() -> void:
 		var expired_fx: Array = world_state.tick_effects()
 		if not expired_fx.is_empty():
 			ToastManager.info("🌪 世界效果结束：%s" % "，".join(PackedStringArray(expired_fx)))
+	# 清理残留战斗状态（休息后退出战斗）
+	if combat_engine != null and combat_engine.in_battle:
+		combat_engine.reset_battle()
+		if battle_panel != null:
+			battle_panel.visible = false
 	# 休息后自动存档（跨天节点）
 	if world_state and world_state.get_current_day() != _last_rest_day:
 		SaveManager.autosave()
