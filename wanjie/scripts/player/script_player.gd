@@ -2043,6 +2043,8 @@ func _on_combat_ended(result: String) -> void:
 	# 战斗胜利庆祝（胜场计数里程碑，计数在战斗统计处统一累加）
 	if result == "victory":
 		_win_streak += 1
+		if _battle_wins == 0:
+			ToastManager.success("🗡 首战告捷！")
 		if _win_streak == 5:
 			ToastManager.success("🔥 五连胜！势不可挡")
 		elif _win_streak == 10:
