@@ -271,6 +271,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# Esc: 切换菜单（菜单已开则关闭）
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+		# Esc 优先级：评分弹窗 > 酒馆 > 槽位选择器 > 菜单
+		if get_node_or_null("RatingDialog") != null:
+			get_node_or_null("RatingDialog").queue_free()
+			get_viewport().set_input_as_handled()
+			return
 		# Esc 优先级：酒馆 > 槽位选择器 > 菜单
 		if get_node_or_null("SlotSelector") != null:
 			get_node_or_null("SlotSelector").queue_free()
