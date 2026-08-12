@@ -3545,7 +3545,19 @@ func _on_menu_bag_pressed() -> void:
 	else:
 		var total_items := 0
 		var total_value := 0
-		for item_id in economy_engine.player_inventory:
+		# 按物品类型排序（遗物 > 药水 > 道具 > 其他）
+		var sorted_ids: Array = economy_engine.player_inventory.keys()
+		sorted_ids.sort_custom(func(a, b):
+			var type_a := "其他"
+			var type_b := "其他"
+			if str(a) == "rare_relic": type_a = "遗物"
+			elif "potion" in str(a) or "herb" in str(a): type_a = "药水"
+			elif "smoke" in str(a) or "bomb" in str(a): type_a = "道具"
+			if str(b) == "rare_relic": type_b = "遗物"
+			elif "potion" in str(b) or "herb" in str(b): type_b = "药水"
+			elif "smoke" in str(b) or "bomb" in str(b): type_b = "道具"
+			return ["遗物", "药水", "道具", "其他"].find(type_a) < ["遗物", "药水", "道具", "其他"].find(type_b))
+		for item_id in sorted_ids:
 			var qty: int = int(economy_engine.player_inventory[item_id])
 			if qty > 0:
 				# 遗物不可出售标记
