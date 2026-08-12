@@ -4029,6 +4029,9 @@ func _on_menu_close_pressed() -> void:
 		ToastManager.info("💾 距上次保存已超 2 分钟，可随时 S 保存")
 	# 还原焦点到主界面（键盘 Esc 可继续操作）
 	main_text.grab_focus()
+	# 战斗进行中关闭菜单时提示（防忘记战斗）
+	if battle_panel.visible:
+		ToastManager.info("⚔ 战斗进行中，可继续攻击/技能/逃跑")
 
 ## 世界日志（因果标记/选择历史）
 func _on_menu_log_pressed() -> void:
