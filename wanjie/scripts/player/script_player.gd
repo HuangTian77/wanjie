@@ -4758,7 +4758,7 @@ func _on_player_stats_pressed() -> void:
 		mp_prog.value = clampi(int(st.get("mp", 0)), 0, int(st.get("max_mp", 50)))
 		mp_prog.visible = true
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
-	list.append_text("⚔ 攻击 %d    🛡 防御 %d    🏃 速度 %d\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
+	list.append_text("⚔ [color=#e0665a]攻击 %d[/color]    🛡 [color=#6a9fd8]防御 %d[/color]    🏃 [color=#7cc47c]速度 %d[/color]\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
 	list.append_text("「攻」：物理伤害基础\n")
 	list.append_text("「防」：减免受到的伤害（至少 1）\n")
 	list.append_text("「速」：决定先手与逃跑率\n\n")
