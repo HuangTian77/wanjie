@@ -5434,6 +5434,7 @@ func _on_menu_help_pressed() -> void:
 	help_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	help_lbl.fit_content = true
 	help_lbl.bbcode_enabled = true
+	help_lbl.custom_minimum_size.x = 580
 	# 快捷键加粗高亮（帮助文本中按键名加粗金色）
 	var help_txt: String = dialog.dialog_text
 	for key in ["空格", "回车", "A", "H", "C", "T", "Q", "Esc", "S", "L", "B", "1-9", "Tab", "Shift", "↑", "↓"]:
