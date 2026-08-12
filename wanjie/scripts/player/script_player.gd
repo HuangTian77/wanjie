@@ -4007,6 +4007,8 @@ func _on_menu_log_pressed() -> void:
 	# 刷新按钮（重新打开获取最新数据）
 	var refresh_log_btn := Button.new()
 	refresh_log_btn.text = "↻ 刷新"
+	refresh_log_btn.flat = true
+	refresh_log_btn.tooltip_text = "重新读取最新世界状态"
 	refresh_log_btn.pressed.connect(func():
 		dialog.queue_free()
 		_on_menu_log_pressed())
