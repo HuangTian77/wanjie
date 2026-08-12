@@ -4883,7 +4883,14 @@ func _on_player_stats_pressed() -> void:
 		ToastManager.success("属性已复制"))
 	dialog.add_child(copy_attr_btn)
 	var st: Dictionary = combat_engine.player_combat_stats
-	list.append_text("[b]等级 Lv.%d[/b]  经验 %d/100\n" % [int(st.get("level", 1)), int(st.get("exp", 0))])
+	# 等级颜色（随等级渐变：低黄/中金/高橙）
+	var lv_c := "#e6c84c"
+	var lv_now2: int = int(st.get("level", 1))
+	if lv_now2 >= 10:
+		lv_c = "#e6a04c"
+	elif lv_now2 >= 5:
+		lv_c = "#e6d84c"
+	list.append_text("[b][color=%s]等级 Lv.%d[/color][/b]  经验 %d/100\n" % [lv_c, lv_now2, int(st.get("exp", 0))])
 	# 更新经验进度条（scroll 内的 ExpBar）
 	var exp_bar2 := scroll.find_child("ExpBar", true, false) as ProgressBar
 	if exp_bar2 != null:
