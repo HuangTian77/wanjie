@@ -593,6 +593,8 @@ var _tavern_mood_full_toast: int = 0
 var _heard_backgrounds: Dictionary = {}
 ## 发现彩蛋秘闻次数
 var _egg_count: int = 0
+## 酒馆输入历史（↑ 键调出，保留 10 条）
+var _tavern_input_history: Array[String] = []
 ## 连续探索次数（连击奖励）
 var _explore_streak: int = 0
 ## 敌人图鉴（击败敌人 → 次数，本次游玩）
@@ -1685,6 +1687,19 @@ func _enter_tavern_char(index: int) -> void:
 	# 回车直接发送
 	if not tavern_input.text_submitted.is_connected(_on_tavern_send_pressed):
 		tavern_input.text_submitted.connect(_on_tavern_send_pressed)
+	# ↑ 键调出上一条输入（输入历史）
+	var hist_idx := -1
+	tavern_input.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventKey and ev.pressed and not ev.echo:
+			if ev.keycode == KEY_UP and not _tavern_input_history.is_empty():
+				hist_idx = mini(hist_idx + 1, _tavern_input_history.size() - 1)
+				tavern_input.text = _tavern_input_history[_tavern_input_history.size() - 1 - hist_idx]
+				tavern_input.caret_column = tavern_input.text.length()
+				tavern_input.accept_event()
+			elif ev.keycode == KEY_DOWN and hist_idx > -1:
+				hist_idx = maxi(hist_idx - 1, -1)
+				tavern_input.text = _tavern_input_history[_tavern_input_history.size() - 1 - hist_idx] if hist_idx >= 0 else ""
+				tavern_input.accept_event())
 	# 恢复历史对话
 	var history: Array = TavernManager.load_history(char["id"])
 	if not history.is_empty():
@@ -1711,6 +1726,11 @@ func _on_tavern_send_pressed() -> void:
 	var send_btn := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/TavernSend") as Button
 	if send_btn != null:
 		send_btn.disabled = true
+	# 记录输入历史（去重置顶，保留 10 条）
+	_tavern_input_history.erase(text)
+	_tavern_input_history.push_front(text)
+	if _tavern_input_history.size() > 10:
+		_tavern_input_history.resize(10)
 	# 关键词彩蛋（特定话题特殊回应）
 	var easter_egg := ""
 	if text.contains("遗物") or text.contains("宝物"):
