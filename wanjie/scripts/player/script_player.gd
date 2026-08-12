@@ -3803,7 +3803,22 @@ func _on_menu_bag_pressed() -> void:
 		val_lbl.text = "背包估值：%d 金币（可出售）" % total_value
 		val_lbl.add_theme_color_override("font_color", Color(0.8, 0.7, 0.5))
 		val_lbl.add_theme_font_size_override("font_size", 11)
-		val_lbl.tooltip_text = "按当前市场半价估算；实际出售价随供需波动"
+		# 估值明细 tooltip（各物品单件估值）
+		var val_tip := "按当前市场半价估算：\n"
+		var tip_rows: Array[String] = []
+		for item_id in economy_engine.player_inventory:
+			if int(economy_engine.player_inventory[item_id]) <= 0:
+				continue
+			var uv2 := 10
+			if economy_engine.economy_data != null:
+				for m in economy_engine.economy_data.markets:
+					for g in m.get("goods", []):
+						if str(g.get("item", "")) == str(item_id):
+							uv2 = int(economy_engine.get_price(str(m.get("id", "")), str(item_id)))
+							break
+			tip_rows.append("%s ×%d（%d/件）" % [item_id, int(economy_engine.player_inventory[item_id]), maxi(1, uv2 / 2)])
+		val_tip += "\n".join(tip_rows)
+		val_lbl.tooltip_text = val_tip
 		box.add_child(val_lbl)
 	# 使用药水按钮（恢复 HP 的道具）
 	if economy_engine != null and not economy_engine.player_inventory.is_empty():
