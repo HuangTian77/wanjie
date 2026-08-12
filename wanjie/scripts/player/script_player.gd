@@ -3682,6 +3682,8 @@ func _on_menu_shop_pressed() -> void:
 				# 低价买入提示（现价 < 基价 10% 以上，倒卖机会）
 				if price < base_p * 0.9:
 					btn.tooltip_text += "\n[color=#7cc47c]低价机会：买入后价格回升可获利[/color]"
+					# 低价买入按钮标记（✓ 划算）
+					btn.text += " ✓"
 				# 商品描述 tooltip
 				var item_desc: String = str(g.get("description", ""))
 				if not item_desc.is_empty():
