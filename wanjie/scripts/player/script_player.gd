@@ -3940,9 +3940,11 @@ func _do_rest() -> void:
 	_sync_save_state()
 	var rest_time_txt: String = world_state.get_time_display() if world_state != null else ""
 	ToastManager.success("⛺ 休息 8 小时：HP +%d / MP +%d · %s" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0), rest_time_txt])
-	# 恢复飘字（绿色 +）
+	# 恢复飘字（绿色 +，HP 与 MP 分别）
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
+	if recovered_mp > 0:
+		_spawn_damage_popup(recovered_mp)
 	_add_history("在营地休息了 8 小时，状态恢复（HP +%d / MP +%d）" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0)])
 	# 跨天提示（休息前后天数不同）
 	if world_state != null and _rest_start_day >= 0 and world_state.get_current_day() > _rest_start_day:
