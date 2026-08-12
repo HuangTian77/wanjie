@@ -393,6 +393,7 @@ theme_override_constants/separation = 8
 [node name="DifficultyLabel" type="Label" parent="MenuPanel/MenuVBox/DifficultyRow"]
 layout_mode = 2
 text = "难度"
+tooltip_text = "影响战斗数值：简单+30%攻防 · 困难-20%"
 custom_minimum_size = Vector2(56, 0)
 
 [node name="DifficultyOption" type="OptionButton" parent="MenuPanel/MenuVBox/DifficultyRow"]
