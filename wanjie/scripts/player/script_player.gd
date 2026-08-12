@@ -4218,7 +4218,9 @@ func _on_menu_rating_pressed() -> void:
 	# 取消评分轻提示（未打扰）
 	dialog.canceled.connect(func():
 		if chosen[0] > 0:
-			ToastManager.info("评分未提交（可选 ★）"))
+			ToastManager.info("评分未提交（可选 ★）")
+		# 取消后恢复菜单（可再操作）
+		menu_panel.visible = false)
 
 func _on_menu_back_pressed() -> void:
 	# 返回确认（防误点丢失当前阅读位置）
