@@ -78,6 +78,8 @@ var _rest_count: int = 0
 var _total_damage_dealt: int = 0
 ## 本场掉落物品数
 var _loot_count: int = 0
+## 本局累计金币收入（战斗+出售）
+var _total_gold_earned: int = 0
 ## 战斗连击计数
 var _combo_count: int = 0
 ## 本次战斗最高连击（结算显示）
@@ -2431,6 +2433,7 @@ func _on_combat_ended(result: String) -> void:
 			# 胜利奖励金币飘字（金色 +）
 			if gold > 0:
 				_spawn_damage_popup(gold, false, true)  # 胜利金币金色
+			_total_gold_earned += gold
 			if _best_combo >= 2:
 				msg += " · 最高连击 x%d" % _best_combo
 			ToastManager.success("战斗胜利！+%d 金币 +%d 经验" % [gold, exp])
@@ -3415,6 +3418,8 @@ func _on_menu_char_pressed() -> void:
 			list.append_text("🛒 购买物品：%d 件\n" % _buy_count)
 		if _sell_count > 0:
 			list.append_text("💰 出售物品：%d 件\n" % _sell_count)
+		if _total_gold_earned > 0:
+			list.append_text("🪙 累计金币收入：%d\n" % _total_gold_earned)
 		if _egg_count > 0:
 			list.append_text("🗝 发现酒馆秘闻：%d 段\n" % _egg_count)
 	# 敌人图鉴
