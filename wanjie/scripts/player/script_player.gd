@@ -3402,6 +3402,12 @@ func _on_menu_rating_pressed() -> void:
 			rb2.text = "★ 评分（%.1f · %d 人）" % [script_data.rating, script_data.rating_count]
 		# 大厅精选排序数据即时生效
 		GameManager.scripts_changed.emit(script_data.id)
+		# 评分历史记录（user_data）
+		if not GameManager.user_data.rating_history.has(script_data.id):
+			GameManager.user_data.rating_history[script_data.id] = {}
+		GameManager.user_data.rating_history[script_data.id]["stars"] = chosen[0]
+		GameManager.user_data.rating_history[script_data.id]["at"] = Time.get_datetime_string_from_system()
+		GameManager.user_data.save_user_data()
 		# 首次评分成就
 		GameManager.user_data.unlock_achievement("first_rating", "首次为剧本评分"))
 	dialog.popup_centered()
