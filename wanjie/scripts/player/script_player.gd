@@ -3929,6 +3929,12 @@ func _on_menu_log_pressed() -> void:
 		var causal_count: int = event_engine.causal_marks.size()
 		stat_line += " · 因果标记 %d" % causal_count
 		stat_line += " · 选择历史 %d" % event_engine.choices_history.size()
+	# 每日统计（第 N 天 → 事件数）
+	if not _history_day_stats.is_empty():
+		var day_parts: Array[String] = []
+		for d in _history_day_stats:
+			day_parts.append("D%d:%d" % [int(d), int(_history_day_stats[d])])
+		stat_line += " · 📅 %s" % " ".join(day_parts)
 		# 随机事件冷却
 		if event_engine.cooldowns != null and not event_engine.cooldowns.is_empty():
 			stat_line += " · 冷却 %d" % event_engine.cooldowns.size()
