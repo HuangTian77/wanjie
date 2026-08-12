@@ -4024,6 +4024,9 @@ func _on_menu_close_pressed() -> void:
 	var sel := get_node_or_null("SlotSelector")
 	if sel:
 		sel.queue_free()
+	# 有未保存进度时轻提示（防遗忘）
+	if _last_autosave_time > 0.0 and Time.get_ticks_msec() / 1000.0 - _last_autosave_time > 120.0:
+		ToastManager.info("💾 距上次保存已超 2 分钟，可随时 S 保存")
 	# 还原焦点到主界面（键盘 Esc 可继续操作）
 	main_text.grab_focus()
 
