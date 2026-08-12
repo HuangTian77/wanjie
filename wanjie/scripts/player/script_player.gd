@@ -2531,6 +2531,8 @@ func _restore_save_state(sd: SaveData) -> void:
 	_battle_wins = int(sd.player_state.get("battle_wins", _battle_wins))
 	_battle_defeats = int(sd.player_state.get("battle_defeats", _battle_defeats))
 	_battle_flees = int(sd.player_state.get("battle_flees", _battle_flees))
+	# 恢复自动战斗偏好（读档保持）
+	_auto_battle = bool(sd.player_state.get("auto_battle", _auto_battle))
 	# 读档重置战斗状态（若之前处于战斗）
 	if battle_panel != null:
 		battle_panel.visible = false
