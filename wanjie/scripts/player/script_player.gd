@@ -4192,7 +4192,13 @@ func _on_player_stats_pressed() -> void:
 	var dodge_rate := 3 + int(st.get("speed", 0)) / 8
 	list.append_text("💨 闪避率 ≈ %d%%（速度影响）\n\n" % dodge_rate)
 	# 攻防公式说明（tooltip 已在滚动列表外 → 直接文本提示）
-	list.append_text("[color=#7a7268]伤害 = 攻击 - 防御（最低 1）；速度影响先手与逃跑率[/color]\n\n")
+	# 状态效果显示（角色面板）
+	var char_fx: Array = st.get("status_effects", [])
+	if not char_fx.is_empty():
+		var fx_txt := "\n[color=#c9a06a]【状态效果】[/color]\n"
+		for cfx in char_fx:
+			fx_txt += "• %s（剩 %d 回合）\n" % [str(cfx.get("name", "?")), int(cfx.get("remaining_turns", 0))]
+		list.append_text(fx_txt)
 	# MP/HP 概览
 	list.append_text("❤️ HP %d/%d    ✦ MP %d/%d\n\n" % [
 		int(st.get("hp", 0)), int(st.get("max_hp", 100)),
