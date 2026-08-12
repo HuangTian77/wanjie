@@ -268,13 +268,20 @@ func _build_l1_event_form(form_vbox: VBoxContainer, event_id: String) -> void:
 		_host._mark_dirty()
 	)
 	_add_l1_trigger_type_field(form_vbox, event)
-	_add_l1_prereq_field(form_vbox, event)
-	# 触发条件
-	_host._ui().add_section_label(form_vbox, "🎯 触发条件 (满足什么时候才发生?)", 2)
-	_build_l1_conditions_editor(form_vbox, event)
+	# 前置条件与触发条件为高级区块（简易模式隐藏）
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+		_add_l1_prereq_field(form_vbox, event)
+		_host._ui().add_section_label(form_vbox, "🎯 触发条件 (满足什么时候才发生?)", 2)
+		_build_l1_conditions_editor(form_vbox, event)
+	else:
+		_host._ui().add_info_label(form_vbox, "🛈 简易模式已隐藏「前置条件 / 触发条件」等高级设置，切换「详细/详尽」模式可编辑")
 	# 玩家选择
 	_host._ui().add_section_label(form_vbox, "🎮 玩家选择 (玩家可以做什么?)", 2)
 	_build_l1_choices_editor(form_vbox, event)
+	# 详尽模式额外显示调试信息
+	if EditorMode.is_exhaustive():
+		_host._ui().add_hseparator(form_vbox)
+		_host._ui().add_info_label(form_vbox, "🔍 详尽模式：事件 ID「%s」· 结构化数据版本 %s" % [event_id, event.get("schema_version", "1")])
 
 ## 触发类型下拉
 func _add_l1_trigger_type_field(form_vbox: VBoxContainer, event: Dictionary) -> void:
