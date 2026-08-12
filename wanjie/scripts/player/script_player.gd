@@ -1452,6 +1452,11 @@ func _sync_save_state() -> void:
 	SaveManager.current_save.event_history = event_engine.to_dict() if event_engine else {}
 	SaveManager.current_save.world_state = world_state.to_dict() if world_state else {}
 	SaveManager.current_save.economy_state = economy_engine.to_dict() if economy_engine else {}
+	# 战斗统计同步（自动存档含胜场）
+	if SaveManager.current_save.player_state is Dictionary:
+		SaveManager.current_save.player_state["battle_wins"] = _battle_wins
+		SaveManager.current_save.player_state["battle_defeats"] = _battle_defeats
+		SaveManager.current_save.player_state["battle_flees"] = _battle_flees
 
 ## 蓝图日志处理：dialog 显示主文本（对话可见），info/error 进历史
 func _on_blueprint_log(level: String, text: String) -> void:
