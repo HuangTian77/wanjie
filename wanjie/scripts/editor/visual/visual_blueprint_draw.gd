@@ -156,7 +156,7 @@ static func hit_test_pins(screen_pos: Vector2, graph: Dictionary, offset: Vector
 	return null
 
 ## 绘制单个蓝图节点（带类型引脚, 蓝图视图）
-static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float, show_detail: bool = false, hover_pos: Vector2 = Vector2(-9999, -9999)) -> void:
+static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float, show_detail: bool = false, hover_pos: Vector2 = Vector2(-9999, -9999), exec_order: int = 0) -> void:
 	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
 	var node_height: float = BlueprintData.calc_node_height(node) * zoom
 	var node_width: float = 180.0 * zoom
@@ -199,6 +199,17 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	# 详尽模式：右下角显示节点 ID 与优先级
 	if show_detail:
 		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, sz.y - 4 * zoom), str(node.get("id", "?")), HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(8 * zoom), Color(0.5, 0.55, 0.6, 0.7))
+	# 详尽模式：执行顺序角标（左上角 圈数字）
+	if show_detail and exec_order > 0:
+		var order_txt: String = "①"
+		var circled := ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳"]
+		if exec_order <= circled.size():
+			order_txt = circled[exec_order - 1]
+		else:
+			order_txt = "#%d" % exec_order
+		var badge_pos := pos + Vector2(sz.x - 18 * zoom, 2 * zoom)
+		canvas.draw_circle(badge_pos + Vector2(0, 8 * zoom), 9 * zoom, Color(0.1, 0.1, 0.12, 0.85))
+		canvas.draw_string(ThemeDB.fallback_font, badge_pos, order_txt, HORIZONTAL_ALIGNMENT_RIGHT, int(20 * zoom), int(11 * zoom), Color(1, 0.9, 0.5))
 	# 绘制引脚（带 hover 高亮）
 	draw_typed_pins(canvas, node, pos, offset, zoom, hover_pos)
 

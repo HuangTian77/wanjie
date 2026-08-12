@@ -514,10 +514,14 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 			VisualBlueprintDraw.draw_connection(canvas, from_pos, to_pos, pin_color, 1.5 * _bp_zoom, _bp_offset, _bp_zoom)
 	# 3. 节点
 	var show_detail: bool = EditorMode.is_exhaustive()
+	# 详尽模式：计算执行顺序（BFS 从 start 沿 exec 连接）
+	var exec_order: Dictionary = {}
+	if show_detail:
+		exec_order = _bp_compute_exec_order(graph)
 	for nid in graph["nodes"]:
 		var node: Dictionary = graph["nodes"][nid]
 		var selected: bool = _bp_selected_ids.has(nid)
-		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, show_detail, _bp_last_mouse_pos)
+		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, show_detail, _bp_last_mouse_pos, int(exec_order.get(nid, 0)))
 	# 4. 拖拽中的临时连线
 	if _bp_pin_dragging:
 		var from_node: Dictionary = graph["nodes"].get(_bp_pin_drag_from_id, {})
@@ -541,6 +545,74 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 			int(_bp_zoom * 100.0), int(mouse_world.x), int(mouse_world.y), graph["nodes"].size()]
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
 		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
+
+## 详尽模式：计算节点执行顺序（从 start 沿 exec 连接 BFS）
+func _bp_compute_exec_order(graph: Dictionary) -> Dictionary:
+	var order: Dictionary = {}
+	var starts: Array[String] = []
+	for nid in graph["nodes"]:
+		var nt: String = str(graph["nodes"][nid].get("node_type", ""))
+		if nt == "start" or nt == "flow_start":
+			starts.append(nid)
+	# 无 start 时按节点 id 顺序兜底
+	if starts.is_empty():
+		var ids: Array = graph["nodes"].keys()
+		ids.sort()
+		for i in ids.size():
+			order[str(ids[i])] = i + 1
+		return order
+	var queue: Array[String] = starts.duplicate()
+	var visited: Dictionary = {}
+	var idx := 1
+	while not queue.is_empty():
+		var cur: String = queue.pop_front()
+		if visited.has(cur):
+			continue
+		visited[cur] = true
+		order[cur] = idx
+		idx += 1
+		for conn in graph.get("connections", []):
+			if str(conn.get("from_node", "")) == cur and bool(conn.get("is_exec", true)):
+				var to: String = str(conn.get("to_node", ""))
+				if not visited.has(to) and not queue.has(to):
+					queue.append(to)
+	return order
+
+## 详尽模式：查看整图数据 JSON（只读调试）
+func _bp_show_graph_data(graph: Dictionary) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "图数据（只读）"
+	dialog.min_size = Vector2i(520, 420)
+	dialog.size = Vector2i(520, 420)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(scroll)
+	var lbl := RichTextLabel.new()
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lbl.bbcode_enabled = true
+	lbl.fit_content = true
+	var json_txt: String = JSON.stringify(graph, "\t")
+	# 简化显示（节点数/连接数 + 前 60 行 JSON）
+	var summary := "[b]图数据：%d 节点 / %d 连接[/b]\n\n" % [graph["nodes"].size(), graph.get("connections", []).size()]
+	var lines: PackedStringArray = json_txt.split("\n")
+	if lines.size() > 60:
+		json_txt = ""
+		for i in 60:
+			json_txt += lines[i] + "\n"
+		json_txt += "\n…（共 %d 行，详细数据可复制）" % lines.size()
+	lbl.text = summary + "[color=#8a8f9a]%s[/color]" % json_txt
+	scroll.add_child(lbl)
+	# 复制按钮
+	var copy_btn := Button.new()
+	copy_btn.text = "⧉ 复制完整 JSON"
+	copy_btn.flat = true
+	copy_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(JSON.stringify(graph, "\t"))
+		ToastManager.success("完整图数据已复制"))
+	dialog.add_child(copy_btn)
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
 
 ## 蓝图模式画布输入(事件蓝图编辑视图)
 ## 缩放百分比临时提示（画布上 1 秒淡出）
@@ -867,6 +939,14 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		)
 		popup.add_child(cat_sub)
 		popup.add_submenu_item("%s %s" % [cat_info.get("icon", ""), cat_info.get("name", cat_key)], cat_sub.name)
+	# 详尽模式：图数据查看项
+	if EditorMode.is_exhaustive():
+		popup.add_separator()
+		popup.add_item("📋 图数据 JSON", 99001)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99001:
+				_bp_show_graph_data(graph)
+			popup.queue_free())
 	# 菜单关闭时清理
 	popup.popup_hide.connect(func():
 		popup.queue_free()
@@ -1114,6 +1194,9 @@ func _show_bp_node_properties(node_id: String) -> void:
 		for param in params:
 			var key: String = param["key"]
 			var label: String = param.get("label", key)
+			# 详尽模式：label 附加原始 key（调试定位用）
+			if EditorMode.is_exhaustive():
+				label = "%s (%s)" % [label, key]
 			var p_type: String = param.get("type", "string")
 			var current_val = props.get(key, param.get("default", null))
 			match p_type:
