@@ -3613,6 +3613,8 @@ func _on_menu_rating_pressed() -> void:
 		GameManager.user_data.rating_history[script_data.id]["stars"] = chosen[0]
 		GameManager.user_data.rating_history[script_data.id]["at"] = Time.get_datetime_string_from_system()
 		GameManager.user_data.save_user_data()
+		# 提交后自动关闭评分弹窗
+		dialog.hide())
 		# 首次评分成就
 		GameManager.user_data.unlock_achievement("first_rating", "首次为剧本评分"))
 	dialog.popup_centered()
