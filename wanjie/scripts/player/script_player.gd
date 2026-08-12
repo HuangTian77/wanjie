@@ -3513,6 +3513,8 @@ func _on_menu_shop_pressed() -> void:
 			_shop_refresh_count += 1
 			if _shop_refresh_count == 5:
 				ToastManager.info("已刷新 5 次，价格会更随机（低买高卖机会增多）")
+			elif _shop_refresh_count >= 10:
+				ToastManager.info("已刷新 %d 次，注意价格回归风险" % _shop_refresh_count)
 		dialog.queue_free()
 		_on_menu_shop_pressed())
 	refresh_row.add_child(refresh_btn)
