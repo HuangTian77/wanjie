@@ -2934,8 +2934,8 @@ func _on_menu_char_pressed() -> void:
 	if get_node_or_null("CharStatusDialog") != null:
 		get_node_or_null("CharStatusDialog").queue_free()
 	var dialog := AcceptDialog.new()
-	dialog.title = "角色状态"
-	dialog.min_size = Vector2i(420, 520)
+	dialog.title = "👤 角色状态"
+	dialog.min_size = Vector2i(420, 560)
 	dialog.name = "CharStatusDialog"
 	add_child(dialog)
 	# 打开面板时收起菜单（避免遮挡）
