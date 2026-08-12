@@ -4536,6 +4536,9 @@ func _do_rest() -> void:
 		ToastManager.info("🗓 新的一天开始了（第 %d 天）" % world_state.get_current_day())
 	_rest_start_day = world_state.get_current_day() if world_state != null else -1
 	_rest_count += 1
+	# 休息后菜单标题刷新（时间/状态变化）
+	_refresh_menu_title()
+	_update_ui()
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
