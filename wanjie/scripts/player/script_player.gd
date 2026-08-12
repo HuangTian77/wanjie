@@ -3848,6 +3848,10 @@ func _on_menu_bag_pressed() -> void:
 				use_btn.pressed.connect(func():
 					if combat_engine != null:
 						var ps3: Dictionary = combat_engine.player_combat_stats
+						# 满血时使用提示（收益低）
+						if int(ps3.get("hp", 0)) >= int(ps3.get("max_hp", 100)):
+							ToastManager.info("💡 HP 已满，使用药水无收益（可留到战斗）")
+							return
 						var heal_amt := 30
 						if "potion" in str(item_id):
 							heal_amt = 50
