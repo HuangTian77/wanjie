@@ -179,6 +179,24 @@ popup/item_1/text = "3 分钟"
 popup/item_2/text = "5 分钟"
 popup/item_3/text = "10 分钟"
 
+[node name="EditorModeHBox" type="HBoxContainer" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EditorModeLabel" type="Label" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/EditorModeHBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "编辑器模式"
+
+[node name="EditorModeOption" type="OptionButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection/EditorModeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(220, 0)
+item_count = 3
+popup/item_0/text = "🌱 简易"
+popup/item_1/text = "⚙ 详细"
+popup/item_2/text = "🧠 详尽"
+
 [node name="AnimToggle" type="CheckButton" parent="MarginContainer/VBox/Scroll/ContentVBox/DisplayCard/DisplaySection"]
 unique_name_in_owner = true
 layout_mode = 2

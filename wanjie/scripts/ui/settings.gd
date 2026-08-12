@@ -11,6 +11,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var text_speed_option: OptionButton = %TextSpeedOption
 @onready var auto_save_option: OptionButton = %AutoSaveOption
+@onready var editor_mode_option: OptionButton = %EditorModeOption
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
 @onready var master_volume: HSlider = %MasterVolume
 @onready var bgm_volume: HSlider = %BGMVolume
@@ -70,6 +71,11 @@ func _load_settings() -> void:
 			as_idx = i
 			break
 	auto_save_option.selected = as_idx
+	# 编辑器模式（同步 EditorMode 单例）
+	editor_mode_option.selected = EditorMode.current_mode
+	editor_mode_option.tooltip_text = "编辑器三档模式：简易（零基础）/ 详细（标准）/ 详尽（高级全部）"
+	editor_mode_option.item_selected.connect(func(idx: int):
+		EditorMode.set_mode(idx))
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
 	# 全屏
 	fullscreen_toggle.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)

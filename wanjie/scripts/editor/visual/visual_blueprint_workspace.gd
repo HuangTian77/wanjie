@@ -151,6 +151,9 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	_canvas.draw.connect(func(): _bp_mod._draw_blueprint_graph(_canvas, _bp_mod._get_active_graph()))
 	_canvas.gui_input.connect(func(event: InputEvent): _bp_mod._on_blueprint_canvas_input(event, _canvas))
 	_bp_mod._create_minimap(_canvas)
+	# 简易模式隐藏迷你地图（界面更干净，详细/详尽显示）
+	if EditorMode.is_simple() and _bp_mod._bp_minimap != null:
+		_bp_mod._bp_minimap.visible = false
 	# 右侧详情
 	var detail_scroll := ScrollContainer.new()
 	detail_scroll.custom_minimum_size.x = 280

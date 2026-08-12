@@ -157,6 +157,28 @@ func _build_l1_form_view(container: Control) -> void:
 	else:
 		_host._ui().add_section_label(form_vbox, "📝 事件表单编辑")
 		_host._ui().add_info_label(form_vbox, "点击左侧 [+ 添加事件] 创建你的第一个事件")
+	# 简易模式：左侧顶部引导卡片（新手流程）
+	if EditorMode.is_simple():
+		var guide := PanelContainer.new()
+		var guide_sb := StyleBoxFlat.new()
+		guide_sb.bg_color = Color(0.14, 0.18, 0.14, 0.9)
+		guide_sb.border_color = Color(0.35, 0.6, 0.35, 0.6)
+		guide_sb.set_border_width_all(1)
+		guide_sb.set_corner_radius_all(4)
+		guide_sb.content_margin_left = 10.0
+		guide_sb.content_margin_top = 8.0
+		guide_sb.content_margin_right = 10.0
+		guide_sb.content_margin_bottom = 8.0
+		guide.add_theme_stylebox_override("panel", guide_sb)
+		list_vbox.add_child(guide)
+		var guide_lbl := Label.new()
+		guide_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		guide_lbl.add_theme_font_size_override("font_size", 12)
+		guide_lbl.add_theme_color_override("font_color", Color(0.8, 0.95, 0.8))
+		guide_lbl.text = "🌱 简易模式新手流程：\n① 点击「+ 添加事件」创建剧情\n② 填写事件名称与描述\n③ 在右侧设置玩家选择\n④ 完成后 Ctrl+S 保存，F5 试玩"
+		guide.add_child(guide_lbl)
+		# 引导卡片置顶
+		list_vbox.move_child(guide, 0)
 
 ## 构建L1事件列表
 func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
