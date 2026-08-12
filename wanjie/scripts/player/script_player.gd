@@ -5057,7 +5057,7 @@ func _do_save_slot(slot: int) -> void:
 		_update_ui()
 		_refresh_menu_title()
 	else:
-		ToastManager.warning("保存失败")
+		ToastManager.warning("保存失败（磁盘空间不足或目录不可写）")
 	var sel := get_node_or_null("SlotSelector")
 	if sel:
 		sel.queue_free()
