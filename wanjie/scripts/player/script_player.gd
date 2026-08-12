@@ -2547,6 +2547,16 @@ func _restore_save_state(sd: SaveData) -> void:
 	var saved_interval: float = float(sd.player_state.get("auto_interval", 0.6))
 	if saved_interval > 0:
 		_auto_interval = saved_interval
+	# 自动按钮文本同步（读档后显示正确档位）
+	if _auto_battle:
+		var ab_sync := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/AutoBtn") as Button
+		if ab_sync != null:
+			var speed_sync: String = "自动 1x"
+			if _auto_interval <= 0.15:
+				speed_sync = "自动 4x"
+			elif _auto_interval <= 0.3:
+				speed_sync = "自动 2x"
+			ab_sync.text = speed_sync
 	# 读档重置战斗状态（若之前处于战斗）
 	if battle_panel != null:
 		battle_panel.visible = false
