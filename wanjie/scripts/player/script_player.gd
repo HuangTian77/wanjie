@@ -1162,6 +1162,12 @@ func _update_ui() -> void:
 			if p[0] >= p[1] and not _ending_shown:
 				_ending_shown = true
 				ToastManager.success("🎉 剧情全部体验完毕！")
+				# 进度条金色脉冲动效（通关庆祝）
+				if ThemeManager.animations_enabled:
+					var tw_prog := create_tween()
+					tw_prog.set_loops(3)
+					tw_prog.tween_property(progress_label, "modulate:a", 0.4, 0.2)
+					tw_prog.tween_property(progress_label, "modulate:a", 1.0, 0.2)
 				GameManager.unlock_achievement("finish_any_script")
 				# 通关徽章：进度条金色
 				progress_label.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
