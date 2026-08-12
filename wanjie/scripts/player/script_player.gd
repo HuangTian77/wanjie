@@ -1692,6 +1692,10 @@ func _on_tavern_send_pressed() -> void:
 		ToastManager.info("先输入一句话再发送")
 		return
 	tavern_input.text = ""
+	# 发送后恢复发送按钮可用态
+	var send_btn := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/TavernSend") as Button
+	if send_btn != null:
+		send_btn.disabled = true
 	# 关键词彩蛋（特定话题特殊回应）
 	var easter_egg := ""
 	if text.contains("遗物") or text.contains("宝物"):
