@@ -1556,10 +1556,14 @@ func _on_tavern_clear_pressed() -> void:
 	confirm_clr.dialog_text = "确定清空 %s 的对话历史？此操作不可恢复。" % char.get("name", "角色")
 	confirm_clr.ok_button_text = "清空"
 	confirm_clr.confirmed.connect(func():
+		# 好感度保留（清空对话不影响情谊）
+		var mood_keep: int = _tavern_moods.get(str(char.get("id", "")), 0)
 		TavernManager.clear_history()
 		tavern_msgs.clear()
 		_tavern_append("assistant", char.get("greeting", "你好，旅者。"))
-		ToastManager.info("已清空 %s 的对话历史" % char.get("name", "角色")))
+		if mood_keep > 0:
+			_tavern_moods[str(char.get("id", ""))] = mood_keep
+		ToastManager.info("已清空 %s 的对话历史（好感度保留）" % char.get("name", "角色")))
 	add_child(confirm_clr)
 	confirm_clr.popup_centered()
 
