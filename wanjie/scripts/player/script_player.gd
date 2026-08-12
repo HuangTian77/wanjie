@@ -3556,6 +3556,10 @@ func _on_menu_rating_pressed() -> void:
 	dialog.name = "RatingDialog"
 	dialog.title = "评分"
 	dialog.dialog_text = "为《%s》评分（当前 %.1f ★，%d 人）" % [script_data.name if script_data else "", script_data.rating if script_data else 0.0, script_data.rating_count if script_data else 0]
+	# 已评过分时显示我的评分
+	if GameManager.user_data != null and GameManager.user_data.rating_history.has(script_data.id if script_data else ""):
+		var my_stars: int = int(GameManager.user_data.rating_history[script_data.id]["stars"])
+		dialog.dialog_text += "\n（我的评分：%s）" % "★".repeat(my_stars)
 	dialog.get_ok_button().text = "提交评分"
 	dialog.get_cancel_button().text = "下次再说"
 	# Esc 关闭视为"下次再说"（不提交）
