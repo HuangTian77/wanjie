@@ -1732,6 +1732,8 @@ func _on_tavern_close_pressed() -> void:
 		GameManager.user_data.tavern_moods = _tavern_moods.duplicate()
 		GameManager.user_data.save_user_data()
 	tavern_panel.visible = false
+	# 关闭时恢复透明度（防淡入残留）
+	tavern_panel.modulate.a = 1.0
 	# 焦点还原（键盘可继续操作）
 	main_text.grab_focus()
 
