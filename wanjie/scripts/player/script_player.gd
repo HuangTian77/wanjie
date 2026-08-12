@@ -3465,9 +3465,11 @@ func _on_menu_shop_pressed() -> void:
 		inner.add_child(buy_title2)
 		for m in economy_engine.economy_data.markets:
 			var mid: String = m.get("id", "")
-			list.append_text("[b]%s[/b]\n" % m.get("name", mid))
+			# 市场名 + 商品数
+			var goods_all: Array = m.get("goods", [])
+			list.append_text("[b]%s[/b]（%d 件）\n" % [m.get("name", mid), goods_all.size()])
 			# 商品按价格升序显示（性价比在前）
-			var goods: Array = m.get("goods", [])
+			var goods: Array = goods_all.duplicate()
 			goods.sort_custom(func(a, b):
 				return economy_engine.get_price(mid, str(a.get("item", ""))) < economy_engine.get_price(mid, str(b.get("item", ""))))
 			for g in goods:
