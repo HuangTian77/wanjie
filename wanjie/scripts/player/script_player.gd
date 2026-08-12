@@ -2830,6 +2830,12 @@ func _on_battle_skill_pressed() -> void:
 
 func _on_battle_flee_pressed() -> void:
 	if combat_engine != null:
+		# 逃跑成功率 tooltip（含烟雾弹加成）
+		var flee_btn := get_node_or_null("BattlePanel/BattleVBox/BattleButtons/FleeBtn") as Button
+		if flee_btn != null:
+			var base_flee: float = 0.5 + float(combat_engine.player_combat_stats.get("agility", 10)) * 0.02
+			var smoke_flee: bool = economy_engine != null and int(economy_engine.player_inventory.get("smoke_bomb", 0)) > 0
+			flee_btn.tooltip_text = "逃跑（基础成功率 %d%%%s）" % [int(base_flee * 100.0), "，有烟雾弹 +15%" if smoke_flee else ""]
 		# 烟雾弹消耗并提升逃跑成功率
 		var flee_bonus := 0.0
 		if economy_engine != null and int(economy_engine.player_inventory.get("smoke_bomb", 0)) > 0:
