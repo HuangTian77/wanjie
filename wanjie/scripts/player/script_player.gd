@@ -2764,9 +2764,13 @@ func _on_menu_delete_pressed() -> void:
 
 ## 角色状态面板
 func _on_menu_char_pressed() -> void:
+	# 面板已打开则聚焦而非重复创建
+	if get_node_or_null("CharStatusDialog") != null:
+		get_node_or_null("CharStatusDialog").queue_free()
 	var dialog := AcceptDialog.new()
 	dialog.title = "角色状态"
 	dialog.min_size = Vector2i(420, 520)
+	dialog.name = "CharStatusDialog"
 	add_child(dialog)
 	# 打开面板时收起菜单（避免遮挡）
 	menu_panel.visible = false
