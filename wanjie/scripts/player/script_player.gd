@@ -383,6 +383,8 @@ func _unhandled_input(event: InputEvent) -> void:
 					combat_engine.player_use_skill(sid, 0)
 					_refresh_battle_ui()
 					get_viewport().set_input_as_handled()
+			else:
+				ToastManager.info("技能 %d 不存在（当前 %d 个技能）" % [skill_idx + 1, skills.size()])
 	elif event is InputEventKey and event.pressed and not event.echo and not battle_panel.visible \
 			and event.keycode >= KEY_1 and event.keycode <= KEY_9:
 		# 非战斗：数字键快速选择剧情选项（1-9）
