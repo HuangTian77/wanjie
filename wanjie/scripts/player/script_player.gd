@@ -2544,6 +2544,9 @@ func _restore_save_state(sd: SaveData) -> void:
 	_battle_flees = int(sd.player_state.get("battle_flees", _battle_flees))
 	# 恢复自动战斗偏好（读档保持）
 	_auto_battle = bool(sd.player_state.get("auto_battle", _auto_battle))
+	var saved_interval: float = float(sd.player_state.get("auto_interval", 0.6))
+	if saved_interval > 0:
+		_auto_interval = saved_interval
 	# 读档重置战斗状态（若之前处于战斗）
 	if battle_panel != null:
 		battle_panel.visible = false
@@ -3063,6 +3066,7 @@ func _on_battle_auto_pressed() -> void:
 	# 自动战斗状态写入存档（重进保持）
 	if SaveManager.current_save != null:
 		SaveManager.current_save.player_state["auto_battle"] = _auto_battle
+		SaveManager.current_save.player_state["auto_interval"] = _auto_interval
 	# 按钮文本显示当前档位
 	if auto_btn is Button:
 		if _auto_battle:
