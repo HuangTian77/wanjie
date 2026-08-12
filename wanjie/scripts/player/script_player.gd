@@ -3912,6 +3912,8 @@ func _on_menu_log_pressed() -> void:
 	stat_line = "📜 历史 %d 条" % history_text.get_line_count()
 	if world_state:
 		stat_line += " · 🗓 %s" % world_state.get_time_display()
+	if combat_engine != null and not combat_engine.player_combat_stats.is_empty():
+		stat_line += " · Lv.%d" % int(combat_engine.player_combat_stats.get("level", 1))
 	if event_engine:
 		var causal_count: int = event_engine.causal_marks.size()
 		stat_line += " · 因果标记 %d" % causal_count
