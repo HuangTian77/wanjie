@@ -218,6 +218,12 @@ func _on_edit_mode_changed(mode: int) -> void:
 	if edit_mode_opt != null:
 		edit_mode_opt.selected = mode
 		edit_mode_opt.tooltip_text = "%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]]
+	# 首次切简易模式：弹出模式说明引导
+	if mode == EditorMode.SIMPLE and GameManager.user_data != null \
+			and not GameManager.user_data.editor_simple_guide_seen:
+		GameManager.user_data.editor_simple_guide_seen = true
+		GameManager.save_user_data()
+		_show_edit_mode_guide(mode)
 	# 清空 visual 相关编辑器缓存（重新构建以应用过滤/精简）
 	var to_erase: Array[String] = []
 	for key in _editors:
@@ -232,6 +238,27 @@ func _on_edit_mode_changed(mode: int) -> void:
 		ToastManager.info("已切换为%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
 	else:
 		ToastManager.info("编辑模式：%s" % EditorMode.MODE_NAMES[mode])
+
+## 编辑模式说明弹窗（三模式差异）
+func _show_edit_mode_guide(_mode: int) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "编辑模式说明"
+	dialog.dialog_text = """【三档编辑模式】
+🌱 简易：为游戏开发零基础用户精简
+   · 只显示核心节点（开始/分支/对话/选择/变量）
+   · 隐藏高级区块（触发条件/前置条件）与调试工具
+⚙ 详细：为有经验的开发者提供标准功能
+   · 完整节点分类 + 常用高级参数
+🧠 详尽：为高级开发者提供最详细功能
+   · 全部节点/字段 + 执行顺序标注 + 图数据查看
+
+切换方式：顶部工具栏「🌱/⚙/🧠」下拉随时切换，
+切换后当前编辑面板会自动按新模式重建。"""
+	dialog.min_size = Vector2i(520, 380)
+	dialog.ok_button_text = "知道了"
+	var host_node: Node = self
+	host_node.add_child(dialog)
+	dialog.popup_centered()
 
 ## 加载剧本数据
 func _load_script() -> void:

@@ -9,6 +9,8 @@ extends Resource
 @export var first_launch: bool = true
 ## 编辑器首次访问标记（首启引导）
 @export var editor_visited: bool = false
+## 简易模式引导已看过（首次切换简易时弹说明）
+@export var editor_simple_guide_seen: bool = false
 ## 诗墨（软货币）
 @export var shimo: int = 1250
 ## 界石（硬货币）
@@ -81,6 +83,7 @@ func to_dict() -> Dictionary:
 		"player_name": player_name,
 		"first_launch": first_launch,
 		"editor_visited": editor_visited,
+		"editor_simple_guide_seen": editor_simple_guide_seen,
 		"shimo": shimo,
 		"jieshi": jieshi,
 		"inspiration": inspiration,

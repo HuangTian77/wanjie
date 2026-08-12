@@ -280,10 +280,10 @@ static func _register_flow_nodes() -> void:
 		[_param("pin_count", "输出数量", "int", 2, {"min": 2, "max": 8})], "P0", _MODE_CORE)
 	_reg("flow_for_loop", "flow", "循环", "重复执行指定次数",
 		[_exec_in(), _pin("count", I)], [_exec_out("body"), _exec_out("done"), _pin("index", I)],
-		[], "P1")
+		[], "P1", _MODE_EXPERT)
 	_reg("flow_random_select", "flow", "随机选择", "按权重随机选择一条路径执行",
 		[_exec_in()], [_exec_out("out_0"), _exec_out("out_1")],
-		[_param("branch_count", "分支数", "int", 2, {"min": 2, "max": 6})], "P1")
+		[_param("branch_count", "分支数", "int", 2, {"min": 2, "max": 6})], "P1", _MODE_EXPERT)
 	_reg("flow_wait", "flow", "等待", "延迟指定秒数后继续执行",
 		[_exec_in(), _pin("seconds", F)], [_exec_out()],
 		[], "P1", _MODE_CORE)
@@ -301,10 +301,10 @@ static func _register_flow_nodes() -> void:
 		[_param("var_name", "变量名", "string", "")], "P0", _MODE_CORE)
 	_reg("flow_expression", "flow", "表达式", "执行自定义GDScript表达式",
 		[_exec_in()], [_pin("result", A), _exec_out()],
-		[_param("code", "代码", "string", "")], "P1")
+		[_param("code", "代码", "string", "")], "P1", _MODE_EXPERT)
 	_reg("flow_sub_graph", "flow", "子蓝图", "调用另一张蓝图图",
 		[_exec_in()], [_exec_out()],
-		[_ref_param("graph_id", "目标图", "blueprint_graphs")], "P2")
+		[_ref_param("graph_id", "目标图", "blueprint_graphs")], "P2", _MODE_EXPERT)
 
 # === 2. 经济交易 (economy) ===
 static func _register_economy_nodes() -> void:
@@ -350,26 +350,26 @@ static func _register_economy_nodes() -> void:
 		_param("give_qty", "付出数量", "int", 1, {"min": 1, "max": 999}),
 		_ref_param("get_item", "获得物品", "economy_resources"),
 		_param("get_qty", "获得数量", "int", 1, {"min": 1, "max": 999}),
-		_ref_param("market_id", "市场", "economy_markets")], "P1")
+		_ref_param("market_id", "市场", "economy_markets")], "P1", _MODE_EXPERT)
 	_reg("eco_set_trade_rule", "economy", "设定交易规则", "修改全局交易规则",
 		[_exec_in()], [_exec_out()],
 		[_enum_param("rule_key", "规则", ["barter_enabled", "barter_rate", "faction_discount"], "barter_enabled"),
-		_param("rule_value", "值", "string", "")], "P2")
+		_param("rule_value", "值", "string", "")], "P2", _MODE_EXPERT)
 	_reg("eco_refresh_price", "economy", "刷新市场价格", "触发市场价格波动",
 		[_exec_in()], [_exec_out()],
-		[_ref_param("market_id", "市场", "economy_markets")], "P1")
+		[_ref_param("market_id", "市场", "economy_markets")], "P1", _MODE_EXPERT)
 	_reg("eco_adjust_supply", "economy", "调整供需", "修改市场商品的供需参数",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("market_id", "市场", "economy_markets"),
 		_ref_param("item_id", "物品", "economy_resources"),
 		_param("demand_delta", "需求变化", "float", 0.0, {"min": -1.0, "max": 1.0}),
-		_param("supply_delta", "供给变化", "float", 0.0, {"min": -1.0, "max": 1.0})], "P2")
+		_param("supply_delta", "供给变化", "float", 0.0, {"min": -1.0, "max": 1.0})], "P2", _MODE_EXPERT)
 	_reg("eco_discount", "economy", "给予折扣", "为商品设置临时折扣",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("market_id", "市场", "economy_markets"),
 		_ref_param("item_id", "物品", "economy_resources"),
 		_param("discount_pct", "折扣百分比", "float", 10.0, {"min": 1.0, "max": 100.0}),
-		_param("duration", "持续回合", "int", 3, {"min": 1, "max": 99})], "P2")
+		_param("duration", "持续回合", "int", 3, {"min": 1, "max": 99})], "P2", _MODE_EXPERT)
 	_reg("eco_get_price", "economy", "查询价格", "获取物品在市场的当前价格",
 		[], [_pin("price", F)],
 		[_ref_param("market_id", "市场", "economy_markets"),
@@ -400,7 +400,7 @@ static func _register_story_nodes() -> void:
 	_reg("story_set_prereq", "story", "设置前置条件", "为事件设置前置事件要求",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("event_id", "目标事件", "event_story_events"),
-		_ref_param("prereq_event_id", "前置事件", "event_story_events")], "P1")
+		_ref_param("prereq_event_id", "前置事件", "event_story_events")], "P1", _MODE_EXPERT)
 	_reg("story_record", "story", "记录事件历史", "将事件标记为已触发",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("event_id", "事件", "event_story_events"),
@@ -411,7 +411,7 @@ static func _register_story_nodes() -> void:
 	_reg("story_jump_chain", "story", "跳转事件链", "切换到指定事件链的某个事件",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("chain_id", "事件链", "event_chains"),
-		_ref_param("target_event", "目标事件", "event_story_events")], "P1")
+		_ref_param("target_event", "目标事件", "event_story_events")], "P1", _MODE_EXPERT)
 	_reg("story_random", "story", "随机事件抽取", "从事件池中随机触发一个事件",
 		[_exec_in()], [_exec_out(), _pin("event_id", S)],
 		[_param("probability", "触发概率", "float", 0.3, {"min": 0.0, "max": 1.0})], "P1")
@@ -421,14 +421,14 @@ static func _register_story_nodes() -> void:
 		_enum_param("subject", "主体", ["player", "world", "faction", "time", "location", "history"], "player"),
 		_param("field", "字段", "string", "level"),
 		_enum_param("operator", "运算符", [">=", "<=", ">", "<", "==", "!="], ">="),
-		_param("value", "值", "string", "1")], "P0")
+		_param("value", "值", "string", "1")], "P0", _MODE_EXPERT)
 	_reg("story_add_consequence", "story", "添加选择后果", "为事件选项追加后果",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("event_id", "事件", "event_story_events"),
 		_param("choice_idx", "选项索引", "int", 0, {"min": 0, "max": 9}),
 		_enum_param("action_type", "动作类型", ["modify_stat", "give_item", "trigger_event", "change_relation", "set_variable"], "modify_stat"),
 		_param("target", "目标", "string", "player"),
-		_param("effect", "效果", "string", "gold +10")], "P0")
+		_param("effect", "效果", "string", "gold +10")], "P0", _MODE_EXPERT)
 	_reg("story_dialog", "story", "播放对话", "显示NPC对话内容",
 		[_exec_in()], [_exec_out()],
 		[_param("speaker", "说话者", "string", ""),
@@ -451,7 +451,7 @@ static func _register_ability_nodes() -> void:
 		[_ref_param("skill_id", "技能", "ability_skills")], "P0")
 	_reg("ability_upgrade", "ability", "升级技能", "提升技能等级",
 		[_exec_in()], [_exec_out(), _pin("success", B)],
-		[_ref_param("skill_id", "技能", "ability_skills")], "P1")
+		[_ref_param("skill_id", "技能", "ability_skills")], "P1", _MODE_EXPERT)
 	_reg("ability_cast", "ability", "施放技能", "使用技能对目标生效",
 		[_exec_in()], [_exec_out(), _pin("result", A)],
 		[_ref_param("skill_id", "技能", "ability_skills"),
@@ -464,7 +464,7 @@ static func _register_ability_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_ref_param("skill_id", "技能", "ability_skills"),
 		_ref_param("prereq_skill", "前置技能", "ability_skills"),
-		_param("req_level", "需求等级", "int", 1, {"min": 1, "max": 99})], "P2")
+		_param("req_level", "需求等级", "int", 1, {"min": 1, "max": 99})], "P2", _MODE_EXPERT)
 	_reg("ability_give_buff", "ability", "给予状态效果", "对目标施加状态效果",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("effect_id", "状态效果", "ability_status_effects"),
@@ -476,13 +476,13 @@ static func _register_ability_nodes() -> void:
 		_enum_param("target", "目标", ["self", "enemy"], "self")], "P1")
 	_reg("ability_calc_damage", "ability", "计算伤害/治疗", "根据技能公式计算数值",
 		[], [_pin("value", I)],
-		[_ref_param("skill_id", "技能", "ability_skills")], "P2")
+		[_ref_param("skill_id", "技能", "ability_skills")], "P2", _MODE_EXPERT)
 	_reg("ability_get_info", "ability", "获取技能信息", "读取技能的详细数据",
 		[], [_pin("skill_data", A)],
 		[_ref_param("skill_id", "技能", "ability_skills")], "P1")
 	_reg("ability_unlock_school", "ability", "解锁学派", "解锁一个技能学派",
 		[_exec_in()], [_exec_out()],
-		[_enum_param("school", "学派", ["elemental_fire", "elemental_water", "elemental_earth", "elemental_wind", "holy_light", "shadow_dark", "physical_melee", "physical_ranged"], "elemental_fire")], "P2")
+		[_enum_param("school", "学派", ["elemental_fire", "elemental_water", "elemental_earth", "elemental_wind", "holy_light", "shadow_dark", "physical_melee", "physical_ranged"], "elemental_fire")], "P2", _MODE_EXPERT)
 
 # === 5. 战斗系统 (combat) ===
 static func _register_combat_nodes() -> void:
@@ -503,7 +503,7 @@ static func _register_combat_nodes() -> void:
 		_param("hp", "生命值", "int", 50, {"min": 1, "max": 99999}),
 		_param("atk", "攻击力", "int", 10, {"min": 1, "max": 9999}),
 		_param("def_val", "防御力", "int", 5, {"min": 0, "max": 9999}),
-		_enum_param("element", "元素", ["", "fire", "water", "earth", "wind", "light", "dark"], "")], "P0")
+		_enum_param("element", "元素", ["", "fire", "water", "earth", "wind", "light", "dark"], "")], "P0", _MODE_EXPERT)
 	_reg("combat_damage", "combat", "造成伤害", "对目标造成固定伤害",
 		[_exec_in()], [_exec_out(), _pin("actual", I)],
 		[_enum_param("target", "目标", ["enemy_0", "enemy_1", "enemy_2", "player"], "enemy_0"),
@@ -526,7 +526,7 @@ static func _register_combat_nodes() -> void:
 		_param("buff_id", "效果ID", "string", "")], "P1")
 	_reg("combat_check_end", "combat", "判定战斗胜负", "检查战斗是否结束",
 		[_exec_in()], [_exec_out("victory"), _exec_out("defeat"), _exec_out("ongoing")],
-		[], "P0")
+		[], "P0", _MODE_EXPERT)
 	_reg("combat_reward", "combat", "战斗奖励", "发放战斗胜利奖励",
 		[_exec_in()], [_exec_out()],
 		[_param("exp", "经验值", "int", 50, {"min": 0, "max": 99999}),
@@ -541,7 +541,7 @@ static func _register_combat_nodes() -> void:
 		[_enum_param("target", "目标", ["player", "enemy_0", "enemy_1"], "player"),
 		_param("hp", "HP", "int", 100, {"min": 1, "max": 99999}),
 		_param("atk", "ATK", "int", 15, {"min": 1, "max": 9999}),
-		_param("def_val", "DEF", "int", 10, {"min": 0, "max": 9999})], "P1")
+		_param("def_val", "DEF", "int", 10, {"min": 0, "max": 9999})], "P1", _MODE_EXPERT)
 
 # === 6. 世界势力 (world) ===
 static func _register_world_nodes() -> void:
@@ -561,12 +561,12 @@ static func _register_world_nodes() -> void:
 	_reg("world_faction_power", "world", "修改势力实力", "增减势力的综合实力值",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("faction_id", "势力", "worldview_factions"),
-		_param("delta", "变化量", "int", 10, {"min": -999, "max": 999})], "P0")
+		_param("delta", "变化量", "int", 10, {"min": -999, "max": 999})], "P0", _MODE_EXPERT)
 	_reg("world_faction_relation", "world", "修改势力关系", "修改两个势力间的关系值",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("faction_a", "势力A", "worldview_factions"),
 		_ref_param("faction_b", "势力B", "worldview_factions"),
-		_param("delta", "变化量", "float", 0.1, {"min": -1.0, "max": 1.0})], "P0")
+		_param("delta", "变化量", "float", 0.1, {"min": -1.0, "max": 1.0})], "P0", _MODE_EXPERT)
 	_reg("world_switch_camp", "world", "切换阵营", "将玩家阵营切换到指定势力",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("faction_id", "势力", "worldview_factions")], "P1")
@@ -577,11 +577,11 @@ static func _register_world_nodes() -> void:
 		_param("state_value", "属性值", "string", "")], "P1")
 	_reg("world_advance_time", "world", "推进时间", "让游戏世界时间前进",
 		[_exec_in()], [_exec_out()],
-		[_param("hours", "小时数", "int", 1, {"min": 1, "max": 8760})], "P0")
+		[_param("hours", "小时数", "int", 1, {"min": 1, "max": 8760})], "P0", _MODE_EXPERT)
 	_reg("world_add_effect", "world", "添加世界效果", "添加一个有时限的全局效果",
 		[_exec_in()], [_exec_out()],
 		[_param("effect_id", "效果ID", "string", ""),
-		_param("duration", "持续回合", "int", 5, {"min": 1, "max": 999})], "P1")
+		_param("duration", "持续回合", "int", 5, {"min": 1, "max": 999})], "P1", _MODE_EXPERT)
 	_reg("world_get_faction", "world", "获取势力信息", "读取势力的当前状态数据",
 		[], [_pin("faction_data", A)],
 		[_ref_param("faction_id", "势力", "worldview_factions")], "P1")
@@ -611,14 +611,14 @@ static func _register_player_nodes() -> void:
 		_param("quantity", "数量", "int", 1, {"min": 1, "max": 9999})], "P0")
 	_reg("player_set_capacity", "player", "修改背包容量", "设置玩家背包最大容量",
 		[_exec_in()], [_exec_out()],
-		[_param("capacity", "容量", "int", 50, {"min": 1, "max": 999})], "P2")
+		[_param("capacity", "容量", "int", 50, {"min": 1, "max": 999})], "P2", _MODE_EXPERT)
 	_reg("player_teleport", "player", "传送玩家", "将玩家传送到指定区域",
 		[_exec_in()], [_exec_out()],
-		[_ref_param("region_id", "目标区域", "worldview_regions")], "P0")
+		[_ref_param("region_id", "目标区域", "worldview_regions")], "P0", _MODE_EXPERT)
 	_reg("player_set_position", "player", "设置位置", "精确设置玩家坐标",
 		[_exec_in()], [_exec_out()],
 		[_param("x", "X坐标", "int", 0), _param("y", "Y坐标", "int", 0),
-		_ref_param("region_id", "区域", "worldview_regions")], "P1")
+		_ref_param("region_id", "区域", "worldview_regions")], "P1", _MODE_EXPERT)
 	_reg("player_level_exp", "player", "修改等级/经验", "增加经验或设置等级",
 		[_exec_in()], [_exec_out(), _pin("leveled_up", B)],
 		[_enum_param("mode", "模式", ["add_exp", "set_level", "add_level"], "add_exp"),
@@ -627,7 +627,7 @@ static func _register_player_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_param("mark_id", "标记ID", "string", ""),
 		_ref_param("from_event", "来源事件", "event_story_events"),
-		_param("intensity", "强度", "float", 1.0, {"min": 0.0, "max": 10.0})], "P1")
+		_param("intensity", "强度", "float", 1.0, {"min": 0.0, "max": 10.0})], "P1", _MODE_EXPERT)
 
 # === 8. 任务系统 (quest) ===
 static func _register_quest_nodes() -> void:
@@ -643,13 +643,13 @@ static func _register_quest_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_ref_param("quest_id", "任务", "quest_pool"),
 		_param("objective_idx", "目标索引", "int", 0, {"min": 0, "max": 9}),
-		_param("progress", "进度增量", "int", 1, {"min": 1, "max": 999})], "P0")
+		_param("progress", "进度增量", "int", 1, {"min": 1, "max": 999})], "P0", _MODE_EXPERT)
 	_reg("quest_complete", "quest", "完成任务", "将任务标记为已完成",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("quest_id", "任务", "quest_pool")], "P0")
 	_reg("quest_fail", "quest", "失败任务", "将任务标记为失败",
 		[_exec_in()], [_exec_out()],
-		[_ref_param("quest_id", "任务", "quest_pool")], "P1")
+		[_ref_param("quest_id", "任务", "quest_pool")], "P1", _MODE_EXPERT)
 	_reg("quest_reward", "quest", "发放任务奖励", "给予任务完成奖励",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("quest_id", "任务", "quest_pool"),
@@ -662,7 +662,7 @@ static func _register_quest_nodes() -> void:
 		[_exec_in()], [_exec_out()],
 		[_ref_param("quest_id", "任务", "quest_pool"),
 		_param("description", "目标描述", "string", ""),
-		_param("target_count", "需求数量", "int", 1, {"min": 1, "max": 999})], "P1")
+		_param("target_count", "需求数量", "int", 1, {"min": 1, "max": 999})], "P1", _MODE_EXPERT)
 	_reg("quest_track", "quest", "追踪任务", "将任务设为当前追踪",
 		[_exec_in()], [_exec_out()],
 		[_ref_param("quest_id", "任务", "quest_pool")], "P2")
