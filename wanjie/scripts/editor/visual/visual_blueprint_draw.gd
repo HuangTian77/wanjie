@@ -12,6 +12,16 @@ const BP_GRID_SIZE := 20.0
 const BP_MINIMAP_SIZE := Vector2(160, 110)
 
 ## 字体缓存（绘制热点优化: 避免每节点重复查 ThemeDB.fallback_font）
+static var _node_bg_cache: StyleBoxFlat = null
+
+## 节点背景圆角框（缓存复用，UE 风格 4px 圆角）
+static func _node_bg_box(bg_color: Color) -> StyleBoxFlat:
+	if _node_bg_cache == null:
+		_node_bg_cache = StyleBoxFlat.new()
+		_node_bg_cache.set_corner_radius_all(4)
+		_node_bg_cache.set_content_margin_all(0)
+	_node_bg_cache.bg_color = bg_color
+	return _node_bg_cache
 static var _cached_font: Font = null
 
 ## 坐标转换（屏幕 -> 世界）
@@ -146,7 +156,7 @@ static func hit_test_pins(screen_pos: Vector2, graph: Dictionary, offset: Vector
 	return null
 
 ## 绘制单个蓝图节点（带类型引脚, 蓝图视图）
-static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float) -> void:
+static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float, show_detail: bool = false, hover_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
 	var node_height: float = BlueprintData.calc_node_height(node) * zoom
 	var node_width: float = 180.0 * zoom
@@ -160,9 +170,9 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 		var text: String = node["properties"].get("text", "Comment")
 		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8, 16) * zoom, text, HORIZONTAL_ALIGNMENT_LEFT, int(comment_sz.x - 16), int(12 * zoom), Color(0.7, 0.7, 0.5))
 		return
-	# 节点背景
+	# 节点背景（4px 圆角，UE 风格）
 	var bg_color := Color(node_color.r * 0.25, node_color.g * 0.25, node_color.b * 0.25, 0.95)
-	canvas.draw_rect(Rect2(pos, sz), bg_color)
+	canvas.draw_style_box(_node_bg_box(bg_color), Rect2(pos, sz))
 	# 选中高亮
 	if selected:
 		canvas.draw_rect(Rect2(pos, sz), Color(1.0, 0.8, 0.2, 0.9), false, 2.5)
@@ -186,11 +196,14 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 		summary = str(props["code"]).left(20)
 	if summary != "":
 		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, (BP_TITLE_HEIGHT + 14) * zoom), summary, HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(9 * zoom), Color(0.6, 0.7, 0.8, 0.8))
-	# 绘制引脚
-	draw_typed_pins(canvas, node, pos, offset, zoom)
+	# 详尽模式：右下角显示节点 ID 与优先级
+	if show_detail:
+		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, sz.y - 4 * zoom), str(node.get("id", "?")), HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(8 * zoom), Color(0.5, 0.55, 0.6, 0.7))
+	# 绘制引脚（带 hover 高亮）
+	draw_typed_pins(canvas, node, pos, offset, zoom, hover_pos)
 
 ## 绘制类型引脚（执行=三角, 数据=圆形）
-static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vector2, _offset: Vector2, zoom: float) -> void:
+static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vector2, _offset: Vector2, zoom: float, hover_pos: Vector2 = Vector2(-9999, -9999)) -> void:
 	var node_width: float = 180.0 * zoom
 	var pin_start_y: float = screen_pos.y + (BP_TITLE_HEIGHT + 10) * zoom
 	var pin_spacing: float = 20.0 * zoom
@@ -213,6 +226,9 @@ static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vecto
 			canvas.draw_colored_polygon(tri, col)
 		else:
 			canvas.draw_circle(pin_pos, r, col)
+		# hover 高亮（白圈 + 放大）
+		if hover_pos.distance_to(pin_pos) < 14 * zoom:
+			canvas.draw_arc(pin_pos, r + 3 * zoom, 0, TAU, 24, Color(1, 1, 1, 0.9), 1.5)
 		# 引脚名称
 		canvas.draw_string(ThemeDB.fallback_font, pin_pos + Vector2(r + 3, 4) * zoom, pin.get("name", ""), HORIZONTAL_ALIGNMENT_LEFT, int(60 * zoom), int(9 * zoom), Color(0.6, 0.65, 0.7))
 	# 输出引脚(右侧)
@@ -233,6 +249,9 @@ static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vecto
 			canvas.draw_colored_polygon(tri, col)
 		else:
 			canvas.draw_circle(pin_pos, r, col)
+		# hover 高亮（白圈 + 放大）
+		if hover_pos.distance_to(pin_pos) < 14 * zoom:
+			canvas.draw_arc(pin_pos, r + 3 * zoom, 0, TAU, 24, Color(1, 1, 1, 0.9), 1.5)
 		# 引脚名称(右对齐)
 		canvas.draw_string(ThemeDB.fallback_font, pin_pos + Vector2(-65 * zoom, 4 * zoom), pin["name"], HORIZONTAL_ALIGNMENT_RIGHT, int(60 * zoom), int(9 * zoom), Color(0.6, 0.65, 0.7))
 

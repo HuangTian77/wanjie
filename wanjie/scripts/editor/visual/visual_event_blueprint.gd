@@ -17,6 +17,8 @@ var _bp_offset := Vector2.ZERO
 var _bp_zoom := 1.0
 var _bp_dragging := false
 var _bp_drag_start := Vector2.ZERO
+## 鼠标位置（引脚 hover 高亮）
+var _bp_last_mouse_pos := Vector2(-9999, -9999)
 var _bp_node_dragging := false
 var _bp_node_drag_id := ""
 var _bp_node_drag_offset := Vector2.ZERO
@@ -511,10 +513,11 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 				pin_color = BlueprintData.PIN_COLORS.get(dt, pin_color)
 			VisualBlueprintDraw.draw_connection(canvas, from_pos, to_pos, pin_color, 1.5 * _bp_zoom, _bp_offset, _bp_zoom)
 	# 3. 节点
+	var show_detail: bool = EditorMode.is_exhaustive()
 	for nid in graph["nodes"]:
 		var node: Dictionary = graph["nodes"][nid]
 		var selected: bool = _bp_selected_ids.has(nid)
-		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom)
+		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, show_detail, _bp_last_mouse_pos)
 	# 4. 拖拽中的临时连线
 	if _bp_pin_dragging:
 		var from_node: Dictionary = graph["nodes"].get(_bp_pin_drag_from_id, {})
@@ -531,6 +534,13 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var rect := Rect2(_bp_box_start, _bp_box_end - _bp_box_start).abs()
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.15))
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.6), false, 1.0)
+	# 6. 详尽模式：右下角常驻缩放/坐标指示条
+	if EditorMode.is_exhaustive():
+		var mouse_world := _bp_screen_to_world(_bp_last_mouse_pos)
+		var info_txt: String = "🔍 缩放 %d%% | 鼠标 (%d, %d) | 节点 %d" % [
+			int(_bp_zoom * 100.0), int(mouse_world.x), int(mouse_world.y), graph["nodes"].size()]
+		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
+		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
 
 ## 蓝图模式画布输入(事件蓝图编辑视图)
 ## 缩放百分比临时提示（画布上 1 秒淡出）
@@ -686,6 +696,9 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 	# 鼠标移动
 	if event is InputEventMouseMotion:
+		# 记录鼠标位置（引脚 hover 高亮用）
+		_bp_last_mouse_pos = event.position
+		canvas.queue_redraw()
 		if _bp_dragging:
 			_bp_offset += event.relative
 			canvas.queue_redraw()
