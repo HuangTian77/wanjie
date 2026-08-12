@@ -4553,6 +4553,12 @@ func _do_rest() -> void:
 		var random_event: Dictionary = event_engine.check_random_events()
 		if not random_event.is_empty():
 			_run_event(random_event)
+	# 休息后任务状态检查（任务到期/完成提示）
+	if script_data != null and script_data.quest_system != null:
+		for qr in script_data.quest_system.quests:
+			if str(qr.get("status", "")) == "active":
+				ToastManager.info("📋 任务进行中：%s" % str(qr.get("name", qr.get("id", ""))))
+				break
 
 ## 通关统计弹窗（天数/等级/金币/事件数）
 func _show_finish_stats() -> void:
