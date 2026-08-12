@@ -4960,6 +4960,8 @@ func _do_rest() -> void:
 	# 休息后菜单标题刷新（时间/状态变化）
 	_refresh_menu_title()
 	_update_ui()
+	# 休息后世界状态 tooltip 刷新（时间标签）
+	time_label.tooltip_text = "世界时间 · 当前区域 · %s" % (world_state.get_period_name() if world_state else "")
 	# 休息后自动推进续跑（自动模式）
 	if _auto_advance_mode:
 		_auto_continue_timer.start(1.0)
