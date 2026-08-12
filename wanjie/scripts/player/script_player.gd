@@ -273,13 +273,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# Esc: 切换菜单（菜单已开则关闭）
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		# Esc 优先级：评分弹窗 > 角色面板 > 世界日志 > 酒馆 > 槽位选择器 > 菜单
+		# Esc 优先级：评分弹窗 > 角色面板 > 背包 > 世界日志 > 酒馆 > 槽位选择器 > 菜单
 		if get_node_or_null("RatingDialog") != null:
 			get_node_or_null("RatingDialog").queue_free()
 			get_viewport().set_input_as_handled()
 			return
 		if get_node_or_null("CharStatusDialog") != null:
 			get_node_or_null("CharStatusDialog").queue_free()
+			get_viewport().set_input_as_handled()
+			return
+		if get_node_or_null("BagDialog") != null:
+			get_node_or_null("BagDialog").queue_free()
 			get_viewport().set_input_as_handled()
 			return
 		if get_node_or_null("WorldLogDialog") != null:
@@ -3405,8 +3409,9 @@ func _do_sell_all(dialog: AcceptDialog) -> void:
 ## 背包查看弹窗
 func _on_menu_bag_pressed() -> void:
 	var dialog := AcceptDialog.new()
-	dialog.title = "背包"
-	dialog.min_size = Vector2i(360, 320)
+	dialog.title = "🎒 背包"
+	dialog.min_size = Vector2i(360, 340)
+	dialog.name = "BagDialog"
 	add_child(dialog)
 	# 打开背包时收起菜单（避免遮挡）
 	menu_panel.visible = false
