@@ -567,6 +567,15 @@ func _on_card_clicked(script_id: String) -> void:
 	# 体验器评分记录数量提示
 	if GameManager.user_data.rating_history.size() > 0:
 		info.append_text("📝 已为 %d 个剧本评过分\n" % GameManager.user_data.rating_history.size())
+	# 评分历史列表（所有评过的剧本）
+	if GameManager.user_data.rating_history.size() > 1:
+		var hist_lines: Array[String] = []
+		for sid2 in GameManager.user_data.rating_history:
+			var s2: Variant = GameManager.scripts.get(sid2)
+			if s2 != null:
+				hist_lines.append("%s ★%d" % [str(s2.name), int(GameManager.user_data.rating_history[sid2].get("stars", 0))])
+		if not hist_lines.is_empty():
+			info.append_text("\n[color=#8a8278]我的评分：%s[/color]\n" % "、".join(hist_lines))
 	info.append_text("\n%s" % ws.description)
 	box.add_child(info)
 	# 操作
