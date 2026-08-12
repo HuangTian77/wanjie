@@ -972,6 +972,9 @@ func _add_history(text: String) -> void:
 		history_toggle.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 		_history_unread += 1
 		history_toggle.text = "▼ 展开记录(%d)" % (history_text.get_line_count() + _history_unread)
+		# 新历史条目 Toast（仅间隔提示，防刷屏）
+		if _history_unread <= 3 or _history_unread % 10 == 0:
+			ToastManager.info("📜 历史新增 %d 条" % _history_unread)
 	# 行数上限（防长局历史无限增长卡顿）
 	if history_text.get_line_count() > 200:
 		var excess2: int = history_text.get_line_count() - 150
