@@ -4885,6 +4885,11 @@ func _do_rest() -> void:
 	if now_ms - _last_rest_ms < 1000:
 		return
 	_last_rest_ms = now_ms
+	# 休息动画反馈（画面轻微呼吸）
+	if ThemeManager.animations_enabled:
+		var tw_rest_fx := create_tween()
+		tw_rest_fx.tween_property(self, "modulate:a", 0.85, 0.25)
+		tw_rest_fx.tween_property(self, "modulate:a", 1.0, 0.35)
 	if world_state:
 		# 休息后时段提示（睡醒时间）
 		world_state.advance_time(8)
