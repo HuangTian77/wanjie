@@ -232,6 +232,15 @@ func _check_combat_end() -> bool:
 ## 逃跑
 func try_flee() -> bool:
 	var chance: float = 0.5 + float(player_combat_stats.get("agility", 10)) * 0.02
+	# 难度逃跑修正（困难 -20% / 简单 +15%）
+	var gm: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
+	var mode := "adaptive"
+	if gm != null and gm.user_data != null:
+		mode = gm.user_data.difficulty_mode
+	match mode:
+		"easy": chance += 0.15
+		"hard": chance -= 0.2
+	chance = clampf(chance, 0.1, 0.95)
 	last_flee_chance = chance
 	if randf() < chance:
 		is_active = false
