@@ -3182,6 +3182,7 @@ func _on_menu_char_pressed() -> void:
 	var refresh_btn := Button.new()
 	refresh_btn.text = "↻ 刷新"
 	refresh_btn.flat = true
+	refresh_btn.tooltip_text = "重新读取最新角色状态"
 	dialog.add_child(refresh_btn)
 	refresh_btn.pressed.connect(func():
 		dialog.queue_free()
