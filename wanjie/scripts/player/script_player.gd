@@ -95,6 +95,9 @@ func _ready() -> void:
 	if GameManager.user_data.history_collapsed:
 		history_panel.visible = false
 		history_toggle.text = "▼ 展开记录"
+	else:
+		history_panel.visible = true
+		history_toggle.text = "▲ 收起记录(%d)" % history_text.get_line_count()
 	# 恢复自动推进偏好
 	_auto_advance_mode = GameManager.user_data.auto_advance
 	# 历史右键复制菜单
