@@ -3974,7 +3974,11 @@ func _refresh_menu_title() -> void:
 	var day_full := ""
 	if world_state:
 		day_full = world_state.get_time_display().get_slice(" ", 1) + " " + world_state.get_time_display().get_slice(" ", 2)
-	title_node.text = "%s · %s%s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, region_menu, diff_txt, progress_txt, time_txt, save_txt, slot_txt]
+	# 世界时间完整显示（含日期/时段）
+	var world_time_txt := ""
+	if world_state:
+		world_time_txt = " · 🕐%s" % world_state.get_time_display()
+	title_node.text = "%s · %s%s%s%s%s%s%s%s" % [script_name, day_full if day_full != "" else "第 %d 天" % day, world_time_txt, region_menu, diff_txt, progress_txt, time_txt, save_txt, slot_txt]
 	# 副状态行（成就/存档/玩家）
 	var status_txt := ""
 	var gm2: Node = Engine.get_main_loop().root.get_node_or_null("GameManager")
