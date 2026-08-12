@@ -4527,6 +4527,11 @@ func _on_player_stats_pressed() -> void:
 	list.append_text("[color=#c9a06a]【本次冒险】[/color]\n")
 	list.append_text("• 休息 %d 次 · 触发事件 %d 个\n" % [_rest_count, _event_trigger_count])
 	list.append_text("• 战斗：胜 %d · 败 %d · 逃 %d\n" % [_battle_wins, _battle_defeats, _battle_flees])
+	# 货币显示（金币/诗墨）
+	if economy_engine != null:
+		var gold_cur: int = int(economy_engine.player_currencies.get("gold", 0))
+		var items_cur: int = economy_engine.player_inventory.size()
+		list.append_text("• 💰 金币 %d · 🎒 物品 %d 件\n" % [gold_cur, items_cur])
 	# 经验进度（每 100 经验升级）
 	var exp_now: int = int(st.get("exp", 0))
 	if exp_now >= 100:
