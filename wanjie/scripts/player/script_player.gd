@@ -4841,7 +4841,11 @@ func _on_menu_rest_pressed() -> void:
 	var full_note := ""
 	if hp_now2 >= hp_max2 and combat_engine != null:
 		full_note = "\n⚠ 当前 HP 已满，休息收益较低，建议继续探索。"
-	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。%s" % [hp_now2, mp_now2, full_note]
+	# 受伤程度提示（低血时休息更值得）
+	var hurt_note := ""
+	if hp_max2 > 0 and hp_now2 < hp_max2 * 0.5:
+		hurt_note = "\n💚 当前伤势较重，休息恢复价值高。"
+	confirm.dialog_text = "⛺ 休息 8 小时？\nHP/MP 将回满（当前 %d/%d），时间推进，30% 概率遭遇随机事件。%s%s" % [hp_now2, mp_now2, full_note, hurt_note]
 	# 夜晚休息事件概率说明（30%→40%）
 	if world_state != null and world_state.get_period_name() == "夜晚":
 		confirm.dialog_text += "\n（夜晚休息事件概率提升至 40%）"
