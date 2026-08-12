@@ -2298,6 +2298,19 @@ func _on_combat_ended(result: String) -> void:
 				stats["hp"] = stats.get("max_hp", 100)
 				stats["mp"] = stats.get("max_mp", 50)
 				ToastManager.success("🎉 升级！Lv.%d（HP/MP 回满，攻+2 防+1）" % int(stats.get("level", 1)))
+				# 新称号提示（属性偏向变化时）
+				var atk_n: int = int(stats.get("atk", 0))
+				var def_n: int = int(stats.get("def", 0))
+				var spd_n: int = int(stats.get("speed", 0))
+				var new_job := "旅者"
+				if atk_n >= def_n and atk_n >= spd_n:
+					new_job = "剑客"
+				elif def_n >= atk_n and def_n >= spd_n:
+					new_job = "守卫"
+				elif spd_n > atk_n and spd_n > def_n:
+					new_job = "游侠"
+				if new_job != "旅者":
+					ToastManager.info("称号：%s" % new_job)
 				_add_history("🎉 升级至 Lv.%d" % int(stats.get("level", 1)))
 				# 升级 HUD 脉冲（等级标签放大回弹）
 				if ThemeManager.animations_enabled:
