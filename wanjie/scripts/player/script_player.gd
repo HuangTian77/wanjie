@@ -3031,6 +3031,8 @@ func _on_menu_load_pressed() -> void:
 	_show_slot_selector("load")
 
 func _on_menu_delete_pressed() -> void:
+	# 删除存档入口（含自动存档保护说明）
+	ToastManager.info("🗑 删除存档：可删手动槽位；自动存档保留")
 	_show_slot_selector("delete")
 
 ## 角色状态面板
