@@ -70,7 +70,9 @@ func create(sub_type: String = "", meta: Dictionary = {}) -> Control:
 	hbox.add_theme_constant_override("separation", 8)
 	header.add_child(hbox)
 	var title := Label.new()
-	title.text = "🔷 %s 蓝图" % sys_name
+	# 简易模式标题附加模式徽标
+	var mode_suffix := " 🌱" if EditorMode.is_simple() else ""
+	title.text = "🔷 %s 蓝图%s" % [sys_name, mode_suffix]
 	title.add_theme_font_size_override("font_size", 13)
 	title.add_theme_color_override("font_color", Color(0.803922, 0.811765, 0.823529, 1))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL

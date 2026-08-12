@@ -235,6 +235,11 @@ func _on_edit_mode_changed(mode: int) -> void:
 	if not _last_module_meta.is_empty() and _current_editor_key != "welcome" \
 			and _current_editor_key != "code" and _current_editor_key != "mud":
 		_open_editor_for_path(_last_module_meta.get("path", ""), _last_module_meta.get("title", ""), _last_module_meta.get("meta", {}))
+		# 切换动画（面板淡入，仅动画开启时）
+		if ThemeManager.animations_enabled:
+			var tw_mode := create_tween()
+			tw_mode.tween_property(editor_container, "modulate:a", 0.4, 0.08)
+			tw_mode.tween_property(editor_container, "modulate:a", 1.0, 0.18)
 		ToastManager.info("已切换为%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]])
 	else:
 		ToastManager.info("编辑模式：%s" % EditorMode.MODE_NAMES[mode])
