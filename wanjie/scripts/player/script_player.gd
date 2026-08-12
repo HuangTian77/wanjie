@@ -4164,10 +4164,14 @@ func _do_rest() -> void:
 	var recovered_mp := 0
 	if combat_engine and not (combat_engine.player_combat_stats as Dictionary).is_empty():
 		var stats: Dictionary = combat_engine.player_combat_stats
-		recovered_hp = int(stats.get("max_hp", 100)) - int(stats.get("hp", 0))
-		recovered_mp = int(stats.get("max_mp", 50)) - int(stats.get("mp", 0))
-		stats["hp"] = stats.get("max_hp", 100)
-		stats["mp"] = stats.get("max_mp", 50)
+		# 难度恢复倍率（困难恢复 80%）
+		var rest_mul := 1.0
+		match GameManager.user_data.difficulty_mode if GameManager.user_data != null else "normal":
+			"hard": rest_mul = 0.8
+		recovered_hp = int((int(stats.get("max_hp", 100)) - int(stats.get("hp", 0))) * rest_mul)
+		recovered_mp = int((int(stats.get("max_mp", 50)) - int(stats.get("mp", 0))) * rest_mul)
+		stats["hp"] = mini(int(stats.get("max_hp", 100)), int(stats.get("hp", 0)) + recovered_hp)
+		stats["mp"] = mini(int(stats.get("max_mp", 50)), int(stats.get("mp", 0)) + recovered_mp)
 	# 世界效果结算（休息跨小时，检查到期）
 	if world_state:
 		var expired_fx: Array = world_state.tick_effects()
