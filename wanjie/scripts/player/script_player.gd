@@ -4983,7 +4983,7 @@ func _on_player_stats_pressed() -> void:
 		elem_fire = 5
 		elem_ice = 5
 		elem_thunder = 5
-	list.append_text("🔥 火抗 %d%% · ❄ 冰抗 %d%% · ⚡ 雷抗 %d%%\n\n" % [elem_fire, elem_ice, elem_thunder])
+	list.append_text("🔥 [color=#e0665a]%d%%[/color] · ❄ [color=#6a9fd8]%d%%[/color] · ⚡ [color=#e6c84c]%d%%[/color]\n\n" % [elem_fire, elem_ice, elem_thunder])
 	# 职业倾向（属性偏向判断）
 	var tend := "均衡型"
 	var tend_mark := "⚖"
