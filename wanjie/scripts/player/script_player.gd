@@ -208,6 +208,15 @@ func _process(delta: float) -> void:
 			var used_skill := false
 			var hp_now: int = int(combat_engine.player_combat_stats.get("hp", 0))
 			var hp_max: int = int(combat_engine.player_combat_stats.get("max_hp", 1))
+			# 智能恢复：HP<40% 时优先使用药水（背包有药）
+			if hp_max > 0 and hp_now < hp_max * 0.4 and economy_engine != null:
+				for pot_id in economy_engine.player_inventory:
+					if int(economy_engine.player_inventory[pot_id]) > 0 \
+							and ("potion" in str(pot_id) or "herb" in str(pot_id)):
+						_use_first_potion()
+						_battle_log_line("💊 自动使用 %s 回血" % str(pot_id), "#7cc47c")
+						used_skill = true
+						break
 			if combat_engine.ability_data != null and hp_max > 0 and hp_now < hp_max * 0.5:
 				for sk2 in combat_engine.ability_data.skills:
 					var etype: String = str(sk2.get("effect", {}).get("type", ""))
