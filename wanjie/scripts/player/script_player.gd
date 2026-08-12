@@ -4496,6 +4496,20 @@ func _on_player_stats_pressed() -> void:
 	if shield_show > 0:
 		list.append_text("🛡 护盾：%d（减免伤害）\n\n" % shield_show)
 	list.append_text("[color=#7a7268]普攻回复 +1 MP；技能消耗 MP；休息回满[/color]\n\n")
+	# 元素抗性（基于属性均衡的简单换算）
+	var elem_fire: int = 0
+	var elem_ice: int = 0
+	var elem_thunder: int = 0
+	var def_total: int = int(st.get("def", 0))
+	if def_total >= 30:
+		elem_fire = 10
+		elem_ice = 10
+		elem_thunder = 10
+	elif def_total >= 15:
+		elem_fire = 5
+		elem_ice = 5
+		elem_thunder = 5
+	list.append_text("🔥 火抗 %d%% · ❄ 冰抗 %d%% · ⚡ 雷抗 %d%%\n\n" % [elem_fire, elem_ice, elem_thunder])
 	# 职业倾向（属性偏向判断）
 	var tend := "均衡型"
 	var tend_mark := "⚖"
