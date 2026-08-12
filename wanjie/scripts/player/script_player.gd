@@ -4186,6 +4186,12 @@ func _on_menu_rating_pressed() -> void:
 		ws.rating_count += 1
 		ScriptDataManager.update_script(ws, ["rating", "rating_count"])
 		ToastManager.success("评分已提交 ★%d" % chosen[0])
+		# 提交成功金色脉冲（评分面板反馈）
+		if ThemeManager.animations_enabled:
+			var tw_rating := create_tween()
+			tw_rating.set_loops(2)
+			tw_rating.tween_property(dialog, "modulate:a", 0.5, 0.15)
+			tw_rating.tween_property(dialog, "modulate:a", 1.0, 0.15)
 		_add_history("⭐ 你给剧本评了 %d 星" % chosen[0])
 		# 评分按钮即时刷新
 		var rb2 := get_node_or_null("MenuPanel/MenuVBox/RatingBtn") as Button
