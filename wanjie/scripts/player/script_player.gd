@@ -4149,8 +4149,16 @@ func _on_menu_rating_pressed() -> void:
 		b.modulate = Color(0.8, 0.65, 0.2)
 		b.toggle_mode = true
 		b.tooltip_text = "%d 星：%s" % [i + 1, ["很差", "一般", "不错", "很棒", "神作"][i]]
-		b.tooltip_text = "%d 星" % (i + 1)
 		b.button_group = ButtonGroup.new()
+		# 悬停预览（鼠标悬停时星亮起）
+		b.mouse_entered.connect(func():
+			for si in 5:
+				var sbh: Button = stars.get_child(si)
+				sbh.modulate = Color(1.0, 0.85, 0.3) if si < i + 1 else Color(0.4, 0.32, 0.12))
+		b.mouse_exited.connect(func():
+			for si in 5:
+				var sbx: Button = stars.get_child(si)
+				sbx.modulate = Color(1.0, 0.85, 0.3) if si < chosen[0] else Color(0.5, 0.4, 0.15))
 		b.pressed.connect(func():
 			chosen[0] = i + 1
 			# 选中星标亮度反馈（≤当前全亮，> 当前变暗）
