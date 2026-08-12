@@ -155,7 +155,14 @@ func _ready() -> void:
 			elif int(ps5.get("mp", 0)) >= 10 and combat_engine.ability_data != null:
 				var skills2: Array = combat_engine.ability_data.skills
 				if not skills2.is_empty():
-					var sid2: String = str(skills2[0].get("id", ""))
+					# 随机选一个可用技能（MP 足够时）
+					var usable: Array = []
+					for sk2 in skills2:
+						var cost2: int = int((sk2.get("cost", {}) as Dictionary).get("mana", 0))
+						if cost2 <= int(ps5.get("mp", 0)):
+							usable.append(sk2)
+					var pick: Dictionary = usable[randi() % usable.size()] if not usable.is_empty() else skills2[0]
+					var sid2: String = str(pick.get("id", ""))
 					if not sid2.is_empty():
 						combat_engine.player_use_skill(sid2, 0)
 						_refresh_battle_ui()
