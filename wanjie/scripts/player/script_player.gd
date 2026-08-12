@@ -1099,6 +1099,8 @@ func _update_ui() -> void:
 				quest_label.tooltip_text = "当前任务：%s" % active_q
 				if not active_desc.is_empty():
 					quest_label.tooltip_text += "\n%s" % active_desc
+				# 任务标签颜色（进行中金色高亮）
+				quest_label.add_theme_color_override("font_color", Color(0.9, 0.78, 0.5))
 				# 任务切换提示（首次出现新任务时）
 				if active_q != _last_quest_shown:
 					_last_quest_shown = active_q
