@@ -3865,6 +3865,9 @@ func _on_menu_bag_pressed() -> void:
 							heal_amt = 50
 						# 按选择数量使用（库存足够时）
 						var use_n := mini(int(use_qty.value), int(economy_engine.player_inventory[item_id]))
+						# 数量超库存提示
+						if int(use_qty.value) > int(economy_engine.player_inventory[item_id]):
+							ToastManager.info("库存不足，实际使用 %d 个" % use_n)
 						var total_heal := 0
 						for _ui in use_n:
 							var cur_hp_i: int = int(ps3.get("hp", 0))
