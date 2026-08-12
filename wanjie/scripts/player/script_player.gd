@@ -253,6 +253,20 @@ func _process(delta: float) -> void:
 						best_t = ei
 				if best_t >= 0:
 					_battle_target = best_t
+				# 自动目标优先低血敌人（每次自动攻击前刷新目标）
+				if _auto_battle and combat_engine != null and combat_engine.enemies.size() > 1:
+					var best_t2 := -1
+					var best_r2 := 999.0
+					for ei2 in combat_engine.enemies.size():
+						if combat_engine.enemies[ei2].get("is_alive", true):
+							var em2: int = maxi(1, int(combat_engine.enemies[ei2].get("max_hp", 1)))
+							var eh2: int = int(combat_engine.enemies[ei2].get("hp", 0))
+							var r2: float = float(eh2) / float(em2)
+							if r2 < best_r2:
+								best_r2 = r2
+								best_t2 = ei2
+					if best_t2 >= 0:
+						_battle_target = best_t2
 				_on_battle_attack_pressed()
 	# 打字机效果
 	if not _typewriter_done and _typewriter_index < _typewriter_text.length():
