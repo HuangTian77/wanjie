@@ -4894,6 +4894,11 @@ func _do_rest() -> void:
 		# 休息后时段提示（睡醒时间）
 		world_state.advance_time(8)
 		ToastManager.info("🌅 醒来时已是%s" % world_state.get_period_name())
+		# 醒来时段图标动效（时间标签脉冲）
+		if ThemeManager.animations_enabled:
+			var tw_wake := create_tween()
+			tw_wake.tween_property(time_label, "scale", Vector2(1.15, 1.15), 0.15)
+			tw_wake.tween_property(time_label, "scale", Vector2.ONE, 0.2)
 		# 天气/氛围提示
 		var weather: String = str(world_state.get_variable("weather", ""))
 		if not weather.is_empty():
