@@ -4118,7 +4118,8 @@ func _on_menu_rating_pressed() -> void:
 	rating_tip.add_theme_font_size_override("font_size", 11)
 	var dialog := ConfirmationDialog.new()
 	dialog.name = "RatingDialog"
-	dialog.title = "评分"
+	dialog.title = "★ 评分"
+	dialog.min_size = Vector2i(420, 200)
 	dialog.dialog_text = "为《%s》评分（当前 %.1f ★，%d 人）" % [script_data.name if script_data else "", script_data.rating if script_data else 0.0, script_data.rating_count if script_data else 0]
 	# 已评过分时显示我的评分
 	if GameManager.user_data != null and GameManager.user_data.rating_history.has(script_data.id if script_data else ""):
