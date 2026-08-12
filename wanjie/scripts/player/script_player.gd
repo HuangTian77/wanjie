@@ -3455,8 +3455,9 @@ func _on_menu_char_pressed() -> void:
 func _on_menu_shop_pressed() -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "🏪 商店"
-	dialog.min_size = Vector2i(440, 480)
+	dialog.min_size = Vector2i(460, 500)
 	dialog.name = "ShopDialog"
+	dialog.ok_button_text = "离开商店"
 	add_child(dialog)
 	# 打开商店时收起菜单（避免遮挡）
 	menu_panel.visible = false
