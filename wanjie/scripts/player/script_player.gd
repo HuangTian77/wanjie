@@ -3363,6 +3363,7 @@ func _on_menu_rating_pressed() -> void:
 		b.text = "★"
 		b.modulate = Color(0.8, 0.65, 0.2)
 		b.toggle_mode = true
+		b.tooltip_text = "%d 星：%s" % [i + 1, ["很差", "一般", "不错", "很棒", "神作"][i]]
 		b.tooltip_text = "%d 星" % (i + 1)
 		b.button_group = ButtonGroup.new()
 		b.pressed.connect(func():
