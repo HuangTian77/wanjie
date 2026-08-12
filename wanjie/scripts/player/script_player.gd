@@ -1670,6 +1670,18 @@ func _enter_tavern_char(index: int) -> void:
 		# 字数提示（超 200 字警告）
 		if t.length() > 200:
 			ToastManager.warning("消息过长（%d/200 字），建议精简" % t.length())
+	# 清空输入按钮（Esc 在输入框内清空文字而非关闭面板）
+	var clear_btn := get_node_or_null("TavernPanel/TavernVBox/TavernInputRow/ClearTavernInput") as Button
+	if clear_btn == null:
+		clear_btn = Button.new()
+		clear_btn.name = "ClearTavernInput"
+		clear_btn.text = "✕"
+		clear_btn.flat = true
+		clear_btn.tooltip_text = "清空输入"
+		get_node("TavernPanel/TavernVBox/TavernInputRow").add_child(clear_btn)
+	clear_btn.pressed.connect(func():
+		tavern_input.text = ""
+		tavern_input.grab_focus())
 	# 回车直接发送
 	if not tavern_input.text_submitted.is_connected(_on_tavern_send_pressed):
 		tavern_input.text_submitted.connect(_on_tavern_send_pressed)
