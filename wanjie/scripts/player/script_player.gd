@@ -1060,6 +1060,11 @@ func _update_ui() -> void:
 			for cid in economy_engine.player_currencies:
 				gold += int(economy_engine.player_currencies[cid])
 			econ_label.text = "💰 %d" % gold
+			# 金币颜色（充足金/紧张红）
+			if gold < 20:
+				econ_label.add_theme_color_override("font_color", Color(0.9, 0.45, 0.4))
+			else:
+				econ_label.remove_theme_color_override("font_color")
 			item_label.text = "🎒 %d" % economy_engine.player_inventory.size()
 		# 遗物 HUD 标记（持有遗物时）
 		if int(economy_engine.player_inventory.get("rare_relic", 0)) > 0:
