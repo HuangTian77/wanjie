@@ -3019,6 +3019,8 @@ func _on_history_toggle_pressed() -> void:
 		history_panel.modulate.a = 0.2
 		var tw_panel := create_tween()
 		tw_panel.tween_property(history_panel, "modulate:a", 1.0, 0.15)
+	else:
+		history_panel.modulate.a = 1.0
 	# 持久化折叠状态
 	GameManager.user_data.history_collapsed = not history_panel.visible
 	GameManager.user_data.save_user_data()
