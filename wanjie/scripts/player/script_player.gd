@@ -4494,6 +4494,8 @@ func _do_rest() -> void:
 		recovered_mp = int((int(stats.get("max_mp", 50)) - int(stats.get("mp", 0))) * rest_mul)
 		stats["hp"] = mini(int(stats.get("max_hp", 100)), int(stats.get("hp", 0)) + recovered_hp)
 		stats["mp"] = mini(int(stats.get("max_mp", 50)), int(stats.get("mp", 0)) + recovered_mp)
+		# 战斗状态同步（恢复满后刷新 HUD）
+		_refresh_battle_ui()
 	# 世界效果结算（休息跨小时，检查到期）
 	if world_state:
 		var expired_fx: Array = world_state.tick_effects()
