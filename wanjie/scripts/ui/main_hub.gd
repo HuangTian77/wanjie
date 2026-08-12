@@ -560,6 +560,9 @@ func _on_card_clicked(script_id: String) -> void:
 		var my_rating: int = int(GameManager.user_data.rating_history[script_id].get("stars", 0))
 		if my_rating > 0:
 			info.append_text("⭐ 我的评分：%s\n" % "★".repeat(my_rating))
+	# 体验器评分记录数量提示
+	if GameManager.user_data.rating_history.size() > 0:
+		info.append_text("📝 已为 %d 个剧本评过分\n" % GameManager.user_data.rating_history.size())
 	info.append_text("\n%s" % ws.description)
 	box.add_child(info)
 	# 操作
