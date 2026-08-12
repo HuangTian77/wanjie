@@ -4967,6 +4967,7 @@ func _show_slot_selector(mode: String) -> void:
 					if sd2 == null:
 						ToastManager.warning("自动存档不存在")
 						return
+					ToastManager.success("⏱ 已从自动存档恢复")
 					_restore_save_state(sd2)
 					selector.queue_free()
 					menu_panel.visible = false)
