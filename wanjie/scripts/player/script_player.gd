@@ -3678,13 +3678,14 @@ func _on_menu_bag_pressed() -> void:
 		sell_row.add_child(sell_lbl)
 		# 一键全部卖出（稀有遗物除外）
 		var sell_all := Button.new()
-		sell_all.text = "全部卖出"
+		sell_all.text = "⚡ 全部卖出"
 		sell_all.flat = true
 		sell_all.tooltip_text = "卖出所有普通物品（遗物除外）"
 		sell_all.pressed.connect(func():
 			# 全部卖出确认（防误点）
 			var confirm_sell_all := ConfirmationDialog.new()
-			confirm_sell_all.dialog_text = "确定卖出所有普通物品？"
+			confirm_sell_all.dialog_text = "确定卖出所有普通物品？（遗物保留）"
+			confirm_sell_all.ok_button_text = "全部卖出"
 			confirm_sell_all.confirmed.connect(func():
 				_do_sell_all(dialog))
 			add_child(confirm_sell_all)
