@@ -1593,6 +1593,7 @@ func _on_tavern_export_pressed() -> void:
 		var f := FileAccess.open(path, FileAccess.WRITE)
 		if f:
 			f.store_string("%s 的对话记录（%s 剧本）\n%s\n" % [char.get("name", "角色"), script_data.name if script_data else "", "=".repeat(24)])
+			f.store_string("导出时间：%s\n\n" % Time.get_datetime_string_from_system())
 			# 角色名映射（user/assistant → 玩家/角色名）
 			for msg in history:
 				var role_txt: String = str(msg.get("role", "?"))
