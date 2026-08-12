@@ -3987,6 +3987,7 @@ func _on_menu_log_pressed() -> void:
 			list.append_text(rel_line)
 	var copy_btn := Button.new()
 	copy_btn.text = "⧉ 复制日志"
+	copy_btn.flat = true
 	copy_btn.pressed.connect(func():
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("日志已复制"))
