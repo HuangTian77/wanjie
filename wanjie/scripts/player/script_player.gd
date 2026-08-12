@@ -4289,6 +4289,9 @@ func _on_menu_log_pressed() -> void:
 	# 标题精简（统计信息放内容区，避免标题溢出）
 	if stat_str.length() > 18:
 		stat_str = " · 标记 %d" % (event_engine.causal_marks.size() if event_engine else 0)
+	# 时间精简（超长时只显示时段）
+	if time_str.length() > 14:
+		time_str = " · " + (world_state.get_period_name() if world_state else "")
 	dialog.title = "📜 世界日志%s%s%s" % [time_str, stat_str, region_txt]
 	# 标题 tooltip：统计说明
 	dialog.tooltip_text = "世界日志：因果标记=剧情关键选择；冷却=随机事件再触发倒计时"
