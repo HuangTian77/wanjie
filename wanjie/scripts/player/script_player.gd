@@ -3047,6 +3047,9 @@ func _on_battle_auto_pressed() -> void:
 	else:
 		_auto_battle = false
 		ToastManager.info("自动战斗关闭")
+	# 自动战斗状态写入存档（重进保持）
+	if SaveManager.current_save != null:
+		SaveManager.current_save.player_state["auto_battle"] = _auto_battle
 	# 按钮文本显示当前档位
 	if auto_btn is Button:
 		if _auto_battle:
