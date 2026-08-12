@@ -3353,6 +3353,15 @@ func _on_menu_char_pressed() -> void:
 	mp_bar2.visible = false
 	mp_bar2.name = "MPBar"
 	scroll.add_child(mp_bar2)
+	# 护盾进度条（有护盾时显示）
+	var sh_bar := ProgressBar.new()
+	sh_bar.max_value = 100
+	sh_bar.value = 0
+	sh_bar.custom_minimum_size = Vector2(0, 10)
+	sh_bar.show_percentage = false
+	sh_bar.visible = false
+	sh_bar.name = "ShieldBar"
+	scroll.add_child(sh_bar)
 	var ps: Dictionary = {}
 	if SaveManager.current_save:
 		ps = SaveManager.current_save.player_state
@@ -4907,6 +4916,16 @@ func _on_player_stats_pressed() -> void:
 		mp_prog.max_value = maxi(1, int(st.get("max_mp", 50)))
 		mp_prog.value = clampi(int(st.get("mp", 0)), 0, int(st.get("max_mp", 50)))
 		mp_prog.visible = true
+	# 护盾进度条更新（有护盾时）
+	var sh_prog := scroll.find_child("ShieldBar", true, false) as ProgressBar
+	if sh_prog != null:
+		var sh_val: int = int(st.get("shield", 0))
+		if sh_val > 0:
+			sh_prog.max_value = maxi(1, int(st.get("max_hp", 100)))
+			sh_prog.value = clampi(sh_val, 0, int(st.get("max_hp", 100)))
+			sh_prog.visible = true
+		else:
+			sh_prog.visible = false
 	list.append_text("❤️ HP %d/%d   ⚡ MP %d/%d\n" % [int(st.get("hp", 0)), int(st.get("max_hp", 1)), int(st.get("mp", 0)), int(st.get("max_mp", 1))])
 	list.append_text("⚔ [color=#e0665a]攻击 %d[/color]    🛡 [color=#6a9fd8]防御 %d[/color]    🏃 [color=#7cc47c]速度 %d[/color]\n\n" % [int(st.get("atk", 0)), int(st.get("def", 0)), int(st.get("speed", 0))])
 	list.append_text("「攻」：物理伤害基础\n")
