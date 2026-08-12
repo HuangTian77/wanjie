@@ -4515,6 +4515,9 @@ func _do_rest() -> void:
 	_sync_save_state()
 	var rest_time_txt: String = world_state.get_time_display() if world_state != null else ""
 	ToastManager.success("⛺ 休息 8 小时：HP +%d / MP +%d · %s" % [maxi(recovered_hp, 0), maxi(recovered_mp, 0), rest_time_txt])
+	# 恢复不足时提示（困难模式）
+	if recovered_hp < 50 and GameManager.user_data != null and GameManager.user_data.difficulty_mode == "hard":
+		ToastManager.info("困难模式：休息恢复 80%（HP +%d）" % recovered_hp)
 	# 恢复飘字（绿色 +，HP 与 MP 分别）
 	if recovered_hp > 0:
 		_spawn_damage_popup(recovered_hp)
