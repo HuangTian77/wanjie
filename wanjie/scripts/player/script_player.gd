@@ -4476,7 +4476,7 @@ func _on_menu_log_pressed() -> void:
 		DisplayServer.clipboard_set(list.text)
 		ToastManager.success("日志已复制"))
 	box.add_child(copy_btn)
-	# 导出日志按钮（保存 txt 到用户目录）
+	# 导出日志按钮（保存 txt 到用户目录，含筛选后内容）
 	var export_log := Button.new()
 	export_log.text = "💾 导出"
 	export_log.flat = true
@@ -4484,6 +4484,10 @@ func _on_menu_log_pressed() -> void:
 		var out_path2 := "user://world_log_%s.txt" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
 		var f2 := FileAccess.open(out_path2, FileAccess.WRITE)
 		if f2:
+			f2.store_string("万界世界日志导出\n")
+			f2.store_string("时间：%s\n" % Time.get_datetime_string_from_system())
+			f2.store_string("剧本：%s\n" % (script_data.name if script_data else "未知"))
+			f2.store_string("%s\n\n" % "=".repeat(24))
 			f2.store_string(list.text)
 			f2.close()
 			ToastManager.success("日志已导出：%s" % ProjectSettings.globalize_path(out_path2)))
