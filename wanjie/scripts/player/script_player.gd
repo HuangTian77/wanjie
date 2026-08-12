@@ -1771,7 +1771,15 @@ func _on_tavern_send_pressed() -> void:
 				_tavern_append("assistant", "（记录已清空）")
 				return
 			"/help":
-				_tavern_append("assistant", "可用指令：\n/h 查看对话历史\n/c 清空对话\n/help 显示本帮助\n\n（试试聊聊「遗物 / 命运 / 酒 / 世界」有惊喜）")
+				_tavern_append("assistant", "可用指令：\n/h 查看对话历史\n/c 清空对话\n/mood 查看当前好感\n/help 显示本帮助\n\n（试试聊聊「遗物 / 命运 / 酒 / 世界」有惊喜）")
+				return
+			"/mood":
+				var mood_lv: int = _tavern_moods.get(str(TAVERN_CHARS[tavern_char_index].get("id", "")) if tavern_char_index >= 0 and tavern_char_index < TAVERN_CHARS.size() else "", 0)
+				var mood_name2 := "普通"
+				match mood_lv:
+					1: mood_name2 = "友好 🙂"
+					2: mood_name2 = "亲密 😊"
+				_tavern_append("assistant", "（微微一笑）我们之间的好感是「%s」呢。" % mood_name2)
 				return
 			_:
 				_tavern_append("assistant", "（疑惑）你说的我听不懂…试试 /h 或 /c 或 /help")
