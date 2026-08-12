@@ -287,7 +287,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	# Esc: 切换菜单（菜单已开则关闭）
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-		# Esc 优先级：评分弹窗 > 角色面板 > 背包 > 世界日志 > 酒馆 > 槽位选择器 > 菜单
+		# Esc 优先级：评分弹窗 > 角色面板 > 背包 > 商店 > 世界日志 > 酒馆 > 槽位选择器 > 菜单
 		if get_node_or_null("RatingDialog") != null:
 			get_node_or_null("RatingDialog").queue_free()
 			get_viewport().set_input_as_handled()
@@ -298,6 +298,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if get_node_or_null("BagDialog") != null:
 			get_node_or_null("BagDialog").queue_free()
+			get_viewport().set_input_as_handled()
+			return
+		if get_node_or_null("ShopDialog") != null:
+			get_node_or_null("ShopDialog").queue_free()
 			get_viewport().set_input_as_handled()
 			return
 		if get_node_or_null("WorldLogDialog") != null:
@@ -3299,8 +3303,9 @@ func _on_menu_char_pressed() -> void:
 ## 商店弹窗（购买物品）
 func _on_menu_shop_pressed() -> void:
 	var dialog := AcceptDialog.new()
-	dialog.title = "商店"
-	dialog.min_size = Vector2i(440, 460)
+	dialog.title = "🏪 商店"
+	dialog.min_size = Vector2i(440, 480)
+	dialog.name = "ShopDialog"
 	add_child(dialog)
 	# 打开商店时收起菜单（避免遮挡）
 	menu_panel.visible = false
