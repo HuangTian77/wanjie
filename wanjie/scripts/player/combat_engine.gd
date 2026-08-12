@@ -110,6 +110,10 @@ func player_attack(target_idx: int = -1) -> Dictionary:
 	if target_idx >= enemies.size():
 		return {}
 	var result := _calculate_physical_damage(player_combat_stats, enemies[target_idx])
+	# 普攻回复 MP（每次攻击 +2）
+	var mp_gain := 2
+	player_combat_stats["mp"] = mini(int(player_combat_stats.get("max_mp", 50)), int(player_combat_stats.get("mp", 0)) + mp_gain)
+	result["mp_gain"] = mp_gain
 	enemies[target_idx]["hp"] -= result["damage"]
 	combat_log.append("%s 攻击 %s，造成 %d 点伤害" % [player_combat_stats["name"], enemies[target_idx]["name"], result["damage"]])
 	if enemies[target_idx]["hp"] <= 0:
