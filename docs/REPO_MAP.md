@@ -182,9 +182,9 @@
 - signal `scene_change_completed`
 - func `change_scene` (L21)
 - func `go_back_to_hub` (L49)
-- func `open_script_editor` (L53)
-- func `enter_script` (L58)
-- func `open_settings` (L70)
+- func `open_script_editor` (L57)
+- func `enter_script` (L62)
+- func `open_settings` (L74)
 
 ### scripts/autoload/script_data_manager.gd (script_data_manager.gd)
 
