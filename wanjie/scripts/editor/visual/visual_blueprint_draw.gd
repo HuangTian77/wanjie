@@ -211,6 +211,10 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 		summary = str(props["code"]).left(20)
 	if summary != "":
 		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, (BP_TITLE_HEIGHT + 14) * zoom), summary, HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(9 * zoom), Color(0.6, 0.7, 0.8, 0.8))
+	# 自定义标签（标题下小字，金色）
+	var tag: String = str(node.get("tag", ""))
+	if tag != "":
+		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, sz.y - 4 * zoom), tag, HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(9 * zoom), Color(0.9, 0.8, 0.4, 0.85))
 	# 详尽模式：右下角显示节点 ID 与优先级
 	if show_detail:
 		canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, sz.y - 4 * zoom), str(node.get("id", "?")), HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(8 * zoom), Color(0.5, 0.55, 0.6, 0.7))

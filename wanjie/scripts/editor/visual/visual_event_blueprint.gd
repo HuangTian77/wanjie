@@ -129,6 +129,9 @@ func _bp_push_undo() -> void:
 ## 蓝图撤销 (Ctrl+Z)
 func _bp_undo() -> void:
 	if _bp_undo_stack.is_empty():
+		# 详尽模式：无可撤销提示
+		if EditorMode.is_exhaustive():
+			ToastManager.info("没有可撤销的操作")
 		return
 	# 保存当前状态到redo
 	var graph := _get_active_graph()
@@ -1746,6 +1749,13 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 自定义标签（标题下小字标注）
+	_host._ui().add_text_field(detail, "标签", str(node.get("tag", "")), func(v: String):
+		node["tag"] = v.strip_edges()
+		_host._mark_dirty()
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas(), "节点标题下的自定义标注（如：主城任务 / 开场）")
 	# 注释框颜色快速选择
 	var nt_cur: String = str(node.get("node_type", ""))
 	if nt_cur == "comment" or nt_cur == "flow_comment":

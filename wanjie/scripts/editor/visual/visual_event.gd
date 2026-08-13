@@ -435,6 +435,9 @@ func _delete_event_node(node_id: String) -> void:
 ## === 事件概览与详情 ===
 ## ============================================================
 
+## 简易模式庆祝标记（内存级防重复）
+var _simple_event_celebrated := false
+
 ## 构建事件系统概览(右侧面板默认内容)
 func _build_event_overview(detail: Control) -> void:
 	_clear(detail)
@@ -457,6 +460,10 @@ func _build_event_overview(detail: Control) -> void:
 		_ui().add_info_label(detail, "1. 点击左侧节点图中的「剧情事件」卡片")
 		_ui().add_info_label(detail, "2. 在表单中填写事件内容与玩家选择")
 		_ui().add_info_label(detail, "3. Ctrl+S 保存 / F5 试玩")
+		# 已完成事件：庆祝提示（防重复）
+		if not es.story_events.is_empty() and not _simple_event_celebrated:
+			_simple_event_celebrated = true
+			ToastManager.success("🎉 你已经创建了 %d 个剧情事件！做得很好，继续加油！" % es.story_events.size())
 	_ui().add_info_label(detail, "点击左侧节点图中的事件卡片查看详情")
 	_ui().add_info_label(detail, "双击事件卡片进入蓝图编辑")
 
