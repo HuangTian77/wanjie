@@ -215,6 +215,7 @@ func _setup_edit_mode_opt() -> void:
 		return
 	for i in EditorMode.MODE_NAMES.size():
 		edit_mode_opt.add_item("%s %s" % [EditorMode.MODE_ICONS[i], EditorMode.MODE_NAMES[i]], i)
+		edit_mode_opt.set_item_tooltip(i, EditorMode.MODE_DESCS[i])
 	edit_mode_opt.selected = EditorMode.current_mode
 	edit_mode_opt.tooltip_text = "编辑模式：%s" % EditorMode.get_mode_desc()
 	edit_mode_opt.item_selected.connect(func(idx: int):

@@ -32,27 +32,32 @@ static func screen_to_world(screen_pos: Vector2, offset: Vector2, zoom: float) -
 static func world_to_screen(world_pos: Vector2, offset: Vector2, zoom: float) -> Vector2:
 	return world_pos * zoom + offset
 
-## 绘制网格背景
-static func draw_grid(canvas: Control, offset: Vector2, zoom: float) -> void:
+## 绘制网格背景（grid_mode: 0=标准 1=粗网格 2=关闭）
+static func draw_grid(canvas: Control, offset: Vector2, zoom: float, grid_mode: int = 0) -> void:
 	var rect := Rect2(Vector2.ZERO, canvas.size)
 	canvas.draw_rect(rect, Color(0.1, 0.11, 0.14, 1.0))
-	var grid_step := BP_GRID_SIZE * zoom
+	if grid_mode == 2:
+		return
+	var effective_grid := BP_GRID_SIZE
+	if grid_mode == 1:
+		effective_grid = BP_GRID_SIZE * 4
+	var grid_step := effective_grid * zoom
 	if grid_step < 5.0:
 		return
 	# 计算可见世界范围
-	var start_x := int((screen_to_world(Vector2.ZERO, offset, zoom).x / BP_GRID_SIZE)) - 1
-	var end_x := int((screen_to_world(canvas.size, offset, zoom).x / BP_GRID_SIZE)) + 1
-	var start_y := int((screen_to_world(Vector2.ZERO, offset, zoom).y / BP_GRID_SIZE)) - 1
-	var end_y := int((screen_to_world(canvas.size, offset, zoom).y / BP_GRID_SIZE)) + 1
+	var start_x := int((screen_to_world(Vector2.ZERO, offset, zoom).x / effective_grid)) - 1
+	var end_x := int((screen_to_world(canvas.size, offset, zoom).x / effective_grid)) + 1
+	var start_y := int((screen_to_world(Vector2.ZERO, offset, zoom).y / effective_grid)) - 1
+	var end_y := int((screen_to_world(canvas.size, offset, zoom).y / effective_grid)) + 1
 	var grid_color := Color(0.18, 0.2, 0.25, 0.3)
 	var major_color := Color(0.22, 0.25, 0.32, 0.5)
 	# 细网格线(横/竖)
 	for gx in range(start_x, end_x + 1):
-		var sx: float = world_to_screen(Vector2(gx * BP_GRID_SIZE, 0), offset, zoom).x
+		var sx: float = world_to_screen(Vector2(gx * effective_grid, 0), offset, zoom).x
 		var col: Color = major_color if gx % 5 == 0 else grid_color
 		canvas.draw_line(Vector2(sx, 0), Vector2(sx, canvas.size.y), col, 1.0)
 	for gy in range(start_y, end_y + 1):
-		var sy: float = world_to_screen(Vector2(0, gy * BP_GRID_SIZE), offset, zoom).y
+		var sy: float = world_to_screen(Vector2(0, gy * effective_grid), offset, zoom).y
 		var col: Color = major_color if gy % 5 == 0 else grid_color
 		canvas.draw_line(Vector2(0, sy), Vector2(canvas.size.x, sy), col, 1.0)
 
@@ -173,6 +178,10 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	# 节点背景（4px 圆角，UE 风格）
 	var bg_color := Color(node_color.r * 0.25, node_color.g * 0.25, node_color.b * 0.25, 0.95)
 	canvas.draw_style_box(_node_bg_box(bg_color), Rect2(pos, sz))
+	# 选中注释框：右下角缩放把手提示（双击快速调整尺寸）
+	if selected and (node.get("node_type", "") == "comment" or node.get("node_type", "") == "flow_comment"):
+		var handle_pos := pos + sz - Vector2(10, 10) * zoom
+		canvas.draw_circle(handle_pos, 5 * zoom, Color(1.0, 0.85, 0.2, 0.9))
 	# 选中高亮
 	if selected:
 		canvas.draw_rect(Rect2(pos, sz), Color(1.0, 0.8, 0.2, 0.9), false, 2.5)

@@ -48,6 +48,8 @@ const BP_MAX_UNDO := 50
 var _bp_clipboard: Dictionary = {}
 # 网格吸附
 var _bp_grid_snap := true
+## 网格模式（0=标准 1=粗 2=关闭，详尽模式 G 键循环）
+var _bp_grid_mode: int = 0
 
 # 节点搜索弹窗
 var _bp_search_popup: PopupPanel = null
@@ -523,7 +525,7 @@ func _pin_data_type(graph: Dictionary, node_id: String, port: int, is_output: bo
 ## 绘制蓝图脚本图
 func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 	# 1. 网格背景
-	VisualBlueprintDraw.draw_grid(canvas, _bp_offset, _bp_zoom)
+	VisualBlueprintDraw.draw_grid(canvas, _bp_offset, _bp_zoom, _bp_grid_mode)
 	# 2. 连线
 	var conn_index := 0
 	for conn in graph.get("connections", []):
@@ -661,6 +663,47 @@ func _bp_compute_exec_order(graph: Dictionary) -> Dictionary:
 				if not visited.has(to) and not queue.has(to):
 					queue.append(to)
 	return order
+
+## 注释框尺寸快速调整对话框（双击触发）
+func _bp_show_comment_size_dialog(graph: Dictionary, node_id: String) -> void:
+	if not graph["nodes"].has(node_id):
+		return
+	var node: Dictionary = graph["nodes"][node_id]
+	var dialog := AcceptDialog.new()
+	dialog.title = "注释框尺寸"
+	dialog.dialog_text = "设置注释框宽度与高度："
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	dialog.add_child(box)
+	var w_lbl := Label.new()
+	w_lbl.text = "宽："
+	box.add_child(w_lbl)
+	var w_spin := SpinBox.new()
+	w_spin.min_value = 120.0
+	w_spin.max_value = 1200.0
+	w_spin.value = float(node.get("properties", {}).get("size_x", 300))
+	w_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(w_spin)
+	var h_lbl := Label.new()
+	h_lbl.text = "高："
+	box.add_child(h_lbl)
+	var h_spin := SpinBox.new()
+	h_spin.min_value = 80.0
+	h_spin.max_value = 900.0
+	h_spin.value = float(node.get("properties", {}).get("size_y", 200))
+	h_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.add_child(h_spin)
+	dialog.confirmed.connect(func():
+		_bp_push_undo()
+		var props: Dictionary = node.get("properties", {})
+		props["size_x"] = int(w_spin.value)
+		props["size_y"] = int(h_spin.value)
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas())
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
 
 ## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
 func _bp_quick_add_popup(canvas: Control) -> void:
@@ -819,6 +862,13 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			# 检测节点命中
 			var hit_id := VisualBlueprintDraw.hit_test_bp_node(event.position, graph, _bp_offset, _bp_zoom)
 			if hit_id != "":
+				# 双击注释框：快速调整尺寸
+				if event.double_click:
+					var hnode2: Dictionary = graph["nodes"][hit_id]
+					var nt2: String = str(hnode2.get("node_type", ""))
+					if nt2 == "comment" or nt2 == "flow_comment":
+						_bp_show_comment_size_dialog(graph, hit_id)
+						return
 				if not _bp_selected_ids.has(hit_id):
 					_bp_selected_ids.clear()
 					_bp_selected_ids.append(hit_id)
@@ -1012,9 +1062,16 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				else:
 					_bp_delete_selected(graph, canvas)
 		elif event.keycode == KEY_G and not event.ctrl_pressed and not event.shift_pressed:
-			# G 键切换网格吸附
-			_bp_grid_snap = not _bp_grid_snap
-			_log_output("[网格吸附] %s" % ("开" if _bp_grid_snap else "关"))
+			if EditorMode.is_exhaustive():
+				# 详尽模式：G 键循环网格类型（标准→粗→关）
+				_bp_grid_mode = (_bp_grid_mode + 1) % 3
+				var gm: String = ["标准网格", "粗网格", "网格已关闭"][_bp_grid_mode]
+				_log_output("[网格] %s（G 键循环）" % gm)
+			else:
+				# G 键切换网格吸附
+				_bp_grid_snap = not _bp_grid_snap
+				_log_output("[网格吸附] %s" % ("开" if _bp_grid_snap else "关"))
+			canvas.queue_redraw()
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
 		elif event.keycode == KEY_C and not event.ctrl_pressed:
