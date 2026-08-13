@@ -113,7 +113,8 @@ var _mod_system_blueprint: RefCounted
 func _build_editor_theme() -> Theme:
 	var t := Theme.new()
 	# 字号与全局 main_theme 对齐（15）, 避免编辑器内控件字号跳变
-	t.default_font_size = 15
+	# 简易模式：字号 +1（零基础更易读）
+	t.default_font_size = 16 if EditorMode.is_simple() else 15
 	t.set_color("font_color", "Label", IDEThemeClass.C_TEXT)
 	t.set_color("font_color", "Button", IDEThemeClass.C_TEXT)
 	t.set_color("font_hover_color", "Button", IDEThemeClass.C_TEXT)
@@ -254,6 +255,8 @@ func _on_edit_mode_changed(mode: int) -> void:
 		_editors.erase(key)
 	# 重建模块树（简易灰化/中文图名即时生效）
 	_build_module_tree()
+	# 简易模式字号调整（重建主题）
+	theme = _build_editor_theme()
 	# 当前是 visual 模块且记录过选中 → 重建该模块
 	if not _last_module_meta.is_empty() and _current_editor_key != "welcome" \
 			and _current_editor_key != "code" and _current_editor_key != "mud":

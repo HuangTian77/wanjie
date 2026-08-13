@@ -278,27 +278,40 @@ func _populate_search_list(query: String) -> void:
 	_bp_search_results.clear()
 	var graph := _get_active_graph()
 	var q := query.to_lower()
-	for nid in graph["nodes"]:
-		var node: Dictionary = graph["nodes"][nid]
-		var title_text: String = node.get("title", "")
-		var node_type: String = node.get("node_type", "")
-		var type_label: String = BlueprintData.get_node_type_label(node_type)
-		var props_text := ""
-		var props: Dictionary = node.get("properties", {})
-		if props.has("event_name"):
-			props_text = str(props["event_name"])
-		elif props.has("var_name"):
-			props_text = str(props["var_name"])
-		elif props.has("code"):
-			props_text = str(props["code"])
-		# 搜索匹配
-		var match_text := (title_text + " " + node_type + " " + type_label + " " + props_text).to_lower()
-		if q.is_empty() or match_text.find(q) >= 0:
-			var display := "%s [%s]" % [title_text, type_label]
-			if not props_text.is_empty():
-				display += " - %s" % props_text
-			_bp_search_list.add_item(display)
-			_bp_search_results.append(nid)
+	# 详尽模式全局搜索：收集所有图
+	var graphs_to_search: Array = [[_get_active_graph_key(), graph]]
+	if EditorMode.is_exhaustive():
+		var ws: Variant = _host._current_script()
+		if ws != null:
+			for gkey in GraphStore.list_graphs(ws):
+				if gkey != _get_active_graph_key():
+					graphs_to_search.append([gkey, GraphStore.get_graph(ws, gkey)])
+	for ginfo in graphs_to_search:
+		var gkey2: String = ginfo[0]
+		var g2: Dictionary = ginfo[1]
+		for nid in g2["nodes"]:
+			var node: Dictionary = g2["nodes"][nid]
+			var title_text: String = node.get("title", "")
+			var node_type: String = node.get("node_type", "")
+			var type_label: String = BlueprintData.get_node_type_label(node_type)
+			var props_text := ""
+			var props: Dictionary = node.get("properties", {})
+			if props.has("event_name"):
+				props_text = str(props["event_name"])
+			elif props.has("var_name"):
+				props_text = str(props["var_name"])
+			elif props.has("code"):
+				props_text = str(props["code"])
+			# 搜索匹配
+			var match_text := (title_text + " " + node_type + " " + type_label + " " + props_text).to_lower()
+			if q.is_empty() or match_text.find(q) >= 0:
+				var display := "%s [%s]" % [title_text, type_label]
+				if not props_text.is_empty():
+					display += " - %s" % props_text
+				if graphs_to_search.size() > 1:
+					display = "[%s] %s" % [gkey2, display]
+				_bp_search_list.add_item(display)
+				_bp_search_results.append(nid)
 
 ## 搜索结果选中
 func _on_search_item_selected(idx: int) -> void:
@@ -602,6 +615,12 @@ func _point_segment_distance(p: Vector2, a: Vector2, b: Vector2) -> float:
 		return p.distance_to(a)
 	var t := clampf((p - a).dot(ab) / len2, 0.0, 1.0)
 	return p.distance_to(a + ab * t)
+
+## 当前激活图 key（workspace 或事件蓝图）
+func _get_active_graph_key() -> String:
+	if _host != null and _host.has_method("_current_graph_key"):
+		return str(_host._current_graph_key())
+	return "evt:current"
 
 ## 详尽模式：计算节点执行顺序（从 start 沿 exec 连接 BFS）
 func _bp_compute_exec_order(graph: Dictionary) -> Dictionary:

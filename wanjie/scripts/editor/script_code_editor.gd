@@ -787,6 +787,13 @@ func _on_menu_action(action: String) -> void:
 			_log("布局已重置", IDETheme.C_GREEN)
 		"shortcuts":
 			_shortcuts_dialog.open()
+		"edit_mode":
+			# 编辑模式说明（转发到 script_editor 宿主弹窗）
+			var se := get_parent()
+			while se != null and not se.has_method("_show_edit_mode_guide"):
+				se = se.get_parent()
+			if se != null:
+				se._show_edit_mode_guide(EditorMode.current_mode)
 		"about":
 			_about_dialog.open()
 

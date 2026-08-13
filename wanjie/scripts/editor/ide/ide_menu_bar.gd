@@ -76,6 +76,7 @@ func _build_menus() -> void:
 
 	# 帮助(H)
 	_create_menu("帮助(H)", [
+		{"id": "edit_mode", "text": "编辑模式说明（简易/详细/详尽）"},
 		{"id": "shortcuts", "text": "快捷键列表"},
 		{"id": "about", "text": "关于..."},
 	])

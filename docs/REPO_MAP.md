@@ -495,7 +495,7 @@
 
 ### scripts/editor/script_editor.gd (script_editor.gd)
 
-- func `_ready` (L146)
+- func `_ready` (L147)
 
 ### scripts/editor/script_validator.gd (`ScriptValidator`)
 
