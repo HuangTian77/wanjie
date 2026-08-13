@@ -86,6 +86,17 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	_ui().add_toolbar_btn(tb_hbox, "✅ 生成" if EditorMode.is_simple() else "编译", _compile_current)
 	_ui().add_toolbar_btn(tb_hbox, "🔍 查找" if EditorMode.is_simple() else "🔍 搜索", func(): _bp_mod._open_node_search())
+	# 详尽模式：图内节点过滤（输入即暗化非匹配节点）
+	if EditorMode.is_exhaustive():
+		var filter_edit := LineEdit.new()
+		filter_edit.placeholder_text = "过滤节点…"
+		filter_edit.custom_minimum_size.x = 120
+		filter_edit.add_theme_font_size_override("font_size", 11)
+		filter_edit.text_changed.connect(func(t: String):
+			_bp_mod._bp_filter_text = t.strip_edges()
+			if _canvas:
+				_canvas.queue_redraw())
+		tb_hbox.add_child(filter_edit)
 	_ui().add_toolbar_btn(tb_hbox, "适应画布", func(): _bp_mod._fit_canvas_to_nodes(_canvas))
 	# 自动布局为进阶操作（简易模式隐藏）
 	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):

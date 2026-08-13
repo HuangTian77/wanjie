@@ -54,6 +54,8 @@ var _bp_grid_mode: int = 0
 var _bp_bookmarks: Dictionary = {}
 ## 调试叠加层开关（详尽模式 Shift+D 切换）
 var _bp_debug_overlay: bool = true
+## 图内节点过滤文本（详尽模式，非匹配节点暗化）
+var _bp_filter_text: String = ""
 
 # 节点搜索弹窗
 var _bp_search_popup: PopupPanel = null
@@ -573,6 +575,13 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 	for nid in graph["nodes"]:
 		var node: Dictionary = graph["nodes"][nid]
 		var selected: bool = _bp_selected_ids.has(nid)
+		# 过滤：非匹配节点暗化（详尽模式）
+		if not _bp_filter_text.is_empty():
+			var nt_ft: String = str(node.get("node_type", ""))
+			var title_ft: String = str(node.get("title", "")) + " " + BlueprintNodeRegistry.get_display_name(nt_ft)
+			if not title_ft.to_lower().contains(_bp_filter_text.to_lower()):
+				VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, false, Vector2(-9999, -9999), 0)
+				continue
 		VisualBlueprintDraw.draw_blueprint_node(canvas, node, selected, _bp_offset, _bp_zoom, show_detail, _bp_last_mouse_pos, int(exec_order.get(nid, 0)))
 	# 3.5 搜索定位高亮（黄框提示）
 	if _bp_highlight_node != "" and graph["nodes"].has(_bp_highlight_node):
@@ -607,6 +616,16 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 			if htitle.is_empty():
 				htitle = BlueprintNodeRegistry.get_display_name(str(hnode.get("node_type", "")))
 			info_txt += " | 悬停：%s" % htitle
+			# 悬停引脚类型提示
+			var pin_hit: Array = VisualBlueprintDraw.hit_test_bp_pins(_bp_last_mouse_pos, graph, _bp_offset, _bp_zoom)
+			if pin_hit != null:
+				var pin_info := ""
+				var pin_list: Array = hnode.get("outputs", []) if pin_hit[2] else hnode.get("inputs", [])
+				if pin_hit[1] < pin_list.size():
+					var pin_def: Dictionary = pin_list[pin_hit[1]]
+					pin_info = "引脚：%s（%s）" % [pin_def.get("name", "?"), BlueprintData.PIN_TYPE_NAMES.get(pin_def.get("data_type", 0), "?")]
+				if pin_info != "":
+					info_txt += " | " + pin_info
 		# 撤销栈深度
 		info_txt += " | ↩%d" % _bp_undo_stack.size()
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
@@ -1859,6 +1878,11 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 简易模式：节点用途说明（注册表描述）
+	if EditorMode.is_simple():
+		var reg_d: Dictionary = BlueprintNodeRegistry.get_definition(str(node.get("node_type", "")))
+		if not reg_d.is_empty():
+			_host._ui().add_info_label(detail, "💡 %s" % reg_d.get("description", ""))
 	# 自定义标签（标题下小字标注）
 	_host._ui().add_text_field(detail, "标签", str(node.get("tag", "")), func(v: String):
 		node["tag"] = v.strip_edges()
