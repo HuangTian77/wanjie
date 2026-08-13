@@ -78,8 +78,8 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
 		_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
 	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
-	_ui().add_toolbar_btn(tb_hbox, "编译", _compile_current)
-	_ui().add_toolbar_btn(tb_hbox, "🔍 搜索", func(): _bp_mod._open_node_search())
+	_ui().add_toolbar_btn(tb_hbox, "✅ 生成" if EditorMode.is_simple() else "编译", _compile_current)
+	_ui().add_toolbar_btn(tb_hbox, "🔍 查找" if EditorMode.is_simple() else "🔍 搜索", func(): _bp_mod._open_node_search())
 	_ui().add_toolbar_btn(tb_hbox, "适应画布", func(): _bp_mod._fit_canvas_to_nodes(_canvas))
 	# 自动布局为进阶操作（简易模式隐藏）
 	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):

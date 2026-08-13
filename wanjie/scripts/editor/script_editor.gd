@@ -230,6 +230,10 @@ func _setup_edit_mode_opt() -> void:
 
 ## 编辑模式切换回调：刷新下拉 + 重建当前 visual 编辑器
 func _on_edit_mode_changed(mode: int) -> void:
+	# 有未保存修改：先保存（避免面板重建丢改动）
+	if _is_dirty and current_script != null:
+		_save_current_script()
+		_log_output("[编辑模式] 已先保存未提交改动")
 	if edit_mode_opt != null:
 		edit_mode_opt.selected = mode
 		edit_mode_opt.tooltip_text = "%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]]

@@ -601,6 +601,8 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 			if htitle.is_empty():
 				htitle = BlueprintNodeRegistry.get_display_name(str(hnode.get("node_type", "")))
 			info_txt += " | 悬停：%s" % htitle
+		# 撤销栈深度
+		info_txt += " | ↩%d" % _bp_undo_stack.size()
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
 		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
 
@@ -1321,6 +1323,21 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 	var popup := PopupMenu.new()
 	popup.name = "BpContextMenu"
 	popup.size = Vector2i(220, 400)
+	# 收藏节点快捷区（常用节点置顶）
+	var fav_sub := PopupMenu.new()
+	fav_sub.name = "FavNodes"
+	fav_sub.add_item("▶ 开始 (Start)", 0)
+	fav_sub.add_item("💬 对话 (Dialog)", 1)
+	fav_sub.add_item("🔀 选择 (Choice)", 2)
+	fav_sub.add_item("🔀 条件分支 (Branch)", 3)
+	fav_sub.add_item("⚙ 设置变量 (SetVar)", 4)
+	fav_sub.id_pressed.connect(func(id: int):
+		var fav_types := ["flow_start", "story_dialog", "story_choice", "flow_branch", "flow_set_var"]
+		_create_node_at_position(fav_types[id])
+		popup.queue_free())
+	popup.add_child(fav_sub)
+	popup.add_submenu_item("⭐ 常用节点", fav_sub.name)
+	popup.add_separator()
 	# 先添加基础节点(无分类)
 	if not base_types.is_empty():
 		var base_sub := PopupMenu.new()
