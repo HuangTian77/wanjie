@@ -56,6 +56,8 @@ var _bp_bookmarks: Dictionary = {}
 var _bp_debug_overlay: bool = true
 ## 图内节点过滤文本（详尽模式，非匹配节点暗化）
 var _bp_filter_text: String = ""
+## 最近使用的节点类型（右键快速复用，最多 5 个）
+var _bp_recent_types: Array[String] = []
 
 # 节点搜索弹窗
 var _bp_search_popup: PopupPanel = null
@@ -1537,6 +1539,18 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.queue_free())
 	popup.add_child(fav_sub)
 	popup.add_submenu_item("⭐ 常用节点", fav_sub.name)
+	# 最近使用节点（快速复用）
+	if not _bp_recent_types.is_empty():
+		var recent_sub := PopupMenu.new()
+		recent_sub.name = "RecentNodes"
+		for i in _bp_recent_types.size():
+			var rtype: String = _bp_recent_types[i]
+			recent_sub.add_item("%s %s" % [BlueprintNodeRegistry.get_definition(rtype).get("name", rtype), "（%d）" % (i + 1)], i)
+		recent_sub.id_pressed.connect(func(id: int):
+			_create_node_at_position(_bp_recent_types[id])
+			popup.queue_free())
+		popup.add_child(recent_sub)
+		popup.add_submenu_item("🕘 最近使用", recent_sub.name)
 	popup.add_separator()
 	# 先添加基础节点(无分类)
 	if not base_types.is_empty():
@@ -1668,6 +1682,11 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 
 ## 在指定世界坐标创建蓝图节点，若处于引脚拖拽上下文则自动连线
 func _create_node_at_position(node_type: String) -> void:
+	# 记录最近使用（去重置顶，最多 5 个）
+	_bp_recent_types.erase(node_type)
+	_bp_recent_types.push_front(node_type)
+	if _bp_recent_types.size() > 5:
+		_bp_recent_types.resize(5)
 	var graph := _get_active_graph()
 	_bp_push_undo()
 	var node: Dictionary = BlueprintData.create_node(node_type, _bp_ctx_menu_pos)
@@ -1901,6 +1920,19 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_save_active_graph()
 		_bp_redraw_canvas())
 	detail.add_child(collapse_toggle)
+	# 断点标记（详尽模式，调试用）
+	if EditorMode.is_exhaustive():
+		var bp_toggle := CheckButton.new()
+		bp_toggle.text = "🔴 断点（执行到此处暂停）"
+		bp_toggle.button_pressed = bool(node.get("breakpoint", false))
+		bp_toggle.add_theme_font_size_override("font_size", 12)
+		bp_toggle.add_theme_color_override("font_color", Color(0.9, 0.4, 0.4))
+		bp_toggle.toggled.connect(func(on: bool):
+			node["breakpoint"] = on
+			_host._mark_dirty()
+			_save_active_graph()
+			_bp_redraw_canvas())
+		detail.add_child(bp_toggle)
 	# 注释框颜色快速选择
 	var nt_cur: String = str(node.get("node_type", ""))
 	if nt_cur == "comment" or nt_cur == "flow_comment":

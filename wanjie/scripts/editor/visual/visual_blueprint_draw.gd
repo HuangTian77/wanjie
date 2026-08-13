@@ -189,6 +189,10 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 		canvas.draw_rect(Rect2(pos, sz), Color(1.0, 0.8, 0.2, 0.9), false, 2.5)
 	else:
 		canvas.draw_rect(Rect2(pos, sz), Color(node_color.r, node_color.g, node_color.b, 0.5), false, 1.0)
+	# 断点标记（红色粗框）
+	if bool(node.get("breakpoint", false)):
+		canvas.draw_rect(Rect2(pos - Vector2(2, 2), sz + Vector2(4, 4)), Color(0.9, 0.2, 0.2, 0.95), false, 2.5)
+		canvas.draw_circle(pos + Vector2(10, 10) * zoom, 5 * zoom, Color(0.95, 0.3, 0.3))
 	# 标题栏
 	var title_rect := Rect2(pos, Vector2(sz.x, BP_TITLE_HEIGHT * zoom))
 	canvas.draw_rect(title_rect, node_color)
