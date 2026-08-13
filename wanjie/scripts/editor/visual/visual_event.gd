@@ -437,6 +437,8 @@ func _delete_event_node(node_id: String) -> void:
 
 ## 简易模式庆祝标记（内存级防重复）
 var _simple_event_celebrated := false
+## 简易模式目标达成标记
+var _simple_goal_celebrated := false
 
 ## 构建事件系统概览(右侧面板默认内容)
 func _build_event_overview(detail: Control) -> void:
@@ -469,6 +471,10 @@ func _build_event_overview(detail: Control) -> void:
 		goal_lbl.add_theme_font_size_override("font_size", 11)
 		goal_lbl.add_theme_color_override("font_color", Color(0.7, 0.85, 0.7))
 		detail.add_child(goal_lbl)
+		# 目标达成：引导试玩
+		if es.story_events.size() >= goal and not _simple_goal_celebrated:
+			_simple_goal_celebrated = true
+			ToastManager.success("🎉 目标达成（%d 个事件）！按 F5 试玩你的剧本吧" % goal)
 		_ui().add_hseparator(detail)
 		_ui().add_info_label(detail, "🌱 简易模式：")
 		_ui().add_info_label(detail, "1. 点击左侧节点图中的「剧情事件」卡片")

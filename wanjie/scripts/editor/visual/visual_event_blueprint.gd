@@ -921,6 +921,25 @@ func _bp_quick_set_variable(graph: Dictionary) -> void:
 	dialog.popup_centered()
 	name_edit.grab_focus()
 
+## 详尽模式：导出全部图（打包 JSON）
+func _bp_export_all_graphs() -> void:
+	var ws: Variant = _host._current_script()
+	if ws == null:
+		return
+	var gkeys: Array[String] = GraphStore.list_graphs(ws)
+	if gkeys.is_empty():
+		ToastManager.info("没有可导出的图")
+		return
+	var bundle: Dictionary = {}
+	for gkey in gkeys:
+		bundle[gkey] = GraphStore.get_graph(ws, gkey)
+	var out_path := "user://all_graphs_%s.json" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
+	var f := FileAccess.open(out_path, FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify(bundle, "\t"))
+		f.close()
+		ToastManager.success("已导出 %d 张图：%s" % [gkeys.size(), ProjectSettings.globalize_path(out_path)])
+
 ## 详尽模式：全图概览（所有图统计对比）
 func _bp_show_all_graphs() -> void:
 	var ws: Variant = _host._current_script()
@@ -1946,6 +1965,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			if id == 99016:
 				_bp_show_all_graphs()
 			popup.queue_free())
+		# 导出全部图（打包）
+		popup.add_item("📦 导出全部图", 99018)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99018:
+				_bp_export_all_graphs()
+			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()
 	# 简易模式：简版图统计（Toast）
@@ -2263,6 +2288,15 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_save_active_graph()
 		_bp_redraw_canvas())
 	detail.add_child(collapse_toggle)
+	# 复制单节点 JSON（备份/分享配置）
+	var copy_node_btn := Button.new()
+	copy_node_btn.text = "⧉ 复制节点 JSON"
+	copy_node_btn.flat = true
+	copy_node_btn.add_theme_font_size_override("font_size", 12)
+	copy_node_btn.pressed.connect(func():
+		DisplayServer.clipboard_set(JSON.stringify(node))
+		ToastManager.success("节点配置已复制（可粘贴到其他图/项目）"))
+	detail.add_child(copy_node_btn)
 	# 断点标记（详尽模式，调试用）
 	if EditorMode.is_exhaustive():
 		var bp_toggle := CheckButton.new()
