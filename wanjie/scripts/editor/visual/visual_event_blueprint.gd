@@ -164,7 +164,14 @@ func _bp_undo() -> void:
 	_log_output("[撤销] 剩余 %d 步" % _bp_undo_stack.size())
 
 ## 蓝图重做 (Ctrl+Y)
+## 重做计数（简易模式教学）
+var _bp_redo_count: int = 0
+
 func _bp_redo() -> void:
+	_bp_redo_count += 1
+	# 简易模式：首次重做教学
+	if EditorMode.is_simple() and _bp_redo_count == 1:
+		ToastManager.info("↪ 已重做！撤销/重做可反复使用，放心编辑")
 	if _bp_redo_stack.is_empty():
 		return
 	# 保存当前状态到undo
@@ -642,8 +649,8 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 					hdesc = hdesc.left(18) + "…"
 				if hdesc != "":
 					info_txt += " · %s" % hdesc
-			# 悬停引脚类型提示
-			var pin_hit: Array = VisualBlueprintDraw.hit_test_bp_pins(_bp_last_mouse_pos, graph, _bp_offset, _bp_zoom)
+			# 悬停引脚类型提示（函数未命中返回 null，须用无类型接收才能判空）
+			var pin_hit = VisualBlueprintDraw.hit_test_bp_pins(_bp_last_mouse_pos, graph, _bp_offset, _bp_zoom)
 			if pin_hit != null:
 				var pin_info := ""
 				var pin_list: Array = hnode.get("outputs", []) if pin_hit[2] else hnode.get("inputs", [])
@@ -1461,9 +1468,8 @@ func _bp_show_zoom(canvas: Control) -> void:
 	lbl.position = Vector2(12, 12)
 	lbl.z_index = 50
 	canvas.add_child(lbl)
-	# RefCounted 无 create_tween：用宿主节点创建
-	var host_node: Node = _host
-	var tw: Tween = host_node.create_tween()
+	# RefCounted 无 create_tween：用画布节点（Control，已在场景树）创建
+	var tw: Tween = canvas.create_tween()
 	tw.tween_interval(0.9)
 	tw.tween_property(lbl, "modulate:a", 0.0, 0.4)
 	tw.tween_callback(lbl.queue_free)
@@ -1729,7 +1735,8 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			if not _bp_selected_ids.is_empty():
 				# 多节点删除确认（防误删）
 				if _bp_selected_ids.size() >= 3:
-					var host_node: Node = _host
+					# _host 是 RefCounted 模块实例，对话框需挂到编辑器容器（Node）
+					var host_node: Node = _host._editor_container()
 					var confirm := ConfirmationDialog.new()
 					confirm.dialog_text = "确定删除选中的 %d 个节点？（可撤销）" % _bp_selected_ids.size()
 					confirm.confirmed.connect(func():
@@ -2343,6 +2350,19 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_save_active_graph()
 		_bp_redraw_canvas())
 	detail.add_child(collapse_toggle)
+	# 冻结节点（防误改参数，详尽模式）
+	if EditorMode.is_exhaustive():
+		var freeze_toggle := CheckButton.new()
+		freeze_toggle.text = "🧊 冻结（防误改）"
+		freeze_toggle.button_pressed = bool(node.get("frozen", false))
+		freeze_toggle.add_theme_font_size_override("font_size", 12)
+		freeze_toggle.add_theme_color_override("font_color", Color(0.5, 0.7, 0.95))
+		freeze_toggle.toggled.connect(func(on: bool):
+			node["frozen"] = on
+			_host._mark_dirty()
+			_save_active_graph()
+			_bp_redraw_canvas())
+		detail.add_child(freeze_toggle)
 	# 复制单节点 JSON（备份/分享配置）
 	var copy_node_btn := Button.new()
 	copy_node_btn.text = "⧉ 复制节点 JSON"
@@ -2511,6 +2531,16 @@ func _show_bp_node_properties(node_id: String) -> void:
 			json_view.text = "[color=#7f8a96]// 参数原始数据（只读）\n%s[/color]" % JSON.stringify(node.get("properties", {}))
 			detail.add_child(json_view)
 		var props: Dictionary = node.get("properties", {})
+		# 冻结节点：参数只读（先解锁才能编辑）
+		if bool(node.get("frozen", false)):
+			_host._ui().add_info_label(detail, "🧊 节点已冻结（参数只读，取消冻结后可编辑）")
+			var frozen_view := RichTextLabel.new()
+			frozen_view.bbcode_enabled = true
+			frozen_view.fit_content = true
+			frozen_view.add_theme_font_size_override("normal_font_size", 10)
+			frozen_view.text = "[color=#7f8a96]%s[/color]" % JSON.stringify(props)
+			detail.add_child(frozen_view)
+			return
 		for param in params:
 			var key: String = param["key"]
 			var label: String = param.get("label", key)

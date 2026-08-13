@@ -262,7 +262,7 @@ static func _enum_param(key: String, label: String, options: Array, default: Str
 
 # === 1. 通用流程控制 (flow) ===
 static func _register_flow_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
 	var I := _INT
 	var F := _FLOAT
@@ -308,9 +308,9 @@ static func _register_flow_nodes() -> void:
 
 # === 2. 经济交易 (economy) ===
 static func _register_economy_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
-	var I := _INT
+	var _I := _INT
 	var F := _FLOAT
 
 	_reg("eco_give_item", "economy", "获得物品", "给予玩家指定数量的物品",
@@ -377,12 +377,12 @@ static func _register_economy_nodes() -> void:
 
 # === 3. 剧情事件 (story) ===
 static func _register_story_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
-	var I := _INT
-	var F := _FLOAT
+	var _I := _INT
+	var _F := _FLOAT
 	var S := _STRING
-	var A := _ANY
+	var _A := _ANY
 
 	_reg("story_trigger", "story", "触发剧情事件", "触发指定的剧情事件",
 		[_exec_in()], [_exec_out()],
@@ -441,7 +441,7 @@ static func _register_story_nodes() -> void:
 
 # === 4. 技能能力 (ability) ===
 static func _register_ability_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
 	var I := _INT
 	var A := _ANY
@@ -486,12 +486,12 @@ static func _register_ability_nodes() -> void:
 
 # === 5. 战斗系统 (combat) ===
 static func _register_combat_nodes() -> void:
-	var E := _EXEC
-	var B := _BOOL
+	var _E := _EXEC
+	var _B := _BOOL
 	var I := _INT
-	var F := _FLOAT
-	var S := _STRING
-	var A := _ANY
+	var _F := _FLOAT
+	var _S := _STRING
+	var _A := _ANY
 
 	_reg("combat_start", "combat", "开始战斗", "初始化并启动一场战斗",
 		[_exec_in()], [_exec_out()],
@@ -545,9 +545,9 @@ static func _register_combat_nodes() -> void:
 
 # === 6. 世界势力 (world) ===
 static func _register_world_nodes() -> void:
-	var E := _EXEC
-	var I := _INT
-	var F := _FLOAT
+	var _E := _EXEC
+	var _I := _INT
+	var _F := _FLOAT
 	var A := _ANY
 
 	_reg("world_set_var", "world", "设置世界变量", "将世界变量设为指定值",
@@ -591,10 +591,10 @@ static func _register_world_nodes() -> void:
 
 # === 7. 角色玩家 (player) ===
 static func _register_player_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
-	var I := _INT
-	var F := _FLOAT
+	var _I := _INT
+	var _F := _FLOAT
 
 	_reg("player_modify_stat", "player", "修改玩家属性", "增减或设置玩家的基础属性",
 		[_exec_in()], [_exec_out()],
@@ -631,9 +631,9 @@ static func _register_player_nodes() -> void:
 
 # === 8. 任务系统 (quest) ===
 static func _register_quest_nodes() -> void:
-	var E := _EXEC
+	var _E := _EXEC
 	var B := _BOOL
-	var I := _INT
+	var _I := _INT
 	var S := _STRING
 
 	_reg("quest_accept", "quest", "接取任务", "让玩家接受一个任务",
