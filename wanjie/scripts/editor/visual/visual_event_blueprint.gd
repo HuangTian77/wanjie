@@ -50,6 +50,10 @@ var _bp_clipboard: Dictionary = {}
 var _bp_grid_snap := true
 ## 网格模式（0=标准 1=粗 2=关闭，详尽模式 G 键循环）
 var _bp_grid_mode: int = 0
+## 画布书签（详尽模式：Alt+数字跳转，Ctrl+Alt+数字保存）
+var _bp_bookmarks: Dictionary = {}
+## 调试叠加层开关（详尽模式 Shift+D 切换）
+var _bp_debug_overlay: bool = true
 
 # 节点搜索弹窗
 var _bp_search_popup: PopupPanel = null
@@ -555,7 +559,7 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 				canvas.draw_line(fs2, ts2, Color(1.0, 0.85, 0.2, 0.95), 3.0 * _bp_zoom)
 		conn_index += 1
 	# 3. 节点
-	var show_detail: bool = EditorMode.is_exhaustive()
+	var show_detail: bool = EditorMode.is_exhaustive() and _bp_debug_overlay
 	# 详尽模式：计算执行顺序（BFS 从 start 沿 exec 连接）
 	var exec_order: Dictionary = {}
 	if show_detail:
@@ -585,7 +589,7 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.15))
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.6), false, 1.0)
 	# 6. 详尽模式：右下角常驻缩放/坐标指示条
-	if EditorMode.is_exhaustive():
+	if EditorMode.is_exhaustive() and _bp_debug_overlay:
 		var mouse_world := _bp_screen_to_world(_bp_last_mouse_pos)
 		var info_txt: String = "🔍 缩放 %d%% | 鼠标 (%d, %d) | 节点 %d" % [
 			int(_bp_zoom * 100.0), int(mouse_world.x), int(mouse_world.y), graph["nodes"].size()]
@@ -704,6 +708,36 @@ func _bp_show_comment_size_dialog(graph: Dictionary, node_id: String) -> void:
 	var host_node: Node = _host._editor_container()
 	host_node.add_child(dialog)
 	dialog.popup_centered()
+
+## 分组选中节点：创建包裹注释框（UE 风格）
+func _bp_group_selected_nodes(graph: Dictionary) -> void:
+	if _bp_selected_ids.size() < 2:
+		return
+	_bp_push_undo()
+	# 计算选中节点边界
+	var min_pos := Vector2(INF, INF)
+	var max_pos := Vector2(-INF, -INF)
+	for nid in _bp_selected_ids:
+		if graph["nodes"].has(nid):
+			var p: Vector2 = graph["nodes"][nid]["pos"]
+			min_pos = Vector2(minf(min_pos.x, p.x), minf(min_pos.y, p.y))
+			max_pos = Vector2(maxf(max_pos.x, p.x + VisualBlueprintDraw.BP_NODE_SIZE.x), maxf(max_pos.y, p.y + VisualBlueprintDraw.BP_NODE_SIZE.y))
+	if min_pos.x == INF:
+		return
+	var pad := Vector2(40, 40)
+	var comment: Dictionary = BlueprintData.create_node("flow_comment", min_pos - pad * 0.5)
+	var props: Dictionary = comment.get("properties", {})
+	props["text"] = "分组"
+	props["size_x"] = int((max_pos - min_pos).x + pad.x)
+	props["size_y"] = int((max_pos - min_pos).y + pad.y + 60)
+	comment["properties"] = props
+	graph["nodes"][comment["id"]] = comment
+	_save_active_graph()
+	_host._sync_to_code_editor()
+	var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
+	if canvas:
+		canvas.queue_redraw()
+	_log_output("[分组] 已创建注释框包裹 %d 个节点" % _bp_selected_ids.size())
 
 ## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
 func _bp_quick_add_popup(canvas: Control) -> void:
@@ -1072,6 +1106,25 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_bp_grid_snap = not _bp_grid_snap
 				_log_output("[网格吸附] %s" % ("开" if _bp_grid_snap else "关"))
 			canvas.queue_redraw()
+		elif event.keycode >= KEY_1 and event.keycode <= KEY_9:
+			# 详尽模式画布书签：Alt+数字跳转 / Ctrl+Alt+数字保存
+			if EditorMode.is_exhaustive() and event.alt_pressed:
+				var bm_idx: int = event.keycode - KEY_1
+				if event.ctrl_pressed:
+					_bp_bookmarks[bm_idx] = {"offset": _bp_offset, "zoom": _bp_zoom}
+					_log_output("[书签] 已保存位置 %d" % (bm_idx + 1))
+				elif _bp_bookmarks.has(bm_idx):
+					var bm: Dictionary = _bp_bookmarks[bm_idx]
+					_bp_offset = bm.get("offset", _bp_offset)
+					_bp_zoom = bm.get("zoom", _bp_zoom)
+					_log_output("[书签] 已跳转到位置 %d" % (bm_idx + 1))
+				canvas.queue_redraw()
+		elif event.keycode == KEY_D and event.shift_pressed and not event.ctrl_pressed:
+			# 详尽模式：Shift+D 切换调试叠加层
+			if EditorMode.is_exhaustive():
+				_bp_debug_overlay = not _bp_debug_overlay
+				_log_output("[调试叠加] %s（执行顺序/ID/指示条）" % ("开" if _bp_debug_overlay else "关"))
+				canvas.queue_redraw()
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
 		elif event.keycode == KEY_C and not event.ctrl_pressed:
@@ -1197,6 +1250,13 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		if id == 99002:
 			_bp_quick_add_popup(canvas)
 			popup.queue_free())
+	# 多选分组（创建包裹注释框）
+	if _bp_selected_ids.size() >= 2:
+		popup.add_item("📦 分组选中节点（%d 个）" % _bp_selected_ids.size(), 99003)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99003:
+				_bp_group_selected_nodes(graph)
+				popup.queue_free())
 	# 菜单关闭时清理
 	popup.popup_hide.connect(func():
 		popup.queue_free()
