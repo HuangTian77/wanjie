@@ -827,7 +827,13 @@ func _bp_paste_nodes_from_json(graph: Dictionary) -> void:
 	_bp_push_undo()
 	var id_map: Dictionary = {}
 	var count := 0
-	for clip_node in data.get("nodes", []):
+	# 兼容单节点字典（P182 复制格式：node 本身）
+	var nodes_src: Array = []
+	if data.has("nodes"):
+		nodes_src = data.get("nodes", [])
+	elif data.has("node_type"):
+		nodes_src = [data]
+	for clip_node in nodes_src:
 		var cn: Dictionary = clip_node
 		var new_id: String = "bp_%s_%d" % [str(cn.get("node_type", "n")), Time.get_ticks_msec() + randi() % 10000]
 		id_map[cn.get("id", "")] = new_id
@@ -920,6 +926,49 @@ func _bp_quick_set_variable(graph: Dictionary) -> void:
 	host_node.add_child(dialog)
 	dialog.popup_centered()
 	name_edit.grab_focus()
+
+## 详尽模式：导入图包（FileDialog 选 all_graphs JSON）
+func _bp_import_all_graphs() -> void:
+	var ws: Variant = _host._current_script()
+	if ws == null:
+		return
+	var fd := FileDialog.new()
+	fd.title = "导入图包"
+	fd.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	fd.filters = PackedStringArray(["*.json ; 图包 JSON"])
+	fd.access = FileDialog.ACCESS_FILESYSTEM
+	fd.file_selected.connect(func(path: String):
+		if not FileAccess.file_exists(path):
+			ToastManager.warning("文件不存在")
+			return
+		var f := FileAccess.open(path, FileAccess.READ)
+		if f == null:
+			ToastManager.warning("无法读取文件")
+			return
+		var parsed: Variant = JSON.parse_string(f.get_as_text())
+		f.close()
+		if not (parsed is Dictionary):
+			ToastManager.warning("图包格式无效")
+			return
+		var bundle: Dictionary = parsed
+		var imported := 0
+		for gkey in bundle:
+			var g: Dictionary = bundle[gkey]
+			if g is Dictionary and g.has("nodes"):
+				GraphStore.set_graph(ws, str(gkey), g)
+				imported += 1
+		if imported > 0:
+			_host._sync_to_code_editor()
+			_host._mark_dirty()
+			# 刷新图下拉（workspace 方法）
+			if _host.has_method("_refresh_graph_list"):
+				_host._refresh_graph_list()
+			ToastManager.success("已导入 %d 张图" % imported)
+		else:
+			ToastManager.warning("图包中无有效图"))
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(fd)
+	fd.popup_centered()
 
 ## 详尽模式：导出全部图（打包 JSON）
 func _bp_export_all_graphs() -> void:
@@ -1970,6 +2019,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.id_pressed.connect(func(id: int):
 			if id == 99018:
 				_bp_export_all_graphs()
+			popup.queue_free())
+		# 导入图包（全图恢复）
+		popup.add_item("📥 导入图包…", 99019)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99019:
+				_bp_import_all_graphs()
 			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()

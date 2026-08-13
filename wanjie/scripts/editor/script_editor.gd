@@ -2203,8 +2203,15 @@ func _do_auto_save() -> void:
 	status_label.text = "💾 已自动保存"
 	_log_output("[自动保存] 剧本数据已保存")
 
+## 简易模式首次保存标记
+var _simple_saved_hint_shown := false
+
 ## 手动保存 (Ctrl+S)
 func _save_current_script() -> void:
+	# 简易模式：首次保存教学
+	if EditorMode.is_simple() and not _simple_saved_hint_shown:
+		_simple_saved_hint_shown = true
+		ToastManager.success("💾 已保存！剧本存到本地，可随时继续编辑或导出分享")
 	if current_script == null:
 		return
 	# 通过剧本数据管理器持久化到本地 (user://scripts/), 差分写入脏子系统
