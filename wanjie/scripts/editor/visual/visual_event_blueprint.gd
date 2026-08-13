@@ -587,6 +587,14 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var mouse_world := _bp_screen_to_world(_bp_last_mouse_pos)
 		var info_txt: String = "🔍 缩放 %d%% | 鼠标 (%d, %d) | 节点 %d" % [
 			int(_bp_zoom * 100.0), int(mouse_world.x), int(mouse_world.y), graph["nodes"].size()]
+		# 悬停节点信息
+		var hover_nid: String = VisualBlueprintDraw.hit_test_bp_node(_bp_last_mouse_pos, graph, _bp_offset, _bp_zoom)
+		if hover_nid != "" and graph["nodes"].has(hover_nid):
+			var hnode: Dictionary = graph["nodes"][hover_nid]
+			var htitle: String = str(hnode.get("title", ""))
+			if htitle.is_empty():
+				htitle = BlueprintNodeRegistry.get_display_name(str(hnode.get("node_type", "")))
+			info_txt += " | 悬停：%s" % htitle
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
 		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
 

@@ -255,6 +255,9 @@ func _on_edit_mode_changed(mode: int) -> void:
 		_editors.erase(key)
 	# 重建模块树（简易灰化/中文图名即时生效）
 	_build_module_tree()
+	# 保持模块树选中上次模块（上下文延续）
+	if not _last_module_meta.is_empty():
+		_select_module_tree_item(str(_last_module_meta.get("path", "")))
 	# 简易模式字号调整（重建主题）
 	theme = _build_editor_theme()
 	# 当前是 visual 模块且记录过选中 → 重建该模块
@@ -322,21 +325,46 @@ func _show_edit_mode_choice() -> void:
 	dialog.popup_centered()
 
 ## 编辑模式说明弹窗（三模式差异）
-func _show_edit_mode_guide(_mode: int) -> void:
+func _show_edit_mode_guide(mode: int) -> void:
 	var dialog := AcceptDialog.new()
 	dialog.title = "编辑模式说明"
+	var mode_specific := ""
+	# 按当前模式附加功能清单
+	match mode:
+		EditorMode.SIMPLE:
+			mode_specific = """
+【简易模式已启用】
+· 核心节点：开始/分支/对话/选择/变量
+· 新手引导：事件列表引导卡片 + 概览提示
+· 界面精简：隐藏迷你地图/调试工具/高级统计
+· 快捷键：Ctrl+S 保存 · F5 试玩"""
+		EditorMode.DETAILED:
+			mode_specific = """
+【详细模式已启用】
+· 全部节点分类（8 类 80+ 节点）
+· 前置条件/触发条件等高级区块
+· 图重命名/删除/自动布局/打印调试节点
+· 迷你地图导航"""
+		EditorMode.EXHAUSTIVE:
+			mode_specific = """
+【详尽模式已启用】
+· 全部节点 + 31 个专家级节点（表达式/贸易规则等）
+· 执行顺序标注（圈数字）+ 节点 ID 角标
+· 参数原始 key + JSON 只读视图 + 实时校验
+· 右下角缩放/坐标/悬停节点指示条
+· 右键『图数据 JSON』+ 导出文件
+· 编译详细报告 + 跨图全局搜索"""
 	dialog.dialog_text = """【三档编辑模式】
 🌱 简易：为游戏开发零基础用户精简
-   · 只显示核心节点（开始/分支/对话/选择/变量）
-   · 隐藏高级区块（触发条件/前置条件）与调试工具
+   · 只显示核心节点/字段，隐藏调试工具
 ⚙ 详细：为有经验的开发者提供标准功能
    · 完整节点分类 + 常用高级参数
 🧠 详尽：为高级开发者提供最详细功能
-   · 全部节点/字段 + 执行顺序标注 + 图数据查看
+   · 全部功能 + 调试信息与数据视图
 
-切换方式：顶部工具栏「🌱/⚙/🧠」下拉随时切换，
-切换后当前编辑面板会自动按新模式重建。"""
-	dialog.min_size = Vector2i(520, 380)
+切换方式：顶部「🌱/⚙/🧠」下拉 / 底部按钮 / Ctrl+1/2/3
+""" + mode_specific
+	dialog.min_size = Vector2i(560, 480)
 	dialog.ok_button_text = "知道了"
 	var host_node: Node = self
 	host_node.add_child(dialog)
@@ -404,6 +432,7 @@ func _build_module_tree() -> void:
 	# 简易模式：进阶子系统灰化提示
 	if EditorMode.is_simple():
 		wv_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		wv_item.set_collapsed(true)
 	_add_leaf(wv_item, "背景故事", "worldview/background", "worldview_bg")
 	_add_leaf(wv_item, "时代定义 (%d)" % wv.era_definitions.size(), "worldview/eras", "worldview_eras")
 	_add_leaf(wv_item, "时间线 (%d)" % wv.timeline.size(), "worldview/timeline", "worldview_timeline")
@@ -445,6 +474,7 @@ func _build_module_tree() -> void:
 	# 简易模式：进阶子系统灰化提示
 	if EditorMode.is_simple():
 		ec_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		ec_item.set_collapsed(true)
 	_add_leaf(ec_item, "货币 (%d)" % ec.currencies.size(), "economy/currencies", "economy_curr")
 	_add_leaf(ec_item, "资源 (%d)" % ec.resources.size(), "economy/resources", "economy_res")
 	_add_leaf(ec_item, "市场 (%d)" % ec.markets.size(), "economy/markets", "economy_mkt")
@@ -461,6 +491,7 @@ func _build_module_tree() -> void:
 	# 简易模式：进阶子系统灰化提示
 	if EditorMode.is_simple():
 		ab_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		ab_item.set_collapsed(true)
 	_add_leaf(ab_item, "技能 (%d)" % ab.skills.size(), "ability/skills", "ability_skills")
 	for sk in ab.skills:
 		var sk_item := module_tree.create_item(ab_item)
@@ -482,6 +513,7 @@ func _build_module_tree() -> void:
 	# 简易模式：进阶子系统灰化提示
 	if EditorMode.is_simple():
 		quest_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		quest_item.set_collapsed(true)
 	_add_leaf(quest_item, "任务列表 (%d)" % qs.quests.size(), "quest/list", "quest_list")
 	for q in qs.quests:
 		var q_item := module_tree.create_item(quest_item)
@@ -500,6 +532,7 @@ func _build_module_tree() -> void:
 	# 简易模式：进阶子系统灰化提示
 	if EditorMode.is_simple():
 		combat_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		combat_item.set_collapsed(true)
 	_add_leaf(combat_item, "敌人模板 (%d)" % cs.enemy_templates.size(), "combat/enemies", "combat_enemies")
 	_add_leaf(combat_item, "NPC池 (%d)" % cs.npc_pool.size(), "combat/npcs", "combat_npcs")
 	_add_leaf(combat_item, "战斗配置 (%d)" % cs.battle_configs.size(), "combat/battles", "combat_battles")
@@ -513,6 +546,7 @@ func _build_module_tree() -> void:
 	# 简易模式：地图为进阶子系统灰化
 	if EditorMode.is_simple():
 		map_item.set_custom_color(0, Color(0.45, 0.48, 0.55, 0.9))
+		map_item.set_collapsed(true)
 	var regions: Array = wv.geography.get("regions", [])
 	_add_leaf(map_item, "区域定义 (%d)" % regions.size(), "map/regions", "map_region")
 	for r in regions:
@@ -546,6 +580,24 @@ func _add_leaf(parent_item: TreeItem, text: String, path: String, node_type: Str
 	item.set_text(0, "  " + text)
 	item.set_metadata(0, {"path": path, "type": node_type})
 	item.set_custom_color(0, Color(0.75, 0.78, 0.85, 1))
+
+## 按 path 选中模块树项（遍历匹配 metadata）
+func _select_module_tree_item(path: String) -> void:
+	var root_item := module_tree.get_root()
+	if root_item == null:
+		return
+	var stack: Array = [root_item]
+	while not stack.is_empty():
+		var item: TreeItem = stack.pop_back()
+		var meta: Variant = item.get_metadata(0)
+		if meta is Dictionary and str(meta.get("path", "")) == path:
+			module_tree.set_selected(item, 0)
+			module_tree.scroll_to_item(item)
+			return
+		var child := item.get_first_child()
+		while child != null:
+			stack.append(child)
+			child = child.get_next()
 
 ## === 模块树点击 ===
 ## 模块树右键菜单（剧本级操作：封面/导出/删除）
