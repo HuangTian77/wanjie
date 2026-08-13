@@ -163,7 +163,9 @@ static func hit_test_pins(screen_pos: Vector2, graph: Dictionary, offset: Vector
 ## 绘制单个蓝图节点（带类型引脚, 蓝图视图）
 static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: bool, offset: Vector2, zoom: float, show_detail: bool = false, hover_pos: Vector2 = Vector2(-9999, -9999), exec_order: int = 0) -> void:
 	var pos: Vector2 = world_to_screen(node.get("pos", Vector2.ZERO), offset, zoom)
-	var node_height: float = BlueprintData.calc_node_height(node) * zoom
+	# 折叠节点：只显示标题条
+	var is_collapsed: bool = bool(node.get("collapsed", false))
+	var node_height: float = (BP_TITLE_HEIGHT + 4) * zoom if is_collapsed else BlueprintData.calc_node_height(node) * zoom
 	var node_width: float = 180.0 * zoom
 	var sz := Vector2(node_width, node_height)
 	var node_color: Color = node.get("color", Color(0.3, 0.3, 0.4, 1.0))
@@ -229,8 +231,9 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 		var badge_pos := pos + Vector2(sz.x - 18 * zoom, 2 * zoom)
 		canvas.draw_circle(badge_pos + Vector2(0, 8 * zoom), 9 * zoom, Color(0.1, 0.1, 0.12, 0.85))
 		canvas.draw_string(ThemeDB.fallback_font, badge_pos, order_txt, HORIZONTAL_ALIGNMENT_RIGHT, int(20 * zoom), int(11 * zoom), Color(1, 0.9, 0.5))
-	# 绘制引脚（带 hover 高亮）
-	draw_typed_pins(canvas, node, pos, offset, zoom, hover_pos)
+	# 绘制引脚
+	if not is_collapsed:
+		draw_typed_pins(canvas, node, pos, offset, zoom, hover_pos)
 
 ## 绘制类型引脚（执行=三角, 数据=圆形）
 static func draw_typed_pins(canvas: Control, node: Dictionary, screen_pos: Vector2, _offset: Vector2, zoom: float, hover_pos: Vector2 = Vector2(-9999, -9999)) -> void:

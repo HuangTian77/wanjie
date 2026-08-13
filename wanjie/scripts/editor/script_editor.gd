@@ -237,6 +237,11 @@ func _on_edit_mode_changed(mode: int) -> void:
 	if edit_mode_opt != null:
 		edit_mode_opt.selected = mode
 		edit_mode_opt.tooltip_text = "%s模式：%s" % [EditorMode.MODE_NAMES[mode], EditorMode.MODE_DESCS[mode]]
+		# 切换脉冲动画
+		if ThemeManager.animations_enabled:
+			var tw_opt := create_tween()
+			tw_opt.tween_property(edit_mode_opt, "scale", Vector2(1.12, 1.12), 0.12)
+			tw_opt.tween_property(edit_mode_opt, "scale", Vector2.ONE, 0.18)
 	# 状态栏常驻当前模式
 	_update_status_mode(mode)
 	# 首次切简易模式：弹出模式说明引导

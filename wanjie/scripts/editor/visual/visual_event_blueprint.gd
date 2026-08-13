@@ -1756,6 +1756,17 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_save_active_graph()
 		_host._sync_to_code_editor()
 		_bp_redraw_canvas(), "节点标题下的自定义标注（如：主城任务 / 开场）")
+	# 折叠节点开关（收起为标题条）
+	var collapse_toggle := CheckButton.new()
+	collapse_toggle.text = "折叠节点（只显示标题）"
+	collapse_toggle.button_pressed = bool(node.get("collapsed", false))
+	collapse_toggle.add_theme_font_size_override("font_size", 12)
+	collapse_toggle.toggled.connect(func(on: bool):
+		node["collapsed"] = on
+		_host._mark_dirty()
+		_save_active_graph()
+		_bp_redraw_canvas())
+	detail.add_child(collapse_toggle)
 	# 注释框颜色快速选择
 	var nt_cur: String = str(node.get("node_type", ""))
 	if nt_cur == "comment" or nt_cur == "flow_comment":

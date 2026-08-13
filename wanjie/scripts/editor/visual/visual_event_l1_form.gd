@@ -215,7 +215,8 @@ func _build_l1_event_list(list_vbox: VBoxContainer) -> void:
 		btn.text = e.get("name", eid)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.add_theme_font_size_override("font_size", 12)
+		# 简易模式：事件列表大字更易读
+		btn.add_theme_font_size_override("font_size", 14 if EditorMode.is_simple() else 12)
 		if eid == _l1_current_event_id:
 			btn.add_theme_color_override("font_color", EditorUIFactory.C_ACCENT)
 		btn.pressed.connect(func():
