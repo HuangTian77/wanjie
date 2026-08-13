@@ -291,6 +291,9 @@ func _build_l1_event_form(form_vbox: VBoxContainer, event_id: String) -> void:
 	_host._ui().add_multiline_field(form_vbox, event.get("description", ""), func(v):
 		event["description"] = v
 		_host._mark_dirty()
+		# 实时刷新事件列表画布节点（简易模式编辑即时反馈）
+		if _host.has_method("_mod_event") and _host._mod_event != null and _host._mod_event.has_method("_sync_event_nodes"):
+			_host._mod_event._sync_event_nodes()
 	)
 	_add_l1_trigger_type_field(form_vbox, event)
 	# 前置条件与触发条件为高级区块（简易模式隐藏）

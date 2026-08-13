@@ -1184,6 +1184,12 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				if not _bp_selected_ids.has(hit_id):
 					_bp_selected_ids.clear()
 					_bp_selected_ids.append(hit_id)
+				# 锁定节点不响应拖拽
+				var hit_node2: Dictionary = graph["nodes"][hit_id]
+				if bool(hit_node2.get("locked", false)):
+					_show_bp_node_properties(hit_id)
+					canvas.queue_redraw()
+					return
 				_bp_node_dragging = true
 				_bp_node_drag_id = hit_id
 				_bp_node_drag_offset = _bp_screen_to_world(event.position) - graph["nodes"][hit_id]["pos"]
@@ -1874,6 +1880,16 @@ func _show_bp_node_properties(node_id: String) -> void:
 	# 注释框颜色快速选择
 	var nt_cur: String = str(node.get("node_type", ""))
 	if nt_cur == "comment" or nt_cur == "flow_comment":
+		# 锁定注释框（防误拖）
+		var lock_toggle := CheckButton.new()
+		lock_toggle.text = "🔒 锁定位置（防误拖）"
+		lock_toggle.button_pressed = bool(node.get("locked", false))
+		lock_toggle.add_theme_font_size_override("font_size", 12)
+		lock_toggle.toggled.connect(func(on: bool):
+			node["locked"] = on
+			_host._mark_dirty()
+			_save_active_graph())
+		detail.add_child(lock_toggle)
 		var color_row := HBoxContainer.new()
 		color_row.add_theme_constant_override("separation", 6)
 		detail.add_child(color_row)

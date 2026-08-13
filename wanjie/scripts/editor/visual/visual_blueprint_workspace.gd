@@ -75,6 +75,11 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	_ui().add_toolbar_btn(tb_hbox, "+Seq", func(): _bp_mod._add_blueprint_node("sequence"))
 	_ui().add_toolbar_btn(tb_hbox, "+SetVar", func(): _bp_mod._add_blueprint_node("set_var"))
 	_ui().add_toolbar_btn(tb_hbox, "+GetVar", func(): _bp_mod._add_blueprint_node("get_var"))
+	# 撤销/重做按钮（详细/详尽模式）
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
+		_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
+		_ui().add_toolbar_btn(tb_hbox, "↩ 撤销", func(): _bp_mod._bp_undo())
+		_ui().add_toolbar_btn(tb_hbox, "↪ 重做", func(): _bp_mod._bp_redo())
 	# Print 调试节点仅详细/详尽模式显示
 	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
 		_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
