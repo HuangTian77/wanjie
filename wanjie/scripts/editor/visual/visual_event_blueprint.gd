@@ -133,7 +133,14 @@ func _bp_push_undo() -> void:
 	_bp_redo_stack.clear()
 
 ## 蓝图撤销 (Ctrl+Z)
+## 撤销操作计数（简易模式教学用）
+var _bp_undo_count: int = 0
+
 func _bp_undo() -> void:
+	_bp_undo_count += 1
+	# 简易模式：首次撤销教学提示
+	if EditorMode.is_simple() and _bp_undo_count == 1:
+		ToastManager.info("↩ 已撤销！按 Ctrl+Y 可重做，工具栏也有 ↩ 按钮")
 	if _bp_undo_stack.is_empty():
 		# 详尽模式：无可撤销提示
 		if EditorMode.is_exhaustive():
@@ -914,6 +921,35 @@ func _bp_quick_set_variable(graph: Dictionary) -> void:
 	dialog.popup_centered()
 	name_edit.grab_focus()
 
+## 详尽模式：全图概览（所有图统计对比）
+func _bp_show_all_graphs() -> void:
+	var ws: Variant = _host._current_script()
+	if ws == null:
+		return
+	var dialog := AcceptDialog.new()
+	dialog.title = "全图概览"
+	dialog.min_size = Vector2i(400, 300)
+	var lbl := RichTextLabel.new()
+	lbl.bbcode_enabled = true
+	lbl.fit_content = true
+	dialog.add_child(lbl)
+	var txt := "[color=#c9a06a]【蓝图图一览】[/color]\n\n"
+	var gkeys: Array[String] = GraphStore.list_graphs(ws)
+	for gkey in gkeys:
+		var g: Dictionary = GraphStore.get_graph(ws, gkey)
+		var gname: String = gkey
+		if gkey.begins_with("sys:") or gkey.begins_with("evt:"):
+			gname = gkey.trim_prefix("sys:").trim_prefix("evt:")
+		var desc: String = str(g.get("_description", ""))
+		txt += "• %s：%d 节点 / %d 连接" % [gname, g["nodes"].size(), g.get("connections", []).size()]
+		if not desc.is_empty():
+			txt += "（%s）" % desc
+		txt += "\n"
+	lbl.text = txt
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
+
 ## 详尽模式：按执行顺序重排节点（列排布）
 func _bp_sort_nodes_by_exec(graph: Dictionary) -> void:
 	_bp_push_undo()
@@ -996,6 +1032,39 @@ func _bp_cleanup_dangling_connections(graph: Dictionary) -> void:
 		_log_output("[清理] 已移除 %d 条悬空连线" % removed)
 	else:
 		ToastManager.info("没有悬空连线")
+
+## 串联选中节点：按执行顺序依次连接 exec
+func _bp_chain_selected_nodes(graph: Dictionary) -> void:
+	if _bp_selected_ids.size() < 2:
+		ToastManager.info("请至少选中 2 个节点")
+		return
+	_bp_push_undo()
+	# 按执行顺序排序（未连通节点按 id）
+	var order: Dictionary = _bp_compute_exec_order(graph)
+	var chain_ids: Array[String] = []
+	for nid in _bp_selected_ids:
+		chain_ids.append(nid)
+	chain_ids.sort_custom(func(a: String, b: String):
+		var oa := int(order.get(a, 99999))
+		var ob := int(order.get(b, 99999))
+		return oa < ob)
+	var linked := 0
+	for i in chain_ids.size() - 1:
+		var from_id: String = chain_ids[i]
+		var to_id: String = chain_ids[i + 1]
+		# 检查是否已有连接
+		var exists := false
+		for conn in graph.get("connections", []):
+			if str(conn.get("from_node", "")) == from_id and str(conn.get("to_node", "")) == to_id and bool(conn.get("is_exec", true)):
+				exists = true
+				break
+		if not exists:
+			BlueprintData.add_connection(graph, from_id, 0, to_id, 0, true)
+			linked += 1
+	_save_active_graph()
+	_host._sync_to_code_editor()
+	_bp_redraw_canvas()
+	_log_output("[串联] 已连接 %d 条执行流" % linked)
 
 ## 分组选中节点：创建包裹注释框（UE 风格）
 func _bp_group_selected_nodes(graph: Dictionary) -> void:
@@ -1766,6 +1835,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			if id == 99006:
 				_bp_copy_nodes_as_json(graph)
 			popup.queue_free())
+		# 串联选中节点（按执行顺序依次连接 exec）
+		popup.add_item("🔗 串联选中节点", 99015)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99015:
+				_bp_chain_selected_nodes(graph)
+			popup.queue_free())
 	# 从 JSON 粘贴（系统剪贴板）
 	popup.add_item("📥 从 JSON 粘贴节点", 99007)
 	popup.id_pressed.connect(func(id: int):
@@ -1791,6 +1866,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.id_pressed.connect(func(id: int):
 			if id == 99012:
 				_bp_sort_nodes_by_exec(graph)
+			popup.queue_free())
+		# 全图概览（跨图统计对比）
+		popup.add_item("🗂 全图概览", 99016)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99016:
+				_bp_show_all_graphs()
 			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()
