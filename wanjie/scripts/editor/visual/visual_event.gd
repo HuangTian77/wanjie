@@ -455,6 +455,20 @@ func _build_event_overview(detail: Control) -> void:
 		_ui().add_info_label(detail, "%s: %s" % [s[0], s[1]])
 	# 简易模式：操作引导
 	if EditorMode.is_simple():
+		# 创建进度条（目标 5 个事件）
+		var goal := 5
+		var progress := ProgressBar.new()
+		progress.max_value = goal
+		progress.value = mini(es.story_events.size(), goal)
+		progress.custom_minimum_size = Vector2(0, 14)
+		progress.show_percentage = false
+		progress.tooltip_text = "剧情事件进度（目标 %d 个）" % goal
+		detail.add_child(progress)
+		var goal_lbl := Label.new()
+		goal_lbl.text = "📈 剧情事件：%d / %d（目标）" % [es.story_events.size(), goal]
+		goal_lbl.add_theme_font_size_override("font_size", 11)
+		goal_lbl.add_theme_color_override("font_color", Color(0.7, 0.85, 0.7))
+		detail.add_child(goal_lbl)
 		_ui().add_hseparator(detail)
 		_ui().add_info_label(detail, "🌱 简易模式：")
 		_ui().add_info_label(detail, "1. 点击左侧节点图中的「剧情事件」卡片")

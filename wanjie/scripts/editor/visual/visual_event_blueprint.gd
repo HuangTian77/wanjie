@@ -618,6 +618,14 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 			if htitle.is_empty():
 				htitle = BlueprintNodeRegistry.get_display_name(str(hnode.get("node_type", "")))
 			info_txt += " | 悬停：%s" % htitle
+			# 节点描述（简短）
+			var hdef: Dictionary = BlueprintNodeRegistry.get_definition(str(hnode.get("node_type", "")))
+			if not hdef.is_empty():
+				var hdesc: String = str(hdef.get("description", ""))
+				if hdesc.length() > 18:
+					hdesc = hdesc.left(18) + "…"
+				if hdesc != "":
+					info_txt += " · %s" % hdesc
 			# 悬停引脚类型提示
 			var pin_hit: Array = VisualBlueprintDraw.hit_test_bp_pins(_bp_last_mouse_pos, graph, _bp_offset, _bp_zoom)
 			if pin_hit != null:
@@ -1095,6 +1103,29 @@ func _create_node_at_position_custom(node_type: String, world_pos: Vector2) -> v
 	var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
 	if canvas:
 		canvas.queue_redraw()
+
+## 详尽模式：图属性编辑弹窗（图 key/描述）
+func _bp_show_graph_props(graph: Dictionary) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "图属性"
+	dialog.dialog_text = "图 key：%s" % _get_active_graph_key()
+	var desc_edit := LineEdit.new()
+	desc_edit.text = str(graph.get("_description", ""))
+	desc_edit.placeholder_text = "图描述（备注用途）…"
+	desc_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dialog.add_child(desc_edit)
+	var info := Label.new()
+	info.text = "节点 %d · 连接 %d · 编译 %s" % [graph["nodes"].size(), graph.get("connections", []).size(), "已生成" if graph.has("_compiled_code") else "未生成"]
+	info.add_theme_font_size_override("font_size", 11)
+	info.add_theme_color_override("font_color", Color(0.6, 0.65, 0.7))
+	dialog.add_child(info)
+	dialog.confirmed.connect(func():
+		graph["_description"] = desc_edit.text
+		_save_active_graph())
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
+	desc_edit.grab_focus()
 
 ## 详尽模式：图统计弹窗（节点类型分布）
 func _bp_show_graph_stats(graph: Dictionary) -> void:
@@ -1627,6 +1658,7 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 	if EditorMode.is_exhaustive():
 		popup.add_separator()
 		popup.add_item("📋 图数据 JSON", 99001)
+		popup.add_item("📝 图属性…", 99013)
 		popup.add_item("📊 图统计", 99005)
 		popup.add_item("📷 导出画布 PNG", 99004)
 		popup.id_pressed.connect(func(id: int):
@@ -1636,6 +1668,8 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 				_bp_export_canvas_png(canvas)
 			elif id == 99005:
 				_bp_show_graph_stats(graph)
+			elif id == 99013:
+				_bp_show_graph_props(graph)
 			popup.queue_free())
 	# 快速添加节点搜索（UE 风格）
 	popup.add_separator()
