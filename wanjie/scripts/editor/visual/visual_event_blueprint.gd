@@ -611,6 +611,10 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		info_txt += " | ↩%d" % _bp_undo_stack.size()
 		var info_pos := Vector2(canvas.size.x - info_txt.length() * 6.5 - 12, canvas.size.y - 10)
 		canvas.draw_string(ThemeDB.fallback_font, info_pos, info_txt, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.55, 0.6, 0.65, 0.8))
+		# 左下角连线图例
+		var legend := "── 执行流    ── 数据"
+		var legend_pos := Vector2(10, canvas.size.y - 10)
+		canvas.draw_string(ThemeDB.fallback_font, legend_pos, legend, HORIZONTAL_ALIGNMENT_LEFT, int(canvas.size.x), int(10), Color(0.5, 0.55, 0.6, 0.75))
 
 ## 连线命中检测（返回 connections 索引，未命中 -1）
 func _bp_hit_test_connection(screen_pos: Vector2, graph: Dictionary) -> int:
@@ -835,6 +839,42 @@ func _bp_align_nodes(graph: Dictionary, align_type: int) -> void:
 	_save_active_graph()
 	_bp_redraw_canvas()
 	_log_output("[对齐] 已完成（%d 个节点）" % positions.size())
+
+## 简易模式：快速设置变量（输入变量名+值创建 set_var 节点）
+func _bp_quick_set_variable(graph: Dictionary) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "快速设置变量"
+	dialog.dialog_text = "创建「设置变量」节点："
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	dialog.add_child(box)
+	var name_edit := LineEdit.new()
+	name_edit.placeholder_text = "变量名（如 gold）"
+	name_edit.custom_minimum_size.x = 140
+	box.add_child(name_edit)
+	var val_edit := LineEdit.new()
+	val_edit.placeholder_text = "值（如 100）"
+	val_edit.custom_minimum_size.x = 140
+	box.add_child(val_edit)
+	dialog.confirmed.connect(func():
+		var vname := name_edit.text.strip_edges()
+		var vval := val_edit.text.strip_edges()
+		if vname.is_empty():
+			ToastManager.warning("请输入变量名")
+			return
+		_bp_push_undo()
+		var node: Dictionary = BlueprintData.create_node("flow_set_var", _bp_ctx_menu_pos)
+		node["properties"]["var_name"] = vname
+		node["properties"]["value"] = vval
+		graph["nodes"][node["id"]] = node
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas()
+		_log_output("[变量] 已创建 set_var: %s = %s" % [vname, vval]))
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
+	name_edit.grab_focus()
 
 ## 详尽模式：节点健康检查（孤立节点/未连接提示）
 func _bp_health_check(graph: Dictionary) -> void:
@@ -1363,6 +1403,19 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				_bp_debug_overlay = not _bp_debug_overlay
 				_log_output("[调试叠加] %s（执行顺序/ID/指示条）" % ("开" if _bp_debug_overlay else "关"))
 				canvas.queue_redraw()
+		elif event.keycode == KEY_TAB:
+			# Tab 循环选中节点（按节点顺序）
+			var node_ids: Array = graph["nodes"].keys()
+			if not node_ids.is_empty():
+				node_ids.sort()
+				var cur_idx := 0
+				if not _bp_selected_ids.is_empty():
+					cur_idx = node_ids.find(_bp_selected_ids[0]) + 1
+				if cur_idx >= node_ids.size():
+					cur_idx = 0
+				_bp_selected_ids = [str(node_ids[cur_idx])]
+				_show_bp_node_properties(str(node_ids[cur_idx]))
+				canvas.queue_redraw()
 		elif event.keycode == KEY_F:
 			_fit_canvas_to_nodes(canvas)
 		elif event.keycode == KEY_C and not event.ctrl_pressed:
@@ -1564,6 +1617,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.id_pressed.connect(func(id: int):
 			if id == 99008:
 				ToastManager.info("图统计：%d 节点 / %d 连接" % [graph["nodes"].size(), graph.get("connections", []).size()])
+			popup.queue_free())
+		# 简易模式：快速设置变量（新手常用）
+		popup.add_item("⚙ 快速设置变量…", 99011)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99011:
+				_bp_quick_set_variable(graph)
 			popup.queue_free())
 	var tmpl_sub := PopupMenu.new()
 	tmpl_sub.name = "TemplateSub"

@@ -417,6 +417,15 @@ func _on_rename_graph_pressed() -> void:
 		var graph: Dictionary = _workspace_get_graph()
 		GraphStore.remove_graph(ws, _current_key)
 		GraphStore.set_graph(ws, new_key, graph)
+		# 同步更新其他图中 flow_sub_graph 节点对旧图 key 的引用
+		var old_key: String = _current_key
+		for gkey in GraphStore.list_graphs(ws):
+			var g: Dictionary = GraphStore.get_graph(ws, gkey)
+			for nid in g["nodes"]:
+				var n: Dictionary = g["nodes"][nid]
+				if str(n.get("node_type", "")) == "flow_sub_graph":
+					if str(n.get("properties", {}).get("graph_ref", "")) == old_key:
+						n["properties"]["graph_ref"] = new_key
 		_current_key = new_key
 		_refresh_graph_list()
 		_log_output("[蓝图] 重命名 -> %s" % new_key)
