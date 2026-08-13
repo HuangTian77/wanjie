@@ -193,6 +193,12 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	var title_text: String = node.get("title", "")
 	if title_text.is_empty():
 		title_text = BlueprintNodeRegistry.get_display_name(node["node_type"])
+	# 详尽模式：标题前置分类图标
+	if show_detail:
+		var cat_info: Dictionary = BlueprintNodeRegistry.CATEGORIES.get(str(BlueprintNodeRegistry.get_definition(node["node_type"]).get("category", "")), {})
+		var cat_icon: String = str(cat_info.get("icon", ""))
+		if cat_icon != "":
+			title_text = "%s %s" % [cat_icon, title_text]
 	canvas.draw_string(ThemeDB.fallback_font, pos + Vector2(8 * zoom, 16 * zoom), title_text, HORIZONTAL_ALIGNMENT_LEFT, int(sz.x - 16 * zoom), int(11 * zoom), Color.WHITE)
 	# 属性摘要
 	var props: Dictionary = node.get("properties", {})

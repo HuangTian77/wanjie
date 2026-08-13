@@ -745,6 +745,56 @@ func _bp_insert_template(graph: Dictionary, template_id: int, base_pos: Vector2)
 	_bp_redraw_canvas()
 	_log_output("[模板] 已插入 %d 个节点" % nodes_created.size())
 
+## 复制选中节点为 JSON（系统剪贴板）
+func _bp_copy_nodes_as_json(graph: Dictionary) -> void:
+	if _bp_selected_ids.is_empty():
+		ToastManager.info("请先选中节点")
+		return
+	var clip_nodes: Array[Dictionary] = []
+	var clip_connections: Array[Dictionary] = []
+	for nid in _bp_selected_ids:
+		if graph["nodes"].has(nid):
+			clip_nodes.append((graph["nodes"][nid] as Dictionary).duplicate(true))
+	for conn in graph.get("connections", []):
+		if _bp_selected_ids.has(conn["from_node"]) and _bp_selected_ids.has(conn["to_node"]):
+			clip_connections.append((conn as Dictionary).duplicate(true))
+	DisplayServer.clipboard_set(JSON.stringify({"nodes": clip_nodes, "connections": clip_connections}))
+	_log_output("[复制] %d 节点片段已复制到剪贴板" % clip_nodes.size())
+
+## 从系统剪贴板 JSON 粘贴节点
+func _bp_paste_nodes_from_json(graph: Dictionary) -> void:
+	var clip_text: String = DisplayServer.clipboard_get()
+	var parsed: Variant = JSON.parse_string(clip_text)
+	if not (parsed is Dictionary):
+		ToastManager.warning("剪贴板不是有效的节点 JSON")
+		return
+	var data: Dictionary = parsed
+	_bp_push_undo()
+	var id_map: Dictionary = {}
+	var count := 0
+	for clip_node in data.get("nodes", []):
+		var cn: Dictionary = clip_node
+		var new_id: String = "bp_%s_%d" % [str(cn.get("node_type", "n")), Time.get_ticks_msec() + randi() % 10000]
+		id_map[cn.get("id", "")] = new_id
+		var new_node: Dictionary = (cn as Dictionary).duplicate(true)
+		new_node["id"] = new_id
+		new_node["pos"] = new_node.get("pos", Vector2.ZERO) + Vector2(60, 60)
+		graph["nodes"][new_id] = new_node
+		count += 1
+	for conn in data.get("connections", []):
+		var cc: Dictionary = conn
+		var fn: String = str(id_map.get(cc.get("from_node", ""), ""))
+		var tn: String = str(id_map.get(cc.get("to_node", ""), ""))
+		if fn != "" and tn != "":
+			BlueprintData.add_connection(graph, fn, int(cc.get("from_port", 0)), tn, int(cc.get("to_port", 0)), bool(cc.get("is_exec", true)))
+	if count > 0:
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas()
+		_log_output("[粘贴] 已从 JSON 创建 %d 个节点" % count)
+	else:
+		ToastManager.warning("JSON 中无有效节点")
+
 ## 对齐选中节点（0=左 1=右 2=顶 3=底 4=垂直居中 5=水平居中）
 func _bp_align_nodes(graph: Dictionary, align_type: int) -> void:
 	if _bp_selected_ids.size() < 2:
@@ -1408,8 +1458,27 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			popup.queue_free())
 		popup.add_child(align_sub)
 		popup.add_submenu_item("📐 对齐选中节点", align_sub.name)
+		# 复制为 JSON（跨画布/跨项目分享节点片段）
+		popup.add_item("⧉ 复制选中节点为 JSON", 99006)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99006:
+				_bp_copy_nodes_as_json(graph)
+			popup.queue_free())
+	# 从 JSON 粘贴（系统剪贴板）
+	popup.add_item("📥 从 JSON 粘贴节点", 99007)
+	popup.id_pressed.connect(func(id: int):
+		if id == 99007:
+			_bp_paste_nodes_from_json(graph)
+		popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()
+	# 简易模式：简版图统计（Toast）
+	if EditorMode.is_simple():
+		popup.add_item("📊 图统计", 99008)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99008:
+				ToastManager.info("图统计：%d 节点 / %d 连接" % [graph["nodes"].size(), graph.get("connections", []).size()])
+			popup.queue_free())
 	var tmpl_sub := PopupMenu.new()
 	tmpl_sub.name = "TemplateSub"
 	tmpl_sub.add_item("💬 对话+选择模板", 0)
