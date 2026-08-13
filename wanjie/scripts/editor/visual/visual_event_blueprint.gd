@@ -58,6 +58,8 @@ var _bp_debug_overlay: bool = true
 var _bp_filter_text: String = ""
 ## 最近使用的节点类型（右键快速复用，最多 5 个）
 var _bp_recent_types: Array[String] = []
+## 拖动对齐参考线位置（详尽模式：x/y 与最近节点对齐时显示）
+var _bp_guide_line := Vector2(-9999, -9999)
 
 # 节点搜索弹窗
 var _bp_search_popup: PopupPanel = null
@@ -605,6 +607,13 @@ func _draw_blueprint_graph(canvas: Control, graph: Dictionary) -> void:
 		var rect := Rect2(_bp_box_start, _bp_box_end - _bp_box_start).abs()
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.15))
 		canvas.draw_rect(rect, Color(0.3, 0.5, 1.0, 0.6), false, 1.0)
+	# 4.5 对齐参考线（详尽模式拖动时）
+	if _bp_guide_line.x != -9999:
+		var sx: float = _bp_guide_line.x * _bp_zoom + _bp_offset.x
+		canvas.draw_line(Vector2(sx, 0), Vector2(sx, canvas.size.y), Color(0.9, 0.5, 0.3, 0.9), 1.0)
+	elif _bp_guide_line.y != -9999:
+		var sy: float = _bp_guide_line.y * _bp_zoom + _bp_offset.y
+		canvas.draw_line(Vector2(0, sy), Vector2(canvas.size.x, sy), Color(0.9, 0.5, 0.3, 0.9), 1.0)
 	# 6. 详尽模式：右下角常驻缩放/坐标指示条
 	if EditorMode.is_exhaustive() and _bp_debug_overlay:
 		var mouse_world := _bp_screen_to_world(_bp_last_mouse_pos)
@@ -1104,6 +1113,35 @@ func _create_node_at_position_custom(node_type: String, world_pos: Vector2) -> v
 	if canvas:
 		canvas.queue_redraw()
 
+## 详尽模式：查看生成代码预览（编译产物）
+func _bp_show_generated_code(graph: Dictionary) -> void:
+	var code: String = str(graph.get("_compiled_code", ""))
+	if code.is_empty():
+		ToastManager.info("尚未生成代码（点击「编译/生成」后查看）")
+		return
+	var dialog := AcceptDialog.new()
+	dialog.title = "生成代码预览"
+	dialog.min_size = Vector2i(560, 420)
+	dialog.size = Vector2i(560, 420)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	dialog.add_child(scroll)
+	var lbl := RichTextLabel.new()
+	lbl.bbcode_enabled = true
+	lbl.fit_content = true
+	# 截断显示（前 120 行）
+	var lines: PackedStringArray = code.split("\n")
+	var shown := ""
+	for i in mini(120, lines.size()):
+		shown += lines[i] + "\n"
+	if lines.size() > 120:
+		shown += "\n…（共 %d 行）" % lines.size()
+	lbl.text = "[color=#8f9aa6]%s[/color]" % shown.replace("[", "[").replace("]", "]")
+	scroll.add_child(lbl)
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
+
 ## 详尽模式：图属性编辑弹窗（图 key/描述）
 func _bp_show_graph_props(graph: Dictionary) -> void:
 	var dialog := AcceptDialog.new()
@@ -1369,6 +1407,7 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 			elif _bp_node_dragging:
 				_bp_node_dragging = false
+				_bp_guide_line = Vector2(-9999, -9999)
 				_save_active_graph()
 			elif _bp_box_selecting:
 				# 完成框选, 找出框内的所有节点
@@ -1403,6 +1442,25 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			var new_pos := world_pos - _bp_node_drag_offset
 			if _bp_grid_snap:
 				new_pos = new_pos.snapped(Vector2(VisualBlueprintDraw.BP_GRID_SIZE, VisualBlueprintDraw.BP_GRID_SIZE))
+			# 详尽模式：对齐参考线（x/y 接近其他节点时）
+			_bp_guide_line = Vector2(-9999, -9999)
+			if EditorMode.is_exhaustive():
+				var best_x := INF
+				var best_y := INF
+				for nid2 in graph["nodes"]:
+					if nid2 == _bp_node_drag_id:
+						continue
+					var op: Vector2 = graph["nodes"][nid2].get("pos", Vector2.ZERO)
+					if absf(op.x - new_pos.x) < 8.0 and absf(op.x - new_pos.x) < absf(best_x - new_pos.x):
+						best_x = op.x
+					if absf(op.y - new_pos.y) < 8.0 and absf(op.y - new_pos.y) < absf(best_y - new_pos.y):
+						best_y = op.y
+				if best_x != INF:
+					_bp_guide_line = Vector2(best_x, -9999)
+					new_pos.x = best_x
+				elif best_y != INF:
+					_bp_guide_line = Vector2(-9999, best_y)
+					new_pos.y = best_y
 			# 注释框拖动：组内节点联动移动
 			var drag_node: Dictionary = graph["nodes"][_bp_node_drag_id]
 			var drag_type: String = str(drag_node.get("node_type", ""))
@@ -1659,6 +1717,7 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.add_separator()
 		popup.add_item("📋 图数据 JSON", 99001)
 		popup.add_item("📝 图属性…", 99013)
+		popup.add_item("📄 生成代码预览", 99014)
 		popup.add_item("📊 图统计", 99005)
 		popup.add_item("📷 导出画布 PNG", 99004)
 		popup.id_pressed.connect(func(id: int):
@@ -1670,6 +1729,8 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 				_bp_show_graph_stats(graph)
 			elif id == 99013:
 				_bp_show_graph_props(graph)
+			elif id == 99014:
+				_bp_show_generated_code(graph)
 			popup.queue_free())
 	# 快速添加节点搜索（UE 风格）
 	popup.add_separator()
