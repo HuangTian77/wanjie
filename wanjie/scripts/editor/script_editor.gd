@@ -279,7 +279,11 @@ func _update_status_mode(mode: int) -> void:
 	for m in EditorMode.MODE_ICONS.size():
 		cur = cur.replace("[%s %s] " % [EditorMode.MODE_ICONS[m], EditorMode.MODE_NAMES[m]], "")
 	var prefix := "%s %s " % [EditorMode.MODE_ICONS[mode], EditorMode.MODE_NAMES[mode]]
-	status_label.text = prefix + cur
+	# 简易模式：状态栏显示新手快捷键提示
+	if mode == EditorMode.SIMPLE:
+		status_label.text = "🌱 简易模式 · Ctrl+S 保存 · F5 试玩 · Ctrl+1/2/3 切模式"
+	else:
+		status_label.text = prefix + cur
 	# 底部模式按钮高亮当前模式
 	if mode_simple_btn != null:
 		mode_simple_btn.modulate = Color(1, 1, 1) if mode == EditorMode.SIMPLE else Color(0.5, 0.5, 0.5)
@@ -2042,6 +2046,9 @@ func _mark_dirty(subsystem: String = "") -> void:
 		_dirty_subsystems[mapped if mapped != "" else "__all__"] = true
 	else:
 		_dirty_subsystems[subsystem] = true
+	# 未保存标记：剧本名标题加 ●
+	if script_name_label != null and not script_name_label.text.ends_with("●"):
+		script_name_label.text += " ●"
 
 ## 编辑器 key -> 子系统键映射（用于差分保存推断）
 ## quest/combat 数据内联于主文件(始终写入), 返回对应键使其不触发拆分文件重写
@@ -2105,6 +2112,9 @@ func _save_current_script() -> void:
 	_dirty_subsystems.clear()
 	_is_dirty = false
 	status_label.text = "💾 已保存"
+	# 清除未保存标记
+	if script_name_label != null:
+		script_name_label.text = script_name_label.text.trim_suffix(" ●")
 
 # --- 4.3 多标签页编辑 ---
 

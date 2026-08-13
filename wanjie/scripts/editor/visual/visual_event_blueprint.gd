@@ -932,9 +932,11 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 				canvas.queue_redraw()
 	# 鼠标移动
 	if event is InputEventMouseMotion:
-		# 记录鼠标位置（引脚 hover 高亮用）
+		# 记录鼠标位置（引脚 hover 高亮用）+ 节流重绘（性能优化：仅移动>4px 或拖拽时）
+		var moved := _bp_last_mouse_pos.distance_to(event.position)
 		_bp_last_mouse_pos = event.position
-		canvas.queue_redraw()
+		if moved > 4.0 or _bp_dragging or _bp_node_dragging or _bp_pin_dragging:
+			canvas.queue_redraw()
 		if _bp_dragging:
 			_bp_offset += event.relative
 			canvas.queue_redraw()
