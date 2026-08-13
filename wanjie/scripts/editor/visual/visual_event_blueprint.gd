@@ -836,6 +836,44 @@ func _bp_align_nodes(graph: Dictionary, align_type: int) -> void:
 	_bp_redraw_canvas()
 	_log_output("[对齐] 已完成（%d 个节点）" % positions.size())
 
+## 详尽模式：节点健康检查（孤立节点/未连接提示）
+func _bp_health_check(graph: Dictionary) -> void:
+	var issues: Array[String] = []
+	# 孤立节点（无 exec 连接的非 start 节点）
+	var connected_ids: Dictionary = {}
+	for conn in graph.get("connections", []):
+		connected_ids[str(conn.get("from_node", ""))] = true
+		connected_ids[str(conn.get("to_node", ""))] = true
+	var start_count := 0
+	for nid in graph["nodes"]:
+		var nt: String = str(graph["nodes"][nid].get("node_type", ""))
+		if nt == "start" or nt == "flow_start":
+			start_count += 1
+		if not connected_ids.has(nid) and nt != "start" and nt != "flow_start" and nt != "comment" and nt != "flow_comment":
+			issues.append("孤立节点：%s（未与任何节点连接）" % BlueprintNodeRegistry.get_display_name(nt))
+	if start_count == 0 and not graph["nodes"].is_empty():
+		issues.append("缺少「开始」节点（执行流无入口）")
+	if issues.is_empty():
+		ToastManager.success("✅ 健康检查通过：无孤立节点")
+	else:
+		# 弹窗列出问题
+		var dialog := AcceptDialog.new()
+		dialog.title = "健康检查"
+		dialog.min_size = Vector2i(420, 300)
+		var lbl := RichTextLabel.new()
+		lbl.bbcode_enabled = true
+		lbl.fit_content = true
+		var txt := "[b]发现 %d 个问题：[/b]\n\n" % issues.size()
+		for i in mini(12, issues.size()):
+			txt += "• %s\n" % issues[i]
+		if issues.size() > 12:
+			txt += "…等 %d 项\n" % issues.size()
+		lbl.text = txt
+		dialog.add_child(lbl)
+		var host_node: Node = _host._editor_container()
+		host_node.add_child(dialog)
+		dialog.popup_centered()
+
 ## 清理悬空连线（指向不存在节点或端口越界的连线）
 func _bp_cleanup_dangling_connections(graph: Dictionary) -> void:
 	var conns: Array = graph.get("connections", [])
@@ -1510,6 +1548,13 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		popup.id_pressed.connect(func(id: int):
 			if id == 99009:
 				_bp_cleanup_dangling_connections(graph)
+			popup.queue_free())
+	# 健康检查（详尽模式）
+	if EditorMode.is_exhaustive():
+		popup.add_item("🔍 节点健康检查", 99010)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99010:
+				_bp_health_check(graph)
 			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()

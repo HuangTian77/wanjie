@@ -66,6 +66,7 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 		# 简易模式隐藏图重命名/删除（避免误操作）
 		if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
 			_ui().add_toolbar_btn(tb_hbox, "✎ 重命名", _on_rename_graph_pressed)
+			_ui().add_toolbar_btn(tb_hbox, "⧉ 复制图", _on_duplicate_graph_pressed)
 			_ui().add_toolbar_btn(tb_hbox, "🗑 删除", _on_delete_graph_pressed)
 		_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	# 快捷节点
@@ -85,6 +86,23 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED):
 		_ui().add_toolbar_btn(tb_hbox, "自动布局", func(): _bp_mod._auto_layout_event_graph())
 	# === 主区域: 左图说明 + 画布 + 右详情 ===
+	# 简易模式：画布操作提示条（新手引导）
+	if EditorMode.is_simple():
+		var hint_bar := PanelContainer.new()
+		var hint_sb := StyleBoxFlat.new()
+		hint_sb.bg_color = Color(0.13, 0.17, 0.13, 0.9)
+		hint_sb.set_corner_radius_all(4)
+		hint_sb.content_margin_left = 10.0
+		hint_sb.content_margin_top = 4.0
+		hint_sb.content_margin_right = 10.0
+		hint_sb.content_margin_bottom = 4.0
+		hint_bar.add_theme_stylebox_override("panel", hint_sb)
+		var hint_lbl := Label.new()
+		hint_lbl.text = "💡 画布操作：单击选中 · 拖拽移动 · 右键添加节点 · 双击节点进入编辑 · 滚轮缩放"
+		hint_lbl.add_theme_font_size_override("font_size", 12)
+		hint_lbl.add_theme_color_override("font_color", Color(0.75, 0.9, 0.75))
+		hint_bar.add_child(hint_lbl)
+		main_vbox.add_child(hint_bar)
 	var hsplit := HSplitContainer.new()
 	hsplit.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hsplit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -361,6 +379,26 @@ func _on_new_graph_pressed() -> void:
 		_current_key = key
 		_refresh_graph_list()
 		_log_output("[蓝图] 新建图: %s" % key)
+	)
+
+## 复制当前图为副本（详尽/详细模式）
+func _on_duplicate_graph_pressed() -> void:
+	var ws := _ws()
+	if ws == null or _current_key.is_empty():
+		return
+	_show_text_dialog("复制当前图", "副本图名称（当前：%s）:" % _current_key, func(name: String):
+		var key := name.strip_edges()
+		if key.is_empty():
+			return
+		if not key.begins_with("sys:") and not key.begins_with("evt:"):
+			key = "sys:" + key
+		if GraphStore.has_graph(ws, key):
+			_log_output("[蓝图] 图已存在: %s" % key)
+			return
+		var copy: Dictionary = GraphStore.get_graph(ws, _current_key).duplicate(true)
+		GraphStore.set_graph(ws, key, copy)
+		_refresh_graph_list()
+		_log_output("[蓝图] 已复制 %s → %s" % [_current_key, key])
 	)
 
 func _on_rename_graph_pressed() -> void:
