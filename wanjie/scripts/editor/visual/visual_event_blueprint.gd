@@ -709,6 +709,40 @@ func _bp_show_comment_size_dialog(graph: Dictionary, node_id: String) -> void:
 	host_node.add_child(dialog)
 	dialog.popup_centered()
 
+## 插入常用节点模板（对话+选择/条件分支/变量设置）
+func _bp_insert_template(graph: Dictionary, template_id: int, base_pos: Vector2) -> void:
+	_bp_push_undo()
+	var nodes_created: Array[String] = []
+	var y := base_pos.y
+	# 辅助创建节点（lambda 需 call 调用）
+	var mk: Callable = func(node_type: String, props: Dictionary = {}) -> String:
+		var n: Dictionary = BlueprintData.create_node(node_type, Vector2(base_pos.x, y))
+		for k in props:
+			n["properties"][k] = props[k]
+		graph["nodes"][n["id"]] = n
+		nodes_created.append(n["id"])
+		y += 130.0
+		return n["id"]
+	match template_id:
+		0:  # 对话+选择
+			var d: String = mk.call("story_dialog", {"speaker": "NPC", "text": "你好，旅行者！"})
+			var c: String = mk.call("story_choice", {"choice_0_text": "打招呼", "choice_1_text": "离开"})
+			BlueprintData.add_connection(graph, d, 0, c, 0, true)
+		1:  # 条件分支
+			var b: String = mk.call("flow_branch")
+			var t: String = mk.call("flow_print_log", {"message": "条件为真"})
+			var f: String = mk.call("flow_print_log", {"message": "条件为假"})
+			BlueprintData.add_connection(graph, b, 0, t, 0, true)
+			BlueprintData.add_connection(graph, b, 1, f, 0, true)
+		2:  # 变量设置
+			var g: String = mk.call("flow_get_var", {"var_name": "gold"})
+			var s: String = mk.call("flow_set_var", {"var_name": "gold"})
+			BlueprintData.add_connection(graph, g, 0, s, 1, false)
+	_save_active_graph()
+	_host._sync_to_code_editor()
+	_bp_redraw_canvas()
+	_log_output("[模板] 已插入 %d 个节点" % nodes_created.size())
+
 ## 分组选中节点：创建包裹注释框（UE 风格）
 func _bp_group_selected_nodes(graph: Dictionary) -> void:
 	if _bp_selected_ids.size() < 2:
@@ -738,6 +772,19 @@ func _bp_group_selected_nodes(graph: Dictionary) -> void:
 	if canvas:
 		canvas.queue_redraw()
 	_log_output("[分组] 已创建注释框包裹 %d 个节点" % _bp_selected_ids.size())
+
+## 详尽模式：导出画布 PNG 截图
+func _bp_export_canvas_png(canvas: Control) -> void:
+	if canvas == null:
+		return
+	# 使用 viewport 截图（画布区域）
+	var img := canvas.get_viewport().get_texture().get_image()
+	var out_path := "user://blueprint_%s.png" % Time.get_datetime_string_from_system().replace(":", "-").replace(" ", "_")
+	var err := img.save_png(out_path)
+	if err == OK:
+		ToastManager.success("画布已导出：%s" % ProjectSettings.globalize_path(out_path))
+	else:
+		ToastManager.warning("画布导出失败（错误码 %d）" % err)
 
 ## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
 func _bp_quick_add_popup(canvas: Control) -> void:
@@ -1239,9 +1286,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 	if EditorMode.is_exhaustive():
 		popup.add_separator()
 		popup.add_item("📋 图数据 JSON", 99001)
+		popup.add_item("📷 导出画布 PNG", 99004)
 		popup.id_pressed.connect(func(id: int):
 			if id == 99001:
 				_bp_show_graph_data(graph)
+			elif id == 99004:
+				_bp_export_canvas_png(canvas)
 			popup.queue_free())
 	# 快速添加节点搜索（UE 风格）
 	popup.add_separator()
@@ -1257,6 +1307,18 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			if id == 99003:
 				_bp_group_selected_nodes(graph)
 				popup.queue_free())
+	# 模板插入（常用节点组合）
+	popup.add_separator()
+	var tmpl_sub := PopupMenu.new()
+	tmpl_sub.name = "TemplateSub"
+	tmpl_sub.add_item("💬 对话+选择模板", 0)
+	tmpl_sub.add_item("🔀 条件分支模板", 1)
+	tmpl_sub.add_item("⚙ 变量设置模板", 2)
+	tmpl_sub.id_pressed.connect(func(id: int):
+		_bp_insert_template(graph, id, _bp_ctx_menu_pos)
+		popup.queue_free())
+	popup.add_child(tmpl_sub)
+	popup.add_submenu_item("📋 插入模板", tmpl_sub.name)
 	# 菜单关闭时清理
 	popup.popup_hide.connect(func():
 		popup.queue_free()
@@ -1311,20 +1373,66 @@ func _auto_layout_event_graph() -> void:
 	if graph["nodes"].is_empty():
 		return
 	_bp_push_undo()
-	var y := 100.0
-	var x := 100.0
-	var col_count := 0
+	# 按执行层级 BFS 分层（UE 风格：从 start 逐层向右排布）
+	var depth: Dictionary = {}  # node_id -> 层级
+	var queue: Array[String] = []
+	var visited: Dictionary = {}
+	# 找 start 节点
 	for nid in graph["nodes"]:
-		graph["nodes"][nid]["pos"] = Vector2(x, y)
-		y += 130.0
-		col_count += 1
-		if col_count >= 8:
-			col_count = 0
-			y = 100.0
-			x += 250.0
+		var nt: String = str(graph["nodes"][nid].get("node_type", ""))
+		if nt == "start" or nt == "flow_start":
+			queue.append(nid)
+			depth[nid] = 0
+	# 无 start：按 id 顺序单层
+	if queue.is_empty():
+		var ids: Array = graph["nodes"].keys()
+		ids.sort()
+		var y0 := 100.0
+		for i in ids.size():
+			graph["nodes"][str(ids[i])]["pos"] = Vector2(100, y0)
+			y0 += 130.0
+	else:
+		var qi := 0
+		while qi < queue.size():
+			var cur: String = queue[qi]
+			qi += 1
+			if visited.has(cur):
+				continue
+			visited[cur] = true
+			for conn in graph.get("connections", []):
+				if str(conn.get("from_node", "")) == cur and bool(conn.get("is_exec", true)):
+					var to: String = str(conn.get("to_node", ""))
+					if not depth.has(to):
+						depth[to] = int(depth.get(cur, 0)) + 1
+						queue.append(to)
+		# 未连通的节点放最后一层之后
+		var max_depth := 0
+		for d in depth.values():
+			max_depth = maxi(max_depth, int(d))
+		for nid in graph["nodes"]:
+			if not depth.has(nid):
+				depth[nid] = max_depth + 1
+		# 按层排布（每层一列）
+		var col_x := 100.0
+		var layer := 0
+		var layer_nodes: Array[String] = []
+		for nid in depth:
+			if int(depth[nid]) == layer:
+				layer_nodes.append(nid)
+		while not layer_nodes.is_empty():
+			var yv := 100.0
+			for nid in layer_nodes:
+				graph["nodes"][nid]["pos"] = Vector2(col_x, yv)
+				yv += 130.0
+			layer += 1
+			col_x += 260.0
+			layer_nodes.clear()
+			for nid in depth:
+				if int(depth[nid]) == layer:
+					layer_nodes.append(nid)
 	_save_active_graph()
 	_bp_redraw_canvas()
-	_log_output("[布局] 自动布局完成")
+	_log_output("[布局] 自动布局完成（按执行层级）")
 
 ## 适应画布: 缩放+平移使所有节点可见
 func _fit_canvas_to_nodes(canvas_or_parent: Control) -> void:
