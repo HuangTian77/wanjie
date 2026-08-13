@@ -65,6 +65,8 @@ func _ready() -> void:
 
 ## 模式切换累计次数（统计用）
 var switch_count: int = 0
+## 收藏节点类型（右键常用节点，可编辑）
+var favorite_types: Array[String] = ["flow_start", "story_dialog", "story_choice", "flow_branch", "flow_set_var"]
 
 ## 设置模式（持久化 + 广播）
 func set_mode(mode: int) -> void:
@@ -109,6 +111,7 @@ func _save() -> void:
 	if f:
 		f.store_line(str(current_mode))
 		f.store_line(str(switch_count))
+		f.store_line(JSON.stringify(favorite_types))
 		f.close()
 
 
@@ -119,8 +122,15 @@ func _load() -> void:
 	if f:
 		var line := f.get_line().strip_edges()
 		var line2 := f.get_line().strip_edges()
+		var line3 := f.get_line().strip_edges()
 		f.close()
 		if line.is_valid_int():
 			current_mode = clampi(int(line), SIMPLE, EXHAUSTIVE)
 		if line2.is_valid_int():
 			switch_count = maxi(int(line2), 0)
+		if not line3.is_empty():
+			var parsed: Variant = JSON.parse_string(line3)
+			if parsed is Array and (parsed as Array).size() > 0:
+				favorite_types.clear()
+				for t in parsed:
+					favorite_types.append(str(t))

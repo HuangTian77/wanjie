@@ -377,6 +377,11 @@ func _refresh_graph_list() -> void:
 				display_key = key.trim_prefix("sys:").trim_prefix("evt:")
 		_graph_list.add_item(display_key)
 		_graph_list.set_item_metadata(idx, key)
+		# 详尽模式：图标签前缀（彩色标记）
+		if EditorMode.is_exhaustive():
+			var g_tag: String = str(GraphStore.get_graph(ws, key).get("_tag", ""))
+			if g_tag != "" and g_tag != "默认":
+				_graph_list.set_item_text(idx, "%s %s" % [g_tag, display_key])
 		if key == _current_key:
 			select_idx = idx
 		idx += 1

@@ -1122,6 +1122,59 @@ func _bp_select_node_by_id(nid: String) -> void:
 		canvas.queue_redraw()
 	_show_bp_node_properties(nid)
 
+## 管理收藏夹弹窗（添加/移除常用节点类型）
+func _bp_manage_favorites() -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "管理收藏"
+	dialog.dialog_text = "点击节点类型添加到收藏（最多 8 个）："
+	dialog.min_size = Vector2i(380, 380)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 6)
+	dialog.add_child(box)
+	var add_row := HBoxContainer.new()
+	box.add_child(add_row)
+	var opt := OptionButton.new()
+	opt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for t in BlueprintNodeRegistry.get_all_types(EditorMode.EXHAUSTIVE):
+		var d: Dictionary = BlueprintNodeRegistry.get_definition(t)
+		opt.add_item("%s（%s）" % [d.get("name", t), d.get("category", "")], opt.item_count)
+		opt.set_item_metadata(opt.item_count - 1, t)
+	add_row.add_child(opt)
+	var add_btn := Button.new()
+	add_btn.text = "＋"
+	add_btn.pressed.connect(func():
+		if opt.get_item_metadata(opt.selected) != null:
+			var t: String = str(opt.get_item_metadata(opt.selected))
+			if not EditorMode.favorite_types.has(t) and EditorMode.favorite_types.size() < 8:
+				EditorMode.favorite_types.append(t)
+				EditorMode._save()
+				_bp_manage_favorites()
+				dialog.queue_free()
+			else:
+				ToastManager.info("已在收藏或已达上限（8 个）"))
+	add_row.add_child(add_btn)
+	var list := ItemList.new()
+	list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	for t in EditorMode.favorite_types:
+		var d: Dictionary = BlueprintNodeRegistry.get_definition(t)
+		list.add_item("%s（%s）" % [d.get("name", t), d.get("category", "")])
+		list.set_item_metadata(list.item_count - 1, t)
+	box.add_child(list)
+	var rm_btn := Button.new()
+	rm_btn.text = "🗑 移除选中收藏"
+	rm_btn.pressed.connect(func():
+		if list.get_selected_items().size() > 0:
+			var rm_idx: int = list.get_selected_items()[0]
+			var rm_t: String = str(list.get_item_metadata(rm_idx))
+			EditorMode.favorite_types.erase(rm_t)
+			EditorMode._save()
+			_bp_manage_favorites()
+			dialog.queue_free())
+	box.add_child(rm_btn)
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
+
 ## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
 func _bp_quick_add_popup(canvas: Control) -> void:
 	var popup := PopupPanel.new()
@@ -1226,8 +1279,24 @@ func _bp_show_graph_props(graph: Dictionary) -> void:
 	info.add_theme_font_size_override("font_size", 11)
 	info.add_theme_color_override("font_color", Color(0.6, 0.65, 0.7))
 	dialog.add_child(info)
+	# 图标签颜色（区分用途）
+	var tag_row := HBoxContainer.new()
+	tag_row.add_theme_constant_override("separation", 6)
+	dialog.add_child(tag_row)
+	var tag_lbl := Label.new()
+	tag_lbl.text = "标签色："
+	tag_lbl.add_theme_font_size_override("font_size", 12)
+	tag_row.add_child(tag_lbl)
+	var tag_opt := OptionButton.new()
+	var tag_names := ["默认", "🔴 剧情", "🟢 经济", "🔵 战斗", "🟡 任务", "🟣 世界"]
+	for tn in tag_names:
+		tag_opt.add_item(tn)
+	var cur_tag: String = str(graph.get("_tag", ""))
+	tag_opt.selected = max(tag_names.find(cur_tag), 0)
+	tag_row.add_child(tag_opt)
 	dialog.confirmed.connect(func():
 		graph["_description"] = desc_edit.text
+		graph["_tag"] = tag_names[tag_opt.selected]
 		_save_active_graph())
 	var host_node: Node = _host._editor_container()
 	host_node.add_child(dialog)
@@ -1726,20 +1795,24 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 	var popup := PopupMenu.new()
 	popup.name = "BpContextMenu"
 	popup.size = Vector2i(220, 400)
-	# 收藏节点快捷区（常用节点置顶）
+	# 收藏节点快捷区（可编辑收藏夹）
+	var fav_types_cur: Array = EditorMode.favorite_types
 	var fav_sub := PopupMenu.new()
 	fav_sub.name = "FavNodes"
-	fav_sub.add_item("▶ 开始 (Start)", 0)
-	fav_sub.add_item("💬 对话 (Dialog)", 1)
-	fav_sub.add_item("🔀 选择 (Choice)", 2)
-	fav_sub.add_item("🔀 条件分支 (Branch)", 3)
-	fav_sub.add_item("⚙ 设置变量 (SetVar)", 4)
+	for i in fav_types_cur.size():
+		var ft: String = str(fav_types_cur[i])
+		fav_sub.add_item("%s %s" % [BlueprintNodeRegistry.get_definition(ft).get("name", ft), "（%d）" % (i + 1)], i)
 	fav_sub.id_pressed.connect(func(id: int):
-		var fav_types := ["flow_start", "story_dialog", "story_choice", "flow_branch", "flow_set_var"]
-		_create_node_at_position(fav_types[id])
+		_create_node_at_position(str(fav_types_cur[id]))
 		popup.queue_free())
 	popup.add_child(fav_sub)
 	popup.add_submenu_item("⭐ 常用节点", fav_sub.name)
+	# 管理收藏（自定义收藏夹）
+	popup.add_item("⚙ 管理收藏…", 99017)
+	popup.id_pressed.connect(func(id: int):
+		if id == 99017:
+			_bp_manage_favorites()
+		popup.queue_free())
 	# 最近使用节点（快速复用）
 	if not _bp_recent_types.is_empty():
 		var recent_sub := PopupMenu.new()
