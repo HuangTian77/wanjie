@@ -29,8 +29,22 @@ var current_mode: int = DETAILED
 
 ## 模式切换时保存的画布视图状态（跨面板重建传递）
 var _bp_view_state: Dictionary = {}
+## 当前激活图 key（模式切换保持）
+var _graph_key_state: String = ""
 
 const CONFIG_PATH := "user://editor_mode.cfg"
+
+
+## 保存当前图 key（模式切换重建前调用）
+func set_graph_key_state(key: String) -> void:
+	_graph_key_state = key
+
+
+## 读取并清空图 key 状态
+func take_graph_key_state() -> String:
+	var k := _graph_key_state
+	_graph_key_state = ""
+	return k
 
 
 ## 保存蓝图画布视图状态（模式切换重建前调用）

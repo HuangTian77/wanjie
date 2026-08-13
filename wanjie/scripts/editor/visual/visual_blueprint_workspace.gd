@@ -169,6 +169,11 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	detail_scroll.add_child(_detail)
 	# === 初始化图列表与默认图 ===
 	_refresh_graph_list()
+	# 恢复模式切换前保存的当前图 key
+	var saved_gk: String = EditorMode.take_graph_key_state()
+	if saved_gk != "" and saved_gk != _current_key:
+		_current_key = saved_gk
+		_on_graph_switched()
 	# 恢复模式切换前保存的画布视图状态（缩放/偏移）
 	if _canvas != null:
 		var saved_vs: Dictionary = EditorMode.take_bp_view_state()
@@ -188,6 +193,10 @@ func _get_bp_view_state() -> Dictionary:
 	if _bp_mod == null or _canvas == null:
 		return {}
 	return {"zoom": _bp_mod._bp_zoom, "offset": _bp_mod._bp_offset}
+
+## 供宿主在面板销毁前保存当前图 key
+func _get_active_graph_key_ws() -> String:
+	return _current_key
 
 ## === workspace 宿主接口（供 VisualEventBlueprint duck-typing） ===
 
@@ -387,6 +396,9 @@ func _on_delete_graph_pressed() -> void:
 func _compile_current() -> void:
 	_bp_mod._compile_blueprint()
 	_refresh_detail_overview()
+	# 简易模式：编译后轻提示（引导探索详细/详尽模式）
+	if EditorMode.is_simple():
+		ToastManager.info("✅ 编译完成！切换「详细/详尽」模式可查看节点与连接明细")
 
 ## 简易文本输入对话框
 func _show_text_dialog(title: String, prompt: String, on_confirm: Callable) -> void:

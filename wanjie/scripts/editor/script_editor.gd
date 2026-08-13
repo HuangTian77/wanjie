@@ -251,6 +251,11 @@ func _on_edit_mode_changed(mode: int) -> void:
 				var vs: Dictionary = panel._get_bp_view_state()
 				if not vs.is_empty():
 					EditorMode.set_bp_view_state(vs)
+			# 保存当前图 key（模式切换保持）
+			if panel != null and panel.has_method("_get_active_graph_key_ws"):
+				var gk: String = panel._get_active_graph_key_ws()
+				if not gk.is_empty():
+					EditorMode.set_graph_key_state(gk)
 			to_erase.append(key)
 	for key in to_erase:
 		_editors.erase(key)

@@ -743,6 +743,41 @@ func _bp_insert_template(graph: Dictionary, template_id: int, base_pos: Vector2)
 	_bp_redraw_canvas()
 	_log_output("[模板] 已插入 %d 个节点" % nodes_created.size())
 
+## 对齐选中节点（0=左 1=右 2=顶 3=底 4=垂直居中 5=水平居中）
+func _bp_align_nodes(graph: Dictionary, align_type: int) -> void:
+	if _bp_selected_ids.size() < 2:
+		return
+	_bp_push_undo()
+	# 收集选中节点位置
+	var positions: Dictionary = {}
+	var min_x := INF
+	var max_x := -INF
+	var min_y := INF
+	var max_y := -INF
+	for nid in _bp_selected_ids:
+		if graph["nodes"].has(nid):
+			var p: Vector2 = graph["nodes"][nid]["pos"]
+			positions[nid] = p
+			min_x = minf(min_x, p.x)
+			max_x = maxf(max_x, p.x)
+			min_y = minf(min_y, p.y)
+			max_y = maxf(max_y, p.y)
+	if positions.is_empty():
+		return
+	for nid in positions:
+		var p: Vector2 = positions[nid]
+		match align_type:
+			0: p.x = min_x
+			1: p.x = max_x
+			2: p.y = min_y
+			3: p.y = max_y
+			4: p.x = (min_x + max_x) / 2.0
+			5: p.y = (min_y + max_y) / 2.0
+		graph["nodes"][nid]["pos"] = p
+	_save_active_graph()
+	_bp_redraw_canvas()
+	_log_output("[对齐] 已完成（%d 个节点）" % positions.size())
+
 ## 分组选中节点：创建包裹注释框（UE 风格）
 func _bp_group_selected_nodes(graph: Dictionary) -> void:
 	if _bp_selected_ids.size() < 2:
@@ -845,6 +880,38 @@ func _create_node_at_position_custom(node_type: String, world_pos: Vector2) -> v
 	var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
 	if canvas:
 		canvas.queue_redraw()
+
+## 详尽模式：图统计弹窗（节点类型分布）
+func _bp_show_graph_stats(graph: Dictionary) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "图统计"
+	dialog.min_size = Vector2i(360, 320)
+	var lbl := RichTextLabel.new()
+	lbl.bbcode_enabled = true
+	lbl.fit_content = true
+	dialog.add_child(lbl)
+	# 节点类型分布
+	var cat_count: Dictionary = {}
+	var type_count: Dictionary = {}
+	for nid in graph["nodes"]:
+		var nt: String = str(graph["nodes"][nid].get("node_type", "unknown"))
+		var d: Dictionary = BlueprintNodeRegistry.get_definition(nt)
+		var cat: String = str(d.get("category", "base"))
+		cat_count[cat] = int(cat_count.get(cat, 0)) + 1
+		type_count[nt] = int(type_count.get(nt, 0)) + 1
+	var cat_names := {"flow": "流程", "story": "剧情", "economy": "经济", "ability": "能力", "combat": "战斗", "world": "世界", "player": "角色", "quest": "任务", "base": "基础"}
+	var txt := "[b]节点 %d / 连接 %d[/b]\n\n[color=#c9a06a]【分类分布】[/color]\n" % [graph["nodes"].size(), graph.get("connections", []).size()]
+	for cat in cat_count:
+		txt += "• %s：%d\n" % [cat_names.get(cat, cat), int(cat_count[cat])]
+	txt += "\n[color=#c9a06a]【类型明细】[/color]\n"
+	for t in type_count:
+		var td: Dictionary = BlueprintNodeRegistry.get_definition(t)
+		txt += "• %s ×%d\n" % [td.get("name", t), int(type_count[t])]
+	lbl.text = txt
+	dialog.add_child(lbl)
+	var host_node: Node = _host._editor_container()
+	host_node.add_child(dialog)
+	dialog.popup_centered()
 
 ## 详尽模式：查看整图数据 JSON（只读调试）
 func _bp_show_graph_data(graph: Dictionary) -> void:
@@ -1286,12 +1353,15 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 	if EditorMode.is_exhaustive():
 		popup.add_separator()
 		popup.add_item("📋 图数据 JSON", 99001)
+		popup.add_item("📊 图统计", 99005)
 		popup.add_item("📷 导出画布 PNG", 99004)
 		popup.id_pressed.connect(func(id: int):
 			if id == 99001:
 				_bp_show_graph_data(graph)
 			elif id == 99004:
 				_bp_export_canvas_png(canvas)
+			elif id == 99005:
+				_bp_show_graph_stats(graph)
 			popup.queue_free())
 	# 快速添加节点搜索（UE 风格）
 	popup.add_separator()
@@ -1307,6 +1377,20 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			if id == 99003:
 				_bp_group_selected_nodes(graph)
 				popup.queue_free())
+		# 对齐子菜单
+		var align_sub := PopupMenu.new()
+		align_sub.name = "AlignSub"
+		align_sub.add_item("左对齐", 0)
+		align_sub.add_item("右对齐", 1)
+		align_sub.add_item("顶部对齐", 2)
+		align_sub.add_item("底部对齐", 3)
+		align_sub.add_item("垂直居中对齐", 4)
+		align_sub.add_item("水平居中对齐", 5)
+		align_sub.id_pressed.connect(func(id: int):
+			_bp_align_nodes(graph, id)
+			popup.queue_free())
+		popup.add_child(align_sub)
+		popup.add_submenu_item("📐 对齐选中节点", align_sub.name)
 	# 模板插入（常用节点组合）
 	popup.add_separator()
 	var tmpl_sub := PopupMenu.new()
