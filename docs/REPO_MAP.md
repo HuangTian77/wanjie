@@ -1087,10 +1087,10 @@
 - func `hit_test_node` (L135)
 - func `hit_test_pins` (L148)
 - func `draw_blueprint_node` (L164)
-- func `draw_typed_pins` (L243)
-- func `draw_exec_connection` (L296)
-- func `hit_test_bp_pins` (L325)
-- func `hit_test_bp_node` (L345)
+- func `draw_typed_pins` (L244)
+- func `draw_exec_connection` (L297)
+- func `hit_test_bp_pins` (L326)
+- func `hit_test_bp_node` (L346)
 
 ### scripts/editor/visual/visual_blueprint_workspace.gd (visual_blueprint_workspace.gd)
 

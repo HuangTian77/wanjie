@@ -166,7 +166,8 @@ static func draw_blueprint_node(canvas: Control, node: Dictionary, selected: boo
 	# 折叠节点：只显示标题条
 	var is_collapsed: bool = bool(node.get("collapsed", false))
 	var node_height: float = (BP_TITLE_HEIGHT + 4) * zoom if is_collapsed else BlueprintData.calc_node_height(node) * zoom
-	var node_width: float = 180.0 * zoom
+	# 节点宽度（自定义或默认 180）
+	var node_width: float = float(node.get("width", 180.0)) * zoom
 	var sz := Vector2(node_width, node_height)
 	var node_color: Color = node.get("color", Color(0.3, 0.3, 0.4, 1.0))
 	# 注释框特殊绘制

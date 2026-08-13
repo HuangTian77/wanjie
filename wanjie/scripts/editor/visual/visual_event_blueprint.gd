@@ -2231,6 +2231,27 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_save_active_graph()
 		_host._sync_to_code_editor()
 		_bp_redraw_canvas(), "节点标题下的自定义标注（如：主城任务 / 开场）")
+	# 节点宽度自定义（详尽模式）
+	if EditorMode.is_exhaustive():
+		var width_row := HBoxContainer.new()
+		width_row.add_theme_constant_override("separation", 6)
+		detail.add_child(width_row)
+		var w_lbl := Label.new()
+		w_lbl.text = "宽度："
+		w_lbl.add_theme_font_size_override("font_size", 12)
+		w_lbl.add_theme_color_override("font_color", EditorUIFactory.C_LABEL)
+		width_row.add_child(w_lbl)
+		var w_spin := SpinBox.new()
+		w_spin.min_value = 120.0
+		w_spin.max_value = 360.0
+		w_spin.value = float(node.get("width", 180))
+		w_spin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		w_spin.value_changed.connect(func(v: float):
+			node["width"] = int(v)
+			_host._mark_dirty()
+			_save_active_graph()
+			_bp_redraw_canvas())
+		width_row.add_child(w_spin)
 	# 折叠节点开关（收起为标题条）
 	var collapse_toggle := CheckButton.new()
 	collapse_toggle.text = "折叠节点（只显示标题）"

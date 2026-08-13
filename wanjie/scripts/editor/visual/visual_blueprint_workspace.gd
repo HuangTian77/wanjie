@@ -85,18 +85,29 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 		_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
 	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	_ui().add_toolbar_btn(tb_hbox, "✅ 生成" if EditorMode.is_simple() else "编译", _compile_current)
-	# 简易模式：一键导出分享
+	# 简易模式：一键导出分享（带发布检查）
 	if EditorMode.is_simple():
 		_ui().add_toolbar_btn(tb_hbox, "📤 导出分享", func():
+			var ws_ex: Variant = _ws()
+			if ws_ex == null:
+				return
+			# 发布检查单
+			var issues: Array[String] = []
+			if ws_ex.event_system == null or ws_ex.event_system.story_events.is_empty():
+				issues.append("尚未创建剧情事件")
+			if ws_ex.description.is_empty():
+				issues.append("尚未填写剧本描述")
+			if not issues.is_empty():
+				ToastManager.warning("发布检查未通过：%s（修复后重试）" % "；".join(issues))
+				return
 			if _host.has_method("_on_save_pressed"):
 				_host._on_save_pressed()
-			if _ws() != null:
-				var out_path := "user://%s_share.json" % str(_ws().name).replace(" ", "_")
-				var f := FileAccess.open(out_path, FileAccess.WRITE)
-				if f:
-					f.store_string(JSON.stringify(_ws().to_dict(), "\t"))
-					f.close()
-					ToastManager.success("已导出：%s" % ProjectSettings.globalize_path(out_path)))
+			var out_path := "user://%s_share.json" % str(ws_ex.name).replace(" ", "_")
+			var f := FileAccess.open(out_path, FileAccess.WRITE)
+			if f:
+				f.store_string(JSON.stringify(ws_ex.to_dict(), "\t"))
+				f.close()
+				ToastManager.success("✅ 发布检查通过！已导出：%s" % ProjectSettings.globalize_path(out_path)))
 	_ui().add_toolbar_btn(tb_hbox, "🔍 查找" if EditorMode.is_simple() else "🔍 搜索", func(): _bp_mod._open_node_search())
 	# 详尽模式：图内节点过滤（输入即暗化非匹配节点）
 	if EditorMode.is_exhaustive():
