@@ -85,6 +85,18 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 		_ui().add_toolbar_btn(tb_hbox, "+Print", func(): _bp_mod._add_blueprint_node("print"))
 	_ui().add_toolbar_btn(tb_hbox, "|", func(): pass)
 	_ui().add_toolbar_btn(tb_hbox, "✅ 生成" if EditorMode.is_simple() else "编译", _compile_current)
+	# 简易模式：一键导出分享
+	if EditorMode.is_simple():
+		_ui().add_toolbar_btn(tb_hbox, "📤 导出分享", func():
+			if _host.has_method("_on_save_pressed"):
+				_host._on_save_pressed()
+			if _ws() != null:
+				var out_path := "user://%s_share.json" % str(_ws().name).replace(" ", "_")
+				var f := FileAccess.open(out_path, FileAccess.WRITE)
+				if f:
+					f.store_string(JSON.stringify(_ws().to_dict(), "\t"))
+					f.close()
+					ToastManager.success("已导出：%s" % ProjectSettings.globalize_path(out_path)))
 	_ui().add_toolbar_btn(tb_hbox, "🔍 查找" if EditorMode.is_simple() else "🔍 搜索", func(): _bp_mod._open_node_search())
 	# 详尽模式：图内节点过滤（输入即暗化非匹配节点）
 	if EditorMode.is_exhaustive():
@@ -220,6 +232,20 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 			# 简易模式：打开蓝图自动适应画布（聚焦当前图）
 			_bp_mod._fit_canvas_to_nodes(_canvas)
 	_root_ui = root
+	# 全屏模式按钮（详细/详尽）：隐藏工具栏/左右列只留画布
+	if EditorMode.is_visible(EditorMode.FIELD_ADVANCED) and toolbar != null:
+		var full_btn := Button.new()
+		full_btn.text = "⛶ 全屏"
+		full_btn.flat = true
+		full_btn.custom_minimum_size = Vector2(56, 22)
+		full_btn.add_theme_font_size_override("font_size", 11)
+		full_btn.pressed.connect(func():
+			_compact_mode = not _compact_mode
+			toolbar.visible = not _compact_mode
+			left_panel.visible = not _compact_mode
+			detail_scroll.visible = not _compact_mode
+			full_btn.text = "🗗 退出" if _compact_mode else "⛶ 全屏")
+		toolbar.add_child(full_btn)
 	return root
 
 ## 供宿主在面板销毁前保存画布视图状态
@@ -228,6 +254,8 @@ func _get_bp_view_state() -> Dictionary:
 		return {}
 	return {"zoom": _bp_mod._bp_zoom, "offset": _bp_mod._bp_offset}
 
+## 全屏（紧凑）模式开关
+var _compact_mode: bool = false
 ## 供宿主在面板销毁前保存当前图 key
 func _get_active_graph_key_ws() -> String:
 	return _current_key

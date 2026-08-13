@@ -1941,6 +1941,13 @@ func _show_bp_node_properties(node_id: String) -> void:
 			color_row.add_child(cb)
 	# 参数数量标题
 	_host._ui().add_section_label(detail, "⚙ 参数（%d 项）" % reg_def.get("params", []).size())
+	# 详尽模式：该类型节点全图使用次数
+	if EditorMode.is_exhaustive():
+		var nt_count := 0
+		for nid2 in graph["nodes"]:
+			if str(graph["nodes"][nid2].get("node_type", "")) == str(node.get("node_type", "")):
+				nt_count += 1
+		_host._ui().add_info_label(detail, "全图同类节点：%d 个" % nt_count)
 	# 详尽模式：执行顺序显示
 	if EditorMode.is_exhaustive():
 		var order_map: Dictionary = _bp_compute_exec_order(graph)
