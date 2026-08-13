@@ -897,6 +897,23 @@ func _bp_quick_set_variable(graph: Dictionary) -> void:
 	dialog.popup_centered()
 	name_edit.grab_focus()
 
+## 详尽模式：按执行顺序重排节点（列排布）
+func _bp_sort_nodes_by_exec(graph: Dictionary) -> void:
+	_bp_push_undo()
+	var order: Dictionary = _bp_compute_exec_order(graph)
+	# 按执行顺序排成单列（保持 x 不变，重排 y）
+	var sorted_ids: Array[String] = []
+	for nid in order:
+		sorted_ids.append(nid)
+	sorted_ids.sort_custom(func(a: String, b: String): return int(order[a]) < int(order[b]))
+	var yv := 100.0
+	for nid in sorted_ids:
+		graph["nodes"][nid]["pos"] = Vector2(graph["nodes"][nid]["pos"].x, yv)
+		yv += 130.0
+	_save_active_graph()
+	_bp_redraw_canvas()
+	_log_output("[排序] 已按执行顺序重排 %d 个节点" % sorted_ids.size())
+
 ## 详尽模式：节点健康检查（孤立节点/未连接提示）
 func _bp_health_check(graph: Dictionary) -> void:
 	var issues: Array[String] = []
@@ -1005,6 +1022,19 @@ func _bp_export_canvas_png(canvas: Control) -> void:
 		ToastManager.success("画布已导出：%s" % ProjectSettings.globalize_path(out_path))
 	else:
 		ToastManager.warning("画布导出失败（错误码 %d）" % err)
+
+## 按 id 选中节点（图树跳转用）
+func _bp_select_node_by_id(nid: String) -> void:
+	var graph := _get_active_graph()
+	if not graph["nodes"].has(nid):
+		return
+	_bp_selected_ids = [nid]
+	# 居中视图
+	var canvas: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
+	if canvas:
+		_bp_offset = canvas.size / 2.0 - graph["nodes"][nid]["pos"] * _bp_zoom
+		canvas.queue_redraw()
+	_show_bp_node_properties(nid)
 
 ## 快速添加节点弹窗（输入过滤 + 点击创建，UE 风格）
 func _bp_quick_add_popup(canvas: Control) -> void:
@@ -1661,6 +1691,12 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 			if id == 99010:
 				_bp_health_check(graph)
 			popup.queue_free())
+		# 排序节点（按执行顺序重排）
+		popup.add_item("↕ 按执行顺序排序", 99012)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99012:
+				_bp_sort_nodes_by_exec(graph)
+			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()
 	# 简易模式：简版图统计（Toast）
@@ -1910,6 +1946,30 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 详尽模式：图内节点树（点击跳转选中）
+	if EditorMode.is_exhaustive():
+		var node_tree := Tree.new()
+		node_tree.custom_minimum_size.y = 120
+		node_tree.add_theme_font_size_override("font_size", 11)
+		var tree_root := node_tree.create_item()
+		tree_root.set_text(0, "图内节点（%d）" % graph["nodes"].size())
+		var ids_sorted: Array = graph["nodes"].keys()
+		ids_sorted.sort()
+		for nid in ids_sorted:
+			var t_item := node_tree.create_item(tree_root)
+			var n2: Dictionary = graph["nodes"][nid]
+			var t_name: String = str(n2.get("title", ""))
+			if t_name.is_empty():
+				t_name = BlueprintNodeRegistry.get_display_name(str(n2.get("node_type", "")))
+			t_item.set_text(0, "%s" % t_name)
+			if str(nid) == node_id:
+				node_tree.set_selected(t_item, 0)
+			t_item.set_metadata(0, str(nid))
+		node_tree.item_activated.connect(func():
+			var sel := node_tree.get_selected()
+			if sel != null and sel.get_metadata(0) != null:
+				_bp_select_node_by_id(str(sel.get_metadata(0))))
+		detail.add_child(node_tree)
 	# 简易模式：节点用途说明（注册表描述）
 	if EditorMode.is_simple():
 		var reg_d: Dictionary = BlueprintNodeRegistry.get_definition(str(node.get("node_type", "")))

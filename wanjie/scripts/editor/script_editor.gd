@@ -307,6 +307,17 @@ func _update_status_mode(mode: int) -> void:
 		mode_simple_btn.modulate = Color(1, 1, 1) if mode == EditorMode.SIMPLE else Color(0.5, 0.5, 0.5)
 		mode_detail_btn.modulate = Color(1, 1, 1) if mode == EditorMode.DETAILED else Color(0.5, 0.5, 0.5)
 		mode_expert_btn.modulate = Color(1, 1, 1) if mode == EditorMode.EXHAUSTIVE else Color(0.5, 0.5, 0.5)
+		# 当前模式按钮弹跳动画
+		if ThemeManager.animations_enabled:
+			var active_btn: Button = null
+			match mode:
+				EditorMode.SIMPLE: active_btn = mode_simple_btn
+				EditorMode.DETAILED: active_btn = mode_detail_btn
+				EditorMode.EXHAUSTIVE: active_btn = mode_expert_btn
+			if active_btn != null:
+				var tw_btn := create_tween()
+				tw_btn.tween_property(active_btn, "scale", Vector2(1.2, 1.2), 0.1)
+				tw_btn.tween_property(active_btn, "scale", Vector2.ONE, 0.15)
 	# 简易模式顶栏精简（隐藏切换编辑器按钮）
 	if collab_btn != null:
 		collab_btn.visible = not EditorMode.is_simple()
