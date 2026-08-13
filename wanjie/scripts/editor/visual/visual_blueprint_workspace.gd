@@ -116,6 +116,10 @@ func create(_sub_type: String = "", _meta: Dictionary = {}) -> Control:
 	# === 主区域: 左图说明 + 画布 + 右详情 ===
 	# 简易模式：画布操作提示条（新手引导）
 	if EditorMode.is_simple():
+		# 首次进入画布：Toast 教程提示（每会话一次）
+		if not _simple_canvas_hint_shown:
+			_simple_canvas_hint_shown = true
+			ToastManager.info("🌱 画布教程：右键空白处添加节点，拖拽引脚连线，双击节点编辑参数")
 		var hint_bar := PanelContainer.new()
 		var hint_sb := StyleBoxFlat.new()
 		hint_sb.bg_color = Color(0.13, 0.17, 0.13, 0.9)
@@ -256,6 +260,8 @@ func _get_bp_view_state() -> Dictionary:
 
 ## 全屏（紧凑）模式开关
 var _compact_mode: bool = false
+## 简易模式画布引导已显示（每会话一次）
+static var _simple_canvas_hint_shown: bool = false
 ## 供宿主在面板销毁前保存当前图 key
 func _get_active_graph_key_ws() -> String:
 	return _current_key

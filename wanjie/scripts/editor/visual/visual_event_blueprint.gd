@@ -1342,6 +1342,19 @@ func _on_blueprint_canvas_input(event: InputEvent, canvas: Control) -> void:
 			var new_pos := world_pos - _bp_node_drag_offset
 			if _bp_grid_snap:
 				new_pos = new_pos.snapped(Vector2(VisualBlueprintDraw.BP_GRID_SIZE, VisualBlueprintDraw.BP_GRID_SIZE))
+			# 注释框拖动：组内节点联动移动
+			var drag_node: Dictionary = graph["nodes"][_bp_node_drag_id]
+			var drag_type: String = str(drag_node.get("node_type", ""))
+			if drag_type == "comment" or drag_type == "flow_comment":
+				var delta := new_pos - Vector2(drag_node.get("pos", Vector2.ZERO))
+				var csz: Vector2 = Vector2(int(drag_node.get("properties", {}).get("size_x", 300)), int(drag_node.get("properties", {}).get("size_y", 200)))
+				var c_rect := Rect2(new_pos, csz)
+				for nid2 in graph["nodes"]:
+					if nid2 == _bp_node_drag_id:
+						continue
+					var np: Vector2 = graph["nodes"][nid2].get("pos", Vector2.ZERO)
+					if c_rect.has_point(np):
+						graph["nodes"][nid2]["pos"] = np + delta
 			graph["nodes"][_bp_node_drag_id]["pos"] = new_pos
 			canvas.queue_redraw()
 		elif _bp_pin_dragging:
@@ -1980,6 +1993,15 @@ func _show_bp_node_properties(node_id: String) -> void:
 			if str(graph["nodes"][nid2].get("node_type", "")) == str(node.get("node_type", "")):
 				nt_count += 1
 		_host._ui().add_info_label(detail, "全图同类节点：%d 个" % nt_count)
+		# 入度/出度统计
+		var in_deg := 0
+		var out_deg := 0
+		for conn in graph.get("connections", []):
+			if str(conn.get("from_node", "")) == node_id:
+				out_deg += 1
+			if str(conn.get("to_node", "")) == node_id:
+				in_deg += 1
+		_host._ui().add_info_label(detail, "连接：入度 %d / 出度 %d" % [in_deg, out_deg])
 	# 详尽模式：执行顺序显示
 	if EditorMode.is_exhaustive():
 		var order_map: Dictionary = _bp_compute_exec_order(graph)
