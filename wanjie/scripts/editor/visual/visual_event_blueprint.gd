@@ -830,6 +830,34 @@ func _bp_align_nodes(graph: Dictionary, align_type: int) -> void:
 	_bp_redraw_canvas()
 	_log_output("[对齐] 已完成（%d 个节点）" % positions.size())
 
+## 清理悬空连线（指向不存在节点或端口越界的连线）
+func _bp_cleanup_dangling_connections(graph: Dictionary) -> void:
+	var conns: Array = graph.get("connections", [])
+	var removed := 0
+	var keep: Array[Dictionary] = []
+	for conn in conns:
+		var valid: bool = graph["nodes"].has(conn["from_node"]) and graph["nodes"].has(conn["to_node"])
+		if valid:
+			var fn: Dictionary = graph["nodes"][conn["from_node"]]
+			var tn: Dictionary = graph["nodes"][conn["to_node"]]
+			# 端口越界检查
+			if bool(conn.get("is_exec", true)):
+				if int(conn.get("from_port", 0)) >= fn.get("outputs", []).size() or int(conn.get("to_port", 0)) >= tn.get("inputs", []).size():
+					valid = false
+		if valid:
+			keep.append(conn)
+		else:
+			removed += 1
+	if removed > 0:
+		_bp_push_undo()
+		graph["connections"] = keep
+		_save_active_graph()
+		_host._sync_to_code_editor()
+		_bp_redraw_canvas()
+		_log_output("[清理] 已移除 %d 条悬空连线" % removed)
+	else:
+		ToastManager.info("没有悬空连线")
+
 ## 分组选中节点：创建包裹注释框（UE 风格）
 func _bp_group_selected_nodes(graph: Dictionary) -> void:
 	if _bp_selected_ids.size() < 2:
@@ -1470,6 +1498,13 @@ func _show_bp_context_menu(canvas: Control, screen_pos: Vector2) -> void:
 		if id == 99007:
 			_bp_paste_nodes_from_json(graph)
 		popup.queue_free())
+	# 清理悬空连线（详尽/详细模式）
+	if not EditorMode.is_simple():
+		popup.add_item("🧹 清理悬空连线", 99009)
+		popup.id_pressed.connect(func(id: int):
+			if id == 99009:
+				_bp_cleanup_dangling_connections(graph)
+			popup.queue_free())
 	# 模板插入（常用节点组合）
 	popup.add_separator()
 	# 简易模式：简版图统计（Toast）
@@ -1603,6 +1638,11 @@ func _auto_layout_event_graph() -> void:
 	_save_active_graph()
 	_bp_redraw_canvas()
 	_log_output("[布局] 自动布局完成（按执行层级）")
+	# 详尽模式：布局后适应画布（聚焦全图）
+	if EditorMode.is_exhaustive():
+		var canvas_fit: Control = _host._editor_container().find_child("EventGraphCanvas", true, false)
+		if canvas_fit:
+			_fit_canvas_to_nodes(canvas_fit)
 
 ## 适应画布: 缩放+平移使所有节点可见
 func _fit_canvas_to_nodes(canvas_or_parent: Control) -> void:

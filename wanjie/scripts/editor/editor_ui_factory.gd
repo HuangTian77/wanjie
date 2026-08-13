@@ -164,9 +164,14 @@ func add_nav_btn(parent: Control, text: String, key: String, active_key: String,
 func add_toolbar_btn(parent: Control, text: String, on_press: Callable) -> Button:
 	var btn := Button.new()
 	btn.text = text
-	btn.custom_minimum_size.y = 28
+	# 简易模式：大按钮更易点击（零基础友好）
+	if EditorMode.is_simple():
+		btn.custom_minimum_size.y = 36
+		btn.add_theme_font_size_override("font_size", 13)
+	else:
+		btn.custom_minimum_size.y = 28
+		btn.add_theme_font_size_override("font_size", 11)
 	btn.custom_minimum_size.x = 20
-	btn.add_theme_font_size_override("font_size", 11)
 	btn.add_theme_color_override("font_color", C_GREEN)
 	btn.add_theme_color_override("font_hover_color", Color(0.7, 1.0, 0.7, 1))
 	var normal_sb := StyleBoxFlat.new()
