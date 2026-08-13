@@ -326,6 +326,9 @@ func _on_search_item_selected(idx: int) -> void:
 	var nid: String = _bp_search_results[idx]
 	var graph := _get_active_graph()
 	if not graph["nodes"].has(nid):
+		# 节点在其他图（全局搜索）：提示切换到对应图
+		var display: String = _bp_search_list.get_item_text(idx)
+		ToastManager.info("该节点位于「%s」图，请用顶部图下拉切换到对应图后查看" % display.get_slice("[", 1).trim_suffix("]"))
 		return
 	var node_pos: Vector2 = graph["nodes"][nid]["pos"]
 	# 居中视图到该节点
@@ -1743,6 +1746,34 @@ func _show_bp_node_properties(node_id: String) -> void:
 		_bp_redraw_canvas())
 	# 节点ID
 	_host._ui().add_info_label(detail, "ID: %s" % node_id)
+	# 注释框颜色快速选择
+	var nt_cur: String = str(node.get("node_type", ""))
+	if nt_cur == "comment" or nt_cur == "flow_comment":
+		var color_row := HBoxContainer.new()
+		color_row.add_theme_constant_override("separation", 6)
+		detail.add_child(color_row)
+		var color_lbl := Label.new()
+		color_lbl.text = "注释色："
+		color_lbl.add_theme_font_size_override("font_size", 12)
+		color_lbl.add_theme_color_override("font_color", EditorUIFactory.C_LABEL)
+		color_row.add_child(color_lbl)
+		var presets := [
+			Color(0.55, 0.75, 0.35), Color(0.75, 0.6, 0.25), Color(0.45, 0.65, 0.85),
+			Color(0.8, 0.5, 0.5), Color(0.6, 0.5, 0.8),
+		]
+		for pc in presets:
+			var cb := Button.new()
+			cb.custom_minimum_size = Vector2(24, 24)
+			var sb := StyleBoxFlat.new()
+			sb.bg_color = pc
+			sb.set_corner_radius_all(4)
+			cb.add_theme_stylebox_override("normal", sb)
+			cb.pressed.connect((func(c: Color):
+				node["color"] = c
+				_host._mark_dirty()
+				_save_active_graph()
+				_bp_redraw_canvas()).bind(pc))
+			color_row.add_child(cb)
 	# 参数数量标题
 	_host._ui().add_section_label(detail, "⚙ 参数（%d 项）" % reg_def.get("params", []).size())
 	# 详尽模式：执行顺序显示
